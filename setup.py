@@ -5,7 +5,7 @@ new_version='0.1.0'
 with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
-     install_requires=['matplotlib','numpy','sklearn','tqdm'],
+     install_requires=['matplotlib','numpy','sklearn'],
      python_requires='>=3',
      name='pca',
      version=new_version,
