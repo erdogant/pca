@@ -35,7 +35,7 @@ Xnorm=pca.norm(X)
 * It is distributed under the MIT license.
 
 ## Requirements
-* It is advisable to create a new environment. 
+* Creation of a new environment is not necessarily. 
 ```python
 conda create -n env_pca python=3.6
 conda activate env_pca
