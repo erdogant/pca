@@ -21,7 +21,7 @@
    labx=           list of strings of length [x]
                    [] (default)
    
-  labels=        Numpy Vector of strings: Name of the label that represent the data label and loadings
+  labels=          Numpy Vector of strings: Name of the label that represent the data label and loadings
                    [] (default)
                   
    height=         Integer:  Height of figure
