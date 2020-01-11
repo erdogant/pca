@@ -11,7 +11,7 @@ __email__ = 'erdogant@gmail.com'
 
 # module level doc-string
 __doc__ = """
-pca - pca is a python package that performs the principal component analysis and to make insightfull plots.
+pca - pca is a python package that performs the principal component analysis and to make insightful plots.
 =====================================================================
 
 **pca** 

@@ -15,6 +15,6 @@ echo ""
 read -p "Press [Enter] to install the pip package..."
 pip install -U dist/pca-0.1.1-py3-none-any.whl
 echo ""
-read -p ">twine upload dist/* TO UPLOAD TO PYPI..."
+read -p "[PYPI] [python -m twine upload dist/*]"
 echo ""
 read -p "Press [Enter] key to close window..."

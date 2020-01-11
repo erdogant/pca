@@ -1,9 +1,10 @@
-""" This function makes the pca for PCA
+""" pca is a python package that performs the principal component analysis and to make insightful plots.
 
     model = pca.fit(X)
-	out   = pca.biplot(X, <optional>)
-            pca.scatterplot(out)
-            pca.plot_explainedvar(out)
+	ax    = pca.biplot(model) 
+	ax    = pca.biplot3d(model)
+	ax    = pca.plot_explainedvar(model)
+	Xnorm = pca.norm(X)
 
  INPUT:
    X:              datamatrix
