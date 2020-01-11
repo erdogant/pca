@@ -1,0 +1,4 @@
+#include versioneer.py
+#include pca/_version.py
+#include pca/data/*.zip
+#include pca/data/*.txt
