@@ -12,16 +12,13 @@
 ## Method overview
 * fit
 model=pca.fit(X)
-* fit and plot
-model=pca.biplot(X)
-* biplot plot
-pca.explainedvarplot(model)
-* scatterplot
-pca.scatterplot(model)
-* 3d scatterplot
-pca.scatterplot3d(model)
+* biplot
+ax=pca.biplot(model)
+ax=pca.biplot3d(model)
+* plot explained variance
+ax = pca.plot_explainedvar(model)
 * Normalize out components from your dataset
-pca.norm(X)
+Xnorm=pca.norm(X)
 
 
 ## Contents
@@ -62,7 +59,7 @@ python setup.py install
 import pca as pca
 ```
 
-## Load example data
+### Load example data
 ```python
 import numpy as np
 from sklearn.datasets import load_iris
@@ -87,7 +84,7 @@ labx=[0, 0, 0, 0,...,2, 2, 2, 2, 2]
 label=['label1','label2','label3','label4']
 ```
 
-## PCA reduce dimensions and plot explained variance
+### PCA reduce dimensions and plot explained variance
 ```python
 # Fit
 model = pca.fit(X)
@@ -102,22 +99,22 @@ ax  = pca.biplot3d(model)
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_explvar.png" width="400" />
 </p>
 <p align="center">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot.png" width="400" />
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot3d.png" width="400" />
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot.png" width="350" />
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot3d.png" width="350" />
 </p>
 
-## PCA reduce dimensions as above but now plot with labx and label names
+### PCA reduce dimensions as above but now plot with labx and label names
 ```python
 model = pca.fit(X, labx=labx, feat=feat)
 ax  = pca.biplot(model)
 ax  = pca.biplot3d(model)
 ```
 <p align="center">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig1b.png" width="400" />
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig1c.png" width="400" />
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig1b.png" width="350" />
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig1c.png" width="350" />
 </p>
 
-## PCA reduce dimensions to the number of components that capture 95% of the explained variance
+### PCA reduce dimensions to the number of components that capture 95% of the explained variance
 ```python
 # Fit model and determine the number of required components that captures 95% of the explained variance.
 model = pca.fit(X, components=0.95)
@@ -128,7 +125,7 @@ ax = pca.plot_explainedvar(model)
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_explvar_95.png" width="400" />
 </p>
 
-## PCA reduce dimensions to exactly 2d and 3d
+### PCA reduce dimensions to exactly 2d and 3d
 ```python
 # Set components=2 to reduce to 2d
 model = pca.fit(X, components=2)
@@ -136,7 +133,7 @@ model = pca.fit(X, components=2)
 model = pca.fit(X, components=3)
 ```
 
-## PCA normalization. 
+### PCA normalization. 
 ```python
 # Normalizing out the 1st and more components from the data. 
 # This is usefull if the data is seperated in its first component(s) by unwanted or biased variance. Such as sex or experiment location etc. 
