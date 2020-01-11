@@ -67,8 +67,8 @@ import pca as pca
 import numpy as np
 from sklearn.datasets import load_iris
 X = load_iris().data
-feat=iris.feature_names
-labels=iris.target
+label=iris.feature_names
+labx=iris.target
 ```
 
 #### X looks like this:
@@ -83,8 +83,8 @@ X=array([[5.1, 3.5, 1.4, 0.2],
          [4.6, 3.4, 1.4, 0.3],
          [5. , 3.4, 1.5, 0.2],
 
-labels=[0, 0, 0, 0,...,2, 2, 2, 2, 2]
-feat=['feat1','feat2','feat3','feat4']
+labx=[0, 0, 0, 0,...,2, 2, 2, 2, 2]
+label=['label1','label2','label3','label4']
 ```
 
 ## PCA reduce dimensions and plot explained variance
@@ -106,9 +106,9 @@ ax  = pca.biplot3d(model)
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot3d.png" width="400" />
 </p>
 
-## PCA reduce dimensions as above but now plot with labels and feature names
+## PCA reduce dimensions as above but now plot with labx and label names
 ```python
-model = pca.fit(X, labels=labels, feat=feat)
+model = pca.fit(X, labx=labx, feat=feat)
 ax  = pca.biplot(model)
 ax  = pca.biplot3d(model)
 ```
@@ -132,7 +132,7 @@ ax = pca.plot_explainedvar(model)
 ```python
 # Set components=2 to reduce to 2d
 model = pca.fit(X, components=2)
-# Set components=2 to reduce to 3d
+# Set components=3 to reduce to 3d
 model = pca.fit(X, components=3)
 ```
 
