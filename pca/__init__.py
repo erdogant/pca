@@ -1,8 +1,9 @@
 from pca.pca import (
     fit,
  	biplot,
- 	plot_explainedvar,
-    plot,
+ 	explainedvarplot,
+    scatterplot,
+    scatterplot3d,
     norm,
 )
 
