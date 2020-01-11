@@ -100,6 +100,8 @@ ax  = pca.biplot3d(model)
 ```
 <p align="center">
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_explvar.png" width="400" />
+</p>
+<p align="center">
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot.png" width="400" />
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot3d.png" width="400" />
 </p>
