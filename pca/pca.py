@@ -3,7 +3,7 @@
     model = pca.fit(X)
 	out   = pca.biplot(X, <optional>)
             pca.scatterplot(out)
-            pca.explainedvarplot(out)
+            pca.plot_explainedvar(out)
 
  INPUT:
    X:              datamatrix
@@ -45,6 +45,18 @@
 
    import pca as pca
 
+   model = pca.fit(X)
+   ax = pca.plot_explainedvar(model)
+   a  = pca.biplot(model)
+   a  = pca.biplot3d(model)
+   
+   fig   = pca.biplot(model)
+   fig   = pca.biplot3d(model)
+
+   model = pca.fit(X, labels=labels, feat=feat)
+   fig   = pca.biplot(model)
+   fig   = pca.biplot3d(model)
+
 
    model = pca.biplot(X, components=None, labels=labels, feat=feat)
    pca.scatterplot(model)
@@ -81,7 +93,7 @@
    pca.scatterplot(model)
 
    
-   pca.explainedvarplot(out)
+   pca.plot_explainedvar(out)
 
 """
 
@@ -96,6 +108,7 @@
 import numpy as np
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 #%% Explained variance
 def explainedvar(X, components=None):
@@ -110,7 +123,7 @@ def explainedvar(X, components=None):
     return(model, PC, loadings, percentExplVar)
 
 #%% Make PCA fit
-def fit(X, components=0.95, labels=[], feat=[]):
+def fit(X, components=None, labels=[], feat=[]):
     '''
 
     Parameters
@@ -170,35 +183,9 @@ def fit(X, components=0.95, labels=[], feat=[]):
     return(out)
 
 #%% biplot
-def biplot(X, components=0.95, labels=[], feat=[]):
-    '''
+def biplot(out, height=8, width=10, xlim=[], ylim=[]):
+    assert out['pc'].shape[1]>0, print('[PCA] Requires at least 1 PC to make plot.')
 
-    Parameters
-    ----------
-    X : numpy array
-        numpy data array.
-    components : Integer, optional
-        Number of components to reduce the dimensionality. The default is 2.
-    labels : String, optional
-        Labels of the features. The default is [].
-    feat : String, optional
-        Feature names. The default is [].
-
-    Returns
-    -------
-    Dictionary.
-
-    '''
-
-    # Fit using PCA
-    out = fit(X, components=components, labels=labels, feat=feat)
-    # Show explained variance plot
-    explainedvarplot(out)
-    # Return
-    return(out)
-
-#%% Scatter samples in 2D
-def scatterplot(out, height=8, width=10, xlim=[], ylim=[]):
     # Get coordinates
     xs = out['pc'][:,0]
     ys = out['pc'][:,1]
@@ -242,10 +229,12 @@ def scatterplot(out, height=8, width=10, xlim=[], ylim=[]):
 
     plt.show()
     plt.draw()
+    return(ax)
 
-#%% Scatter samples in 2D
-def scatterplot3d(out, height=8, width=10, xlim=[], ylim=[]):
-    from mpl_toolkits.mplot3d import Axes3D
+#%% biplot3d
+def biplot3d(out, height=8, width=10, xlim=[], ylim=[]):
+    assert out['pc'].shape[1]>2, print('[PCA] Requires 3 PCs to make 3d plot. Try pca.biplot()')
+
     # Get coordinates
     xs = out['pc'][:,0]
     ys = out['pc'][:,1]
@@ -294,9 +283,10 @@ def scatterplot3d(out, height=8, width=10, xlim=[], ylim=[]):
 
     plt.show()
     plt.draw()
+    return(ax)
 
 #%% Show explained variance plot
-def explainedvarplot(out, height=8, width=10):
+def plot_explainedvar(out, height=8, width=10):
     [fig,ax]=plt.subplots(figsize=(width,height), edgecolor='k')
     plt.plot(np.append(0,out['explained_var']),'o-', color='k', linewidth=1)
     plt.ylabel('Percentage explained variance')
@@ -313,6 +303,7 @@ def explainedvarplot(out, height=8, width=10):
     plt.bar(np.arange(0,len(out['explained_var'])+1),np.append(0,out['model'].explained_variance_ratio_),color='#3182bd', alpha=0.8)
     plt.show()
     plt.draw()
+    return(ax)
     
 #%% Top scoring components
 def top_scoring_components(loadings, topn):
