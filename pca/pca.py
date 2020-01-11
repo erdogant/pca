@@ -7,7 +7,7 @@
 
  INPUT:
    X:              datamatrix
-                   rows    = feat
+                   rows    = labels
                    colums  = samples
  OPTIONAL
 
@@ -17,10 +17,10 @@
    components=     Float: Take PCs with percentage explained variance>pcp
                    [0.95] (Number of componentens that cover the 95% explained variance)
 
-   labels=           list of strings of length [x]
+   labx=           list of strings of length [x]
                    [] (default)
    
-  feat=        Numpy Vector of strings: Name of the feat that represent the data feat and loadings
+  labels=        Numpy Vector of strings: Name of the label that represent the data label and loadings
                    [] (default)
                   
    height=         Integer:  Height of figure
@@ -39,8 +39,8 @@
    from sklearn.datasets import load_iris
    iris = load_iris()
    X=iris.data
-   feat=iris.feature_names
-   labels=iris.target
+   labels=iris.feature_names
+   labx=iris.target
 
 
    import pca as pca
@@ -50,50 +50,25 @@
    a  = pca.biplot(model)
    a  = pca.biplot3d(model)
    
+   model = pca.fit(X, labx=labx, labels=labels)
    fig   = pca.biplot(model)
    fig   = pca.biplot3d(model)
 
-   model = pca.fit(X, labels=labels, feat=feat)
-   fig   = pca.biplot(model)
-   fig   = pca.biplot3d(model)
 
+   model = pca.fit(X, components=0.95)
+   ax = pca.plot_explainedvar(model)
+   ax   = pca.biplot(model)
 
-   model = pca.biplot(X, components=None, labels=labels, feat=feat)
-   pca.scatterplot(model)
-   pca.scatterplot3d(model)
+   model = pca.fit(X, components=2)
+   ax = pca.plot_explainedvar(model)
+   ax   = pca.biplot(model)
 
-   model = pca.fit(X)
-   pca.scatterplot(model)
-
-   model = pca.biplot(X, components=2)
-   pca.scatterplot(model)
-
-   model = pca.biplot(X, components=0.95)
-   pca.scatterplot(model)
-
-   model = pca.biplot(X, components=0.95, labels=labels, feat=feat)
-   pca.scatterplot(model)
-
-
-   # Normalize data by removing PC
-   Xnorm = pca.norm(X, pcexclude=[1,2,3,4])
-   model = pca.biplot(Xnorm, components=None, labels=labels, feat=feat)
-   pca.scatterplot(model)
-
-   Xnorm = pca.norm(X, pcexclude=[1,2,3])
-   model = pca.biplot(Xnorm, components=None, labels=labels, feat=feat)
-   pca.scatterplot(model)
 
    Xnorm = pca.norm(X, pcexclude=[1,2])
-   model = pca.biplot(Xnorm, components=None, labels=labels, feat=feat)
-   pca.scatterplot(model)
+   model = pca.fit(Xnorm, labx=labx, labels=labels)
+   ax = pca.biplot(model)
+   ax = pca.plot_explainedvar(model)
 
-   Xnorm = pca.norm(X, pcexclude=[1])
-   model = pca.biplot(Xnorm, components=None, labels=labels, feat=feat)
-   pca.scatterplot(model)
-
-   
-   pca.plot_explainedvar(out)
 
 """
 
@@ -123,7 +98,7 @@ def explainedvar(X, components=None):
     return(model, PC, loadings, percentExplVar)
 
 #%% Make PCA fit
-def fit(X, components=None, labels=[], feat=[]):
+def fit(X, components=None, labx=[], labels=[]):
     '''
 
     Parameters
@@ -135,9 +110,9 @@ def fit(X, components=None, labels=[], feat=[]):
         0.95: (default) Take the number of components that cover at least 95% of variance
         2:    Take the top 2 components
         None: All
-    labels : [list of integers] optional
-        color label that is ued to make the scatterplot
-    feat : [list of string] optional
+    labx : [list of integers] optional
+        color labx that is ued to make the scatterplot
+    labels : [list of string] optional
         Numpy Vector of strings: Name of the features that represent the data features and loadings
    
 
@@ -147,16 +122,16 @@ def fit(X, components=None, labels=[], feat=[]):
 
     '''
 
+    if isinstance(labx, list):
+        labx=np.array(labx)
     if isinstance(labels, list):
         labels=np.array(labels)
-    if isinstance(feat, list):
-        feat=np.array(feat)
     if components is None: 
         components=X.shape[1]
-    if len(feat)==0 or len(feat)!=X.shape[1]:
-        feat = np.arange(1,X.shape[1]+1).astype(str)
-    if len(labels)!=X.shape[0]:
-        labels=np.ones(X.shape[0])
+    if len(labels)==0 or len(labels)!=X.shape[1]:
+        labels = np.arange(1,X.shape[1]+1).astype(str)
+    if len(labx)!=X.shape[0]:
+        labx=np.ones(X.shape[0])
 
     if components<1:
         pcp=components
@@ -177,8 +152,8 @@ def fit(X, components=None, labels=[], feat=[]):
     out['model'] = model
     out['topn'] = components
     out['pcp'] = pcp
-    out['topfeat'] = feat[I]
-    out['labels'] = labels
+    out['toplabels'] = labels[I]
+    out['labx'] = labx
     # Return
     return(out)
 
@@ -193,15 +168,15 @@ def biplot(out, height=8, width=10, xlim=[], ylim=[]):
     # Figure
     [fig,ax]=plt.subplots(figsize=(width, height), edgecolor='k')
     # Make scatter plot
-    uilabel=np.unique(out['labels'])
-    getcolors=discrete_cmap(len(uilabel))
-    for i,label in enumerate(uilabel):
-        I=label==out['labels']
+    uilabx=np.unique(out['labx'])
+    getcolors=discrete_cmap(len(uilabx))
+    for i,labx in enumerate(uilabx):
+        I=labx==out['labx']
         getcolors[i,:]
         ax.scatter(xs[I],ys[I],color=getcolors[i,:], s=25)
-        ax.annotate(label, (np.mean(xs[I]), np.mean(ys[I])))
+        ax.annotate(labx, (np.mean(xs[I]), np.mean(ys[I])))
     
-    # Set labels
+    # Set labx
     ax.set_xlabel('PC1 ('+ str(out['model'].explained_variance_ratio_[0]*100)[0:4] + '% expl.var)')
     ax.set_ylabel('PC2 ('+ str(out['model'].explained_variance_ratio_[1]*100)[0:4] + '% expl.var)')
     ax.set_title('Biplot\nComponents that cover the [' + str(out['pcp']) + '] explained variance, PC=['+ str(out['topn'])+  ']')
@@ -225,7 +200,7 @@ def biplot(out, height=8, width=10, xlim=[], ylim=[]):
         newx=newx*figscaling*0.5
         newy=newy*figscaling*0.5
         ax.arrow(0, 0, newx, newy, color='r', width=0.005, head_width=0.05, alpha=0.6)
-        ax.text(newx*1.25, newy*1.25, out['topfeat'][i], color='black', ha='center', va='center')
+        ax.text(newx*1.25, newy*1.25, out['toplabels'][i], color='black', ha='center', va='center')
 
     plt.show()
     plt.draw()
@@ -244,14 +219,14 @@ def biplot3d(out, height=8, width=10, xlim=[], ylim=[]):
     fig = plt.figure(1, figsize=(width, height))
     ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
     # Make scatter plot
-    uilabel=np.unique(out['labels'])
-    getcolors=discrete_cmap(len(uilabel))
-    for i,label in enumerate(uilabel):
-        I=label==out['labels']
+    uilabx=np.unique(out['labx'])
+    getcolors=discrete_cmap(len(uilabx))
+    for i,labx in enumerate(uilabx):
+        I=labx==out['labx']
         getcolors[i,:]
         ax.scatter(xs[I],ys[I],zs[I],color=getcolors[i,:], s=25)
 
-    # Set labels
+    # Set labx
     ax.set_xlabel('PC1 ('+ str(out['model'].explained_variance_ratio_[0]*100)[0:4] + '% expl.var)')
     ax.set_ylabel('PC2 ('+ str(out['model'].explained_variance_ratio_[1]*100)[0:4] + '% expl.var)')
     ax.set_zlabel('PC3 ('+ str(out['model'].explained_variance_ratio_[2]*100)[0:4] + '% expl.var)')
@@ -279,7 +254,7 @@ def biplot3d(out, height=8, width=10, xlim=[], ylim=[]):
         newy=newy*figscaling*0.5
         newz=newz*figscaling*0.5
         ax.arrow(0, 0, newx/20, newy/20, color='r', width=0.0005, head_width=0.005, alpha=0.6)
-        ax.text(newx, newy, newz, out['topfeat'][i], color='black', ha='center', va='center')
+        ax.text(newx, newy, newz, out['toplabels'][i], color='black', ha='center', va='center')
 
     plt.show()
     plt.draw()
