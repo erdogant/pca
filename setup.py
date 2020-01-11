@@ -1,6 +1,6 @@
 import setuptools
 #import versioneer
-new_version='0.1.0'
+new_version='0.1.1'
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -13,7 +13,7 @@ setuptools.setup(
 #     cmdclass=versioneer.get_cmdclass(),  # VERSION CONTROL
      author="Erdogan Taskesen",
      author_email="erdogant@gmail.com",
-     description="pca is a python package that performs the principal component analysis and allows to make several plots.",
+     description="pca is a python package that performs the principal component analysis and to make insightfull plots.",
      long_description=long_description,
      long_description_content_type="text/markdown",
      url="https://github.com/erdogant/pca",

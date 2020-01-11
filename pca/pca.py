@@ -37,8 +37,7 @@
  EXAMPLE
    import numpy as np
    from sklearn.datasets import load_iris
-   iris = load_iris()
-   X=iris.data
+   X = load_iris().data
    labels=iris.feature_names
    labx=iris.target
 
@@ -47,8 +46,8 @@
 
    model = pca.fit(X)
    ax = pca.plot_explainedvar(model)
-   a  = pca.biplot(model)
-   a  = pca.biplot3d(model)
+   ax = pca.biplot(model)
+   ax = pca.biplot3d(model)
    
    model = pca.fit(X, labx=labx, labels=labels)
    fig   = pca.biplot(model)
@@ -203,7 +202,6 @@ def biplot(out, height=8, width=10, xlim=[], ylim=[]):
         ax.text(newx*1.25, newy*1.25, out['toplabels'][i], color='black', ha='center', va='center')
 
     plt.show()
-    plt.draw()
     return(ax)
 
 #%% biplot3d
@@ -253,11 +251,10 @@ def biplot3d(out, height=8, width=10, xlim=[], ylim=[]):
         newx=newx*figscaling*0.5
         newy=newy*figscaling*0.5
         newz=newz*figscaling*0.5
-        ax.arrow(0, 0, newx/20, newy/20, color='r', width=0.0005, head_width=0.005, alpha=0.6)
+        # ax.arrow(0, 0, newx/20, newy/20, color='r', width=0.0005, head_width=0.005, alpha=0.6)
         ax.text(newx, newy, newz, out['toplabels'][i], color='black', ha='center', va='center')
 
     plt.show()
-    plt.draw()
     return(ax)
 
 #%% Show explained variance plot
