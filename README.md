@@ -10,16 +10,17 @@
 * Scatter plot with the loadings
 
 ## Method overview
-* fit
+```python
+# fit
 model=pca.fit(X)
-* biplot
+# biplot
 ax=pca.biplot(model)
 ax=pca.biplot3d(model)
-* plot explained variance
+# plot explained variance
 ax = pca.plot_explainedvar(model)
-* Normalize out components from your dataset
+# Normalize out components from your dataset
 Xnorm=pca.norm(X)
-
+```
 
 ## Contents
 - [Installation](#-installation)
