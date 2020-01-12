@@ -31,11 +31,11 @@ Xnorm=pca.norm(X)
 - [Maintainers](#-maintainers)
 - [License](#-copyright)
 
-## Installation
+### Installation
 * Install pca from PyPI (recommended). pca is compatible with Python 3.6+ and runs on Linux, MacOS X and Windows. 
 * It is distributed under the MIT license.
 
-## Requirements
+### Requirements
 * Creation of a new environment is not necessarily. 
 ```python
 conda create -n env_pca python=3.6
@@ -43,7 +43,7 @@ conda activate env_pca
 pip install numpy matplotlib sklearn
 ```
 
-## Quick Start
+### Quick Start
 ```
 pip install pca
 ```
@@ -55,12 +55,12 @@ cd pca
 python setup.py install
 ```  
 
-## Import pca package
+#### Import pca package
 ```python
 import pca as pca
 ```
 
-### Load example data
+#### Load example data
 ```python
 import numpy as np
 from sklearn.datasets import load_iris
@@ -134,7 +134,7 @@ model = pca.fit(X, components=2)
 model = pca.fit(X, components=3)
 ```
 
-### PCA normalization. 
+#### PCA normalization. 
 ```python
 # Normalizing out the 1st and more components from the data. 
 # This is usefull if the data is seperated in its first component(s) by unwanted or biased variance. Such as sex or experiment location etc. 
@@ -156,7 +156,7 @@ ax = pca.biplot(model)
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_norm.png" width="400" />
 </p>
 
-## Citation
+### Citation
 Please cite pca in your publications if this is useful for your research. Here is an example BibTeX entry:
 ```BibTeX
 @misc{erdogant2019pca,
@@ -167,11 +167,11 @@ Please cite pca in your publications if this is useful for your research. Here i
 }
 ```
 
-## Maintainers
+### Maintainers
 * Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
 
-## Contribute
+### Contribute
 * Contributions are welcome.
 
-## © Copyright
+### © Copyright
 See [LICENSE](LICENSE) for details.
