@@ -104,7 +104,7 @@ ax  = pca.biplot3d(model)
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot3d.png" width="350" />
 </p>
 
-### PCA reduce dimensions as above but now plot with labx and label names
+### Reduce dimensions as above but now plot with labx and label names
 ```python
 model = pca.fit(X, labx=labx, feat=feat)
 ax  = pca.biplot(model)
@@ -115,7 +115,7 @@ ax  = pca.biplot3d(model)
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig1c.png" width="350" />
 </p>
 
-### PCA reduce dimensions to the number of components that capture 95% of the explained variance
+### Reduce dimensions to the number of components that capture 95% of the explained variance
 ```python
 # Fit model and determine the number of required components that captures 95% of the explained variance.
 model = pca.fit(X, components=0.95)
@@ -126,7 +126,7 @@ ax = pca.plot_explainedvar(model)
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_explvar_95.png" width="400" />
 </p>
 
-### PCA reduce dimensions to exactly 2d and 3d
+### Reduce dimensions to exactly 2d and 3d
 ```python
 # Set components=2 to reduce to 2d
 model = pca.fit(X, components=2)
