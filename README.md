@@ -4,7 +4,7 @@
 [![PyPI Version](https://img.shields.io/pypi/v/pca)](https://pypi.org/project/pca/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/pca/blob/master/LICENSE)
 
-* pca is a python package that performs the principal component analysis and to make insightfull plots.
+* pca is a python package that performs the principal component analysis and creates insightful plots.
 * Biplot to plot the loadings
 * Explained variance 
 * Scatter plot with the loadings
