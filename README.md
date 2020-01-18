@@ -18,7 +18,7 @@ model=pca.fit(X)
 ax=pca.biplot(model)
 ax=pca.biplot3d(model)
 # plot explained variance
-ax = pca.plot_explainedvar(model)
+ax = pca.plot(model)
 # Normalize out components from your dataset
 Xnorm=pca.norm(X)
 ```
@@ -91,7 +91,7 @@ label=['label1','label2','label3','label4']
 # Fit
 model = pca.fit(X)
 # Plot the explained variance. The total of captured variance is 1 and PC1 captures more then 90% of it.
-ax = pca.plot_explainedvar(model)
+ax = pca.plot(model)
 # Biplot in 2D with shows the directions of features and weights of influence
 ax  = pca.biplot(model)
 # Biplot in 3D
@@ -121,7 +121,7 @@ ax  = pca.biplot3d(model)
 # Fit model and determine the number of required components that captures 95% of the explained variance.
 model = pca.fit(X, components=0.95)
 # Plot the explained variance. The required number of components is 2 to capture 95% of the variance.
-ax = pca.plot_explainedvar(model)
+ax = pca.plot(model)
 ```
 <p align="center">
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_explvar_95.png" width="400" />
