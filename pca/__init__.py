@@ -2,7 +2,7 @@ from pca.pca import (
     fit,
  	biplot,
  	biplot3d,
- 	plot_explainedvar,
+ 	plot,
     norm,
 )
 
