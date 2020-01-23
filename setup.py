@@ -1,11 +1,19 @@
 import setuptools
-#import versioneer
-new_version='0.1.2'
+import re
 
+# versioning ------------
+VERSIONFILE="pca/__init__.py"
+getversion = re.search( r"^__version__ = ['\"]([^'\"]*)['\"]", open(VERSIONFILE, "rt").read(), re.M)
+if getversion:
+    new_version = getversion.group(1)
+else:
+    raise RuntimeError("Unable to find version string in %s." % (VERSIONFILE,))
+
+# Setup ------------
 with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
-     install_requires=['matplotlib','numpy','sklearn'],
+     install_requires=['matplotlib','numpy','sklearn','scipy','colourmap'],
      python_requires='>=3',
      name='pca',
      version=new_version,

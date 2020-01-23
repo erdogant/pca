@@ -1,4 +1,4 @@
-""" pca is a python package that performs the principal component analysis and to make insightful plots.
+"""pca is a python package that performs the principal component analysis and to make insightful plots.
 
     model = pca.fit(X)
 	ax    = pca.biplot(model) 
@@ -6,190 +6,175 @@
 	ax    = pca.plot(model)
 	Xnorm = pca.norm(X)
 
- INPUT:
-   X:              datamatrix
-                   rows    = labels
-                   colums  = samples
- OPTIONAL
-
-   components=     Integer: Number of components for feature reduction.
-                   [2]: (default)
-
-   components=     Float: Take PCs with percentage explained variance>pcp
-                   [0.95] (Number of componentens that cover the 95% explained variance)
-
-   y=           list of length [x]. This is only used for coloring
-                   [] (default)
-   
-  labels=          Numpy Vector of strings: Name of the label that represent the data label and loadings
-                   [] (default)
-                  
-   height=         Integer:  Height of figure
-                   [5]: (default)
-
-   width=          Integer:  Width of figure
-                   [5]: (default)
-
-                   
- OUTPUT
-	output
-
-
- EXAMPLE
-   import numpy as np
-   from sklearn.datasets import load_iris
-   X = load_iris().data
-   labels=iris.feature_names
-   y=iris.target
-
-
-   import pca as pca
-
-   model = pca.fit(X)
-   ax = pca.plot(model)
-   ax = pca.biplot(model)
-   ax = pca.biplot3d(model)
-   
-   model = pca.fit(X, y=y, labels=labels)
-   fig   = pca.biplot(model)
-   fig   = pca.biplot3d(model)
-
-
-   model = pca.fit(X, components=0.95)
-   ax = pca.plot(model)
-   ax   = pca.biplot(model)
-
-   model = pca.fit(X, components=2)
-   ax = pca.plot(model)
-   ax   = pca.biplot(model)
-
-
-   Xnorm = pca.norm(X, pcexclude=[1,2])
-   model = pca.fit(Xnorm, y=y, labels=labels)
-   ax = pca.biplot(model)
-   ax = pca.plot(model)
-
-
 """
 
-#--------------------------------------------------------------------------
+# ----------------------------------
 # Name        : pca.py
 # Author      : E.Taskesen
 # Contact     : erdogant@gmail.com
-# Date        : Nov. 2017
-#--------------------------------------------------------------------------
+# Develop date: Nov. 2017
+# ----------------------------------
+
 
 #%% Libraries
 import numpy as np
-from sklearn.decomposition import PCA
+from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import scipy.sparse as sp
+import colourmap as colourmap
 
-#%% Explained variance
-def _explainedvar(X, components=None):
+
+# %% Explained variance
+def _explainedvar(X, n_components=None, sparse=False, random_state=None, verbose=3):
+
+    # Create the model
+    if sp.issparse(X):
+        if verbose>=3: print('[TruncatedSVD] Fit..')
+        model = TruncatedSVD(n_components=n_components, random_state=random_state)
+    elif sparse:
+        if verbose>=3: print('[PCA] Fit sparse dataset..')
+        model = SparsePCA(n_components=n_components, random_state=random_state)
+    else:
+        if verbose>=3: print('[PCA] Fit..')
+        model=PCA(n_components=n_components, random_state=random_state)
+
     # Fit model
-    model=PCA(n_components=components)
     model.fit(X)
     # Do the reduction
     loadings = model.components_ # Ook wel de coeeficienten genoemd: coefs!
     PC = model.transform(X)
     # Compute explained variance, top 95% variance
     percentExplVar = model.explained_variance_ratio_.cumsum()
+    # Return
     return(model, PC, loadings, percentExplVar)
 
-#%% Make PCA fit
-def fit(X, components=None, y=[], labels=[]):
+
+# %% Make PCA fit
+def fit(X, n_components=None, sparse=False, row_labels=[], col_labels=[], random_state=None, verbose=3):
     '''
 
     Parameters
     ----------
     X : numpy array
         [NxM] array with columns as features and rows as samples.
-    components : [0,..,1] or [1,..number of samples-1] optional
-        Number of TOP components to be returned. Values>0 are the number of components. Values<0 are the components that covers at least the percentage of variance
+
+    sparse : [Bool] optional, default=False
+        Boolean: Set True if X is a sparse data set such as the output of a tfidf model.
+
+    n_components : [0,..,1] or [1,..number of samples-1] optional
+        Number of TOP components to be returned. Values>0 are the number of components. Values<0 are the components that covers at least the percentage of variance.
         0.95: (default) Take the number of components that cover at least 95% of variance
         2:    Take the top 2 components
         None: All
-    y : [list of integers] optional
-        color y that is ued to make the scatterplot
-    labels : [list of string] optional
-        Numpy Vector of strings: Name of the features that represent the data features and loadings
-   
 
+    row_labels : [list of integers or strings] optional
+        Used for colors
+
+    col_labels : [list of string] optional
+        Numpy Vector of strings: Name of the features that represent the data features and loadings
+    
     Returns
     -------
     Dictionary.
+    
+    References
+    ----------
+    * https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.SparsePCA.html
 
     '''
+    # if sp.issparse(X):
+        # if verbose>=1: print('[PCA] Error: A sparse matrix was passed, but dense data is required for method=barnes_hut. Use X.toarray() to convert to a dense numpy array if the array is small enough for it to fit in memory.')
+    if isinstance(row_labels, list):
+        row_labels=np.array(row_labels)
+    if isinstance(col_labels, list):
+        col_labels=np.array(col_labels)
+    if n_components is None:
+        n_components=X.shape[1]-1
+    if col_labels is None or len(col_labels)==0 or len(col_labels)!=X.shape[1]:
+        col_labels = np.arange(1,X.shape[1]+1).astype(str)
+    if row_labels is None or len(row_labels)!=X.shape[0]:
+        row_labels=np.ones(X.shape[0])
 
-    if isinstance(y, list):
-        y=np.array(y)
-    if isinstance(labels, list):
-        labels=np.array(labels)
-    if components is None: 
-        components=X.shape[1]
-    if len(labels)==0 or len(labels)!=X.shape[1]:
-        labels = np.arange(1,X.shape[1]+1).astype(str)
-    if len(y)!=X.shape[0]:
-        y=np.ones(X.shape[0])
-
-    if components<1:
-        pcp=components
-        [model, PC, loadings, percentExplVar] = _explainedvar(X)
-        components= np.min(np.where(percentExplVar>=components)[0])+1  # Plus one because starts with 0
+    if n_components<1:
+        pcp=n_components
+        # Run with all components to get all PCs back. This is needed for the step after.
+        [model_pca, PC, loadings, percentExplVar] = _explainedvar(X, n_components=None, sparse=sparse, random_state=random_state)
+        # Take nr. of components with minimal expl.var
+        n_components= np.min(np.where(percentExplVar>=n_components)[0])+1
     else:
-        [model, PC, loadings, percentExplVar] = _explainedvar(X, components=components)
+        [model_pca, PC, loadings, percentExplVar] = _explainedvar(X, n_components=n_components, sparse=sparse, random_state=random_state)
         pcp=1
 
-    # Top scoring components
-    I = top_scoring_components(loadings, components+1)
+    # Top scoring n_components
+    I = top_scoring_components(loadings, n_components+1)
 
     # Store
-    out=dict()
-    out['loadings'] = loadings
-    out['X'] = PC[:,0:components]
-    out['explained_var'] = percentExplVar
-    out['model'] = model
-    out['topn'] = components
-    out['pcp'] = pcp
-    out['toplabels'] = labels[I]
-    out['y'] = y
+    model=dict()
+    model['loadings'] = loadings
+    model['X'] = PC[:,0:n_components]
+    model['explained_var'] = percentExplVar
+    model['model'] = model_pca
+    model['topn'] = n_components
+    model['pcp'] = pcp
+    model['col_labels'] = col_labels[I]
+    model['y'] = row_labels
     # Return
-    return(out)
+    return(model)
 
-#%% biplot
-def biplot(out, height=8, width=10, xlim=[], ylim=[]):
-    assert out['X'].shape[1]>0, print('[PCA] Requires at least 1 PC to make plot.')
+
+# %% biplot
+def biplot(model, figsize=(10,8)):
+    """
+    
+
+    Parameters
+    ----------
+    model : dict
+        model created by the fit() function.
+    figsize : (float, float), optional, default: None
+        (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
+
+
+    Returns
+    -------
+    tuple containing (fig, ax)
+
+    """
+    assert model['X'].shape[1]>0, print('[PCA] Requires at least 1 PC to make plot.')
 
     # Get coordinates
-    xs = out['X'][:,0]
-    ys = out['X'][:,1]
+    xs = model['X'][:,0]
+    if model['X'].shape[1]>1:
+        ys = model['X'][:,1]
+    else:
+        ys = np.zeros(len(xs))
 
     # Figure
-    [fig,ax]=plt.subplots(figsize=(width, height), edgecolor='k')
+    [fig,ax]=plt.subplots(figsize=figsize, edgecolor='k')
     # Make scatter plot
-    uiy=np.unique(out['y'])
-    getcolors=_discrete_cmap(len(uiy))
+    uiy=np.unique(model['y'])
+    getcolors=colourmap.generate(len(uiy))
     for i,y in enumerate(uiy):
-        I=y==out['y']
+        I=y==model['y']
         getcolors[i,:]
         ax.scatter(xs[I],ys[I],color=getcolors[i,:], s=25)
         ax.annotate(y, (np.mean(xs[I]), np.mean(ys[I])))
     
     # Set y
-    ax.set_xlabel('PC1 ('+ str(out['model'].explained_variance_ratio_[0]*100)[0:4] + '% expl.var)')
-    ax.set_ylabel('PC2 ('+ str(out['model'].explained_variance_ratio_[1]*100)[0:4] + '% expl.var)')
-    ax.set_title('Biplot\nComponents that cover the [' + str(out['pcp']) + '] explained variance, PC=['+ str(out['topn'])+  ']')
+    ax.set_xlabel('PC1 ('+ str(model['model'].explained_variance_ratio_[0]*100)[0:4] + '% expl.var)')
+    ax.set_ylabel('PC2 ('+ str(model['model'].explained_variance_ratio_[1]*100)[0:4] + '% expl.var)')
+    ax.set_title('Biplot\nComponents that cover the [' + str(model['pcp']) + '] explained variance, PC=['+ str(model['topn'])+  ']')
     ax.grid(True)
 
     #% Gather top N loadings
-    I = top_scoring_components(out['loadings'], out['topn'])
-    xvector = out['loadings'][0,I]
-    yvector = out['loadings'][1,I]
+    I = top_scoring_components(model['loadings'], model['topn'])
+    xvector = model['loadings'][0,I]
+    yvector = model['loadings'][1,I]
     
     # Plot and scale values for arrows and text
-    scalex = 1.0/(out['loadings'][0,:].max() - out['loadings'][0,:].min())
-    scaley = 1.0/(out['loadings'][1,:].max() - out['loadings'][1,:].min())
+    scalex = 1.0/(model['loadings'][0,:].max() - model['loadings'][0,:].min())
+    scaley = 1.0/(model['loadings'][1,:].max() - model['loadings'][1,:].min())
     # Plot the arrows
     for i in range(len(xvector)):
         # arrows project features (ie columns from csv) as vectors onto PC axes
@@ -309,22 +294,15 @@ def norm(X, pcp=1, pcexclude=[1], savemem=False):
     if not isinstance(pcexclude,list): pcexclude=[pcexclude]
 
     # Fit using PCA
-    out = fit(X, components=X.shape[1])
+    model = fit(X, n_components=X.shape[1])
 
-    coeff = out['loadings']
-    score = out['X']
+    coeff = model['loadings']
+    score = model['X']
     # Compute explained percentage of variance
-    q=out['explained_var']
+    q=model['explained_var']
     ndims = np.where(q<=pcp)[0]
     ndims = (np.setdiff1d(ndims+1,pcexclude))-1
     # Transform data
     out = np.repeat(np.mean(X,axis=1).reshape(-1,1),X.shape[1], axis=1) + np.dot(score[:,ndims],coeff[:,ndims].T)
     # Return
     return(out)
-
-#%%
-def _discrete_cmap(N, cmap='Set1'):
-    """Create an N-bin discrete colormap from the specified input map"""
-    base = plt.cm.get_cmap(cmap)
-    color_list = base(np.linspace(0, 1, N))
-    return color_list
