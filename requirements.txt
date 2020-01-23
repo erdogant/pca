@@ -1,3 +1,5 @@
 matplotlib
 numpy
 sklearn
+scipy
+colourmap
