@@ -12,7 +12,6 @@
 # Name        : pca.py
 # Author      : E.Taskesen
 # Contact     : erdogant@gmail.com
-# Develop date: Nov. 2017
 # ----------------------------------
 
 
@@ -60,7 +59,7 @@ def fit(X, n_components=None, sparse=False, row_labels=[], col_labels=[], random
         [NxM] array with columns as features and rows as samples.
 
     sparse : [Bool] optional, default=False
-        Boolean: Set True if X is a sparse data set such as the output of a tfidf model.
+        Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
 
     n_components : [0,..,1] or [1,..number of samples-1] optional
         Number of TOP components to be returned. Values>0 are the number of components. Values<0 are the components that covers at least the percentage of variance.
@@ -107,7 +106,7 @@ def fit(X, n_components=None, sparse=False, row_labels=[], col_labels=[], random
         pcp=1
 
     # Top scoring n_components
-    I = top_scoring_components(loadings, n_components+1)
+    I = _top_scoring_components(loadings, n_components+1)
 
     # Store
     model=dict()
@@ -168,7 +167,7 @@ def biplot(model, figsize=(10,8)):
     ax.grid(True)
 
     #% Gather top N loadings
-    I = top_scoring_components(model['loadings'], model['topn'])
+    I = _top_scoring_components(model['loadings'], model['topn'])
     xvector = model['loadings'][0,I]
     yvector = model['loadings'][1,I]
     
@@ -233,7 +232,7 @@ def biplot3d(model, figsize=(10,8)):
     ax.set_title('Components that cover the [' + str(model['pcp']) + '] explained variance, PC=['+ str(model['topn'])+  ']')
 
     #% Gather top N loadings
-    I = top_scoring_components(model['loadings'], model['topn'])
+    I = _top_scoring_components(model['loadings'], model['topn'])
     xvector = model['loadings'][0,I]
     yvector = model['loadings'][1,I]
     zvector = model['loadings'][2,I]
@@ -282,7 +281,7 @@ def plot(model, figsize=(10,8)):
 
     
 # %% Top scoring components
-def top_scoring_components(loadings, topn):
+def _top_scoring_components(loadings, topn):
     # Top scoring for 1st component
     I1=np.argsort(np.abs(loadings[0,:]))
     I1=I1[::-1]
@@ -300,16 +299,33 @@ def top_scoring_components(loadings, topn):
 
 
 # %% Top scoring components
-def norm(X, pcp=1, pcexclude=[1], savemem=False):
-    '''
+def norm(X, n_components=1, pcexclude=[1]):
+    """Normalize out PCs.
+    
     Normalize your data using the principal components.
     As an example, suppose there is (technical) variation in the fist
     component and you want that out. This function transforms the data using
     the components that you want, e.g., starting from the 2nd pc, up to the
     pc that contains at least 95% of the explained variance
-    '''
+    
 
-    assert pcp<=1, 'pcp must range between [0-1]'
+    Parameters
+    ----------
+    X : numpy array
+        Data set.
+    n_components : float [0..1], optional
+        Number of PCs to keep based on the explained variance. The default is 1 (keeping all)
+    pcexclude : list of int, optional
+        The PCs to exclude. The default is [1].
+
+    Returns
+    -------
+    Normalized numpy array.
+
+    """
+
+
+    assert n_components<=1, 'n_components must range between [0-1] to select for the nr. of components in explaining variance.'
     if not isinstance(pcexclude,list): pcexclude=[pcexclude]
 
     # Fit using PCA
@@ -319,7 +335,7 @@ def norm(X, pcp=1, pcexclude=[1], savemem=False):
     score = model['X']
     # Compute explained percentage of variance
     q=model['explained_var']
-    ndims = np.where(q<=pcp)[0]
+    ndims = np.where(q<=n_components)[0]
     ndims = (np.setdiff1d(ndims+1,pcexclude))-1
     # Transform data
     out = np.repeat(np.mean(X,axis=1).reshape(-1,1),X.shape[1], axis=1) + np.dot(score[:,ndims],coeff[:,ndims].T)
