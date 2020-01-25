@@ -4,6 +4,7 @@
 [![PyPI Version](https://img.shields.io/pypi/v/pca)](https://pypi.org/project/pca/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/pca/blob/master/LICENSE)
 [![Downloads](https://pepy.tech/badge/pca/week)](https://pepy.tech/project/pca/week)
+[![Donate Bitcoin](https://img.shields.io/badge/donate-orange.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)
 
 * pca is a python package that performs the principal component analysis and creates insightful plots.
 * Biplot to plot the loadings
@@ -174,5 +175,8 @@ Please cite pca in your publications if this is useful for your research. Here i
 ### Contribute
 * Contributions are welcome.
 
-### © Copyright
+### Licence
 See [LICENSE](LICENSE) for details.
+
+### Donation
+* This work is created and maintained in my free time. If this package is usefull to you and if want to see more like this, you can show your <a href="https://erdogant.github.io/donate/?currency=USD&amount=5">gratitude</a> :) Thanks!
