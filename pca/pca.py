@@ -147,7 +147,10 @@ def biplot(model, figsize=(10,8)):
     tuple containing (fig, ax)
 
     """
-    assert model['X'].shape[1]>0, print('[PCA] Requires at least 1 PC to make plot.')
+    if model['X'].shape[1]<1:
+        raise Exception('[PCA] Requires at least 1 PC to make plot.')
+    if len(model['explained_var'])<=1:
+        return None, None
 
     # Get coordinates
     xs = model['X'][:,0]
@@ -160,38 +163,38 @@ def biplot(model, figsize=(10,8)):
     [fig,ax]=plt.subplots(figsize=figsize, edgecolor='k')
     # Make scatter plot
     uiy=np.unique(model['y'])
-    getcolors=colourmap.generate(len(uiy))
+    getcolors=np.array(colourmap.generate(len(uiy)))
     for i,y in enumerate(uiy):
         I=y==model['y']
         getcolors[i,:]
         ax.scatter(xs[I],ys[I],color=getcolors[i,:], s=25)
         ax.annotate(y, (np.mean(xs[I]), np.mean(ys[I])))
-    
+
     # Set y
-    ax.set_xlabel('PC1 ('+ str(model['model'].explained_variance_ratio_[0]*100)[0:4] + '% expl.var)')
-    ax.set_ylabel('PC2 ('+ str(model['model'].explained_variance_ratio_[1]*100)[0:4] + '% expl.var)')
+    ax.set_xlabel('PC1 ('+ str(model['model'].explained_variance_ratio_[0] * 100)[0:4] + '% expl.var)')
+    ax.set_ylabel('PC2 ('+ str(model['model'].explained_variance_ratio_[1] * 100)[0:4] + '% expl.var)')
     ax.set_title('Biplot\nComponents that cover the [' + str(model['pcp']) + '] explained variance, PC=['+ str(model['topn'])+  ']')
     ax.grid(True)
 
-    #% Gather top N loadings
-    I = _top_scoring_components(model['loadings'], model['topn'])
-    xvector = model['loadings'][0,I]
-    yvector = model['loadings'][1,I]
-    
+    # Gather top N loadings
+    I = _top_scoring_components(model['loadings'].values, model['topn'])
+    xvector = model['loadings'].iloc[0,I]
+    yvector = model['loadings'].iloc[1,I]
+
     # Plot and scale values for arrows and text
-    scalex = 1.0/(model['loadings'][0,:].max() - model['loadings'][0,:].min())
-    scaley = 1.0/(model['loadings'][1,:].max() - model['loadings'][1,:].min())
+    scalex = 1.0 / (model['loadings'].iloc[0,:].max() - model['loadings'].iloc[0,:].min())
+    scaley = 1.0 / (model['loadings'].iloc[1,:].max() - model['loadings'].iloc[1,:].min())
     # Plot the arrows
     for i in range(len(xvector)):
         # arrows project features (ie columns from csv) as vectors onto PC axes
-        newx=xvector[i]*scalex
-        newy=yvector[i]*scaley
-        figscaling=np.abs([np.abs(xs).max()/newx, np.abs(ys).max()/newy])
+        newx=xvector[i] * scalex
+        newy=yvector[i] * scaley
+        figscaling=np.abs([np.abs(xs).max() / newx, np.abs(ys).max() / newy])
         figscaling=figscaling.min()
-        newx=newx*figscaling*0.5
-        newy=newy*figscaling*0.5
+        newx=newx * figscaling * 0.5
+        newy=newy * figscaling * 0.5
         ax.arrow(0, 0, newx, newy, color='r', width=0.005, head_width=0.05, alpha=0.6)
-        ax.text(newx*1.25, newy*1.25, model['col_labels'][i], color='black', ha='center', va='center')
+        ax.text(newx * 1.25, newy * 1.25, model['col_labels'][i], color='black', ha='center', va='center')
 
     plt.show()
     return(fig, ax)
@@ -199,8 +202,7 @@ def biplot(model, figsize=(10,8)):
 
 # %% biplot3d
 def biplot3d(model, figsize=(10,8)):
-    """
-    
+    """Make biplot in 3d.
 
     Parameters
     ----------
@@ -214,7 +216,12 @@ def biplot3d(model, figsize=(10,8)):
     tuple containing (fig, ax)
 
     """
-    assert model['X'].shape[1]>2, print('[PCA] Requires 3 PCs to make 3d plot. Try pca.biplot()')
+    if model['X'].shape[1]<3:
+        print('[PCA] Requires 3 PCs to make 3d plot. Auto reverting to: pca.biplot()')
+        fig, ax = biplot(model)
+        return(fig,ax)
+    if len(model['explained_var'])<=1:
+        return None, None
 
     # Get coordinates
     xs = model['X'][:,0]
@@ -299,21 +306,25 @@ def plot(model, figsize=(10,8)):
     plt.bar(np.arange(0,len(model['explained_var'])+1),np.append(0,model['model'].explained_variance_ratio_),color='#3182bd', alpha=0.8)
     plt.show()
     plt.draw()
-    return(ax)
+    return(fig, ax)
 
-    
+
 # %% Top scoring components
 def _top_scoring_components(loadings, topn):
     # Top scoring for 1st component
     I1=np.argsort(np.abs(loadings[0,:]))
     I1=I1[::-1]
-    # Top scoring for 2nd component
-    I2=np.argsort(np.abs(loadings[1,:]))
-    I2=I2[::-1]
-    # Take only top loadings
-    I1=I1[0:np.min([topn,len(I1)])]
-    I2=I2[0:np.min([topn,len(I2)])]
-    I = np.append(I1,I2)
+
+    if loadings.shape[0]>=2:
+        # Top scoring for 2nd component
+        I2=np.argsort(np.abs(loadings[1,:]))
+        I2=I2[::-1]
+        # Take only top loadings
+        I1=I1[0:np.min([topn,len(I1)])]
+        I2=I2[0:np.min([topn,len(I2)])]
+        I = np.append(I1,I2)
+    else:
+        I=I1
     # Unique without sort:
     indices=np.unique(I,return_index=True)[1]
     I = [I[index] for index in sorted(indices)]
@@ -323,13 +334,13 @@ def _top_scoring_components(loadings, topn):
 # %% Top scoring components
 def norm(X, n_components=1, pcexclude=[1]):
     """Normalize out PCs.
-    
+
     Normalize your data using the principal components.
     As an example, suppose there is (technical) variation in the fist
     component and you want that out. This function transforms the data using
     the components that you want, e.g., starting from the 2nd pc, up to the
     pc that contains at least 95% of the explained variance
-    
+
 
     Parameters
     ----------
@@ -345,20 +356,19 @@ def norm(X, n_components=1, pcexclude=[1]):
     Normalized numpy array.
 
     """
-
-
-    assert n_components<=1, 'n_components must range between [0-1] to select for the nr. of components in explaining variance.'
+    if  n_components<1:
+        raise Exception('n_components must range between [0-1] to select for the nr. of components in explaining variance.')
     if not isinstance(pcexclude,list): pcexclude=[pcexclude]
 
     # Fit using PCA
     model = fit(X, n_components=X.shape[1])
 
-    coeff = model['loadings']
+    coeff = model['loadings'].values
     score = model['X']
     # Compute explained percentage of variance
     q=model['explained_var']
     ndims = np.where(q<=n_components)[0]
-    ndims = (np.setdiff1d(ndims+1,pcexclude))-1
+    ndims = (np.setdiff1d(ndims + 1,pcexclude)) - 1
     # Transform data
     out = np.repeat(np.mean(X,axis=1).reshape(-1,1),X.shape[1], axis=1) + np.dot(score[:,ndims],coeff[:,ndims].T)
     # Return
