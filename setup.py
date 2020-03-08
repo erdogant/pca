@@ -13,12 +13,10 @@ else:
 with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
-     install_requires=['matplotlib','numpy','sklearn','scipy','colourmap'],
+     install_requires=['matplotlib','numpy','sklearn','scipy','colourmap','pandas'],
      python_requires='>=3',
      name='pca',
      version=new_version,
-#     version=versioneer.get_version(),    # VERSION CONTROL
-#     cmdclass=versioneer.get_cmdclass(),  # VERSION CONTROL
      author="Erdogan Taskesen",
      author_email="erdogant@gmail.com",
      description="pca is a python package that performs the principal component analysis and to make insightful plots.",
