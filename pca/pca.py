@@ -18,41 +18,16 @@ import scipy.sparse as sp
 import colourmap as colourmap
 
 
-# %% Explained variance
-def _explainedvar(X, n_components=None, sparse=False, random_state=None, verbose=3):
-
-    # Create the model
-    if sp.issparse(X):
-        if verbose>=3: print('[TruncatedSVD] Fit..')
-        model = TruncatedSVD(n_components=n_components, random_state=random_state)
-    elif sparse:
-        if verbose>=3: print('[PCA] Fit sparse dataset..')
-        model = SparsePCA(n_components=n_components, random_state=random_state)
-    else:
-        if verbose>=3: print('[PCA] Fit..')
-        model=PCA(n_components=n_components, random_state=random_state)
-
-    # Fit model
-    model.fit(X)
-    # Do the reduction
-    loadings = model.components_ # Ook wel de coeeficienten genoemd: coefs!
-    PC = model.transform(X)
-    # Compute explained variance, top 95% variance
-    percentExplVar = model.explained_variance_ratio_.cumsum()
-    # Return
-    return(model, PC, loadings, percentExplVar)
-
-
 # %% Make PCA fit
-def fit(X, n_components=None, sparse=False, row_labels=[], col_labels=[], random_state=None, normalize=True, verbose=3):
+def fit(X, n_components=None, sparse_data=False, row_labels=[], col_labels=[], random_state=None, normalize=True, verbose=3):
     '''Fit PCA on data.
 
     Parameters
     ----------
     X : numpy array
         [NxM] array with columns as features and rows as samples.
-    sparse : [Bool] optional, default=False
-        Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
+    sparse_data : [Bool] optional, default=False
+        Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
     n_components : [0,..,1] or [1,..number of samples-1] optional
         Number of TOP components to be returned. Values>0 are the number of components. Values<0 are the components that covers at least the percentage of variance.
         0.95: (default) Take the number of components that cover at least 95% of variance
@@ -373,3 +348,27 @@ def norm(X, n_components=1, pcexclude=[1]):
     out = np.repeat(np.mean(X,axis=1).reshape(-1,1),X.shape[1], axis=1) + np.dot(score[:,ndims],coeff[:,ndims].T)
     # Return
     return(out)
+
+
+# %% Explained variance
+def _explainedvar(X, n_components=None, sparse_data=False, random_state=None, n_jobs=-1, verbose=3):
+    # Create the model
+    if sp.issparse(X):
+        if verbose>=3: print('[TruncatedSVD] Fit..')
+        model = TruncatedSVD(n_components=n_components, random_state=random_state)
+    elif sparse_data:
+        if verbose>=3: print('[PCA] Fit sparse dataset..')
+        model = SparsePCA(n_components=n_components, random_state=random_state, n_jobs=n_jobs)
+    else:
+        if verbose>=3: print('[PCA] Fit..')
+        model=PCA(n_components=n_components, random_state=random_state)
+
+    # Fit model
+    model.fit(X)
+    # Do the reduction
+    loadings = model.components_ # Ook wel de coeeficienten genoemd: coefs!
+    PC = model.transform(X)
+    # Compute explained variance, top 95% variance
+    percentExplVar = model.explained_variance_ratio_.cumsum()
+    # Return
+    return(model, PC, loadings, percentExplVar)
