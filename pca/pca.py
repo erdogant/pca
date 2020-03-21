@@ -54,7 +54,7 @@ def fit(X, n_components=None, sparse_data=False, row_labels=[], col_labels=[], r
     # if sp.issparse(X):
         # if verbose>=1: print('[PCA] Error: A sparse matrix was passed, but dense data is required for method=barnes_hut. Use X.toarray() to convert to a dense numpy array if the array is small enough for it to fit in memory.')
     if sp.issparse(X) and normalize:
-        print('[PCA] Can not normalie a sparse matrix.')
+        print('[PCA] Can not normalize a sparse matrix.')
         normalize=False
     if isinstance(row_labels, list):
         row_labels=np.array(row_labels)
