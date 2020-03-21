@@ -120,7 +120,7 @@ ax  = pca.biplot3d(model)
 #### Reduce dimensions to the number of components that capture 95% of the explained variance
 ```python
 # Fit model and determine the number of required components that captures 95% of the explained variance.
-model = pca.fit(X, components=0.95)
+model = pca.fit(X, n_components=0.95)
 # Plot the explained variance. The required number of components is 2 to capture 95% of the variance.
 ax = pca.plot(model)
 ```
@@ -131,9 +131,9 @@ ax = pca.plot(model)
 #### Reduce dimensions to exactly 2d and 3d
 ```python
 # Set components=2 to reduce to 2d
-model = pca.fit(X, components=2)
+model = pca.fit(X, n_components=2)
 # Set components=3 to reduce to 3d
-model = pca.fit(X, components=3)
+model = pca.fit(X, n_components=3)
 ```
 
 #### PCA normalization. 
