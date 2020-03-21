@@ -76,11 +76,11 @@ def fit(X, n_components=None, sparse_data=False, row_labels=[], col_labels=[], r
     if n_components<1:
         pcp=n_components
         # Run with all components to get all PCs back. This is needed for the step after.
-        [model_pca, PC, loadings, percentExplVar] = _explainedvar(X, n_components=None, sparse=sparse, random_state=random_state)
+        [model_pca, PC, loadings, percentExplVar] = _explainedvar(X, n_components=None, sparse_data=sparse_data, random_state=random_state)
         # Take nr. of components with minimal expl.var
         n_components= np.min(np.where(percentExplVar>=n_components)[0]) + 1
     else:
-        [model_pca, PC, loadings, percentExplVar] = _explainedvar(X, n_components=n_components, sparse=sparse, random_state=random_state)
+        [model_pca, PC, loadings, percentExplVar] = _explainedvar(X, n_components=n_components, sparse_data=sparse_data, random_state=random_state)
         pcp=1
 
     # Top scoring n_components.
