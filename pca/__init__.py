@@ -8,16 +8,16 @@ from pca.pca import (
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 
 # module level doc-string
 __doc__ = """
-pca - pca is a python package that performs the principal component analysis and to make insightful plots.
+pca
 =====================================================================
 
 Description
 -----------
-Principal Component Analysis and insightful plots.
+pca is a python package that performs the principal component analysis and to make insightful plots.
 
 Example
 -------
