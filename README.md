@@ -182,4 +182,4 @@ See [LICENSE](LICENSE) for details.
 * Add feature importance in the output.
 
 ### Donation
-This package is created and maintained in my free time. If this package is usefull, feel free to use more of my packages. Sponser <a href="https://erdogant.github.io/donate/?currency=USD&amount=5">here</a>.
+* This work is created and maintained in my free time. If you wish to buy me a <a href="https://erdogant.github.io/donate/?currency=USD&amount=5">Coffee</a> for this work, it is very appreciated.
