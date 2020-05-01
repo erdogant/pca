@@ -28,7 +28,7 @@ Examples
 >>> Fit using PCA
 >>> import pca
 >>> model = pca.fit(X, row_labels=y, col_labels=labels)
->>> ax = pca.biplot(model) 
+>>> ax = pca.biplot(model)
 >>> ax = pca.biplot3d(model)
 >>> ax = pca.plot(model)
 >>> X_norm = pca.norm(X)
