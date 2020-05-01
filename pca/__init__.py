@@ -19,12 +19,16 @@ Description
 -----------
 pca is a python package that performs the principal component analysis and to make insightful plots.
 
-Example
--------
+Examples
+--------
 >>> model = pca.fit(X)
 >>> ax = pca.biplot(model) 
 >>> ax = pca.biplot3d(model)
 >>> ax = pca.plot(model)
 >>> X_norm = pca.norm(X)
+
+References
+----------
+* https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.SparsePCA.html
 
 """

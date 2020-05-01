@@ -20,7 +20,7 @@ import colourmap as colourmap
 
 # %% Make PCA fit
 def fit(X, n_components=None, sparse_data=False, row_labels=[], col_labels=[], random_state=None, normalize=True, verbose=3):
-    '''Fit PCA on data.
+    """Fit PCA on data.
 
     Parameters
     ----------
@@ -46,11 +46,8 @@ def fit(X, n_components=None, sparse_data=False, row_labels=[], col_labels=[], r
     -------
     Dictionary.
 
-    References
-    ----------
-    * https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.SparsePCA.html
 
-    '''
+    """
     # if sp.issparse(X):
         # if verbose>=1: print('[PCA] Error: A sparse matrix was passed, but dense data is required for method=barnes_hut. Use X.toarray() to convert to a dense numpy array if the array is small enough for it to fit in memory.')
     if sp.issparse(X) and normalize:
@@ -116,7 +113,6 @@ def biplot(model, figsize=(10,8)):
     figsize : (float, float), optional, default: None
         (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
 
-
     Returns
     -------
     tuple containing (fig, ax)
@@ -140,7 +136,7 @@ def biplot(model, figsize=(10,8)):
     uiy=np.unique(model['y'])
     getcolors=np.array(colourmap.generate(len(uiy)))
     for i,y in enumerate(uiy):
-        I=y==model['y']
+        I=(y==model['y'])
         getcolors[i,:]
         ax.scatter(xs[I],ys[I],color=getcolors[i,:], s=25)
         ax.annotate(y, (np.mean(xs[I]), np.mean(ys[I])))
@@ -264,21 +260,29 @@ def plot(model, figsize=(10,8)):
     tuple containing (fig, ax)
 
     """
-
+    # model['model'].explained_variance_ratio_
+    explvar = model['explained_var']
+    xtick_idx = np.arange(1,len(explvar) + 1)
     [fig,ax]=plt.subplots(figsize=figsize, edgecolor='k')
-    plt.plot(np.append(0,model['explained_var']),'o-', color='k', linewidth=1)
+    plt.plot(xtick_idx, explvar,'o-', color='k', linewidth=1)
+    ax.set_xticks(xtick_idx)
+
+    stepsize=2
+    xticklabel=xtick_idx.astype(str)
+    xticklabel[np.arange(1,len(xticklabel),stepsize)]=''
+    ax.set_xticklabels(xticklabel, rotation=90, ha='left', va='top')
+
     plt.ylabel('Percentage explained variance')
     plt.xlabel('Principle Component')
-    plt.xticks(np.arange(0,len(model['explained_var']) + 1))
-    plt.ylim([0,1])
-    titletxt='Cumulative explained variance\nMinimum components that cover the [' + str(model['pcp']) + '] explained variance, PC=['+ str(model['topn'])+  ']'
+    plt.ylim([0, 1.05])
+    plt.xlim([0, len(explvar) + 1])
+    titletxt='Cumulative explained variance\nMinimum components that cover the [' + str(model['pcp']) + '] explained variance, PC=[' + str(model['topn']) + ']'
     plt.title(titletxt)
     plt.grid(True)
 
     # Plot vertical line To stress the cut-off point
-    # ax.axvline(x=eps[idx], ymin=0, ymax=sillclust[idx], linewidth=2, color='r')
     ax.axhline(y=model['pcp'], xmin=0, xmax=1, linewidth=0.8, color='r')
-    plt.bar(np.arange(0,len(model['explained_var'])+1),np.append(0,model['model'].explained_variance_ratio_),color='#3182bd', alpha=0.8)
+    plt.bar(xtick_idx, explvar,color='#3182bd', alpha=0.8)
     plt.show()
     plt.draw()
     return(fig, ax)
@@ -295,13 +299,13 @@ def _top_scoring_components(loadings, topn):
         I2=np.argsort(np.abs(loadings[1,:]))
         I2=I2[::-1]
         # Take only top loadings
-        I1=I1[0:np.min([topn,len(I1)])]
-        I2=I2[0:np.min([topn,len(I2)])]
-        I = np.append(I1,I2)
+        I1=I1[0:np.min([topn, len(I1)])]
+        I2=I2[0:np.min([topn, len(I2)])]
+        I = np.append(I1, I2)
     else:
         I=I1
     # Unique without sort:
-    indices=np.unique(I,return_index=True)[1]
+    indices = np.unique(I,return_index=True)[1]
     I = [I[index] for index in sorted(indices)]
     return(I)
 
