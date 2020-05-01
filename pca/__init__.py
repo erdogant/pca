@@ -1,14 +1,14 @@
 from pca.pca import (
     fit,
- 	biplot,
- 	biplot3d,
- 	plot,
+    biplot,
+    biplot3d,
+    plot,
     norm,
 )
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '0.1.5'
+__version__ = '0.1.6'
 
 # module level doc-string
 __doc__ = """
