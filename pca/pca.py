@@ -274,7 +274,7 @@ def biplot3d(model, figsize=(10,8)):
 
 
 # %% Show explained variance plot
-def plot(model, figsize=(10,8)):
+def plot(model, figsize=(10,8), xsteps=None):
     """Make plot.
 
     Parameters
@@ -296,9 +296,9 @@ def plot(model, figsize=(10,8)):
     plt.plot(xtick_idx, explvar,'o-', color='k', linewidth=1)
     ax.set_xticks(xtick_idx)
 
-    stepsize=2
     xticklabel=xtick_idx.astype(str)
-    xticklabel[np.arange(1,len(xticklabel),stepsize)]=''
+    if xsteps is not None:
+        xticklabel[np.arange(1,len(xticklabel),xsteps)]=''
     ax.set_xticklabels(xticklabel, rotation=90, ha='left', va='top')
 
     plt.ylabel('Percentage explained variance')
