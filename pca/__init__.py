@@ -21,7 +21,12 @@ pca is a python package that performs the principal component analysis and to ma
 
 Examples
 --------
->>> model = pca.fit(X)
+>>> # Load example data
+>>> X = load_iris().data
+>>> labels = load_iris().feature_names
+>>> y = load_iris().target
+>>> Fit using PCA
+>>> model = pca.fit(X, row_labels=y, col_labels=labels)
 >>> ax = pca.biplot(model) 
 >>> ax = pca.biplot3d(model)
 >>> ax = pca.plot(model)
@@ -29,6 +34,7 @@ Examples
 
 References
 ----------
+* https://github.com/erdogant/pca
 * https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.SparsePCA.html
 
 """
