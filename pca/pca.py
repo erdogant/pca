@@ -41,15 +41,43 @@ def fit(X, n_components=None, sparse_data=False, row_labels=[], col_labels=[], r
         Random state
     normalize : bool optional
         Normalize data, Z-score (default True)
-
+    
     Returns
     -------
-    Dictionary.
+    dict.
+    loadings : pd.DataFrame
+        Structured dataframe containing loadings for PCs
+    X : array-like
+        Reduced dimentionsality space, the Principal Components (PCs)
+    explained_var : array-like
+        Explained variance for each fo the PCs (same ordering as the PCs)
+    model_pca : object
+        Model to be used for further usage of the model.
+    topn : int
+        Top n components
+    pcp : int
+        pcp
+    col_labels : array-like
+        Name of the features
+    y : array-like
+        Determined class labels
+
+    Examples
+    --------
+    >>> # Load example data
+    >>> X = load_iris().data
+    >>> labels = load_iris().feature_names
+    >>> y = load_iris().target
+    >>> Fit using PCA
+    >>> model = pca.fit(X, row_labels=y, col_labels=labels)
+    >>> ax = pca.biplot(model) 
+    >>> ax = pca.biplot3d(model)
+    >>> ax = pca.plot(model)
+    >>> X_norm = pca.norm(X)
 
 
     """
     # if sp.issparse(X):
-        # if verbose>=1: print('[PCA] Error: A sparse matrix was passed, but dense data is required for method=barnes_hut. Use X.toarray() to convert to a dense numpy array if the array is small enough for it to fit in memory.')
     if sp.issparse(X) and normalize:
         print('[PCA] Can not normalize a sparse matrix.')
         normalize=False
@@ -81,22 +109,22 @@ def fit(X, n_components=None, sparse_data=False, row_labels=[], col_labels=[], r
         pcp=1
 
     # Top scoring n_components.
-    I = _top_scoring_components(loadings, n_components + 1)
+    Iloc = _top_scoring_components(loadings, n_components + 1)
 
-    # Dump components relations with features.
+    # Combine components relations with features.
     PCzip = list(zip(['PC-'] * model_pca.components_.shape[0], np.arange(1,model_pca.components_.shape[0] + 1).astype(str)))
     PCnames = list(map(lambda x: ''.join(x), PCzip))
     loadings = pd.DataFrame(loadings, columns=col_labels, index=PCnames)
 
     # Store
-    model=dict()
+    model = {}
     model['loadings'] = loadings
     model['X'] = PC[:,0:n_components]
     model['explained_var'] = percentExplVar
     model['model'] = model_pca
     model['topn'] = n_components
     model['pcp'] = pcp
-    model['col_labels'] = col_labels[I]
+    model['col_labels'] = col_labels[Iloc]
     model['y'] = row_labels
     # Return
     return(model)
