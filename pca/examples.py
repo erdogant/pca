@@ -35,6 +35,7 @@ metadata = pd.read_csv('D://GITLAB/MASTERCLASS/embeddings/data/metadata.csv', se
 features = pd.read_csv('D://GITLAB/MASTERCLASS/embeddings/data/features.csv')
 X = pd.DataFrame(data=X.values, index=features.values.flatten(), columns=metadata.labx.values).T
 
+# %% RAW data
 # Initializatie
 model = pca(n_components=0.95, normalize=True)
 # Fit transform
@@ -46,14 +47,18 @@ ax = model.plot()
 ax = model.biplot(n_feat=20)
 
 # %%
-import pca
 import numpy as np
 from tqdm import tqdm
+from pca import pca
+import matplotlib.pyplot as plt
+
+# Normalize
 Xnorm = np.log2(X+1)
 rowmeans = np.mean(Xnorm, axis=0)
 for i in tqdm(range(Xnorm.shape[1])):
     Xnorm.iloc[:,i] = Xnorm.values[:,i] - rowmeans[i]
 
+# Make histogram
 plt.hist(Xnorm.values.ravel(), bins=50)
 
 # Initializatie
@@ -64,7 +69,8 @@ results = model.fit_transform(Xnorm)
 # Make plots
 model.scatter()
 ax = model.plot()
-ax = model.biplot(n_feat=10)
+from pca import pca
+ax = model.biplot(n_feat=100)
 
 model.scatter3d()
 ax = model.biplot3d(n_feat=20)

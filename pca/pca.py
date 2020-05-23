@@ -104,7 +104,7 @@ class pca():
             model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=None, sparse_data=self.sparse_data, random_state=self.random_state)
             # Take number of components with minimal [n_components] explained variance
             self.n_components = np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
-            if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp))
+            if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp*100))
         else:
             model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, sparse_data=self.sparse_data, random_state=self.random_state)
             pcp = percentExplVar[np.minimum(len(percentExplVar)-1, self.n_components)]
@@ -177,13 +177,13 @@ class pca():
         # Top scoring for 1st component
         I1 = np.argsort(np.abs(loadings.iloc[0,:]))
         I1 = I1[::-1]
-        L1_weights = loadings.iloc[0,I1]
+        # L1_weights = loadings.iloc[0,I1]
     
         if loadings.shape[0]>=2:
             # Top scoring for 2nd component
             I2=np.argsort(np.abs(loadings.iloc[1,:]))
             I2=I2[::-1]
-            L2_weights = loadings.iloc[0,I2]
+            # L2_weights = loadings.iloc[0,I2]
             # Take only top loadings
             I1=I1[0:n_feat]
             I2=I2[0:n_feat]
@@ -336,41 +336,45 @@ class pca():
         # Figure
         fig, ax  = self.scatter(y=y, figsize=figsize)
 
-        # Gather top N loadings
+        # Gather loadings from the top features from topfeat
         xvector = self.results['loadings'][topfeat.index.values].iloc[0,:]
         yvector = self.results['loadings'][topfeat.index.values].iloc[1,:]
+        # Use the PCs only for scaling purposes
         xs = self.results['PC'].iloc[:,0].values
         ys = self.results['PC'].iloc[:,1].values
-        
+        # Boundaries figures
         maxR = np.max(xs)*0.8
         maxL = np.min(xs)*0.8
         maxT = np.max(ys)*0.8
         maxB = np.min(ys)*0.8
 
+        np.where(np.logical_and(np.sign(xvector)>0, (np.sign(yvector)>0)))
+
         # Plot and scale values for arrows and text
         scalex = 1.0 / (self.results['loadings'][topfeat.index.values].iloc[0,:].max() - self.results['loadings'][topfeat.index.values].iloc[0,:].min())
         scaley = 1.0 / (self.results['loadings'][topfeat.index.values].iloc[1,:].max() - self.results['loadings'][topfeat.index.values].iloc[1,:].min())
         # Plot the arrows
-        for i in range(0,n_feat):
+        for i in range(0, n_feat):
             # arrows project features (ie columns from csv) as vectors onto PC axes
             newx = xvector[i] * scalex
             newy = yvector[i] * scaley
-            figscaling = np.abs([np.abs(xs).max() / newx, np.abs(ys).max() / newy])
-            figscaling = figscaling.max()
-            # newx = newx *200
-            # newy = newy *200
-            newx = newx * figscaling * 0.1
-            newy = newy * figscaling * 0.1
+            # figscaling = np.abs([np.abs(xs).max() / newx, np.abs(ys).max() / newy])
+            # figscaling = figscaling.max()
+            # newx = newx * figscaling * 0.1
+            # newy = newy * figscaling * 0.1
+            newx = newx * 500
+            newy = newy * 500
 
-            # Max right x-axis
+            # Max boundary right x-axis
             if np.sign(newx)>0:
                 newx = np.minimum(newx, maxR)
-            # Max left x-axis
+            # Max boundary left x-axis
             if np.sign(newx)<0:
                 newx = np.maximum(newx, maxL)
-            # Max Top
+            # Max boundary Top
             if np.sign(newy)>0:
                 newy = np.minimum(newy, maxT)
+            # Max boundary Bottom
             if np.sign(newy)<0:
                 newy = np.maximum(newy, maxB)
             
