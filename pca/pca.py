@@ -8,6 +8,7 @@
 
 
 # %% Libraries
+from tqdm import tqdm
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
@@ -18,390 +19,555 @@ import scipy.sparse as sp
 import colourmap as colourmap
 
 
-# %% Make PCA fit
-def fit(X, n_components=None, sparse_data=False, row_labels=[], col_labels=[], random_state=None, normalize=True, verbose=3):
-    """Fit PCA on data.
+# %% Association learning across all variables
+class pca():
+    def __init__(self, n_components=0.95, n_feat=25, sparse_data=False, normalize=False, random_state=None):
+        """Initialize pca with user-defined parameters.
 
-    Parameters
-    ----------
-    X : numpy array
-        [NxM] array with columns as features and rows as samples.
-    sparse_data : [Bool] optional, default=False
-        Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
-    n_components : [0,..,1] or [1,..number of samples-1] optional
-        Number of TOP components to be returned. Values>0 are the number of components. Values<0 are the components that covers at least the percentage of variance.
-        0.95: (default) Take the number of components that cover at least 95% of variance
-        2:    Take the top 2 components
-        None: All
-    row_labels : [list of integers or strings] optional
-        Used for colors
-    col_labels : [list of string] optional
-        Numpy Vector of strings: Name of the features that represent the data features and loadings
-    random_state : int optional
-        Random state
-    normalize : bool optional
-        Normalize data, Z-score (default True)
+        Parameters
+        ----------
+        sparse_data : [Bool] optional, (default: False)
+            Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
+        n_components : [0,..,1] or [1,..number of samples-1], (default: 0.95)
+            Number of TOP components to be returned. Values>0 are the number of components. Values<0 are the components that covers at least the percentage of variance.
+            0.95: Take the number of components that cover at least 95% of variance
+            k: Take the top k components
+        random_state : int optional
+            Random state
+        normalize : bool optional
+            Normalize data, Z-score (default True)
+
+        """
+        # Store in object
+        self.n_components = n_components
+        self.sparse_data = sparse_data
+        self.normalize = normalize
+        self.random_state = random_state
+        self.n_feat = n_feat
+
+    # Make PCA fit_transform
+    def fit_transform(self, X, row_labels=None, col_labels=None, verbose=3):
+        """Fit PCA on data.
+
+        Parameters
+        ----------
+        X : numpy array
+            [NxM] array with columns as features and rows as samples.
+        row_labels : [list of integers or strings] optional
+            Used for colors
+        col_labels : [list of string] optional
+            Numpy Vector of strings: Name of the features that represent the data features and loadings
+
+        Returns
+        -------
+        dict.
+        loadings : pd.DataFrame
+            Structured dataframe containing loadings for PCs
+        X : array-like
+            Reduced dimentionsality space, the Principal Components (PCs)
+        explained_var : array-like
+            Explained variance for each fo the PCs (same ordering as the PCs)
+        model_pca : object
+            Model to be used for further usage of the model.
+        topn : int
+            Top n components
+        pcp : int
+            pcp
+        col_labels : array-like
+            Name of the features
+        y : array-like
+            Determined class labels
+
+        Examples
+        --------
+        >>> # Load example data
+        >>> X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+        >>> # Fit using PCA
+        >>> results = model.fit_transform(X)
+        >>> # Make plots
+        >>> model.scatter()
+        >>> ax = model.plot()
+        >>> ax = model.biplot()
+        >>> 3D plots
+        >>> model.scatter3d()
+        >>> ax = model.biplot3d()
+        >>> # Normalize out PCs
+        >>> X_norm = pca.norm(X)
+
+        """
+        # Pre-processing
+        if verbose>=3: print('[pca] >The PCA reduction is performed on the [%.d] columns of the input dataframe.' %(X.shape[1]))
+        X, row_labels, col_labels = self._preprocessing(X, row_labels, col_labels, verbose=verbose)
+
+        if self.n_components<1:
+            pcp = self.n_components
+            # Run with all components to get all PCs back. This is needed for the step after.
+            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=None, sparse_data=self.sparse_data, random_state=self.random_state)
+            # Take number of components with minimal [n_components] explained variance
+            self.n_components = np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
+            if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp))
+        else:
+            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, sparse_data=self.sparse_data, random_state=self.random_state)
+            pcp = percentExplVar[np.minimum(len(percentExplVar)-1, self.n_components)]
+
+        # Combine components relations with features.
+        loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components, verbose=verbose)
+        # Top scoring n_components.
+        topfeat = self.top_feat(loadings=loadings, n_feat=self.n_feat, verbose=verbose)
+        # Store
+        self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat)
+        # Return
+        return(self.results)
+
+
+    # Post processing.
+    def _postprocessing(self, model_pca, loadings, col_labels, n_components, verbose=3):
+        PCzip = list(zip(['PC'] * model_pca.components_.shape[0], np.arange(1,model_pca.components_.shape[0] + 1).astype(str)))
+        PCnames = list(map(lambda x: ''.join(x), PCzip))
+        loadings = pd.DataFrame(loadings, columns=col_labels, index=PCnames)
+        # Return
+        return(loadings)
+
+
+    # Top scoring features
+    # def top_feat(self, loadings=None, n_feat=10, verbose=3):
+    #     """Compute which features explain most of the variance.
     
-    Returns
-    -------
-    dict.
-    loadings : pd.DataFrame
-        Structured dataframe containing loadings for PCs
-    X : array-like
-        Reduced dimentionsality space, the Principal Components (PCs)
-    explained_var : array-like
-        Explained variance for each fo the PCs (same ordering as the PCs)
-    model_pca : object
-        Model to be used for further usage of the model.
-    topn : int
-        Top n components
-    pcp : int
-        pcp
-    col_labels : array-like
-        Name of the features
-    y : array-like
-        Determined class labels
+    #     Parameters
+    #     ----------
+    #     loadings : pd.DataFrame
+    #         Array containing loadings.
+    #     n_feat : int, default: 10
+    #         Number of features that explain the space the most, dervied from the loadings.
+    #     verbose : int, default: 3.
+    #         Print message to screen. 
+    
+    #     Returns
+    #     -------
+    #     dataFrame containing the top ranked features with the weights.
+    
+    #     """
+    #     if (loadings is None):
+    #         try:
+    #             loadings = self.results['loadings']
+    #         except:
+    #             raise Exception('[pca] >Error: loadings is not defined. Tip: run fit_transform() or provide the loadings yourself as input argument.') 
 
-    Examples
-    --------
-    >>> # Load example data
-    >>> X = load_iris().data
-    >>> labels = load_iris().feature_names
-    >>> y = load_iris().target
-    >>> Fit using PCA
-    >>> model = pca.fit(X, row_labels=y, col_labels=labels)
-    >>> ax = pca.biplot(model) 
-    >>> ax = pca.biplot3d(model)
-    >>> ax = pca.plot(model)
-    >>> X_norm = pca.norm(X)
+    #     if verbose>=3: print('[pca] >Computing best explaining features for the 1st and 2nd component.')
+    #     n_feat = np.maximum(np.minimum(n_feat, loadings.shape[1]), 2)
+    #     feat_weights = loadings.iloc[0:1,:].max(axis=0).sort_values(ascending=False)
 
+    #     # Top scoring for 1st and seocnd component
+    #     if loadings.shape[0]>=2:
+    #         feat_weights = loadings.iloc[0:2,:].max(axis=0).sort_values(ascending=False)
 
-    """
-    # if sp.issparse(X):
-        # if verbose>=1: print('[PCA] Error: A sparse matrix was passed, but dense data is required for method=barnes_hut. Use X.toarray() to convert to a dense numpy array if the array is small enough for it to fit in memory.')
-    if sp.issparse(X) and normalize:
-        print('[PCA] Can not normalize a sparse matrix.')
-        normalize=False
-    if isinstance(row_labels, list):
-        row_labels=np.array(row_labels)
-    if isinstance(col_labels, list):
-        col_labels=np.array(col_labels)
-    if n_components is None:
-        n_components=X.shape[1] - 1
-    if col_labels is None or len(col_labels)==0 or len(col_labels)!=X.shape[1]:
-        col_labels = np.arange(1,X.shape[1] + 1).astype(str)
-    if row_labels is None or len(row_labels)!=X.shape[0]:
-        row_labels=np.ones(X.shape[0])
-    if (sp.issparse(X) is False) and (n_components>X.shape[1]):
-        raise Exception('[PCA] Number of components can not be more then number of features.')
-
-    # normalize data
-    if normalize:
-        X = preprocessing.scale(X)
-
-    if n_components<1:
-        pcp=n_components
-        # Run with all components to get all PCs back. This is needed for the step after.
-        [model_pca, PC, loadings, percentExplVar] = _explainedvar(X, n_components=None, sparse_data=sparse_data, random_state=random_state)
-        # Take nr. of components with minimal expl.var
-        n_components= np.min(np.where(percentExplVar>=n_components)[0]) + 1
-    else:
-        [model_pca, PC, loadings, percentExplVar] = _explainedvar(X, n_components=n_components, sparse_data=sparse_data, random_state=random_state)
-        pcp=1
-
-    # Top scoring n_components.
-    Iloc = _top_scoring_components(loadings, n_components + 1)
-
-    # Combine components relations with features.
-    PCzip = list(zip(['PC-'] * model_pca.components_.shape[0], np.arange(1,model_pca.components_.shape[0] + 1).astype(str)))
-    PCnames = list(map(lambda x: ''.join(x), PCzip))
-    loadings = pd.DataFrame(loadings, columns=col_labels, index=PCnames)
-
-    # Store
-    model = {}
-    model['loadings'] = loadings
-    model['X'] = PC[:,0:n_components]
-    model['explained_var'] = percentExplVar
-    model['model'] = model_pca
-    model['topn'] = n_components
-    model['pcp'] = pcp
-    model['col_labels'] = col_labels[Iloc]
-    model['y'] = row_labels
-    # Return
-    return(model)
+    #     topfeat = feat_weights[0:n_feat]
+    #     # Return
+    #     return topfeat
 
 
-# %% biplot
-def biplot(model, figsize=(10,8)):
-    """Create the Biplot based on model.
+    # Top scoring components
+    def top_feat(self, loadings=None, n_feat=10, verbose=3):
+        if (loadings is None):
+            try:
+                loadings = self.results['loadings']
+            except:
+                raise Exception('[pca] >Error: loadings is not defined. Tip: run fit_transform() or provide the loadings yourself as input argument.') 
 
-    Parameters
-    ----------
-    model : dict
-        model created by the fit() function.
-    figsize : (float, float), optional, default: None
-        (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
-
-    Returns
-    -------
-    tuple containing (fig, ax)
-
-    """
-    if model['X'].shape[1]<1:
-        raise Exception('[PCA] Requires at least 1 PC to make plot.')
-    if len(model['explained_var'])<=1:
-        return None, None
-
-    # Get coordinates
-    xs = model['X'][:,0]
-    if model['X'].shape[1]>1:
-        ys = model['X'][:,1]
-    else:
-        ys = np.zeros(len(xs))
-
-    # Figure
-    [fig,ax]=plt.subplots(figsize=figsize, edgecolor='k')
-    # Make scatter plot
-    uiy=np.unique(model['y'])
-    getcolors=np.array(colourmap.generate(len(uiy)))
-    for i,y in enumerate(uiy):
-        I=(y==model['y'])
-        getcolors[i,:]
-        ax.scatter(xs[I],ys[I],color=getcolors[i,:], s=25)
-        ax.annotate(y, (np.mean(xs[I]), np.mean(ys[I])))
-
-    # Set y
-    ax.set_xlabel('PC1 ('+ str(model['model'].explained_variance_ratio_[0] * 100)[0:4] + '% expl.var)')
-    ax.set_ylabel('PC2 ('+ str(model['model'].explained_variance_ratio_[1] * 100)[0:4] + '% expl.var)')
-    ax.set_title('Biplot\nComponents that cover the [' + str(model['pcp']) + '] explained variance, PC=['+ str(model['topn'])+  ']')
-    ax.grid(True)
-
-    # Gather top N loadings
-    I = _top_scoring_components(model['loadings'].values, model['topn'])
-    xvector = model['loadings'].iloc[0,I]
-    yvector = model['loadings'].iloc[1,I]
-
-    # Plot and scale values for arrows and text
-    scalex = 1.0 / (model['loadings'].iloc[0,:].max() - model['loadings'].iloc[0,:].min())
-    scaley = 1.0 / (model['loadings'].iloc[1,:].max() - model['loadings'].iloc[1,:].min())
-    # Plot the arrows
-    for i in range(len(xvector)):
-        # arrows project features (ie columns from csv) as vectors onto PC axes
-        newx=xvector[i] * scalex
-        newy=yvector[i] * scaley
-        figscaling=np.abs([np.abs(xs).max() / newx, np.abs(ys).max() / newy])
-        figscaling=figscaling.min()
-        newx=newx * figscaling * 0.5
-        newy=newy * figscaling * 0.5
-        ax.arrow(0, 0, newx, newy, color='r', width=0.005, head_width=0.05, alpha=0.6)
-        ax.text(newx * 1.25, newy * 1.25, model['col_labels'][i], color='black', ha='center', va='center')
-
-    plt.show()
-    return(fig, ax)
+        n_feat = np.maximum(np.minimum(n_feat, loadings.shape[1]), 2)
+        # Top scoring for 1st component
+        I1 = np.argsort(np.abs(loadings.iloc[0,:]))
+        I1 = I1[::-1]
+        L1_weights = loadings.iloc[0,I1]
+    
+        if loadings.shape[0]>=2:
+            # Top scoring for 2nd component
+            I2=np.argsort(np.abs(loadings.iloc[1,:]))
+            I2=I2[::-1]
+            L2_weights = loadings.iloc[0,I2]
+            # Take only top loadings
+            I1=I1[0:n_feat]
+            I2=I2[0:n_feat]
+            I = np.append(I1, I2)
+        else:
+            I=I1
+        # Unique without sort:
+        indices = np.unique(I,return_index=True)[1]
+        # feat_weights = loadings.iloc[0:1,I].T
+        # topfeat = feat_weights[0:n_feat]
+        I = [I[index] for index in sorted(indices)]
+        topfeat = loadings.iloc[0:2,I].T
+        # topfeat = topfeat.iloc[0:n_feat,:]
+        return topfeat
 
 
-# %% biplot3d
-def biplot3d(model, figsize=(10,8)):
-    """Make biplot in 3d.
+    # Check input values
+    def _preprocessing(self, X, row_labels, col_labels, verbose=3):
+        if self.n_components is None:
+            self.n_components = X.shape[1] - 1
+            if verbose>=3: print('[pca] >n_components is set to %d' %(self.n_components))
 
-    Parameters
-    ----------
-    model : dict
-        model created by the fit() function.
-    figsize : (float, float), optional, default: None
-        (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
+        self.n_feat = np.min([self.n_feat, X.shape[1]])
+    
+        # if sp.issparse(X):
+            # if verbose>=1: print('[PCA] Error: A sparse matrix was passed, but dense data is required for method=barnes_hut. Use X.toarray() to convert to a dense numpy array if the array is small enough for it to fit in memory.')
+        if isinstance(X, pd.DataFrame):
+            if verbose>=3: print('[pca] >Processing dataframe..')
+            col_labels = X.columns.values
+            row_labels = X.index.values
+            X = X.values
+        if sp.issparse(X) and self.normalize:
+            if verbose>=3: print('[pca] >Can not normalize a sparse matrix. Normalize is set to [False]')
+            self.normalize=False
+        if col_labels is None or len(col_labels)==0 or len(col_labels)!=X.shape[1]:
+            if verbose>=3: print('[pca] >Column labels are auto-completed.')
+            col_labels = np.arange(1,X.shape[1] + 1).astype(str)
+        if row_labels is None or len(row_labels)!=X.shape[0]:
+            row_labels=np.ones(X.shape[0])
+            if verbose>=3: print('[pca] >Row labels are auto-completed.')
+        if isinstance(row_labels, list):
+            row_labels=np.array(row_labels)
+        if isinstance(col_labels, list):
+            col_labels=np.array(col_labels)
+        if (sp.issparse(X) is False) and (self.n_components > X.shape[1]):
+            raise Exception('[pca] >Number of components can not be more then number of features.')
+    
+        # normalize data
+        if self.normalize:
+            if verbose>=3: print('[pca] >Normalizing input data..')
+            X = preprocessing.scale(X)
+            # fig,ax =plt.subplots(figsize=(10,6))
+            # ax.hist(X.values.flatten(), bins=50)
+            # ax.set_ylabel('frequency')
+            # ax.set_xlabel('Genomic values')
+            # ax.grid(True)
 
-    Returns
-    -------
-    tuple containing (fig, ax)
-
-    """
-    if model['X'].shape[1]<3:
-        print('[PCA] Requires 3 PCs to make 3d plot. Auto reverting to: pca.biplot()')
-        fig, ax = biplot(model)
-        return(fig,ax)
-    if len(model['explained_var'])<=1:
-        return None, None
-
-    # Get coordinates
-    xs = model['X'][:,0]
-    ys = model['X'][:,1]
-    zs = model['X'][:,2]
-
-    # Figure
-    fig = plt.figure(1, figsize=figsize)
-    ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
-    # Make scatter plot
-    uiy=np.unique(model['y'])
-    getcolors=np.array(colourmap.generate(len(uiy)))
-    for i,y in enumerate(uiy):
-        I=y==model['y']
-        getcolors[i,:]
-        ax.scatter(xs[I],ys[I],zs[I],color=getcolors[i,:], s=25)
-
-    # Set y
-    ax.set_xlabel('PC1 ('+ str(model['model'].explained_variance_ratio_[0] * 100)[0:4] + '% expl.var)')
-    ax.set_ylabel('PC2 ('+ str(model['model'].explained_variance_ratio_[1] * 100)[0:4] + '% expl.var)')
-    ax.set_zlabel('PC3 ('+ str(model['model'].explained_variance_ratio_[2] * 100)[0:4] + '% expl.var)')
-    ax.set_title('Components that cover the [' + str(model['pcp']) + '] explained variance, PC=['+ str(model['topn'])+  ']')
-
-    # Gather top N loadings
-    I = _top_scoring_components(model['loadings'].values, model['topn'])
-    xvector = model['loadings'].iloc[0,I]
-    yvector = model['loadings'].iloc[1,I]
-    zvector = model['loadings'].iloc[2,I]
-
-    # Plot and scale values for arrows and text
-    scalex = 1.0 / (model['loadings'].iloc[0,:].max() - model['loadings'].iloc[0,:].min())
-    scaley = 1.0 / (model['loadings'].iloc[1,:].max() - model['loadings'].iloc[1,:].min())
-    scalez = 1.0 / (model['loadings'].iloc[2,:].max() - model['loadings'].iloc[2,:].min())
-    # Plot the arrows
-    for i in range(len(xvector)):
-        # arrows project features (ie columns from csv) as vectors onto PC axes
-        newx=xvector[i] * scalex
-        newy=yvector[i] * scaley
-        newz=zvector[i] * scalez
-        figscaling=np.abs([np.abs(xs).max() / newx, np.abs(ys).max() / newy])
-        figscaling=figscaling.min()
-        newx=newx * figscaling * 0.5
-        newy=newy * figscaling * 0.5
-        newz=newz * figscaling * 0.5
-        # ax.arrow(0, 0, newx/20, newy/20, color='r', width=0.0005, head_width=0.005, alpha=0.6)
-        ax.text(newx, newy, newz, model['col_labels'][i], color='black', ha='center', va='center')
-
-    plt.show()
-    return(fig, ax)
+        # Return
+        return(X, row_labels, col_labels)
 
 
-# %% Show explained variance plot
-def plot(model, figsize=(10,8), xsteps=None):
-    """Make plot.
-
-    Parameters
-    ----------
-    model : dict
-        model created by the fit() function.
-    figsize : (float, float), optional, default: None
-        (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
-
-    Returns
-    -------
-    tuple containing (fig, ax)
-
-    """
-    # model['model'].explained_variance_ratio_
-    explvar = model['explained_var']
-    xtick_idx = np.arange(1,len(explvar) + 1)
-    [fig,ax]=plt.subplots(figsize=figsize, edgecolor='k')
-    plt.plot(xtick_idx, explvar,'o-', color='k', linewidth=1)
-    ax.set_xticks(xtick_idx)
-
-    xticklabel=xtick_idx.astype(str)
-    if xsteps is not None:
-        xticklabel[np.arange(1,len(xticklabel),xsteps)]=''
-    ax.set_xticklabels(xticklabel, rotation=90, ha='left', va='top')
-
-    plt.ylabel('Percentage explained variance')
-    plt.xlabel('Principle Component')
-    plt.ylim([0, 1.05])
-    plt.xlim([0, len(explvar) + 1])
-    titletxt='Cumulative explained variance\nMinimum components that cover the [' + str(model['pcp']) + '] explained variance, PC=[' + str(model['topn']) + ']'
-    plt.title(titletxt)
-    plt.grid(True)
-
-    # Plot vertical line To stress the cut-off point
-    ax.axhline(y=model['pcp'], xmin=0, xmax=1, linewidth=0.8, color='r')
-    plt.bar(xtick_idx, explvar,color='#3182bd', alpha=0.8)
-    plt.show()
-    plt.draw()
-    return(fig, ax)
+    # Figure pre processing
+    def _fig_preprocessing(self, y, n_feat):
+        if hasattr(self, 'PC'): raise Exception('[pca] >Error: Principal components are not derived yet. Tip: run fit_transform() first.')
+        if self.results['PC'].shape[1]<1: raise Exception('[pca] >Requires at least 1 PC to make plot.')
 
 
-# %% Top scoring components
-def _top_scoring_components(loadings, topn):
-    # Top scoring for 1st component
-    I1=np.argsort(np.abs(loadings[0,:]))
-    I1=I1[::-1]
+        if (n_feat is not None):
+            topfeat = self.top_feat(n_feat=n_feat)
+            n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 2)
+        else:
+            topfeat = self.results['topfeat']
+            n_feat = self.n_feat
 
-    if loadings.shape[0]>=2:
-        # Top scoring for 2nd component
-        I2=np.argsort(np.abs(loadings[1,:]))
-        I2=I2[::-1]
-        # Take only top loadings
-        I1=I1[0:np.min([topn, len(I1)])]
-        I2=I2[0:np.min([topn, len(I2)])]
-        I = np.append(I1, I2)
-    else:
-        I=I1
-    # Unique without sort:
-    indices = np.unique(I,return_index=True)[1]
-    I = [I[index] for index in sorted(indices)]
-    return(I)
+        if (y is not None):
+            if len(y)!=self.results['PC'].shape[0]: raise Exception('[pca] >Error: Input variable [y] should have some length as the number input samples: [%d].' %(self.results['PC'].shape[0]))
+            y = y.astype(str)
+        else:
+            y = self.results['PC'].index.values.astype(str)
+
+        if len(self.results['explained_var'])<=1:
+            raise Exception('[pca] >Error: No PCs are found with explained variance..')
+                                                                                                                
+        return y, topfeat, n_feat
 
 
-# %% Top scoring components
-def norm(X, n_components=1, pcexclude=[1]):
-    """Normalize out PCs.
-
-    Normalize your data using the principal components.
-    As an example, suppose there is (technical) variation in the fist
-    component and you want that out. This function transforms the data using
-    the components that you want, e.g., starting from the 2nd pc, up to the
-    pc that contains at least 95% of the explained variance
+    # Scatter plot
+    def scatter3d(self, y=None, figsize=(10,8)):
+        fig, ax = self.scatter(y=y, d3=True, figsize=figsize)
+        return fig, ax
 
 
-    Parameters
-    ----------
-    X : numpy array
-        Data set.
-    n_components : float [0..1], optional
-        Number of PCs to keep based on the explained variance. The default is 1 (keeping all)
-    pcexclude : list of int, optional
-        The PCs to exclude. The default is [1].
+    # Scatter plot
+    def scatter(self, y=None, d3=False, figsize=(10,8)):
+        [fig,ax]=plt.subplots(figsize=figsize, edgecolor='k')
 
-    Returns
-    -------
-    Normalized numpy array.
+        if y is None:
+            y, _, _ = self._fig_preprocessing(y, None)
 
-    """
-    if  n_components<1:
-        raise Exception('n_components must range between [0-1] to select for the nr. of components in explaining variance.')
-    if not isinstance(pcexclude,list): pcexclude=[pcexclude]
+        # Get coordinates
+        xs = self.results['PC'].iloc[:,0].values
+        if self.results['PC'].shape[1]>1:
+            ys = self.results['PC'].iloc[:,1].values
+        else:
+            ys = np.zeros(len(xs))
+        if d3:
+            zs = self.results['PC'].iloc[:,2].values
+            ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
 
-    # Fit using PCA
-    model = fit(X, n_components=X.shape[1])
+        # Make scatter plot
+        uiy = np.unique(y)
+        getcolors = np.array(colourmap.generate(len(uiy)))
+        for i,yk in tqdm(enumerate(uiy)):
+            Iloc = (yk==y)
+            if d3:
+                ax.scatter(xs[Iloc],ys[Iloc],zs[Iloc],color=getcolors[i,:], s=25)
+            else:
+                ax.scatter(xs[Iloc], ys[Iloc], color=getcolors[i,:], s=25)
+                ax.annotate(yk, (np.mean(xs[Iloc]), np.mean(ys[Iloc])))
+    
+        # Set y
+        ax.set_xlabel('PC1 ('+ str(self.results['model'].explained_variance_ratio_[0] * 100)[0:4] + '% expl.var)')
+        ax.set_ylabel('PC2 ('+ str(self.results['model'].explained_variance_ratio_[1] * 100)[0:4] + '% expl.var)')
+        if d3: ax.set_zlabel('PC3 ('+ str(self.results['model'].explained_variance_ratio_[2] * 100)[0:4] + '% expl.var)')
+        ax.set_title(str(self.n_components)+' Principal Components explain [' + str(self.results['pcp']*100)[0:5] + '%] of the variance')
+        ax.grid(True)
 
-    coeff = model['loadings'].values
-    score = model['X']
-    # Compute explained percentage of variance
-    q=model['explained_var']
-    ndims = np.where(q<=n_components)[0]
-    ndims = (np.setdiff1d(ndims + 1,pcexclude)) - 1
-    # Transform data
-    out = np.repeat(np.mean(X,axis=1).reshape(-1,1),X.shape[1], axis=1) + np.dot(score[:,ndims],coeff[:,ndims].T)
-    # Return
-    return(out)
+        return fig, ax
+        
+    # biplot
+    def biplot(self, y=None, n_feat=None, figsize=(10,8)):
+        """Create the Biplot based on model.
+    
+        Parameters
+        ----------
+        figsize : (float, float), optional, default: None
+            (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
+    
+        Returns
+        -------
+        tuple containing (fig, ax)
+    
+        """
+        # Pre-processing
+        y, topfeat, n_feat = self._fig_preprocessing(y, n_feat)
+        # Figure
+        fig, ax  = self.scatter(y=y, figsize=figsize)
 
+        # Gather top N loadings
+        xvector = self.results['loadings'][topfeat.index.values].iloc[0,:]
+        yvector = self.results['loadings'][topfeat.index.values].iloc[1,:]
+        xs = self.results['PC'].iloc[:,0].values
+        ys = self.results['PC'].iloc[:,1].values
+        
+        maxR = np.max(xs)*0.8
+        maxL = np.min(xs)*0.8
+        maxT = np.max(ys)*0.8
+        maxB = np.min(ys)*0.8
+
+        # Plot and scale values for arrows and text
+        scalex = 1.0 / (self.results['loadings'][topfeat.index.values].iloc[0,:].max() - self.results['loadings'][topfeat.index.values].iloc[0,:].min())
+        scaley = 1.0 / (self.results['loadings'][topfeat.index.values].iloc[1,:].max() - self.results['loadings'][topfeat.index.values].iloc[1,:].min())
+        # Plot the arrows
+        for i in range(0,n_feat):
+            # arrows project features (ie columns from csv) as vectors onto PC axes
+            newx = xvector[i] * scalex
+            newy = yvector[i] * scaley
+            figscaling = np.abs([np.abs(xs).max() / newx, np.abs(ys).max() / newy])
+            figscaling = figscaling.max()
+            # newx = newx *200
+            # newy = newy *200
+            newx = newx * figscaling * 0.1
+            newy = newy * figscaling * 0.1
+
+            # Max right x-axis
+            if np.sign(newx)>0:
+                newx = np.minimum(newx, maxR)
+            # Max left x-axis
+            if np.sign(newx)<0:
+                newx = np.maximum(newx, maxL)
+            # Max Top
+            if np.sign(newy)>0:
+                newy = np.minimum(newy, maxT)
+            if np.sign(newy)<0:
+                newy = np.maximum(newy, maxB)
+            
+            ax.arrow(0, 0, newx, newy, color='r', width=0.005, head_width=0.05, alpha=0.6)
+            ax.text(newx * 1.25, newy * 1.25, xvector.index.values[i], color='red', ha='center', va='center')
+    
+        plt.show()
+        return(fig, ax)
+
+
+    # biplot3d
+    def biplot3d(self, y=None, n_feat=None, figsize=(10,8)):
+        """Make biplot in 3d.
+    
+        Parameters
+        ----------
+        model : dict
+            model created by the fit() function.
+        figsize : (float, float), optional, default: None
+            (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
+    
+        Returns
+        -------
+        tuple containing (fig, ax)
+    
+        """
+
+        if self.results['PC'].shape[1]<3:
+            print('[pca] >Requires 3 PCs to make 3d plot. Auto reverting to: biplot()')
+            return None, None
+
+        # Pre-processing
+        y, topfeat, n_feat = self._fig_preprocessing(y, n_feat)
+        # Figure
+        fig, ax = self.scatter(y=y, d3=True, figsize=figsize)
+
+        # Gather top N loadings
+        xvector = self.results['loadings'][topfeat.index.values].iloc[0,:]
+        yvector = self.results['loadings'][topfeat.index.values].iloc[1,:]
+        zvector = self.results['loadings'][topfeat.index.values].iloc[2,:]
+        xs = self.results['PC'].iloc[:,0].values
+        ys = self.results['PC'].iloc[:,1].values
+        zs = self.results['PC'].iloc[:,2].values
+
+        # Plot and scale values for arrows and text
+        scalex = 1.0 / (self.results['loadings'][topfeat.index.values].iloc[0,:].max() - self.results['loadings'][topfeat.index.values].iloc[0,:].min())
+        scaley = 1.0 / (self.results['loadings'][topfeat.index.values].iloc[1,:].max() - self.results['loadings'][topfeat.index.values].iloc[1,:].min())
+        scalez = 1.0 / (self.results['loadings'][topfeat.index.values].iloc[2,:].max() - self.results['loadings'][topfeat.index.values].iloc[2,:].min())
+
+        # Plot the arrows
+        for i in range(0, n_feat):
+            # arrows project features (ie columns from csv) as vectors onto PC axes
+            newx=xvector[i] * scalex
+            newy=yvector[i] * scaley
+            newz=zvector[i] * scalez
+            figscaling = np.abs([np.abs(xs).max() / newx, np.abs(ys).max() / newy])
+            figscaling = figscaling.min()
+            newx=newx * figscaling * 0.5
+            newy=newy * figscaling * 0.5
+            newz=newz * figscaling * 0.5
+            # ax.arrow(0, 0, newx, newy, color='r', width=0.005, head_width=0.05, alpha=0.6)
+            ax.text(newx, newy, newz, xvector.index.values[i], color='black', ha='center', va='center')
+            # a = Arrow3D([0, newx], [0, newy], [0, newz], mutation_scale=20, lw=3, arrowstyle="-|>", color="r")
+
+        plt.show()
+        return(fig, ax)
+
+
+    # Show explained variance plot
+    def plot(self, n_components=None, figsize=(10,8), xsteps=None):
+        """Make plot.
+
+        Parameters
+        ----------
+        model : dict
+            model created by the fit() function.
+        figsize : (float, float), optional, default: None
+            (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
+
+        Returns
+        -------
+        tuple containing (fig, ax)
+    
+        """
+        # model['model'].explained_variance_ratio_
+        if n_components is not None:
+            explvar = self.results['explained_var'][0:n_components]
+        else:
+            explvar = self.results['explained_var']
+        xtick_idx = np.arange(1,len(explvar) + 1)
+
+        # Make figure
+        fig,ax = plt.subplots(figsize=figsize, edgecolor='k')
+        plt.plot(xtick_idx, explvar,'o-', color='k', linewidth=1)
+        
+        # Set xticks if less then 100 datapoints
+        if len(explvar)<100:
+            ax.set_xticks(xtick_idx)
+            xticklabel=xtick_idx.astype(str)
+            if xsteps is not None:
+                xticklabel[np.arange(1,len(xticklabel),xsteps)]=''
+            ax.set_xticklabels(xticklabel, rotation=90, ha='left', va='top')
+
+        plt.ylabel('Percentage explained variance')
+        plt.xlabel('Principle Component')
+        plt.ylim([0, 1.05])
+        plt.xlim([0, len(explvar) + 1])
+        titletxt = 'Cumulative explained variance\n ' + str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp']*100)[0:5] + '%] of the variance.'
+        plt.title(titletxt)
+        plt.grid(True)
+
+        # Plot vertical line To stress the cut-off point
+        ax.axvline(self.n_components, linewidth=0.8, color='r')
+        ax.axhline(y=self.results['pcp'], xmin=0, xmax=1, linewidth=0.8, color='r')
+        if len(xtick_idx)<100:
+            plt.bar(xtick_idx, explvar, color='#3182bd', alpha=0.8)
+        plt.show()
+        plt.draw()
+        return(fig, ax)
+
+
+    # Top scoring components
+    def norm(self, X, n_components=None, pcexclude=[1]):
+        """Normalize out PCs.
+    
+        Normalize your data using the principal components.
+        As an example, suppose there is (technical) variation in the fist
+        component and you want that out. This function transforms the data using
+        the components that you want, e.g., starting from the 2nd pc, up to the
+        pc that contains at least 95% of the explained variance
+    
+    
+        Parameters
+        ----------
+        X : numpy array
+            Data set.
+        n_components : float [0..1], optional
+            Number of PCs to keep based on the explained variance. The default is 1 (keeping all)
+        pcexclude : list of int, optional
+            The PCs to exclude. The default is [1].
+    
+        Returns
+        -------
+        Normalized numpy array.
+    
+        """
+        if n_components is None:
+            self.n_components = X.shape[1]
+        else:
+            self.n_components = n_components
+
+        if not isinstance(pcexclude,list): pcexclude=[pcexclude]
+
+        # Fit using PCA
+        _ = self.fit_transform(X)
+        coeff = self.results['loadings'].values
+        score = self.results['PC']
+        # Compute explained percentage of variance
+        q = self.results['explained_var']
+        ndims = np.where(q<=self.n_components)[0]
+        ndims = (np.setdiff1d(ndims + 1,pcexclude)) - 1
+        # Transform data
+        out = np.repeat(np.mean(X.values, axis=1).reshape(-1,1), X.shape[1], axis=1) + np.dot(score.values[:,ndims], coeff[:,ndims].T)
+        # Return
+        return(out)
+    
 
 # %% Explained variance
 def _explainedvar(X, n_components=None, sparse_data=False, random_state=None, n_jobs=-1, verbose=3):
     # Create the model
     if sp.issparse(X):
-        if verbose>=3: print('[TruncatedSVD] Fit..')
+        if verbose>=3: print('[pca] >Fit based on Truncated SVD..')
         model = TruncatedSVD(n_components=n_components, random_state=random_state)
     elif sparse_data:
-        if verbose>=3: print('[PCA] Fit sparse dataset..')
+        if verbose>=3: print('[pca] >Fit based on sparse dataset..')
         model = SparsePCA(n_components=n_components, random_state=random_state, n_jobs=n_jobs)
     else:
-        if verbose>=3: print('[PCA] Fit..')
-        model=PCA(n_components=n_components, random_state=random_state)
+        if verbose>=3: print('[pca] >Fit based on PCA..')
+        model = PCA(n_components=n_components, random_state=random_state)
 
     # Fit model
     model.fit(X)
     # Do the reduction
+    if verbose>=3: print('[pca] >Computing loadings and PCs..')
     loadings = model.components_ # Ook wel de coeeficienten genoemd: coefs!
     PC = model.transform(X)
     # Compute explained variance, top 95% variance
+    if verbose>=3: print('[pca] >Computing explained variance..')
     percentExplVar = model.explained_variance_ratio_.cumsum()
     # Return
     return(model, PC, loadings, percentExplVar)
+
+
+# %% Store results
+def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_labels, row_labels, topfeat):
+    out = {}
+    out['loadings'] = loadings
+    out['PC'] = pd.DataFrame(data=PC[:,0:n_components], index=row_labels, columns=loadings.index.values[0:n_components])
+    out['explained_var'] = percentExplVar
+    out['model'] = model_pca
+    out['pcp'] = pcp
+    out['topfeat'] = topfeat
+    return out
