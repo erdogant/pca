@@ -31,12 +31,12 @@ conda activate env_pca
 pip install numpy matplotlib sklearn
 ```
 
-### Quick Start
+### Installation
 ```
 pip install pca
 ```
 
-* Alternatively, install pca from the GitHub source:
+* Install the latest version from the GitHub source:
 ```bash
 git clone https://github.com/erdogant/pca.git
 cd pca
