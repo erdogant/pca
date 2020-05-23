@@ -12,25 +12,10 @@
 * Explained variance 
 * Scatter plot with the loadings
 
-## Method overview
-```python
-# fit
-model=pca.fit(X)
-# biplot
-ax=pca.biplot(model)
-ax=pca.biplot3d(model)
-# plot explained variance
-ax = pca.plot(model)
-# Normalize out components from your dataset
-Xnorm=pca.norm(X)
-```
-
 ## Contents
 - [Installation](#-installation)
 - [Requirements](#-Requirements)
-- [Quick Start](#-quick-start)
 - [Contribute](#-contribute)
-- [Citation](#-citation)
 - [Maintainers](#-maintainers)
 - [License](#-copyright)
 
@@ -39,7 +24,7 @@ Xnorm=pca.norm(X)
 * It is distributed under the MIT license.
 
 ### Requirements
-* Creation of a new environment is not necessarily. 
+* Creation of a new environment is not required but if you wish to do it:
 ```python
 conda create -n env_pca python=3.6
 conda activate env_pca
@@ -60,16 +45,28 @@ python setup.py install
 
 #### Import pca package
 ```python
-import pca as pca
+from pca import pca
 ```
 
 #### Load example data
 ```python
 import numpy as np
 from sklearn.datasets import load_iris
-X = load_iris().data
-label=iris.feature_names
-labx=iris.target
+
+# Load dataset
+X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+
+# Load pca
+from pca import pca
+
+# Initialize to reduce the data up to the nubmer of componentes that explains 95% of the variance.
+model = pca(n_components=0.95)
+
+# Reduce the data towards 3 PCs
+model = pca(n_components=3)
+
+# Fit transform
+results = model.fit_transform(X)
 ```
 
 #### X looks like this:
@@ -88,65 +85,54 @@ labx=[0, 0, 0, 0,...,2, 2, 2, 2, 2]
 label=['label1','label2','label3','label4']
 ```
 
-#### PCA reduce dimensions and plot explained variance
+
+# Make scatter plot
 ```python
-# Fit
-model = pca.fit(X)
-# Plot the explained variance. The total of captured variance is 1 and PC1 captures more then 90% of it.
-ax = pca.plot(model)
-# Biplot in 2D with shows the directions of features and weights of influence
-ax  = pca.biplot(model)
-# Biplot in 3D
-ax  = pca.biplot3d(model)
+fig, ax = model.scatter()
 ```
 <p align="center">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_explvar.png" width="400" />
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter.png" width="400" />
 </p>
+
+
+# Make biplot
+```python
+fig, ax = model.biplot(n_feat=4)
+```
 <p align="center">
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot.png" width="350" />
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot3d.png" width="350" />
 </p>
 
-#### Reduce dimensions as above but now plot with labx and label names
+# Make plot
 ```python
-model = pca.fit(X, labx=labx, feat=feat)
-ax  = pca.biplot(model)
-ax  = pca.biplot3d(model)
+fig, ax = model.plot()
 ```
 <p align="center">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig1b.png" width="350" />
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig1c.png" width="350" />
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_plot.png" width="350" />
 </p>
 
-#### Reduce dimensions to the number of components that capture 95% of the explained variance
+# Make 3d plots
 ```python
-# Fit model and determine the number of required components that captures 95% of the explained variance.
-model = pca.fit(X, n_components=0.95)
-# Plot the explained variance. The required number of components is 2 to capture 95% of the variance.
-ax = pca.plot(model)
+fig, ax model.scatter3d()
+fig, ax = model.biplot3d(n_feat=2)
 ```
 <p align="center">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_explvar_95.png" width="400" />
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter3d.png" width="350" />
 </p>
 
-#### Reduce dimensions to exactly 2d and 3d
-```python
-# Set components=2 to reduce to 2d
-model = pca.fit(X, n_components=2)
-# Set components=3 to reduce to 3d
-model = pca.fit(X, n_components=3)
-```
 
 #### PCA normalization. 
-```python
-# Normalizing out the 1st and more components from the data. 
-# This is usefull if the data is seperated in its first component(s) by unwanted or biased variance. Such as sex or experiment location etc. 
+Normalizing out the 1st and more components from the data. 
+This is usefull if the data is seperated in its first component(s) by unwanted or biased variance. Such as sex or experiment location etc. 
 
+```python
 print(X.shape)
 (150, 4)
 
 # Normalize out 1st component and return data
-Xnorm = pca.norm(X, pcexclude=[1])
+model = pca()
+Xnew = model.norm(X, pcexclude=[1])
+
 
 print(Xnorm.shape)
 (150, 4)
@@ -155,32 +141,7 @@ print(Xnorm.shape)
 ax = pca.biplot(model)
 
 ```
-<p align="center">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_norm.png" width="400" />
-</p>
 
-### Citation
-Please cite pca in your publications if this is useful for your research. Here is an example BibTeX entry:
-```BibTeX
-@misc{erdogant2019pca,
-  title={pca},
-  author={Erdogan Taskesen},
-  year={2019},
-  howpublished={\url{https://github.com/erdogant/pca}},
-}
-```
-
-### Maintainers
-* Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
-
-### Contribute
-* Contributions are welcome.
-
-### Licence
-See [LICENSE](LICENSE) for details.
-
-### TODO
-* Add feature importance in the output.
-
-### Donation
-* This work is created and maintained in my free time. If you wish to buy me a <a href="https://erdogant.github.io/donate/?currency=USD&amount=5">Coffee</a> for this work, it is very appreciated.
+### Maintainer
+	Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
+	Contributions are welcome.

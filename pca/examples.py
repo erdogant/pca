@@ -1,26 +1,29 @@
 # %%
+import pca
+print(pca.__version__)
+
+# %%
 from sklearn.datasets import load_iris
 import pandas as pd
 from pca import pca
 
-model = pca(n_components=4)
-# dir(pca)
+# Initialize
+model = pca(n_components=3)
 
 # Dataset
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
-X = load_iris().data
 
 # Fit transform
 out = model.fit_transform(X)
 
 # Make plots
 model.scatter()
-ax = model.plot()
 ax = model.biplot(n_feat=4)
+ax = model.plot()
 
 # Make 3d plolts
 model.scatter3d()
-ax = model.biplot3d(n_feat=2)
+ax = model.biplot3d()
 
 # Normalize out PCs
 model = pca()

@@ -8,7 +8,6 @@
 
 
 # %% Libraries
-from tqdm import tqdm
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
@@ -273,7 +272,11 @@ class pca():
 
     # Scatter plot
     def scatter3d(self, y=None, figsize=(10,8)):
-        fig, ax = self.scatter(y=y, d3=True, figsize=figsize)
+        if self.results['PC'].shape[1]>=3:
+            fig, ax = self.scatter(y=y, d3=True, figsize=figsize)
+        else:
+            print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
+            fig, ax = None, None
         return fig, ax
 
 
@@ -297,7 +300,7 @@ class pca():
         # Make scatter plot
         uiy = np.unique(y)
         getcolors = np.array(colourmap.generate(len(uiy)))
-        for i,yk in tqdm(enumerate(uiy)):
+        for i,yk in enumerate(uiy):
             Iloc = (yk==y)
             if d3:
                 ax.scatter(xs[Iloc],ys[Iloc],zs[Iloc],color=getcolors[i,:], s=25)
@@ -313,20 +316,20 @@ class pca():
         ax.grid(True)
 
         return fig, ax
-        
+
     # biplot
     def biplot(self, y=None, n_feat=None, figsize=(10,8)):
         """Create the Biplot based on model.
-    
+
         Parameters
         ----------
         figsize : (float, float), optional, default: None
             (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
-    
+
         Returns
         -------
         tuple containing (fig, ax)
-    
+
         """
         # Pre-processing
         y, topfeat, n_feat = self._fig_preprocessing(y, n_feat)
@@ -396,7 +399,7 @@ class pca():
         """
 
         if self.results['PC'].shape[1]<3:
-            print('[pca] >Requires 3 PCs to make 3d plot. Auto reverting to: biplot()')
+            print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
 
         # Pre-processing
@@ -452,17 +455,18 @@ class pca():
         tuple containing (fig, ax)
     
         """
-        # model['model'].explained_variance_ratio_
         if n_components is not None:
-            explvar = self.results['explained_var'][0:n_components]
+            explvarCum = self.results['explained_var'][0:n_components]
+            explvar = self.results['model'].explained_variance_ratio_[0:n_components]
         else:
-            explvar = self.results['explained_var']
+            explvarCum = self.results['explained_var']
+            explvar = self.results['model'].explained_variance_ratio_
         xtick_idx = np.arange(1,len(explvar) + 1)
 
         # Make figure
         fig,ax = plt.subplots(figsize=figsize, edgecolor='k')
-        plt.plot(xtick_idx, explvar,'o-', color='k', linewidth=1)
-        
+        plt.plot(xtick_idx, explvarCum, 'o-', color='k', linewidth=1, label='Cumulative explained variance')
+
         # Set xticks if less then 100 datapoints
         if len(explvar)<100:
             ax.set_xticks(xtick_idx)
@@ -483,7 +487,7 @@ class pca():
         ax.axvline(self.n_components, linewidth=0.8, color='r')
         ax.axhline(y=self.results['pcp'], xmin=0, xmax=1, linewidth=0.8, color='r')
         if len(xtick_idx)<100:
-            plt.bar(xtick_idx, explvar, color='#3182bd', alpha=0.8)
+            plt.bar(xtick_idx, explvar, color='#3182bd', alpha=0.8, label='Explained variance')
         plt.show()
         plt.draw()
         return(fig, ax)
