@@ -542,19 +542,37 @@ class pca():
         out = np.repeat(np.mean(X.values, axis=1).reshape(-1,1), X.shape[1], axis=1) + np.dot(score.values[:,ndims], coeff[:,ndims].T)
         # Return
         return(out)
+
+    # Import example
+    def import_example(self, data='titanic', verbose=3):
+        """Import example dataset from github source.
     
+        Parameters
+        ----------
+        data : str, optional
+            Name of the dataset 'sprinkler' or 'titanic' or 'student'.
+        verbose : int, optional
+            Print message to screen. The default is 3.
+    
+        Returns
+        -------
+        pd.DataFrame()
+            Dataset containing mixed features.
+    
+        """
+        return import_example(data=data, verbose=verbose)
 
 # %% Explained variance
-def _explainedvar(X, n_components=None, sparse_data=False, random_state=None, n_jobs=-1, verbose=3):
+def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=-1, verbose=3):
     # Create the model
     if sp.issparse(X):
-        if verbose>=3: print('[pca] >Fit based on Truncated SVD..')
+        if verbose>=3: print('[pca] >Fiting using Truncated SVD..')
         model = TruncatedSVD(n_components=n_components, random_state=random_state)
-    elif sparse_data:
-        if verbose>=3: print('[pca] >Fit based on sparse dataset..')
+    elif onehot:
+        if verbose>=3: print('[pca] >Fitting using Sparse PCA..')
         model = SparsePCA(n_components=n_components, random_state=random_state, n_jobs=n_jobs)
     else:
-        if verbose>=3: print('[pca] >Fit based on PCA..')
+        if verbose>=3: print('[pca] >Fitting using PCA..')
         model = PCA(n_components=n_components, random_state=random_state)
 
     # Fit model
@@ -563,9 +581,12 @@ def _explainedvar(X, n_components=None, sparse_data=False, random_state=None, n_
     if verbose>=3: print('[pca] >Computing loadings and PCs..')
     loadings = model.components_ # Ook wel de coeeficienten genoemd: coefs!
     PC = model.transform(X)
-    # Compute explained variance, top 95% variance
-    if verbose>=3: print('[pca] >Computing explained variance..')
-    percentExplVar = model.explained_variance_ratio_.cumsum()
+    if not onehot:
+        # Compute explained variance, top 95% variance
+        if verbose>=3: print('[pca] >Computing explained variance..')
+        percentExplVar = model.explained_variance_ratio_.cumsum()
+    else:
+        percentExplVar = None
     # Return
     return(model, PC, loadings, percentExplVar)
 
@@ -580,3 +601,44 @@ def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_label
     out['pcp'] = pcp
     out['topfeat'] = topfeat
     return out
+
+
+# %% Import example dataset from github.
+def import_example(data='titanic', verbose=3):
+    """Import example dataset from github source.
+
+    Parameters
+    ----------
+    data : str, optional
+        Name of the dataset 'sprinkler' or 'titanic' or 'student'.
+    verbose : int, optional
+        Print message to screen. The default is 3.
+
+    Returns
+    -------
+    pd.DataFrame()
+        Dataset containing mixed features.
+
+    """
+    if data=='sprinkler':
+        url='https://erdogant.github.io/datasets/sprinkler.zip'
+    elif data=='titanic':
+        url='https://erdogant.github.io/datasets/titanic_train.zip'
+    elif data=='student':
+        url='https://erdogant.github.io/datasets/student_train.zip'
+
+    curpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+    PATH_TO_DATA = os.path.join(curpath, wget.filename_from_url(url))
+    if not os.path.isdir(curpath):
+        os.mkdir(curpath)
+
+    # Check file exists.
+    if not os.path.isfile(PATH_TO_DATA):
+        if verbose>=3: print('[pca] >Downloading example dataset from github source..')
+        wget.download(url, curpath)
+
+    # Import local dataset
+    if verbose>=3: print('[pca] >Import dataset [%s]' %(data))
+    df = pd.read_csv(PATH_TO_DATA)
+    # Return
+    return df
