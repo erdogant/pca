@@ -121,7 +121,7 @@ class pca():
 
     # Post processing.
     def _postprocessing(self, model_pca, loadings, col_labels, n_components, verbose=3):
-        PCzip = list(zip(['PC'] * model_pca.components_.shape[0], np.arange(1,model_pca.components_.shape[0] + 1).astype(str)))
+        PCzip = list(zip(['coef'] * model_pca.components_.shape[0], np.arange(1,model_pca.components_.shape[0] + 1).astype(str)))
         PCnames = list(map(lambda x: ''.join(x), PCzip))
         loadings = pd.DataFrame(loadings, columns=col_labels, index=PCnames)
         # Return
@@ -196,6 +196,7 @@ class pca():
         # topfeat = feat_weights[0:n_feat]
         I = [I[index] for index in sorted(indices)]
         topfeat = loadings.iloc[0:2,I].T
+        topfeat.columns = topfeat.columns.values+'_weights'
         # topfeat = topfeat.iloc[0:n_feat,:]
         return topfeat
 

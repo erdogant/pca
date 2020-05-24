@@ -1,6 +1,6 @@
 # %%
-import pca
-print(pca.__version__)
+# import pca
+# print(pca.__version__)
 
 # %%
 from sklearn.datasets import load_iris
