@@ -16,16 +16,17 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import scipy.sparse as sp
 import colourmap as colourmap
-
+import os
+import wget
 
 # %% Association learning across all variables
 class pca():
-    def __init__(self, n_components=0.95, n_feat=25, sparse_data=False, normalize=False, random_state=None):
+    def __init__(self, n_components=0.95, n_feat=25, onehot=False, normalize=False, random_state=None):
         """Initialize pca with user-defined parameters.
 
         Parameters
         ----------
-        sparse_data : [Bool] optional, (default: False)
+        onehot : [Bool] optional, (default: False)
             Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
         n_components : [0,..,1] or [1,..number of samples-1], (default: 0.95)
             Number of TOP components to be returned. Values>0 are the number of components. Values<0 are the components that covers at least the percentage of variance.
@@ -39,7 +40,7 @@ class pca():
         """
         # Store in object
         self.n_components = n_components
-        self.sparse_data = sparse_data
+        self.onehot = onehot
         self.normalize = normalize
         self.random_state = random_state
         self.n_feat = n_feat
@@ -101,12 +102,12 @@ class pca():
         if self.n_components<1:
             pcp = self.n_components
             # Run with all components to get all PCs back. This is needed for the step after.
-            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=None, sparse_data=self.sparse_data, random_state=self.random_state)
+            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=None, onehot=self.onehot, random_state=self.random_state)
             # Take number of components with minimal [n_components] explained variance
             self.n_components = np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
             if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp*100))
         else:
-            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, sparse_data=self.sparse_data, random_state=self.random_state)
+            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state)
             pcp = percentExplVar[np.minimum(len(percentExplVar)-1, self.n_components)]
 
         # Combine components relations with features.
@@ -208,7 +209,10 @@ class pca():
             if verbose>=3: print('[pca] >n_components is set to %d' %(self.n_components))
 
         self.n_feat = np.min([self.n_feat, X.shape[1]])
-    
+        
+        if (not self.onehot) and (not self.normalize) and (str(X.values.dtype)=='bool'):
+            if verbose>=2: print('[pca] >Warning: Sparse or one-hot boolean input data is detected, it is highly recommended to set onehot=True or alternatively, normalize=True')
+
         # if sp.issparse(X):
             # if verbose>=1: print('[PCA] Error: A sparse matrix was passed, but dense data is required for method=barnes_hut. Use X.toarray() to convert to a dense numpy array if the array is small enough for it to fit in memory.')
         if isinstance(X, pd.DataFrame):
@@ -234,15 +238,24 @@ class pca():
     
         # normalize data
         if self.normalize:
-            if verbose>=3: print('[pca] >Normalizing input data..')
-            X = preprocessing.scale(X)
-            # fig,ax =plt.subplots(figsize=(10,6))
-            # ax.hist(X.values.flatten(), bins=50)
-            # ax.set_ylabel('frequency')
-            # ax.set_xlabel('Genomic values')
-            # ax.grid(True)
+            if verbose>=3: print('[pca] >Normalizing input data per feature (zero mean)..')
+            # Plot the data distribution
+            # fig,(ax1,ax2)=plt.subplots(1,2, figsize=(15,5))
+            # ax1.hist(X.ravel().astype(float), bins=50)
+            # ax1.set_ylabel('frequency')
+            # ax1.set_xlabel('Values')
+            # ax1.set_title('RAW')
+            # ax1.grid(True)
 
-        # Return
+            X = preprocessing.scale(X, with_mean=True, with_std=True, axis=0)
+
+            # Plot the data distribution
+            # ax2.hist(X.ravel().astype(float), bins=50)
+            # ax2.set_ylabel('frequency')
+            # ax2.set_xlabel('Values')
+            # ax2.set_title('Zero-mean with unit variance normalized')
+            # ax2.grid(True)
+
         return(X, row_labels, col_labels)
 
 

@@ -1,6 +1,7 @@
+
 # %%
-# import pca
-# print(pca.__version__)
+import pca
+print(pca.__version__)
 
 # %%
 from sklearn.datasets import load_iris
@@ -28,6 +29,10 @@ ax = model.biplot3d()
 # Normalize out PCs
 model = pca()
 Xnew = model.norm(X)
+
+
+
+
 
 # %%
 X = pd.read_csv('D://GITLAB/MASTERCLASS/embeddings/data/TCGA_RAW.zip',compression='zip')
@@ -74,6 +79,48 @@ ax = model.biplot(n_feat=100)
 
 model.scatter3d()
 ax = model.biplot3d(n_feat=20)
+
+# %% Exmample with mixed dataset
+import pca
+# Import example
+df = pca.import_example()
+
+# Transform data into one-hot
+from df2onehot import df2onehot
+y = df['Survived'].values
+del df['Survived']
+del df['PassengerId']
+del df['Name']
+out = df2onehot(df)
+X = out['onehot'].copy()
+X.index = y
+
+
+from pca import pca
+
+# Initialize
+model1 = pca(normalize=False, onehot=False)
+# Run model 1
+_=model1.fit_transform(X)
+model1.plot()
+model1.biplot(n_feat=3)
+model1.scatter()
+model1.biplot3d(n_feat=3)
+
+# Initialize
+model2 = pca(normalize=True, onehot=False)
+# Run model 2
+_=model2.fit_transform(X)
+model2.plot()
+model2.biplot(n_feat=4)
+model2.scatter()
+model2.biplot3d(n_feat=3)
+
+# Initialize
+model3 = pca(normalize=False, onehot=True)
+# Run model 2
+_=model3.fit_transform(X)
+model3.biplot(n_feat=3)
 
 # %%
 # # EXAMPLE
