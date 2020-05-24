@@ -122,7 +122,7 @@ class pca():
 
     # Post processing.
     def _postprocessing(self, model_pca, loadings, col_labels, n_components, verbose=3):
-        PCzip = list(zip(['coef'] * model_pca.components_.shape[0], np.arange(1,model_pca.components_.shape[0] + 1).astype(str)))
+        PCzip = list(zip(['PC'] * model_pca.components_.shape[0], np.arange(1,model_pca.components_.shape[0] + 1).astype(str)))
         PCnames = list(map(lambda x: ''.join(x), PCzip))
         loadings = pd.DataFrame(loadings, columns=col_labels, index=PCnames)
         # Return
