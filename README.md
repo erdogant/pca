@@ -146,7 +146,7 @@ ax = pca.biplot(model)
 Please cite distfit in your publications if this is useful for your research. Here is an example BibTeX entry:
 ```BibTeX
 @misc{erdogant2019pca,
-  title={distfit},
+  title={pca},
   author={Erdogan Taskesen},
   year={2019},
   howpublished={\url{https://github.com/erdogant/pca}},
