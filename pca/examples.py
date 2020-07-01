@@ -1,3 +1,53 @@
+from sklearn.datasets import load_iris
+import pandas as pd
+from pca import pca
+
+# Initialize
+model = pca(n_components=3, normalize=True)
+
+# Dataset
+X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+
+# Fit transform
+out = model.fit_transform(X)
+
+ax = model.biplot(n_feat=2)
+ax = model.biplot3d(n_feat=3)
+
+# %%
+import numpy as np
+import pandas as pd
+
+f1=np.random.randint(0,100,250)
+f2=np.random.randint(0,50,250)
+f3=np.random.randint(0,25,250)
+f4=np.random.randint(0,10,250)
+f5=np.random.randint(0,5,250)
+f6=np.random.randint(0,4,250)
+f7=np.random.randint(0,3,250)
+f8=np.random.randint(0,2,250)
+f9=np.random.randint(0,1,250)
+X = np.c_[f1,f2,f3,f4,f5,f6,f7,f8,f9]
+X = pd.DataFrame(data=X, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
+
+from pca import pca
+# Initialize
+model = pca(n_components=9, normalize=False)
+# Fit transform
+out = model.fit_transform(X)
+model.plot()
+
+ax = model.biplot(n_feat=10, legend=False)
+ax = model.biplot3d(n_feat=10, legend=False)
+
+# %% Normalize out PC1, PC2
+X_norm = model.norm(X, pcexclude=[1,2])
+X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
+out = model.fit_transform(X_norm)
+out['topfeat']
+
+model.plot()
+ax = model.biplot(n_feat=10, legend=False)
 
 # %%
 import pca
@@ -9,7 +59,7 @@ import pandas as pd
 from pca import pca
 
 # Initialize
-model = pca(n_components=3)
+model = pca(n_components=3, normalize=True)
 
 # Dataset
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
@@ -18,9 +68,12 @@ X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index
 out = model.fit_transform(X)
 
 # Make plots
-model.scatter()
+fig, ax = model.scatter()
 ax = model.biplot(n_feat=4)
 ax = model.plot()
+
+
+ax = model.biplot2(n_feat=3)
 
 # Make 3d plolts
 model.scatter3d()
@@ -31,8 +84,27 @@ model = pca()
 Xnew = model.norm(X)
 
 
+# %%
 
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import datasets
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
+iris = datasets.load_iris()
+X = iris.data
+y = iris.target
+
+#In general it is a good idea to scale the data
+scaler = StandardScaler()
+scaler.fit(X)
+X=scaler.transform(X)
+
+pca = PCA()
+pca.fit(X,y)
+x_new = pca.transform(X)   
 
 # %%
 X = pd.read_csv('D://GITLAB/MASTERCLASS/embeddings/data/TCGA_RAW.zip',compression='zip')
@@ -76,6 +148,7 @@ model.scatter()
 ax = model.plot()
 from pca import pca
 ax = model.biplot(n_feat=100)
+ax = model.biplot2(n_feat=100)
 
 model.scatter3d()
 ax = model.biplot3d(n_feat=20)
@@ -101,20 +174,20 @@ from pca import pca
 # Initialize
 model1 = pca(normalize=False, onehot=False)
 # Run model 1
-_=model1.fit_transform(X)
+model1.fit_transform(X)
 model1.plot()
-model1.biplot(n_feat=3)
+model1.biplot(n_feat=4)
+model1.biplot3d(n_feat=4)
 model1.scatter()
-model1.biplot3d(n_feat=3)
 
 # Initialize
 model2 = pca(normalize=True, onehot=False)
 # Run model 2
-_=model2.fit_transform(X)
+model2.fit_transform(X)
 model2.plot()
 model2.biplot(n_feat=4)
 model2.scatter()
-model2.biplot3d(n_feat=3)
+model2.biplot3d(n_feat=10)
 
 # Initialize
 model3 = pca(normalize=False, onehot=True)
