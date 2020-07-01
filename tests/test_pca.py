@@ -17,7 +17,6 @@ def test_pca():
     param_grid = {
         'n_components':[None, 0.01, 1, 0.95, 2, 100000000000],
         'row_labels':[None, [], y],
-        'col_labels':[None, [], labels],
         }
 
     allNames = param_grid.keys()
@@ -28,8 +27,8 @@ def test_pca():
         model = pca(n_components=combination[0])
         model.fit_transform(X)
         assert model.plot()
-        assert model.biplot()
-        assert model.biplot3d()
+        assert model.biplot(y=y)
+        assert model.biplot3d(y=y)
 
 
 
