@@ -17,12 +17,13 @@ ax = model.biplot3d(n_feat=3)
 # %%
 import numpy as np
 import pandas as pd
+from pca import pca
 
-f1=np.random.randint(0,100,250)
+f5=np.random.randint(0,100,250)
 f2=np.random.randint(0,50,250)
 f3=np.random.randint(0,25,250)
 f4=np.random.randint(0,10,250)
-f5=np.random.randint(0,5,250)
+f1=np.random.randint(0,5,250)
 f6=np.random.randint(0,4,250)
 f7=np.random.randint(0,3,250)
 f8=np.random.randint(0,2,250)
@@ -30,13 +31,13 @@ f9=np.random.randint(0,1,250)
 X = np.c_[f1,f2,f3,f4,f5,f6,f7,f8,f9]
 X = pd.DataFrame(data=X, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
 
-from pca import pca
 # Initialize
-model = pca(n_components=9, normalize=False)
+model = pca()
 # Fit transform
 out = model.fit_transform(X)
-model.plot()
+out['topfeat']
 
+model.plot()
 ax = model.biplot(n_feat=10, legend=False)
 ax = model.biplot3d(n_feat=10, legend=False)
 
