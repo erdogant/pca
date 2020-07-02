@@ -142,6 +142,77 @@ ax = pca.biplot(model)
 
 ```
 
+
+
+the pca library contains this functionality.
+
+    pip install pca
+
+A demonstration to extract the feature importance is as following:
+
+    # Import libraries
+    import numpy as np
+    import pandas as pd
+    from pca import pca
+
+    # Lets create a dataset with features that have decreasing variance. 
+    # We want to extract feature f1 as most important, followed by f2 etc
+    f1=np.random.randint(0,100,250)
+    f2=np.random.randint(0,50,250)
+    f3=np.random.randint(0,25,250)
+    f4=np.random.randint(0,10,250)
+    f5=np.random.randint(0,5,250)
+    f6=np.random.randint(0,4,250)
+    f7=np.random.randint(0,3,250)
+    f8=np.random.randint(0,2,250)
+    f9=np.random.randint(0,1,250)
+
+    # Combine into dataframe
+    X = np.c_[f1,f2,f3,f4,f5,f6,f7,f8,f9]
+    X = pd.DataFrame(data=X, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
+    
+    # Initialize
+    model = pca()
+    # Fit transform
+    out = model.fit_transform(X)
+
+    # Print the top features. The results show that f1 is best, followed by f2 etc
+    print(out['topfeat'])
+
+    #     PC      feature
+    # 0  PC1      f1
+    # 1  PC2      f2
+    # 2  PC3      f3
+    # 3  PC4      f4
+    # 4  PC5      f5
+    # 5  PC6      f6
+    # 6  PC7      f7
+    # 7  PC8      f8
+    # 8  PC9      f9
+
+Plot the explained variance
+
+    model.plot()
+
+[![Explained variance][1]][1]
+
+Make the biplot. It can be nicely seen that the first feature with most variance (f1), is almost horizontal in the plot, whereas the second most variance (f2) is almost vertical. This is expected because most of the variance is in f1, followed by f2 etc.
+
+    ax = model.biplot(n_feat=10, legend=False)
+
+[![biplot][2]][2]
+
+Biplot in 3d. Here we see the nice addition of the expected f3 in the plot in the z-direction.
+
+    ax = model.biplot3d(n_feat=10, legend=False)
+
+[![biplot3d][3]][3]
+
+
+  [1]: https://i.stack.imgur.com/Wb1rN.png
+  [2]: https://i.stack.imgur.com/V6BYZ.png
+  [3]: https://i.stack.imgur.com/831NF.png
+  
 ### Citation
 Please cite distfit in your publications if this is useful for your research. Here is an example BibTeX entry:
 ```BibTeX
