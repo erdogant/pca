@@ -143,12 +143,7 @@ ax = pca.biplot(model)
 ```
 
 
-
-the pca library contains this functionality.
-
-    pip install pca
-
-A demonstration to extract the feature importance is as following:
+### Example to extract the feature importance:
 
     # Import libraries
     import numpy as np
@@ -190,7 +185,7 @@ A demonstration to extract the feature importance is as following:
     # 7  PC8      f8
     # 8  PC9      f9
 
-Plot the explained variance
+#### Make the plots
 
     model.plot()
 
