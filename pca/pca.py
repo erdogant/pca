@@ -442,15 +442,15 @@ class pca():
         mean_y = np.mean(self.results['PC'].iloc[:,1].values)
 
         # Plot and scale values for arrows and text
-        # Take the maximum value of the axis
+        # Take the absolute minimum range of the x-axis and y-axis
         max_axis = np.min(np.abs(self.results['PC'].iloc[:,0:2]).max())
         max_arrow = coeff.max().max()
         scale = np.max([1, np.round(max_axis / max_arrow, 2)])
 
-        # Figure
+        # Include additional parameters if 3d plot is desired.
         if d3:
             if self.results['PC'].shape[1]<3:
-                print('[pca] >Requires 3 PCs to make 3d plot.')
+                if verbose>=2: print('[pca] >Warning: requires 3 PCs to make 3d plot.')
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:,2].values)
             zs = self.results['PC'].iloc[:,2].values
@@ -458,19 +458,27 @@ class pca():
         else:
             fig, ax  = self.scatter(y=y, legend=legend, figsize=figsize)
 
+        # For vizualization purposes we will keep only the unique feature-names
+        topfeat = topfeat.drop_duplicates(subset=['feature'])
+        if topfeat.shape[0]<n_feat:
+            n_feat = topfeat.shape[0]
+            if verbose>=2: print('[pca] >Warning: n_feat can not be reached because of the limitation of n_components (=%d). n_feat is reduced to %d.' %(self.n_components, n_feat))
+
         # Plot arrows and text
-        for i in range(n_feat):
+        for i in range(0,n_feat):
             getfeat = topfeat['feature'].iloc[i]
             getcoef = coeff[getfeat].values
             xarrow = getcoef[0] * scale
             yarrow = getcoef[1] * scale
+            txtcolor = 'y' if topfeat['PC'].iloc[i] == 'weak' else 'g'
+
             if d3:
                 zarrow = getcoef[2] * scale
                 ax.quiver(mean_x, mean_y, mean_z, xarrow-mean_x, yarrow-mean_y, zarrow-mean_z, color='red', alpha=0.8, lw=2)
-                ax.text(xarrow*1.15, yarrow*1.15, zarrow*1.15, getfeat, color = 'g', ha='center', va='center')
+                ax.text(xarrow*1.15, yarrow*1.15, zarrow*1.15, getfeat, color=txtcolor, ha='center', va='center')
             else:
                 ax.arrow(mean_x, mean_y, xarrow-mean_x, yarrow-mean_y, color='r', width=0.005, head_width=0.05, alpha=0.8)
-                ax.text(xarrow*1.15, yarrow*1.15, getfeat, color='g', ha='center', va='center')
+                ax.text(xarrow*1.15, yarrow*1.15, getfeat, color=txtcolor, ha='center', va='center')
 
         plt.show()
         return(fig, ax)
