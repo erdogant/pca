@@ -3,16 +3,15 @@ import pandas as pd
 from pca import pca
 
 # Initialize
-model = pca(n_components=3, normalize=True)
-
+model = pca(n_components=2, normalize=True)
 # Dataset
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
-
 # Fit transform
 out = model.fit_transform(X)
-
-ax = model.biplot(n_feat=2)
-ax = model.biplot3d(n_feat=3)
+out['topfeat']
+# Make plot
+ax = model.biplot()
+ax = model.biplot3d(n_feat=1)
 
 # %%
 import numpy as np
@@ -176,9 +175,12 @@ from pca import pca
 model1 = pca(normalize=False, onehot=False)
 # Run model 1
 model1.fit_transform(X)
+# len(np.unique(model1.results['topfeat'].iloc[:,1]))
+model1.results['topfeat']
+
 model1.plot()
-model1.biplot(n_feat=4)
-model1.biplot3d(n_feat=4)
+model1.biplot(n_feat=10)
+model1.biplot3d(n_feat=10)
 model1.scatter()
 
 # Initialize
