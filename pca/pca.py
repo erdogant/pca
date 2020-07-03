@@ -120,7 +120,7 @@ class pca():
         # Combine components relations with features.
         loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components, verbose=verbose)
         # Top scoring n_components.
-        topfeat = self.compute_topfeat(loadings=loadings, n_feat=self.n_feat, verbose=verbose)
+        topfeat = self.compute_topfeat(loadings=loadings, verbose=verbose)
         # Store
         self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat)
         # Return
@@ -320,12 +320,12 @@ class pca():
         if self.results['PC'].shape[1]<1: raise Exception('[pca] >Requires at least 1 PC to make plot.')
 
         if (n_feat is not None):
-            topfeat = self.compute_topfeat(n_feat=n_feat)
+            topfeat = self.compute_topfeat()
             # n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[0]), 2)
         else:
             topfeat = self.results['topfeat']
             n_feat = self.n_feat
-        n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[0]), 2)
+        n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 2)
 
         if (y is not None):
             if len(y)!=self.results['PC'].shape[0]: raise Exception('[pca] >Error: Input variable [y] should have some length as the number input samples: [%d].' %(self.results['PC'].shape[0]))
