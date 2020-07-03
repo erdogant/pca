@@ -7,7 +7,7 @@ from pca.pca import (
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '1.0.5'
+__version__ = '1.0.6'
 
 # module level doc-string
 __doc__ = """
@@ -20,17 +20,20 @@ pca is a python package that performs the principal component analysis and to ma
 
 Examples
 --------
+>>> from pca import pca
 >>> # Load example data
 >>> X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+>>> Initialize
+>>> model = pca(n_components=3)
 >>> # Fit using PCA
 >>> results = model.fit_transform(X)
 >>> # Make plots
->>> model.scatter()
->>> ax = model.plot()
->>> ax = model.biplot()
+>>> fig, ax = model.scatter()
+>>> fig, ax = model.plot()
+>>> fig, ax = model.biplot()
 >>> 3D plots
->>> model.scatter3d()
->>> ax = model.biplot3d()
+>>> fig, ax = model.scatter3d()
+>>> fig, ax = model.biplot3d()
 >>> # Normalize out PCs
 >>> X_norm = pca.norm(X)
 
