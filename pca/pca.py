@@ -30,12 +30,14 @@ class pca():
             Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
         n_components : [0,..,1] or [1,..number of samples-1], (default: 0.95)
             Number of TOP components to be returned. Values>0 are the number of components. Values<0 are the components that covers at least the percentage of variance.
-            0.95: Take the number of components that cover at least 95% of variance
+            0.95: Take the number of components that cover at least 95% of variance.
             k: Take the top k components
+        n_feat : int, default: 10
+            Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         random_state : int optional
             Random state
-        normalize : bool optional
-            Normalize data, Z-score (default True)
+        normalize : bool (default : True)
+            Normalize data, Z-score
 
         """
         # Store in object
@@ -54,9 +56,11 @@ class pca():
         X : numpy array
             [NxM] array with columns as features and rows as samples.
         row_labels : [list of integers or strings] optional
-            Used for colors
+            Used for colors.
         col_labels : [list of string] optional
             Numpy Vector of strings: Name of the features that represent the data features and loadings
+        Verbose : int (default : 3)
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
         Returns
         -------
@@ -203,7 +207,27 @@ class pca():
 
 
     # Top scoring components
-    def compute_topfeat(self, loadings=None, n_feat=10, verbose=3):
+    def compute_topfeat(self, loadings=None, verbose=3):
+        """Compute the top-scoring features.
+
+        Description
+        -----------
+        Per Principal Component, the feature with absolute maximum loading is stored.
+        This can result into the detection of PCs that contain the same features. The feature that were never detected are stored as "weak".
+
+        Parameters
+        ----------
+        loadings : array-like
+            The array containing the loading information of the Principal Components.
+        Verbose : int (default : 3)
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+
+        Returns
+        -------
+        topfeat : pd.DataFrame
+            Best performing features per PC.
+
+        """
         if (loadings is None):
             try:
                 # Get feature names
@@ -211,6 +235,7 @@ class pca():
                 loadings = self.results['loadings'].values.copy()
             except:
                 raise Exception('[pca] >Error: loadings is not defined. Tip: run fit_transform() or provide the loadings yourself as input argument.') 
+        
         if isinstance(loadings, pd.DataFrame):
             initial_feature_names = loadings.columns.values
             loadings = loadings.values
@@ -313,6 +338,22 @@ class pca():
 
     # Scatter plot
     def scatter3d(self, y=None, legend=True, figsize=(10,8)):
+        """Scatter 3d plot.
+
+        Parameters
+        ----------
+        y : array-like, default: None
+            Label for each sample. The labeling is used for coloring the samples.
+        legend : Bool, default: True
+            Show the legend based on the unique y-labels.
+        figsize : (int, int), optional, default: (10,8)
+            (width, height) in inches.
+
+        Returns
+        -------
+        tuple containing (fig, ax)
+
+        """
         if self.results['PC'].shape[1]>=3:
             fig, ax = self.scatter(y=y, d3=True, legend=legend, figsize=figsize)
         else:
@@ -323,6 +364,24 @@ class pca():
 
     # Scatter plot
     def scatter(self, y=None, d3=False, legend=True, figsize=(10,8)):
+        """Scatter 2d plot.
+
+        Parameters
+        ----------
+        y : array-like, default: None
+            Label for each sample. The labeling is used for coloring the samples.
+        d3 : Bool, default: False
+            3d plot is created when True.
+        legend : Bool, default: True
+            Show the legend based on the unique y-labels.
+        figsize : (int, int), optional, default: (10,8)
+            (width, height) in inches.
+
+        Returns
+        -------
+        tuple containing (fig, ax)
+
+        """
         fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
 
         if y is None:
@@ -360,13 +419,30 @@ class pca():
         return fig, ax
 
     # biplot
-    def biplot(self, y=None, n_feat=None, d3=False, legend=True, figsize=(10,8)):
-        """Create the Biplot based on model.
+    def biplot(self, y=None, n_feat=None, d3=False, legend=True, figsize=(10,8), verbose=3):
+        """Create the Biplot.
+
+        Description
+        -----------
+        Plots the PC1 vs PC2 (vs PC3) with the samples, and the best performing features.
+        Per PC, The feature with absolute highest loading is gathered. This can result into features that are seen over multiple PCs, and some features may never be detected.
+        For vizualization purposes we will keep only the unique feature-names and plot them with red arrows and green labels.
+        The feature-names that were never discovered (described as weak) are colored yellow.
 
         Parameters
         ----------
-        figsize : (float, float), optional, default: None
-            (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
+        y : array-like, default: None
+            Label for each sample. The labeling is used for coloring the samples.
+        n_feat : int, default: 10
+            Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
+        d3 : Bool, default: False
+            3d plot is created when True.
+        legend : Bool, default: True
+            Show the legend based on the unique y-labels.
+        figsize : (int, int), optional, default: (10,8)
+            (width, height) in inches.
+        Verbose : int (default : 3)
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
         Returns
         -------
