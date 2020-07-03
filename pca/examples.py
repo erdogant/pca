@@ -3,15 +3,15 @@ import pandas as pd
 from pca import pca
 
 # Initialize
-model = pca(n_components=2, normalize=True)
+model = pca(n_components=3, normalize=True)
 # Dataset
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
 # Fit transform
 out = model.fit_transform(X)
 out['topfeat']
 # Make plot
-ax = model.biplot()
-ax = model.biplot3d(n_feat=1)
+ax = model.biplot(n_feat=2)
+ax = model.biplot3d(n_feat=3)
 
 # %%
 import numpy as np

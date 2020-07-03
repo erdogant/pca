@@ -445,7 +445,7 @@ class pca():
         # Plot and scale values for arrows and text
         # Take the absolute minimum range of the x-axis and y-axis
         max_axis = np.min(np.abs(self.results['PC'].iloc[:,0:2]).max())
-        max_arrow = coeff.max().max()
+        max_arrow = np.abs(coeff).max().max()
         scale = np.max([1, np.round(max_axis / max_arrow, 2)])
 
         # Include additional parameters if 3d plot is desired.
@@ -480,6 +480,10 @@ class pca():
             else:
                 ax.arrow(mean_x, mean_y, xarrow-mean_x, yarrow-mean_y, color='r', width=0.005, head_width=0.05, alpha=0.8)
                 ax.text(xarrow*1.15, yarrow*1.15, getfeat, color=txtcolor, ha='center', va='center')
+        
+        # ax.set_xlim([np.min(self.results['PC'].iloc[:,0].values), np.max(self.results['PC'].iloc[:,0].values)])
+        # ax.set_ylim([np.min(self.results['PC'].iloc[:,1].values), np.max(self.results['PC'].iloc[:,1].values)])
+        # if d3: ax.set_zlim([np.min(self.results['PC'].iloc[:,2].values), np.max(self.results['PC'].iloc[:,2].values)])
 
         plt.show()
         return(fig, ax)
