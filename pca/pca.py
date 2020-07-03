@@ -210,13 +210,23 @@ class pca():
         # get the index of the most important feature on EACH component
         idx = [np.abs(loadings[i]).argmax() for i in range(n_pcs)]
         # get the names
-        most_important_names = [initial_feature_names[idx[i]] for i in range(n_pcs)]
-        # LIST COMPREHENSION HERE AGAIN
-        dic = {'PC{}'.format(i+1): most_important_names[i] for i in range(n_pcs)}
+        most_important_names = [initial_feature_names[idx[i]] for i in range(len(idx))]
+        # Make dict with most important features
+        dic = {'PC{}'.format(i+1): most_important_names[i] for i in range(len(most_important_names))}
+        # Collect the features that were never discovered. The weak features.
+        idx1 = np.setdiff1d(range(loadings.shape[1]), idx)
+        # get the names
+        least_important_names = [initial_feature_names[idx1[i]] for i in range(len(idx1))]
+        # Make dict with most important features
+        dic_weak = {'weak'.format(i+1): least_important_names[i] for i in range(len(least_important_names))}
+
         # build the dataframe
         topfeat = pd.DataFrame(dic.items(), columns=['PC','feature'])
+        weakfeat = pd.DataFrame(dic_weak.items(), columns=['PC','feature'])
+        df = pd.concat([topfeat, weakfeat])
+        df.reset_index(drop=True, inplace=True)
         # Return
-        return topfeat
+        return df
 
 
     # Check input values
