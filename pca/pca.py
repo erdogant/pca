@@ -135,44 +135,6 @@ class pca():
         # Return
         return(loadings)
 
-
-    # Top scoring features
-    # def compute_topfeat(self, loadings=None, n_feat=10, verbose=3):
-    #     """Compute which features explain most of the variance.
-    
-    #     Parameters
-    #     ----------
-    #     loadings : pd.DataFrame
-    #         Array containing loadings.
-    #     n_feat : int, default: 10
-    #         Number of features that explain the space the most, dervied from the loadings.
-    #     verbose : int, default: 3.
-    #         Print message to screen. 
-    
-    #     Returns
-    #     -------
-    #     dataFrame containing the top ranked features with the weights.
-    
-    #     """
-    #     if (loadings is None):
-    #         try:
-    #             loadings = self.results['loadings']
-    #         except:
-    #             raise Exception('[pca] >Error: loadings is not defined. Tip: run fit_transform() or provide the loadings yourself as input argument.') 
-
-    #     if verbose>=3: print('[pca] >Computing best explaining features for the 1st and 2nd component.')
-    #     n_feat = np.maximum(np.minimum(n_feat, loadings.shape[1]), 2)
-    #     feat_weights = loadings.iloc[0:1,:].max(axis=0).sort_values(ascending=False)
-
-    #     # Top scoring for 1st and seocnd component
-    #     if loadings.shape[0]>=2:
-    #         feat_weights = loadings.iloc[0:2,:].max(axis=0).sort_values(ascending=False)
-
-    #     topfeat = feat_weights[0:n_feat]
-    #     # Return
-    #     return topfeat
-
-
     # Top scoring components
     def compute_topfeat_old(self, loadings=None, n_feat=10, verbose=3):
         if (loadings is None):
