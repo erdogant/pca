@@ -265,7 +265,7 @@ class pca():
 
         # normalize data
         if self.normalize:
-            if verbose>=3: print('[pca] >Normalizing input data per feature (zero mean)..')
+            if verbose>=3: print('[pca] >Normalizing input data per feature (zero mean and unit variance)..')
             # Plot the data distribution
             # fig,(ax1,ax2)=plt.subplots(1,2, figsize=(15,5))
             # ax1.hist(X.ravel().astype(float), bins=50)
