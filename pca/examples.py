@@ -1,7 +1,7 @@
 from pca import pca
 import pandas as pd
 
-model = pca(n_components=3, normalize=True)
+model = pca(normalize=True)
 # Dataset
 df = pd.read_csv('C://temp//usarrest.txt')
 # Setup dataset
