@@ -1,3 +1,24 @@
+from pca import pca
+import pandas as pd
+
+model = pca(n_components=3, normalize=True)
+# Dataset
+df = pd.read_csv('C://temp//usarrest.txt')
+# Setup dataset
+X = df[['Murder','Assault','UrbanPop','Rape']].astype(float)
+X.index = df['state'].values
+
+# Fit transform
+out = model.fit_transform(X)
+out['topfeat']
+
+# Make plot
+# ax = model.scatter(legend=False)
+ax = model.biplot(n_feat=2, legend=False)
+ax = model.biplot3d(n_feat=3, legend=False)
+
+
+# %%
 from sklearn.datasets import load_iris
 import pandas as pd
 from pca import pca
@@ -10,7 +31,7 @@ X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index
 out = model.fit_transform(X)
 out['topfeat']
 # Make plot
-ax = model.biplot(n_feat=2)
+ax = model.biplot(n_feat=1)
 ax = model.biplot3d(n_feat=3)
 
 # %%

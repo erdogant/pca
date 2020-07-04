@@ -312,13 +312,15 @@ class pca():
 
 
     # Scatter plot
-    def scatter3d(self, y=None, legend=True, figsize=(10,8)):
+    def scatter3d(self, y=None, legend=True, PC=[0,1,2], figsize=(10,8)):
         """Scatter 3d plot.
 
         Parameters
         ----------
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
+        PC : list, default : [0,1,2]
+            Plot the first three Principal Components.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         figsize : (int, int), optional, default: (10,8)
@@ -330,7 +332,7 @@ class pca():
 
         """
         if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y, d3=True, legend=legend, figsize=figsize)
+            fig, ax = self.scatter(y=y, d3=True, legend=legend, PC=PC, figsize=figsize)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
             fig, ax = None, None
@@ -338,7 +340,7 @@ class pca():
 
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, legend=True, figsize=(10,8)):
+    def scatter(self, y=None, d3=False, legend=True, PC=[0,1], figsize=(10,8)):
         """Scatter 2d plot.
 
         Parameters
@@ -347,6 +349,8 @@ class pca():
             Label for each sample. The labeling is used for coloring the samples.
         d3 : Bool, default: False
             3d plot is created when True.
+        PC : list, default : [0,1]
+            Plot the first two Principal Components.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         figsize : (int, int), optional, default: (10,8)
@@ -363,13 +367,14 @@ class pca():
             y, _, _ = self._fig_preprocessing(y, None)
 
         # Get coordinates
-        xs = self.results['PC'].iloc[:,0].values
+        xs = self.results['PC'].iloc[:,PC[0]].values
+        ys = np.zeros(len(xs))
+        # Get y-axis
         if self.results['PC'].shape[1]>1:
-            ys = self.results['PC'].iloc[:,1].values
-        else:
-            ys = np.zeros(len(xs))
+            ys = self.results['PC'].iloc[:,PC[1]].values
+        # Get Z-axis
         if d3:
-            zs = self.results['PC'].iloc[:,2].values
+            zs = self.results['PC'].iloc[:,PC[2]].values
             ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
 
         # Make scatter plot
@@ -384,9 +389,9 @@ class pca():
                 ax.annotate(yk, (np.mean(xs[Iloc]), np.mean(ys[Iloc])))
 
         # Set y
-        ax.set_xlabel('PC1 ('+ str(self.results['model'].explained_variance_ratio_[0] * 100)[0:4] + '% expl.var)')
-        ax.set_ylabel('PC2 ('+ str(self.results['model'].explained_variance_ratio_[1] * 100)[0:4] + '% expl.var)')
-        if d3: ax.set_zlabel('PC3 ('+ str(self.results['model'].explained_variance_ratio_[2] * 100)[0:4] + '% expl.var)')
+        ax.set_xlabel('PC'+str(PC[0])+' ('+ str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
+        ax.set_ylabel('PC'+str(PC[1])+' ('+ str(self.results['model'].explained_variance_ratio_[PC[1]] * 100)[0:4] + '% expl.var)')
+        if d3: ax.set_zlabel('PC'+str(PC[2])+' ('+ str(self.results['model'].explained_variance_ratio_[PC[2]] * 100)[0:4] + '% expl.var)')
         ax.set_title(str(self.n_components)+' Principal Components explain [' + str(self.results['pcp']*100)[0:5] + '%] of the variance')
         if legend: ax.legend()
         ax.grid(True)
@@ -444,7 +449,8 @@ class pca():
 
         # Plot and scale values for arrows and text
         # Take the absolute minimum range of the x-axis and y-axis
-        max_axis = np.min(np.abs(self.results['PC'].iloc[:,0:2]).max())
+        # max_axis = np.min(np.abs(self.results['PC'].iloc[:,0:2]).max())
+        max_axis = np.max(np.abs(self.results['PC'].iloc[:,0:2]).min(axis=1))
         max_arrow = np.abs(coeff).max().max()
         scale = np.max([1, np.round(max_axis / max_arrow, 2)])
 
@@ -478,7 +484,7 @@ class pca():
                 ax.quiver(mean_x, mean_y, mean_z, xarrow-mean_x, yarrow-mean_y, zarrow-mean_z, color='red', alpha=0.8, lw=2)
                 ax.text(xarrow*1.15, yarrow*1.15, zarrow*1.15, getfeat, color=txtcolor, ha='center', va='center')
             else:
-                ax.arrow(mean_x, mean_y, xarrow-mean_x, yarrow-mean_y, color='r', width=0.005, head_width=0.05, alpha=0.8)
+                ax.arrow(mean_x, mean_y, xarrow-mean_x, yarrow-mean_y, color='r', width=0.005, head_width=0.01*scale, alpha=0.8)
                 ax.text(xarrow*1.15, yarrow*1.15, getfeat, color=txtcolor, ha='center', va='center')
         
         # ax.set_xlim([np.min(self.results['PC'].iloc[:,0].values), np.max(self.results['PC'].iloc[:,0].values)])
