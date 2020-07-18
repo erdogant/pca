@@ -13,10 +13,19 @@ out = model.fit_transform(X)
 out['topfeat']
 
 # Make plot
-# ax = model.scatter(legend=False)
-ax = model.biplot(n_feat=2, legend=False)
-ax = model.biplot3d(n_feat=3, legend=False)
+ax = model.biplot(n_feat=4, legend=False)
+ax = model.biplot(n_feat=4, legend=False, label=False)
 
+ax = model.biplot3d(n_feat=1, legend=False)
+ax = model.biplot3d(n_feat=2, legend=False)
+ax = model.biplot3d(n_feat=4, legend=False, label=False)
+
+# %%
+from hnet import hnet
+df = pd.read_csv('C://temp//usarrest.txt')
+hn = hnet(y_min=3, perc_min_num=None)
+results=hn.association_learning(df)
+hn.plot()
 
 # %%
 from sklearn.datasets import load_iris
@@ -29,10 +38,13 @@ model = pca(n_components=3, normalize=True)
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
 # Fit transform
 out = model.fit_transform(X)
+
+# Note that the selected loading are relative to the PCs that are present.
+# A weak loading can be larger then for example PC1 but that is because that specific feature showed relative weaker loading for PC1 and was therefore never selected.
 out['topfeat']
 # Make plot
 ax = model.biplot(n_feat=1)
-ax = model.biplot3d(n_feat=3)
+ax = model.biplot3d(n_feat=6)
 
 # %%
 import numpy as np
@@ -90,11 +102,11 @@ out = model.fit_transform(X)
 
 # Make plots
 fig, ax = model.scatter()
-ax = model.biplot(n_feat=4)
+ax = model.biplot(n_feat=2)
 ax = model.plot()
 
 
-ax = model.biplot2(n_feat=3)
+ax = model.biplot3d(n_feat=2)
 
 # Make 3d plolts
 model.scatter3d()

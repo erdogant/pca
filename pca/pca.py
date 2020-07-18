@@ -111,8 +111,12 @@ class pca():
             # Run with all components to get all PCs back. This is needed for the step after.
             model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=None, onehot=self.onehot, random_state=self.random_state)
             # Take number of components with minimal [n_components] explained variance
-            self.n_components = np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
-            if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp*100))
+            if percentExplVar is None:
+                self.n_components = X.shape[1] - 1
+                if verbose>=3: print('[pca] >n_components is set to %d' %(self.n_components))
+            else:
+                self.n_components = np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
+                if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp*100))
         else:
             model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state)
             pcp = percentExplVar[np.minimum(len(percentExplVar)-1, self.n_components)]
@@ -209,20 +213,34 @@ class pca():
         n_pcs = loadings.shape[0]
         # get the index of the most important feature on EACH component
         idx = [np.abs(loadings[i]).argmax() for i in range(n_pcs)]
+        # The the loadings
+        loading_best = loadings[np.arange(0,n_pcs), idx]
         # get the names
         most_important_names = [initial_feature_names[idx[i]] for i in range(len(idx))]
         # Make dict with most important features
         dic = {'PC{}'.format(i+1): most_important_names[i] for i in range(len(most_important_names))}
         # Collect the features that were never discovered. The weak features.
-        idx1 = np.setdiff1d(range(loadings.shape[1]), idx)
+        idxcol = np.setdiff1d(range(loadings.shape[1]), idx)
         # get the names
-        least_important_names = [initial_feature_names[idx1[i]] for i in range(len(idx1))]
+        least_important_names = [initial_feature_names[idxcol[i]] for i in range(len(idxcol))]
+        # Find the strongest loading across the PCs for the least important ones
+        idxrow = [np.abs(loadings[:,i]).argmax() for i in idxcol]
+        loading_weak = loadings[idxrow, idxcol]
         # Make dict with most important features
-        dic_weak = {'weak'.format(i+1): least_important_names[i] for i in range(len(least_important_names))}
+        # dic_weak = {'weak'.format(i+1): least_important_names[i] for i in range(len(least_important_names))}
+        PC_weak = ['PC{}'.format(i+1) for i in idxrow]
 
         # build the dataframe
         topfeat = pd.DataFrame(dic.items(), columns=['PC','feature'])
-        weakfeat = pd.DataFrame(dic_weak.items(), columns=['PC','feature'])
+        topfeat['loading'] = loading_best
+        topfeat['type'] = 'best'
+        # Weak features
+        weakfeat = pd.DataFrame({'PC':PC_weak, 'feature':least_important_names, 'loading':loading_weak, 'type':'weak'})
+        # weakfeat = pd.DataFrame(dic_weak.items(), columns=['PC','feature'])
+        # weakfeat['loading'] = loading_weak
+        # weakfeat['type'] = 'weak'
+
+        # Combine features
         df = pd.concat([topfeat, weakfeat])
         df.reset_index(drop=True, inplace=True)
         # Return
@@ -261,7 +279,9 @@ class pca():
         if isinstance(col_labels, list):
             col_labels=np.array(col_labels)
         if (sp.issparse(X) is False) and (self.n_components > X.shape[1]):
-            raise Exception('[pca] >Number of components can not be more then number of features.')
+            # raise Exception('[pca] >Number of components can not be more then number of features.')
+            if verbose>=2: print('[pca] >Warning: >Number of components can not be more then number of features. n_components is set to %d' %(X.shape[1]-1))
+            self.n_components = X.shape[1]-1
 
         # normalize data
         if self.normalize:
@@ -287,7 +307,7 @@ class pca():
 
 
     # Figure pre processing
-    def _fig_preprocessing(self, y, n_feat):
+    def _fig_preprocessing(self, y, n_feat, d3):
         if hasattr(self, 'PC'): raise Exception('[pca] >Error: Principal components are not derived yet. Tip: run fit_transform() first.')
         if self.results['PC'].shape[1]<1: raise Exception('[pca] >Requires at least 1 PC to make plot.')
 
@@ -297,7 +317,11 @@ class pca():
         else:
             topfeat = self.results['topfeat']
             n_feat = self.n_feat
-        n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 2)
+
+        if d3:
+            n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 3)
+        else:
+            n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 2)
 
         if (y is not None):
             if len(y)!=self.results['PC'].shape[0]: raise Exception('[pca] >Error: Input variable [y] should have some length as the number input samples: [%d].' %(self.results['PC'].shape[0]))
@@ -312,7 +336,7 @@ class pca():
 
 
     # Scatter plot
-    def scatter3d(self, y=None, legend=True, PC=[0,1,2], figsize=(10,8)):
+    def scatter3d(self, y=None, label=True, legend=True, PC=[0,1,2], figsize=(10,8)):
         """Scatter 3d plot.
 
         Parameters
@@ -321,6 +345,8 @@ class pca():
             Label for each sample. The labeling is used for coloring the samples.
         PC : list, default : [0,1,2]
             Plot the first three Principal Components.
+        label : Bool, default: True
+            Show the labels.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         figsize : (int, int), optional, default: (10,8)
@@ -332,7 +358,7 @@ class pca():
 
         """
         if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y, d3=True, legend=legend, PC=PC, figsize=figsize)
+            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, figsize=figsize)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
             fig, ax = None, None
@@ -340,7 +366,7 @@ class pca():
 
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, legend=True, PC=[0,1], figsize=(10,8)):
+    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0,1], figsize=(10,8)):
         """Scatter 2d plot.
 
         Parameters
@@ -353,6 +379,8 @@ class pca():
             Plot the first two Principal Components.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
+        label : Bool, default: True
+            Show the labels.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
 
@@ -364,7 +392,7 @@ class pca():
         fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
 
         if y is None:
-            y, _, _ = self._fig_preprocessing(y, None)
+            y, _, _ = self._fig_preprocessing(y, None, d3)
 
         # Get coordinates
         xs = self.results['PC'].iloc[:,PC[0]].values
@@ -383,10 +411,11 @@ class pca():
         for i, yk in enumerate(uiy):
             Iloc = (yk==y)
             if d3:
-                ax.scatter(xs[Iloc],ys[Iloc],zs[Iloc],color=getcolors[i,:], s=25, label=yk)
+                ax.scatter(xs[Iloc], ys[Iloc], zs[Iloc], color=getcolors[i,:], s=25, label=yk)
+                # if label: ax.text(xs[Iloc], ys[Iloc], zs[Iloc], yk, color=getcolors[i,:], ha='center', va='center')
             else:
                 ax.scatter(xs[Iloc], ys[Iloc], color=getcolors[i,:], s=25, label=yk)
-                ax.annotate(yk, (np.mean(xs[Iloc]), np.mean(ys[Iloc])))
+                if label: ax.annotate(yk, (np.mean(xs[Iloc]), np.mean(ys[Iloc])))
 
         # Set y
         ax.set_xlabel('PC'+str(PC[0])+' ('+ str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
@@ -399,7 +428,7 @@ class pca():
         return fig, ax
 
     # biplot
-    def biplot(self, y=None, n_feat=None, d3=False, legend=True, figsize=(10,8), verbose=3):
+    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, figsize=(10,8), verbose=3):
         """Create the Biplot.
 
         Description
@@ -417,6 +446,8 @@ class pca():
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         d3 : Bool, default: False
             3d plot is created when True.
+        label : Bool, default: True
+            Show the labels.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         figsize : (int, int), optional, default: (10,8)
@@ -430,7 +461,6 @@ class pca():
 
         References
         -----------
-        * This function is inspired by the code of Serafeim Loukas, serafeim.loukas@epfl.ch
         * https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697
         * https://towardsdatascience.com/pca-clearly-explained-how-when-why-to-use-it-and-feature-importance-a-guide-in-python-7c274582c37e
         
@@ -440,7 +470,7 @@ class pca():
             return None, None
 
         # Pre-processing
-        y, topfeat, n_feat = self._fig_preprocessing(y, n_feat)
+        y, topfeat, n_feat = self._fig_preprocessing(y, n_feat, d3)
         # coeff = self.results['loadings'][topfeat['feature'].values].iloc[0:n_feat,:]
         coeff = self.results['loadings'].iloc[0:n_feat,:]
         # Use the PCs only for scaling purposes
@@ -452,18 +482,18 @@ class pca():
         # max_axis = np.min(np.abs(self.results['PC'].iloc[:,0:2]).max())
         max_axis = np.max(np.abs(self.results['PC'].iloc[:,0:2]).min(axis=1))
         max_arrow = np.abs(coeff).max().max()
-        scale = np.max([1, np.round(max_axis / max_arrow, 2)])
+        scale = ( np.max([1, np.round(max_axis / max_arrow, 2)]) ) * 0.93
 
-        # Include additional parameters if 3d plot is desired.
+        # Include additional parameters if 3d-plot is desired.
         if d3:
             if self.results['PC'].shape[1]<3:
                 if verbose>=2: print('[pca] >Warning: requires 3 PCs to make 3d plot.')
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:,2].values)
             zs = self.results['PC'].iloc[:,2].values
-            fig, ax  = self.scatter3d(y=y, legend=legend, figsize=figsize)
+            fig, ax  = self.scatter3d(y=y, label=label, legend=legend, figsize=figsize)
         else:
-            fig, ax  = self.scatter(y=y, legend=legend, figsize=figsize)
+            fig, ax  = self.scatter(y=y, label=label, legend=legend, figsize=figsize)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -472,20 +502,23 @@ class pca():
             if verbose>=2: print('[pca] >Warning: n_feat can not be reached because of the limitation of n_components (=%d). n_feat is reduced to %d.' %(self.n_components, n_feat))
 
         # Plot arrows and text
-        for i in range(0,n_feat):
+        for i in range(0, n_feat):
             getfeat = topfeat['feature'].iloc[i]
+            label = getfeat + ' (' + ('%.2f' %topfeat['loading'].iloc[i]) + ')'
             getcoef = coeff[getfeat].values
-            xarrow = getcoef[0] * scale
-            yarrow = getcoef[1] * scale
-            txtcolor = 'y' if topfeat['PC'].iloc[i] == 'weak' else 'g'
+            # Set PC1 vs PC2 direction. Note that these are not neccarily the best loading.
+            xarrow = getcoef[0] * scale  # PC1 direction (aka the x-axis)
+            yarrow = getcoef[1] * scale  # PC2 direction (aka the y-axis)
+            txtcolor = 'y' if topfeat['type'].iloc[i] == 'weak' else 'g'
 
             if d3:
+                # zarrow = getcoef[np.minimum(2,len(getcoef))] * scale
                 zarrow = getcoef[2] * scale
                 ax.quiver(mean_x, mean_y, mean_z, xarrow-mean_x, yarrow-mean_y, zarrow-mean_z, color='red', alpha=0.8, lw=2)
-                ax.text(xarrow*1.15, yarrow*1.15, zarrow*1.15, getfeat, color=txtcolor, ha='center', va='center')
+                ax.text(xarrow*1.11, yarrow*1.11, zarrow*1.11, label, color=txtcolor, ha='center', va='center')
             else:
                 ax.arrow(mean_x, mean_y, xarrow-mean_x, yarrow-mean_y, color='r', width=0.005, head_width=0.01*scale, alpha=0.8)
-                ax.text(xarrow*1.15, yarrow*1.15, getfeat, color=txtcolor, ha='center', va='center')
+                ax.text(xarrow*1.11, yarrow*1.11, label, color=txtcolor, ha='center', va='center')
         
         # ax.set_xlim([np.min(self.results['PC'].iloc[:,0].values), np.max(self.results['PC'].iloc[:,0].values)])
         # ax.set_ylim([np.min(self.results['PC'].iloc[:,1].values), np.max(self.results['PC'].iloc[:,1].values)])
@@ -571,15 +604,23 @@ class pca():
 
 
     # biplot3d
-    def biplot3d(self, y=None, n_feat=None, legend=True, figsize=(10,8)):
+    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, figsize=(10,8)):
         """Make biplot in 3d.
     
         Parameters
         ----------
-        model : dict
-            model created by the fit() function.
-        figsize : (float, float), optional, default: None
-            (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
+        y : array-like, default: None
+            Label for each sample. The labeling is used for coloring the samples.
+        n_feat : int, default: 10
+            Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
+        label : Bool, default: True
+            Show the labels.
+        legend : Bool, default: True
+            Show the legend based on the unique y-labels.
+        figsize : (int, int), optional, default: (10,8)
+            (width, height) in inches.
+        Verbose : int (default : 3)
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
         Returns
         -------
@@ -591,7 +632,7 @@ class pca():
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
 
-        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, legend=legend, figsize=figsize)
+        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, figsize=figsize)
 
         return(fig, ax)
 

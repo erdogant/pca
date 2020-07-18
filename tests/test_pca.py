@@ -55,15 +55,15 @@ def test_pca():
     X_norm = model.norm(X, pcexclude=[1])
     X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
     out = model.fit_transform(X_norm)
-    assert out['topfeat'].feature.values[-1]=='f1'
+    assert out['topfeat'].feature.values[-2]=='f1'
     assert out['topfeat'].feature.values[0]=='f2'
     
     ##### NORMALIZE OUT PC1 AND PC2
     X_norm = model.norm(X, pcexclude=[1,2])
     X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
     out = model.fit_transform(X_norm)
-    assert out['topfeat'].feature.values[-2]=='f1'
-    assert out['topfeat'].feature.values[-1]=='f2'
+    assert out['topfeat'].feature.values[-1]=='f1'
+    assert out['topfeat'].feature.values[-3]=='f2'
     assert out['topfeat'].feature.values[0]=='f3'
 
     ##### NORMALIZE OUT PC2 AND PC4
