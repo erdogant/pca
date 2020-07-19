@@ -344,7 +344,7 @@ class pca():
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
         PC : list, default : [0,1,2]
-            Plot the first three Principal Components.
+            Plot the first three Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
         label : Bool, default: True
             Show the labels.
         legend : Bool, default: True
@@ -376,7 +376,7 @@ class pca():
         d3 : Bool, default: False
             3d plot is created when True.
         PC : list, default : [0,1]
-            Plot the first two Principal Components.
+            Plot the first two Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         label : Bool, default: True
@@ -418,9 +418,9 @@ class pca():
                 if label: ax.annotate(yk, (np.mean(xs[Iloc]), np.mean(ys[Iloc])))
 
         # Set y
-        ax.set_xlabel('PC'+str(PC[0])+' ('+ str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
-        ax.set_ylabel('PC'+str(PC[1])+' ('+ str(self.results['model'].explained_variance_ratio_[PC[1]] * 100)[0:4] + '% expl.var)')
-        if d3: ax.set_zlabel('PC'+str(PC[2])+' ('+ str(self.results['model'].explained_variance_ratio_[PC[2]] * 100)[0:4] + '% expl.var)')
+        ax.set_xlabel('PC'+str(PC[0]+1)+' ('+ str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
+        ax.set_ylabel('PC'+str(PC[1]+1)+' ('+ str(self.results['model'].explained_variance_ratio_[PC[1]] * 100)[0:4] + '% expl.var)')
+        if d3: ax.set_zlabel('PC'+str(PC[2]+1)+' ('+ str(self.results['model'].explained_variance_ratio_[PC[2]] * 100)[0:4] + '% expl.var)')
         ax.set_title(str(self.n_components)+' Principal Components explain [' + str(self.results['pcp']*100)[0:5] + '%] of the variance')
         if legend: ax.legend()
         ax.grid(True)
