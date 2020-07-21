@@ -1,5 +1,31 @@
 from pca import pca
 import pandas as pd
+import numpy as np
+
+X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
+outliers = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
+X = np.vstack((X, outliers))
+
+model = pca(normalize=False, n_components=5)
+# Fit transform
+out = model.fit_transform(X)
+out['topfeat']
+out['outliers']
+
+model.biplot()
+
+ax = model.scatter(legend=True, outliers=False)
+ax = model.scatter3d(legend=False, outliers=True)
+ax = model.biplot(n_feat=4, legend=False, label=False, outliers=True)
+ax = model.biplot3d(n_feat=1, legend=False)
+
+import pca
+pca.hotellingsT2(out['PC'].values, out['PC'].values)
+
+# %%
+
+from pca import pca
+import pandas as pd
 
 model = pca(normalize=True)
 # Dataset
@@ -13,7 +39,7 @@ out = model.fit_transform(X)
 out['topfeat']
 out['outliers']
 
-ax = model.scatter(legend=False)
+ax = model.scatter(legend=False, )
 ax = model.scatter3d(legend=False)
 
 # Make plot
@@ -183,60 +209,6 @@ plot_point_cov(data, nstd=nstd, color='green', calpha=0.5, ax=None)
 plt.show()
 
 # %%
-
-import numpy as np
-from scipy.stats import f as f_distrib
-
-
-def hotelling_t2(X, Y):
-    
-    # X and Y are 3D arrays
-    # dim 0: number of features
-    # dim 1: number of subjects
-    # dim 2: number of mesh nodes or voxels (numer of tests)
-    
-    nx = X.shape[1]
-    ny = Y.shape[1]
-    p = X.shape[0]
-    Xbar = X.mean(1)
-    Ybar = Y.mean(1)
-    Xbar = Xbar.reshape(Xbar.shape[0], 1, Xbar.shape[1])
-    Ybar = Ybar.reshape(Ybar.shape[0], 1, Ybar.shape[1])
-    
-    X_Xbar = X - Xbar
-    Y_Ybar = Y - Ybar
-    Wx = np.einsum('ijk,ljk->ilk', X_Xbar, X_Xbar)
-    Wy = np.einsum('ijk,ljk->ilk', Y_Ybar, Y_Ybar)
-    W = (Wx + Wy) / float(nx + ny - 2)
-    Xbar_minus_Ybar = Xbar - Ybar
-    x = np.linalg.solve(W.transpose(2, 0, 1),
-    Xbar_minus_Ybar.transpose(2, 0, 1))
-    x = x.transpose(1, 2, 0)
-    
-    t2 = np.sum(Xbar_minus_Ybar * x, 0)
-    t2 = t2 * float(nx * ny) / float(nx + ny)
-    stat = (t2 * float(nx + ny - 1 - p) / (float(nx + ny - 2) * p))
-    
-    pval = 1 - np.squeeze(f_distrib.cdf(stat, p, nx + ny - 1 - p))
-    return pval, t2
-
-hout = hotelling_t2(data, data)
-
-# %%
-# import numpy as np
-# from scipy import stats
-
-# def HotellingsT2(new_x, normal_x, alpha=0.05):
-#     anomaly_score_threshold = stats.chi2.ppf(q=(1 - alpha), df=1)
-#     anomaly_score = (new_x - np.mean(normal_x)) ** 2 / np.var(normal_x)
-#     out = anomaly_score > anomaly_score_threshold
-#     return out, anomaly_score
-
-
-# data1 = model.results['PC'].values
-# outa = HotellingsT2(data1, data1, alpha=0.05)
-
-# %%
 from hnet import hnet
 df = pd.read_csv('C://temp//usarrest.txt')
 hn = hnet(y_min=3, perc_min_num=None)
@@ -258,7 +230,9 @@ out = model.fit_transform(X)
 # Note that the selected loading are relative to the PCs that are present.
 # A weak loading can be larger then for example PC1 but that is because that specific feature showed relative weaker loading for PC1 and was therefore never selected.
 out['topfeat']
+out['outliers']
 # Make plot
+model.plot()
 ax = model.biplot(n_feat=1)
 ax = model.biplot3d(n_feat=6)
 
@@ -355,6 +329,7 @@ pca = PCA()
 pca.fit(X,y)
 x_new = pca.transform(X)   
 
+
 # %%
 X = pd.read_csv('D://GITLAB/MASTERCLASS/embeddings/data/TCGA_RAW.zip',compression='zip')
 metadata = pd.read_csv('D://GITLAB/MASTERCLASS/embeddings/data/metadata.csv', sep=';')
@@ -426,11 +401,16 @@ model1 = pca(normalize=False, onehot=False)
 model1.fit_transform(X)
 # len(np.unique(model1.results['topfeat'].iloc[:,1]))
 model1.results['topfeat']
+model1.results['outliers']
 
 model1.plot()
 model1.biplot(n_feat=10)
 model1.biplot3d(n_feat=10)
 model1.scatter()
+model1.scatter3d()
+
+import pca
+pca.hotellingsT2(model1.results['PC'].values, model1.results['PC'].values)
 
 # Initialize
 model2 = pca(normalize=True, onehot=False)

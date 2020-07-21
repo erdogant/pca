@@ -35,6 +35,8 @@ class pca():
             k: Take the top k components
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
+        alpha : float, default: 0.05
+            Alpha to set the threshold to determine the outliers based on on the Hoteling T2 test.
         random_state : int optional
             Random state
         normalize : bool (default : True)
@@ -128,7 +130,7 @@ class pca():
         # Top scoring n_components.
         topfeat = self.compute_topfeat(loadings=loadings, verbose=verbose)
         # Detection of outliers
-        outliers = hotellingsT2(y=PC, X=PC, alpha=self.alpha, df=1)
+        outliers = hotellingsT2(PC, alpha=self.alpha, df=1, verbose=verbose)[0]
         # Store
         self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers)
         # Return
@@ -259,7 +261,7 @@ class pca():
 
         self.n_feat = np.min([self.n_feat, X.shape[1]])
 
-        if (not self.onehot) and (not self.normalize) and (str(X.values.dtype)=='bool'):
+        if (not self.onehot) and (not self.normalize) and isinstance(X, pd.DataFrame) and (str(X.values.dtype)=='bool'):
             if verbose>=2: print('[pca] >Warning: Sparse or one-hot boolean input data is detected, it is highly recommended to set onehot=True or alternatively, normalize=True')
 
         # if sp.issparse(X):
@@ -340,7 +342,7 @@ class pca():
 
 
     # Scatter plot
-    def scatter3d(self, y=None, label=True, legend=True, PC=[0,1,2], figsize=(10,8)):
+    def scatter3d(self, y=None, label=True, legend=True, PC=[0,1,2], outliers=True, figsize=(10,8)):
         """Scatter 3d plot.
 
         Parameters
@@ -353,6 +355,8 @@ class pca():
             Show the labels.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
+        outliers : Bool, default: True
+            Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
 
@@ -362,7 +366,7 @@ class pca():
 
         """
         if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, figsize=figsize)
+            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, outliers=outliers, figsize=figsize)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
             fig, ax = None, None
@@ -411,21 +415,24 @@ class pca():
             zs = self.results['PC'].iloc[:,PC[2]].values
             ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
 
-        Ioutlier = self.results['outliers']['y_bool'].values
         # Make scatter plot
         uiy = np.unique(y)
-        getcolors = np.array(colourmap.generate(len(uiy)))
+        getcolors = np.array(colourmap.generate(len(uiy), cmap='Set1'))
         for i, yk in enumerate(uiy):
             Iloc = (yk==y)
             if d3:
                 ax.scatter(xs[Iloc], ys[Iloc], zs[Iloc], color=getcolors[i,:], s=25, label=yk)
                 # if label: ax.text(xs[Iloc], ys[Iloc], zs[Iloc], yk, color=getcolors[i,:], ha='center', va='center')
-                if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], zs[Ioutlier], marker='x', color=getcolors[i,:])
             else:
                 ax.scatter(xs[Iloc], ys[Iloc], color=getcolors[i,:], s=25, label=yk)
                 if label: ax.annotate(yk, (np.mean(xs[Iloc]), np.mean(ys[Iloc])))
-                # s=np.abs(self.results['outliers']['y_score']).values
-                if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], marker='x', color=getcolors[i,:])
+
+        # Plot outliers
+        Ioutlier = self.results['outliers']['y_bool'].values
+        if d3:
+            if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], zs[Ioutlier], marker='x', color=[0,0,0], s=26, label='outlier')
+        else:
+            if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], marker='x', color=[0,0,0], s=26, label='outlier')
 
         # Set y
         ax.set_xlabel('PC'+str(PC[0]+1)+' ('+ str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
@@ -438,7 +445,7 @@ class pca():
         return fig, ax
 
     # biplot
-    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, figsize=(10,8), verbose=3):
+    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, outliers=True, figsize=(10,8), verbose=3):
         """Create the Biplot.
 
         Description
@@ -460,6 +467,8 @@ class pca():
             Show the labels.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
+        outliers : Bool, default: True
+            Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
         Verbose : int (default : 3)
@@ -501,9 +510,9 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:,2].values)
             zs = self.results['PC'].iloc[:,2].values
-            fig, ax  = self.scatter3d(y=y, label=label, legend=legend, figsize=figsize)
+            fig, ax  = self.scatter3d(y=y, label=label, legend=legend, outliers=outliers, figsize=figsize)
         else:
-            fig, ax  = self.scatter(y=y, label=label, legend=legend, figsize=figsize)
+            fig, ax  = self.scatter(y=y, label=label, legend=legend, outliers=outliers, figsize=figsize)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -539,82 +548,82 @@ class pca():
 
 
     # biplot
-    def biplot_old(self, y=None, n_feat=None, figsize=(10,8)):
-        """Create the Biplot based on model.
+    # def biplot_old(self, y=None, n_feat=None, figsize=(10,8)):
+    #     """Create the Biplot based on model.
 
-        Parameters
-        ----------
-        figsize : (float, float), optional, default: None
-            (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
+    #     Parameters
+    #     ----------
+    #     figsize : (float, float), optional, default: None
+    #         (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
 
-        Returns
-        -------
-        tuple containing (fig, ax)
+    #     Returns
+    #     -------
+    #     tuple containing (fig, ax)
 
-        """
-        if self.results['PC'].shape[1]<2:
-            print('[pca] >Requires 2 PCs to make 2d plot.')
-            return None, None
-        print('WARNING: THIS BIPLOT IS EXPERIMENTAL')
-        # Pre-processing
-        y, topfeat, n_feat = self._fig_preprocessing(y, n_feat)
-        # Figure
-        fig, ax  = self.scatter(y=y, figsize=figsize)
+    #     """
+    #     if self.results['PC'].shape[1]<2:
+    #         print('[pca] >Requires 2 PCs to make 2d plot.')
+    #         return None, None
+    #     print('WARNING: THIS BIPLOT IS EXPERIMENTAL')
+    #     # Pre-processing
+    #     y, topfeat, n_feat = self._fig_preprocessing(y, n_feat)
+    #     # Figure
+    #     fig, ax  = self.scatter(y=y, figsize=figsize)
 
-        # Gather loadings from the top features from topfeat
-        # xvector = self.results['loadings'][topfeat['feature'].values].iloc[0,:]
-        # yvector = self.results['loadings'][topfeat['feature'].values].iloc[1,:]
-        xvector = self.results['loadings'].iloc[0,:]
-        yvector = self.results['loadings'].iloc[1,:]
+    #     # Gather loadings from the top features from topfeat
+    #     # xvector = self.results['loadings'][topfeat['feature'].values].iloc[0,:]
+    #     # yvector = self.results['loadings'][topfeat['feature'].values].iloc[1,:]
+    #     xvector = self.results['loadings'].iloc[0,:]
+    #     yvector = self.results['loadings'].iloc[1,:]
 
-        # Use the PCs only for scaling purposes
-        xs = self.results['PC'].iloc[:,0].values
-        ys = self.results['PC'].iloc[:,1].values
-        # Boundaries figures
-        maxR = np.max(xs)*0.8
-        maxL = np.min(xs)*0.8
-        maxT = np.max(ys)*0.8
-        maxB = np.min(ys)*0.8
+    #     # Use the PCs only for scaling purposes
+    #     xs = self.results['PC'].iloc[:,0].values
+    #     ys = self.results['PC'].iloc[:,1].values
+    #     # Boundaries figures
+    #     maxR = np.max(xs)*0.8
+    #     maxL = np.min(xs)*0.8
+    #     maxT = np.max(ys)*0.8
+    #     maxB = np.min(ys)*0.8
 
-        # np.where(np.logical_and(np.sign(xvector)>0, (np.sign(yvector)>0)))
+    #     # np.where(np.logical_and(np.sign(xvector)>0, (np.sign(yvector)>0)))
 
-        # Plot and scale values for arrows and text
-        scalex = 1.0 / (self.results['loadings'][topfeat['feature'].values].iloc[0,:].max() - self.results['loadings'][topfeat['feature'].values].iloc[0,:].min())
-        scaley = 1.0 / (self.results['loadings'][topfeat['feature'].values].iloc[1,:].max() - self.results['loadings'][topfeat['feature'].values].iloc[1,:].min())
-        # Plot the arrows
-        for i in range(0, n_feat):
-            # arrows project features (ie columns from csv) as vectors onto PC axes
-            newx = xvector[i] * scalex
-            newy = yvector[i] * scaley
-            # figscaling = np.abs([np.abs(xs).max() / newx, np.abs(ys).max() / newy])
-            # figscaling = figscaling.max()
-            # newx = newx * figscaling * 0.1
-            # newy = newy * figscaling * 0.1
-            newx = newx * 500
-            newy = newy * 500
+    #     # Plot and scale values for arrows and text
+    #     scalex = 1.0 / (self.results['loadings'][topfeat['feature'].values].iloc[0,:].max() - self.results['loadings'][topfeat['feature'].values].iloc[0,:].min())
+    #     scaley = 1.0 / (self.results['loadings'][topfeat['feature'].values].iloc[1,:].max() - self.results['loadings'][topfeat['feature'].values].iloc[1,:].min())
+    #     # Plot the arrows
+    #     for i in range(0, n_feat):
+    #         # arrows project features (ie columns from csv) as vectors onto PC axes
+    #         newx = xvector[i] * scalex
+    #         newy = yvector[i] * scaley
+    #         # figscaling = np.abs([np.abs(xs).max() / newx, np.abs(ys).max() / newy])
+    #         # figscaling = figscaling.max()
+    #         # newx = newx * figscaling * 0.1
+    #         # newy = newy * figscaling * 0.1
+    #         newx = newx * 500
+    #         newy = newy * 500
 
-            # Max boundary right x-axis
-            if np.sign(newx)>0:
-                newx = np.minimum(newx, maxR)
-            # Max boundary left x-axis
-            if np.sign(newx)<0:
-                newx = np.maximum(newx, maxL)
-            # Max boundary Top
-            if np.sign(newy)>0:
-                newy = np.minimum(newy, maxT)
-            # Max boundary Bottom
-            if np.sign(newy)<0:
-                newy = np.maximum(newy, maxB)
+    #         # Max boundary right x-axis
+    #         if np.sign(newx)>0:
+    #             newx = np.minimum(newx, maxR)
+    #         # Max boundary left x-axis
+    #         if np.sign(newx)<0:
+    #             newx = np.maximum(newx, maxL)
+    #         # Max boundary Top
+    #         if np.sign(newy)>0:
+    #             newy = np.minimum(newy, maxT)
+    #         # Max boundary Bottom
+    #         if np.sign(newy)<0:
+    #             newy = np.maximum(newy, maxB)
             
-            ax.arrow(0, 0, newx, newy, color='r', width=0.005, head_width=0.05, alpha=0.6)
-            ax.text(newx * 1.25, newy * 1.25, xvector.index.values[i], color='red', ha='center', va='center')
+    #         ax.arrow(0, 0, newx, newy, color='r', width=0.005, head_width=0.05, alpha=0.6)
+    #         ax.text(newx * 1.25, newy * 1.25, xvector.index.values[i], color='red', ha='center', va='center')
     
-        plt.show()
-        return(fig, ax)
+    #     plt.show()
+    #     return(fig, ax)
 
 
     # biplot3d
-    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, figsize=(10,8)):
+    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, outliers=True, figsize=(10,8)):
         """Make biplot in 3d.
     
         Parameters
@@ -627,6 +636,8 @@ class pca():
             Show the labels.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
+        outliers : Bool, default: True
+            Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
         Verbose : int (default : 3)
@@ -642,7 +653,7 @@ class pca():
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
 
-        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, figsize=figsize)
+        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, outliers=outliers, figsize=figsize)
 
         return(fig, ax)
 
@@ -703,14 +714,15 @@ class pca():
     # Top scoring components
     def norm(self, X, n_components=None, pcexclude=[1]):
         """Normalize out PCs.
-    
+
+        Description
+        -----------
         Normalize your data using the principal components.
         As an example, suppose there is (technical) variation in the fist
         component and you want that out. This function transforms the data using
         the components that you want, e.g., starting from the 2nd pc, up to the
         pc that contains at least 95% of the explained variance
-    
-    
+
         Parameters
         ----------
         X : numpy array
@@ -719,18 +731,18 @@ class pca():
             Number of PCs to keep based on the explained variance. The default is 1 (keeping all)
         pcexclude : list of int, optional
             The PCs to exclude. The default is [1].
-    
+
         Returns
         -------
         Normalized numpy array.
-    
+
         """
         if n_components is None:
             self.n_components = X.shape[1]
         else:
             self.n_components = n_components
 
-        if not isinstance(pcexclude,list): pcexclude=[pcexclude]
+        if not isinstance(pcexclude, list): pcexclude=[pcexclude]
 
         # Fit using PCA
         _ = self.fit_transform(X)
@@ -739,48 +751,84 @@ class pca():
         # Compute explained percentage of variance
         q = self.results['explained_var']
         ndims = np.where(q<=self.n_components)[0]
-        ndims = (np.setdiff1d(ndims + 1,pcexclude)) - 1
+        ndims = (np.setdiff1d(ndims + 1, pcexclude)) - 1
         # Transform data
-        out = np.repeat(np.mean(X.values, axis=1).reshape(-1,1), X.shape[1], axis=1) + np.dot(score.values[:,ndims], coeff[:,ndims].T)
+        out = np.repeat(np.mean(X.values, axis=1).reshape(-1, 1), X.shape[1], axis=1) + np.dot(score.values[:, ndims], coeff[:, ndims].T)
         # Return
         return(out)
 
     # Import example
     def import_example(self, data='titanic', verbose=3):
         """Import example dataset from github source.
-    
+
         Parameters
         ----------
         data : str, optional
             Name of the dataset 'sprinkler' or 'titanic' or 'student'.
         verbose : int, optional
             Print message to screen. The default is 3.
-    
+
         Returns
         -------
         pd.DataFrame()
             Dataset containing mixed features.
-    
+
         """
         return import_example(data=data, verbose=verbose)
 
+
 # %% Outlier detection
-def hotellingsT2(y, X, alpha=0.05, df=1):
+def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
+    """Test for outlier.
+
+    Description
+    -----------
+    Test for outliers using chi-square tests for each of the n_components.
+    The resulting P-value matrix is then combined using fishers method per sample.
+    The results can be used to priortize outliers as those samples that are an outlier
+    across multiple dimensions will be more significant then others.
+
+    Parameters
+    ----------
+    X : numpy-array.
+        Principal Components.
+    alpha : float, (default: 0.05)
+        Alpha level threshold to determine outliers.
+    df : int, (default: 1)
+        Degrees of freedom.
+    n_components : int, (default: 5)
+        Number of PC components to be used to compute the Pvalue.
+    Verbose : int (default : 3)
+        Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+
+    Returns
+    -------
+    outliers : pd.DataFrame
+        dataframe containing probability, test-statistics and boolean value.
+    y_bools : array-like
+        boolean value when significant per PC.
+
+    """
+    n_components = np.minimum(n_components, X.shape[1])
+    X = X[:, 0:n_components]
+    y = X
+
+    if verbose>=3: print('[pca] >Outlier detection using alpha=[%.2f] and n_components=[%d]' %(alpha, n_components))
     y_score = (y - np.mean(X)) ** 2 / np.var(X)
     # Compute probability per PC whether datapoints are outside the boundary
     y_proba = 1 - stats.chi2.cdf(y_score, df=df)
 
     # Compute the anomaly threshold
-    # anomaly_score_threshold = stats.chi2.ppf(q=(1 - alpha), df=df)
+    anomaly_score_threshold = stats.chi2.ppf(q=(1 - alpha), df=df)
     # Determine for each samples and per principal component the outliers
-    # y_bool = y_score >= anomaly_score_threshold
+    y_bools = y_score >= anomaly_score_threshold
 
     # Combine Pvalues across the components
     Pcomb = []
-    weights = np.arange(0, 1, (1/y_proba.shape[1]) )[::-1] + (1/y_proba.shape[1])
+    # weights = np.arange(0, 1, (1/n_components) )[::-1] + (1/n_components)
     for i in range(0, y_proba.shape[0]):
-        Pcomb.append(stats.combine_pvalues(y_proba[i, :], method='stouffer', weights=weights))
-        # stats.combine_pvalues(y_proba[-1,:], method='fisher')
+        # Pcomb.append(stats.combine_pvalues(y_proba[i, :], method='stouffer', weights=weights))
+        Pcomb.append(stats.combine_pvalues(y_proba[i, :], method='fisher'))
 
     Pcomb = np.array(Pcomb)
     outliers = pd.DataFrame()
@@ -788,7 +836,7 @@ def hotellingsT2(y, X, alpha=0.05, df=1):
     outliers['y_score'] = Pcomb[:, 0]
     outliers['y_bool'] = Pcomb[:, 1] <= alpha
     # Return
-    return outliers
+    return outliers, y_bools
 
 # %% Explained variance
 def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=-1, verbose=3):

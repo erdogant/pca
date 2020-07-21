@@ -2,6 +2,7 @@ from pca.pca import pca
 
 from pca.pca import (
     import_example,
+    hotellingsT2,
     )
 
 
