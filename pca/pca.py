@@ -445,7 +445,7 @@ class pca():
         return fig, ax
 
     # biplot
-    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, outliers=True, figsize=(10,8), verbose=3):
+    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, outliers=True, figsize=(10, 8), verbose=3):
         """Create the Biplot.
 
         Description
@@ -482,7 +482,7 @@ class pca():
         -----------
         * https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697
         * https://towardsdatascience.com/pca-clearly-explained-how-when-why-to-use-it-and-feature-importance-a-guide-in-python-7c274582c37e
-        
+
         """
         if self.results['PC'].shape[1]<2:
             print('[pca] >Requires 2 PCs to make 2d plot.')
@@ -491,28 +491,28 @@ class pca():
         # Pre-processing
         y, topfeat, n_feat = self._fig_preprocessing(y, n_feat, d3)
         # coeff = self.results['loadings'][topfeat['feature'].values].iloc[0:n_feat,:]
-        coeff = self.results['loadings'].iloc[0:n_feat,:]
+        coeff = self.results['loadings'].iloc[0:n_feat, :]
         # Use the PCs only for scaling purposes
-        mean_x = np.mean(self.results['PC'].iloc[:,0].values)
-        mean_y = np.mean(self.results['PC'].iloc[:,1].values)
+        mean_x = np.mean(self.results['PC'].iloc[:, 0].values)
+        mean_y = np.mean(self.results['PC'].iloc[:, 1].values)
 
         # Plot and scale values for arrows and text
         # Take the absolute minimum range of the x-axis and y-axis
         # max_axis = np.min(np.abs(self.results['PC'].iloc[:,0:2]).max())
-        max_axis = np.max(np.abs(self.results['PC'].iloc[:,0:2]).min(axis=1))
+        max_axis = np.max(np.abs(self.results['PC'].iloc[:, 0:2]).min(axis=1))
         max_arrow = np.abs(coeff).max().max()
-        scale = ( np.max([1, np.round(max_axis / max_arrow, 2)]) ) * 0.93
+        scale = (np.max([1, np.round(max_axis / max_arrow, 2)])) * 0.93
 
         # Include additional parameters if 3d-plot is desired.
         if d3:
             if self.results['PC'].shape[1]<3:
                 if verbose>=2: print('[pca] >Warning: requires 3 PCs to make 3d plot.')
                 return None, None
-            mean_z = np.mean(self.results['PC'].iloc[:,2].values)
-            zs = self.results['PC'].iloc[:,2].values
-            fig, ax  = self.scatter3d(y=y, label=label, legend=legend, outliers=outliers, figsize=figsize)
+            mean_z = np.mean(self.results['PC'].iloc[:, 2].values)
+            # zs = self.results['PC'].iloc[:,2].values
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, outliers=outliers, figsize=figsize)
         else:
-            fig, ax  = self.scatter(y=y, label=label, legend=legend, outliers=outliers, figsize=figsize)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, outliers=outliers, figsize=figsize)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -533,12 +533,12 @@ class pca():
             if d3:
                 # zarrow = getcoef[np.minimum(2,len(getcoef))] * scale
                 zarrow = getcoef[2] * scale
-                ax.quiver(mean_x, mean_y, mean_z, xarrow-mean_x, yarrow-mean_y, zarrow-mean_z, color='red', alpha=0.8, lw=2)
-                ax.text(xarrow*1.11, yarrow*1.11, zarrow*1.11, label, color=txtcolor, ha='center', va='center')
+                ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color='red', alpha=0.8, lw=2)
+                ax.text(xarrow * 1.11, yarrow * 1.11, zarrow * 1.11, label, color=txtcolor, ha='center', va='center')
             else:
-                ax.arrow(mean_x, mean_y, xarrow-mean_x, yarrow-mean_y, color='r', width=0.005, head_width=0.01*scale, alpha=0.8)
-                ax.text(xarrow*1.11, yarrow*1.11, label, color=txtcolor, ha='center', va='center')
-        
+                ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color='r', width=0.005, head_width=0.01 * scale, alpha=0.8)
+                ax.text(xarrow * 1.11, yarrow * 1.11, label, color=txtcolor, ha='center', va='center')
+
         # ax.set_xlim([np.min(self.results['PC'].iloc[:,0].values), np.max(self.results['PC'].iloc[:,0].values)])
         # ax.set_ylim([np.min(self.results['PC'].iloc[:,1].values), np.max(self.results['PC'].iloc[:,1].values)])
         # if d3: ax.set_zlim([np.min(self.results['PC'].iloc[:,2].values), np.max(self.results['PC'].iloc[:,2].values)])
@@ -546,86 +546,10 @@ class pca():
         plt.show()
         return(fig, ax)
 
-
-    # biplot
-    # def biplot_old(self, y=None, n_feat=None, figsize=(10,8)):
-    #     """Create the Biplot based on model.
-
-    #     Parameters
-    #     ----------
-    #     figsize : (float, float), optional, default: None
-    #         (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
-
-    #     Returns
-    #     -------
-    #     tuple containing (fig, ax)
-
-    #     """
-    #     if self.results['PC'].shape[1]<2:
-    #         print('[pca] >Requires 2 PCs to make 2d plot.')
-    #         return None, None
-    #     print('WARNING: THIS BIPLOT IS EXPERIMENTAL')
-    #     # Pre-processing
-    #     y, topfeat, n_feat = self._fig_preprocessing(y, n_feat)
-    #     # Figure
-    #     fig, ax  = self.scatter(y=y, figsize=figsize)
-
-    #     # Gather loadings from the top features from topfeat
-    #     # xvector = self.results['loadings'][topfeat['feature'].values].iloc[0,:]
-    #     # yvector = self.results['loadings'][topfeat['feature'].values].iloc[1,:]
-    #     xvector = self.results['loadings'].iloc[0,:]
-    #     yvector = self.results['loadings'].iloc[1,:]
-
-    #     # Use the PCs only for scaling purposes
-    #     xs = self.results['PC'].iloc[:,0].values
-    #     ys = self.results['PC'].iloc[:,1].values
-    #     # Boundaries figures
-    #     maxR = np.max(xs)*0.8
-    #     maxL = np.min(xs)*0.8
-    #     maxT = np.max(ys)*0.8
-    #     maxB = np.min(ys)*0.8
-
-    #     # np.where(np.logical_and(np.sign(xvector)>0, (np.sign(yvector)>0)))
-
-    #     # Plot and scale values for arrows and text
-    #     scalex = 1.0 / (self.results['loadings'][topfeat['feature'].values].iloc[0,:].max() - self.results['loadings'][topfeat['feature'].values].iloc[0,:].min())
-    #     scaley = 1.0 / (self.results['loadings'][topfeat['feature'].values].iloc[1,:].max() - self.results['loadings'][topfeat['feature'].values].iloc[1,:].min())
-    #     # Plot the arrows
-    #     for i in range(0, n_feat):
-    #         # arrows project features (ie columns from csv) as vectors onto PC axes
-    #         newx = xvector[i] * scalex
-    #         newy = yvector[i] * scaley
-    #         # figscaling = np.abs([np.abs(xs).max() / newx, np.abs(ys).max() / newy])
-    #         # figscaling = figscaling.max()
-    #         # newx = newx * figscaling * 0.1
-    #         # newy = newy * figscaling * 0.1
-    #         newx = newx * 500
-    #         newy = newy * 500
-
-    #         # Max boundary right x-axis
-    #         if np.sign(newx)>0:
-    #             newx = np.minimum(newx, maxR)
-    #         # Max boundary left x-axis
-    #         if np.sign(newx)<0:
-    #             newx = np.maximum(newx, maxL)
-    #         # Max boundary Top
-    #         if np.sign(newy)>0:
-    #             newy = np.minimum(newy, maxT)
-    #         # Max boundary Bottom
-    #         if np.sign(newy)<0:
-    #             newy = np.maximum(newy, maxB)
-            
-    #         ax.arrow(0, 0, newx, newy, color='r', width=0.005, head_width=0.05, alpha=0.6)
-    #         ax.text(newx * 1.25, newy * 1.25, xvector.index.values[i], color='red', ha='center', va='center')
-    
-    #     plt.show()
-    #     return(fig, ax)
-
-
     # biplot3d
-    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, outliers=True, figsize=(10,8)):
+    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, outliers=True, figsize=(10, 8)):
         """Make biplot in 3d.
-    
+
         Parameters
         ----------
         y : array-like, default: None
@@ -657,9 +581,8 @@ class pca():
 
         return(fig, ax)
 
-
     # Show explained variance plot
-    def plot(self, n_components=None, figsize=(10,8), xsteps=None):
+    def plot(self, n_components=None, figsize=(10, 8), xsteps=None):
         """Make plot.
 
         Parameters
@@ -672,7 +595,7 @@ class pca():
         Returns
         -------
         tuple containing (fig, ax)
-    
+
         """
         if n_components is not None:
             explvarCum = self.results['explained_var'][0:n_components]
@@ -680,10 +603,10 @@ class pca():
         else:
             explvarCum = self.results['explained_var']
             explvar = self.results['model'].explained_variance_ratio_
-        xtick_idx = np.arange(1,len(explvar) + 1)
+        xtick_idx = np.arange(1, len(explvar) + 1)
 
         # Make figure
-        fig,ax = plt.subplots(figsize=figsize, edgecolor='k')
+        fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
         plt.plot(xtick_idx, explvarCum, 'o-', color='k', linewidth=1, label='Cumulative explained variance')
 
         # Set xticks if less then 100 datapoints
@@ -691,7 +614,7 @@ class pca():
             ax.set_xticks(xtick_idx)
             xticklabel=xtick_idx.astype(str)
             if xsteps is not None:
-                xticklabel[np.arange(1,len(xticklabel),xsteps)]=''
+                xticklabel[np.arange(1, len(xticklabel), xsteps)] = ''
             ax.set_xticklabels(xticklabel, rotation=90, ha='left', va='top')
 
         plt.ylabel('Percentage explained variance')

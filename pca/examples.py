@@ -20,7 +20,7 @@ ax = model.biplot(n_feat=4, legend=False, label=False, outliers=True)
 ax = model.biplot3d(n_feat=1, legend=False)
 
 import pca
-pca.hotellingsT2(out['PC'].values, out['PC'].values)
+pca.hotellingsT2(out['PC'].values)
 
 # %%
 
@@ -49,171 +49,6 @@ ax = model.biplot(n_feat=4, legend=False, label=False)
 ax = model.biplot3d(n_feat=1, legend=False)
 ax = model.biplot3d(n_feat=2, legend=False)
 ax = model.biplot3d(n_feat=4, legend=False, label=False)
-
-# %%
-from sklearn import decomposition
-from sklearn.preprocessing import StandardScaler
-import numpy as np
-import matplotlib.pyplot as plt
-import scipy, random
-
-# Generate data and fit PCA
-# random.seed(1)
-data = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
-outliers = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
-data = np.vstack((data, outliers))
-# pca = decomposition.PCA(n_components = 2)
-# scaler = StandardScaler()
-# scaler.fit(data)
-# data = scaler.transform(data)
-# pcaFit = pca.fit(data)
-# dataProject = pcaFit.transform(data)
-
-out = model.fit_transform(data)
-data = model.results['PC'].values
-
-#Calculate ellipse bounds and plot with scores
-alpha = 0.05
-nstd = 1
-theta = np.concatenate((np.linspace(-np.pi, np.pi, 50), np.linspace(np.pi, -np.pi, 50)))
-circle = np.array((np.cos(theta), np.sin(theta)))
-
-
-# z = -np.linspace(9,15,100)
-# x = np.linspace(-26,26,1000)
-# x,z = np.meshgrid(x,z)
-# Z = -np.exp(-0.05*z) +4*(z+10)**2 
-# X = x**2
-# plt.contour(x, z, (X+Z), [0])
-
-# Width and height are "full" widths, not radius
-# from matplotlib.patches import Ellipse
-# cov = np.cov(data[:, [0,1]], rowvar=False)
-# vals, vecs = np.linalg.eigh(cov)
-# width, height = 2 * nstd * np.sqrt(vals)
-# ellip = Ellipse(xy=data[:, [0,1]], width=width, height=height, angle=theta)
-
-# Covariance datapoints
-sigma = np.cov(np.array((data[:, 0], data[:, 1])))
-# sigma = np.cov(data)
-# anomaly_score_threshold = np.sqrt(scipy.stats.chi2.ppf(1-alpha, nstd))
-anomaly_score_threshold = scipy.stats.chi2.ppf(q=(1 - alpha), df=nstd)
-ell = np.transpose(circle).dot(np.linalg.cholesky(sigma) * anomaly_score_threshold)
-
-# anomaly_score = (new_x - np.mean(normal_x)) ** 2 / np.var(normal_x)
-# anomaly_score = (new_x - np.mean(data)) ** 2 / np.var(data)
-# out = anomaly_score > anomaly_score_threshold
-
-
-# 95% ellipse bounds
-a, b = np.max(ell[: ,0]), np.max(ell[: ,1])
-t = np.linspace(0, 2 * np.pi, 100)
-
-
-fig, ax = plt.subplots()
-# ax.add_artist(ellip)
-plt.scatter(data[:, 0], data[:, 1])
-plt.plot(a * np.cos(t), b * np.sin(t), color = 'red')
-plt.grid(color = 'lightgray', linestyle = '--')
-plt.show()
-
-
-# %%
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.patches import Ellipse
-from scipy import stats
-
-def plot_point_cov(data, nstd=2, calpha=0.05, ax=None, color='green'):
-    """
-    Plots an `nstd` sigma ellipse based on the mean and covariance of a point
-    "cloud" (data, an Nx2 array).
-
-    Parameters
-    ----------
-        data : An Nx2 array of the data.
-        nstd : The radius of the ellipse in numbers of standard deviations. Defaults to 2 standard deviations.
-        ax : The axis that the ellipse will be plotted on. Defaults to the current axis.
-        Additional keyword arguments are pass on to the ellipse patch.
-
-    Returns
-    -------
-        A matplotlib ellipse artist
-    """
-    if ax is None:
-        ax = plt.gca()
-
-    # The 2x2 covariance matrix to base the ellipse on the location of the center of the ellipse. Expects a 2-element sequence of [x0, y0].
-    data = data[:,[0,1]]
-    pos = data.mean(axis=0)
-    cov = np.cov(data, rowvar=False)
-
-    vals, vecs = eigsorted(cov, nstd)
-    theta = np.degrees(np.arctan2(*vecs[:,0][::-1]))
-
-    # Width and height are "full" widths, not radius
-    width, height = 2 * nstd * np.sqrt(vals)
-    # ellip = Ellipse(xy=pos, width=width, height=height, angle=theta, **kwargs)
-    ellip = Ellipse(xy=pos, width=width, height=height, angle=theta, color=color, alpha=calpha)
-
-    ax.add_artist(ellip)
-    return ellip
-
-
-def eigsorted(cov, nstd):
-    vals, vecs = np.linalg.eigh(cov)
-    # vecs = vecs * np.sqrt(scipy.stats.chi2.ppf(0.95, nstd))
-    order = vals.argsort()[::-1]
-    return vals[order], vecs[:,order]
-
-# def multitest(P, weights):
-#     return stats.combine_pvalues(P, method='stouffer', weights=weights)
-
-
-def HotellingsT2(y, X, alpha=0.05, nstd=1):
-    anomaly_score_threshold = stats.chi2.ppf(q=(1 - alpha), df=nstd)
-    y_score = (y - np.mean(X)) ** 2 / np.var(X)
-    y_proba = 1 - stats.chi2.cdf(y_score, df=nstd)
-    y_bool = y_score >= anomaly_score_threshold
-    
-    Pcomb = []
-    weights = np.arange(1/y_proba.shape[1], 1, 1/y_proba.shape[1])[::-1]
-    for i in range(0,y_proba.shape[0]):
-        Pcomb.append(stats.combine_pvalues(y_proba[i,:], method='stouffer', weights=weights))
-        # stats.combine_pvalues(y_proba[-1,:], method='fisher')
-    Pcomb = np.array(Pcomb)
-    y_proba = Pcomb[:,1]
-    y_score = Pcomb[:,0]
-    y_bool =  Pcomb[:,1]<=alpha
-
-    return y_proba, y_score, y_bool
-
-
-#-- Example usage -----------------------
-# Generate some random, correlated data
-# points = np.random.multivariate_normal(mean=(1,1), cov=[[0.4, 9],[9, 10]], size=1000)
-# points = model.results['PC'].values[:,[0,1]]
-
-nstd=2
-alpha=0.05
-
-y_proba, y_score, y_bool = HotellingsT2(data, data, alpha=alpha, nstd=nstd)
-
-# Plot the raw points...
-# data = data[:,[0,1,2]]
-plt.scatter(data[:,0], data[:,1], c='r')
-Iloc = np.sum(y_bool,axis=1)
-plt.scatter(data[Iloc>0,0], data[Iloc>0,1], c='g')
-# Plot a transparent 3 standard deviation covariance ellipse
-plot_point_cov(data, nstd=nstd, color='green', calpha=0.5, ax=None)
-plt.show()
-
-# %%
-from hnet import hnet
-df = pd.read_csv('C://temp//usarrest.txt')
-hn = hnet(y_min=3, perc_min_num=None)
-results=hn.association_learning(df)
-hn.plot()
 
 # %%
 from sklearn.datasets import load_iris
@@ -276,7 +111,7 @@ ax = model.biplot(n_feat=10, legend=False)
 import pca
 print(pca.__version__)
 
-# %%
+# %% IRIS DATASET EXAMPLE
 from sklearn.datasets import load_iris
 import pandas as pd
 from pca import pca
@@ -330,53 +165,6 @@ pca.fit(X,y)
 x_new = pca.transform(X)   
 
 
-# %%
-X = pd.read_csv('D://GITLAB/MASTERCLASS/embeddings/data/TCGA_RAW.zip',compression='zip')
-metadata = pd.read_csv('D://GITLAB/MASTERCLASS/embeddings/data/metadata.csv', sep=';')
-features = pd.read_csv('D://GITLAB/MASTERCLASS/embeddings/data/features.csv')
-X = pd.DataFrame(data=X.values, index=features.values.flatten(), columns=metadata.labx.values).T
-
-# %% RAW data
-# Initializatie
-model = pca(n_components=0.95, normalize=True)
-# Fit transform
-results = model.fit_transform(X)
-
-# Make plots
-model.scatter()
-ax = model.plot()
-ax = model.biplot(n_feat=20)
-
-# %%
-import numpy as np
-from tqdm import tqdm
-from pca import pca
-import matplotlib.pyplot as plt
-
-# Normalize
-Xnorm = np.log2(X+1)
-rowmeans = np.mean(Xnorm, axis=0)
-for i in tqdm(range(Xnorm.shape[1])):
-    Xnorm.iloc[:,i] = Xnorm.values[:,i] - rowmeans[i]
-
-# Make histogram
-plt.hist(Xnorm.values.ravel(), bins=50)
-
-# Initializatie
-model = pca(n_components=0.95, normalize=False)
-# Fit transform
-results = model.fit_transform(Xnorm)
-
-# Make plots
-model.scatter()
-ax = model.plot()
-from pca import pca
-ax = model.biplot(n_feat=100)
-ax = model.biplot2(n_feat=100)
-
-model.scatter3d()
-ax = model.biplot3d(n_feat=20)
-
 # %% Exmample with mixed dataset
 import pca
 # Import example
@@ -428,80 +216,3 @@ _=model3.fit_transform(X)
 model3.biplot(n_feat=3)
 
 # %%
-# # EXAMPLE
-# import pca
-# import numpy as np
-# from sklearn.datasets import load_iris
-# from sklearn.model_selection import GridSearchCV
-
-
-# # %% data
-# X = load_iris().data
-# labels=load_iris().feature_names
-# y=load_iris().target
-
-# # %%
-# param_grid = {
-#     'n_components':[None, 0.01, 1, 0.95, 2, 100000000000],
-#     'row_labels':[None, [], y],
-#     'col_labels':[None, [], labels],
-#     }
-
-# import itertools as it
-# allNames = param_grid.keys()
-# combinations = it.product(*(param_grid[Name] for Name in allNames))
-# combinations=list(combinations)
-
-# # %%
-# for combination in combinations:
-#     model = pca.fit(X, n_components=combination[0], row_labels=combination[1], col_labels=combination[2])
-#     ax = pca.plot(model)
-#     ax = pca.biplot(model)
-#     ax = pca.biplot3d(model)
-
-# # %%
-# import pca
-# from scipy.sparse import random as sparse_random
-# X = sparse_random(100, 1000, density=0.01, format='csr',random_state=42)
-
-# model = pca.fit(X)
-# ax = pca.plot(model)
-# ax = pca.biplot(model)
-# ax = pca.biplot3d(model)
-
-# # %%
-# import pandas as pd
-# X = load_iris().data
-# labels=load_iris().feature_names
-# y=load_iris().target
-
-# df = pd.DataFrame(data=X, columns=labels)
-# model = pca.fit(df)
-
-
-# # %%
-# X = load_iris().data
-# labels=load_iris().feature_names
-# y=load_iris().target
-
-# model = pca.fit(X)
-# ax = pca.plot(model)
-# ax = pca.biplot(model)
-# ax = pca.biplot3d(model)
-
-# model = pca.fit(X, row_labels=y, col_labels=labels)
-# fig = pca.biplot(model)
-# fig = pca.biplot3d(model)
-
-# model = pca.fit(X, n_components=0.95)
-# ax = pca.plot(model)
-# ax   = pca.biplot(model)
-
-# model = pca.fit(X, n_components=2)
-# ax = pca.plot(model)
-# ax   = pca.biplot(model)
-
-# Xnorm = pca.norm(X, pcexclude=[1,2])
-# model = pca.fit(Xnorm, row_labels=y, col_labels=labels)
-# ax = pca.biplot(model)
-# ax = pca.plot(model)
