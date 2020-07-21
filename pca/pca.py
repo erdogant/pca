@@ -15,13 +15,14 @@ from sklearn import preprocessing
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import scipy.sparse as sp
+from scipy import stats
 import colourmap as colourmap
 import os
 import wget
 
 # %% Association learning across all variables
 class pca():
-    def __init__(self, n_components=0.95, n_feat=25, onehot=False, normalize=False, random_state=None):
+    def __init__(self, n_components=0.95, n_feat=25, alpha=0.05, onehot=False, normalize=False, random_state=None):
         """Initialize pca with user-defined parameters.
 
         Parameters
@@ -46,6 +47,7 @@ class pca():
         self.normalize = normalize
         self.random_state = random_state
         self.n_feat = n_feat
+        self.alpha = alpha
 
     # Make PCA fit_transform
     def fit_transform(self, X, row_labels=None, col_labels=None, verbose=3):
@@ -125,8 +127,10 @@ class pca():
         loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components, verbose=verbose)
         # Top scoring n_components.
         topfeat = self.compute_topfeat(loadings=loadings, verbose=verbose)
+        # Detection of outliers
+        outliers = hotellingsT2(y=PC, X=PC, alpha=self.alpha, df=1)
         # Store
-        self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat)
+        self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers)
         # Return
         return(self.results)
 
@@ -366,7 +370,7 @@ class pca():
 
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0,1], figsize=(10,8)):
+    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0,1], outliers=True, figsize=(10,8)):
         """Scatter 2d plot.
 
         Parameters
@@ -381,6 +385,8 @@ class pca():
             Show the legend based on the unique y-labels.
         label : Bool, default: True
             Show the labels.
+        outliers : Bool, default: True
+            Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
 
@@ -405,6 +411,7 @@ class pca():
             zs = self.results['PC'].iloc[:,PC[2]].values
             ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
 
+        Ioutlier = self.results['outliers']['y_bool'].values
         # Make scatter plot
         uiy = np.unique(y)
         getcolors = np.array(colourmap.generate(len(uiy)))
@@ -413,9 +420,12 @@ class pca():
             if d3:
                 ax.scatter(xs[Iloc], ys[Iloc], zs[Iloc], color=getcolors[i,:], s=25, label=yk)
                 # if label: ax.text(xs[Iloc], ys[Iloc], zs[Iloc], yk, color=getcolors[i,:], ha='center', va='center')
+                if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], zs[Ioutlier], marker='x', color=getcolors[i,:])
             else:
                 ax.scatter(xs[Iloc], ys[Iloc], color=getcolors[i,:], s=25, label=yk)
                 if label: ax.annotate(yk, (np.mean(xs[Iloc]), np.mean(ys[Iloc])))
+                # s=np.abs(self.results['outliers']['y_score']).values
+                if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], marker='x', color=getcolors[i,:])
 
         # Set y
         ax.set_xlabel('PC'+str(PC[0]+1)+' ('+ str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
@@ -690,7 +700,6 @@ class pca():
         plt.draw()
         return(fig, ax)
 
-
     # Top scoring components
     def norm(self, X, n_components=None, pcexclude=[1]):
         """Normalize out PCs.
@@ -755,6 +764,31 @@ class pca():
         """
         return import_example(data=data, verbose=verbose)
 
+# %% Outlier detection
+def hotellingsT2(y, X, alpha=0.05, df=1):
+    y_score = (y - np.mean(X)) ** 2 / np.var(X)
+    # Compute probability per PC whether datapoints are outside the boundary
+    y_proba = 1 - stats.chi2.cdf(y_score, df=df)
+
+    # Compute the anomaly threshold
+    # anomaly_score_threshold = stats.chi2.ppf(q=(1 - alpha), df=df)
+    # Determine for each samples and per principal component the outliers
+    # y_bool = y_score >= anomaly_score_threshold
+
+    # Combine Pvalues across the components
+    Pcomb = []
+    weights = np.arange(0, 1, (1/y_proba.shape[1]) )[::-1] + (1/y_proba.shape[1])
+    for i in range(0, y_proba.shape[0]):
+        Pcomb.append(stats.combine_pvalues(y_proba[i, :], method='stouffer', weights=weights))
+        # stats.combine_pvalues(y_proba[-1,:], method='fisher')
+
+    Pcomb = np.array(Pcomb)
+    outliers = pd.DataFrame()
+    outliers['y_proba']= Pcomb[:, 1]
+    outliers['y_score'] = Pcomb[:, 0]
+    outliers['y_bool'] = Pcomb[:, 1] <= alpha
+    # Return
+    return outliers
 
 # %% Explained variance
 def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=-1, verbose=3):
@@ -786,7 +820,9 @@ def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=
 
 
 # %% Store results
-def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_labels, row_labels, topfeat):
+def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_labels, row_labels, topfeat, outliers):
+    outliers.index = row_labels
+    
     out = {}
     out['loadings'] = loadings
     out['PC'] = pd.DataFrame(data=PC[:,0:n_components], index=row_labels, columns=loadings.index.values[0:n_components])
@@ -794,6 +830,7 @@ def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_label
     out['model'] = model_pca
     out['pcp'] = pcp
     out['topfeat'] = topfeat
+    out['outliers'] = outliers
     return out
 
 
