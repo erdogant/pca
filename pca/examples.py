@@ -23,6 +23,11 @@ ax = model.biplot(n_feat=4, legend=False, label=False, outliers=True)
 import pca
 pca.hotellingsT2(out['PC'].values)
 
+# Select the outliers
+Xoutliers = X[out['outliers']['y_bool'],:]
+
+# Select the other set
+Xnormal = X[~out['outliers']['y_bool'],:]
 
 # %%
 
