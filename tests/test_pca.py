@@ -55,15 +55,15 @@ def test_pca():
     X_norm = model.norm(X, pcexclude=[1])
     X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
     out = model.fit_transform(X_norm)
-    assert out['topfeat'].feature.values[-2]=='f1'
+    assert (out['topfeat'].feature.values[-1]=='f1') | (out['topfeat'].feature.values[-2]=='f1')
     assert out['topfeat'].feature.values[0]=='f2'
     
     ##### NORMALIZE OUT PC1 AND PC2
     X_norm = model.norm(X, pcexclude=[1,2])
     X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
     out = model.fit_transform(X_norm)
-    assert out['topfeat'].feature.values[-1]=='f1'
-    assert out['topfeat'].feature.values[-3]=='f2'
+    assert out['topfeat'].feature.values[-2]=='f1'
+    assert out['topfeat'].feature.values[-1]=='f2'
     assert out['topfeat'].feature.values[0]=='f3'
 
     ##### NORMALIZE OUT PC2 AND PC4
@@ -74,15 +74,17 @@ def test_pca():
     assert out['topfeat'].feature.values[1]=='f3'
 
 
-    ######## TEST 2 #########
-    # X = sparse_random(100, 1000, density=0.01, format='csr',random_state=42)
+    ######## TEST FOR OUTLIERS #########
+    from pca import pca
+    import pandas as pd
+    import numpy as np
     
-    # model = pca.fit(X)
-    # ax = pca.plot(model)
-    # # plt.close('all')
-    # ax = pca.biplot(model)
-    # # plt.close('all')
-    # ax = pca.biplot3d(model)
-    # # plt.close('all')
+    X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
+    outliers = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
+    X = np.vstack((X, outliers))
     
-   
+    model = pca(alpha=0.05)
+    # Fit transform
+    out = model.fit_transform(X)
+    assert X[out['outliers']['y_bool'],:].shape[1]==5
+    
