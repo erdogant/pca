@@ -323,6 +323,15 @@ Xnormal = X[~out['outliers']['y_bool'],:]
 
 ```
 
+If desired, the outliers can also be detected directly using the hotelling T2 and/or SPE/DmodX functionality.
+
+```python
+
+import pca
+outliers_hot = pca.hotellingsT2(out['PC'].values, alpha=0.05)
+outliers_spe = pca.spe_dmodx(out['PC'].values, n_std=2)
+
+```
    
 ### Citation
 Please cite distfit in your publications if this is useful for your research. Here is an example BibTeX entry:
