@@ -290,19 +290,6 @@ print(out['outliers'])
     
 ```
 
-The outliers can can easily be selected for removal or other analysis.
-
-```python
-
-# Select the outliers
-Xoutliers = X[out['outliers']['y_bool'],:]
-
-# Select the other set
-Xnormal = X[~out['outliers']['y_bool'],:]
-
-```
-
-
 
 Make the plot
 
@@ -322,6 +309,18 @@ model.scatter3d(legend=True, outliers=True)
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/outliers_biplot3d.png" width="350" />
 </p>
  
+
+The outliers can can easily be selected for removal or other analysis.
+
+```python
+
+# Select the outliers
+Xoutliers = X[out['outliers']['y_bool'],:]
+
+# Select the other set
+Xnormal = X[~out['outliers']['y_bool'],:]
+
+```
 
    
 ### Citation
