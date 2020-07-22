@@ -27,8 +27,8 @@ def test_pca():
         model = pca(n_components=combination[0])
         model.fit_transform(X)
         assert model.plot()
-        assert model.biplot(y=y)
-        assert model.biplot3d(y=y)
+        assert model.biplot(y=y, SPE=True, hotellingt2=True)
+        assert model.biplot3d(y=y, SPE=True, hotellingt2=True)
 
 
 
@@ -62,16 +62,14 @@ def test_pca():
     X_norm = model.norm(X, pcexclude=[1,2])
     X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
     out = model.fit_transform(X_norm)
-    assert out['topfeat'].feature.values[-2]=='f1'
-    assert out['topfeat'].feature.values[-1]=='f2'
-    assert out['topfeat'].feature.values[0]=='f3'
+    assert (out['topfeat'].feature.values[-1]=='f2') | (out['topfeat'].feature.values[-1]=='f9') | (out['topfeat'].feature.values[-1]=='f1')
 
     ##### NORMALIZE OUT PC2 AND PC4
     X_norm = model.norm(X, pcexclude=[2])
     X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
     out = model.fit_transform(X_norm)
-    assert out['topfeat'].feature.values[-1]=='f2'
     assert out['topfeat'].feature.values[1]=='f3'
+    assert (out['topfeat'].feature.values[-1]=='f2') | (out['topfeat'].feature.values[-1]=='f9')
 
 
     ######## TEST FOR OUTLIERS #########
@@ -86,5 +84,5 @@ def test_pca():
     model = pca(alpha=0.05)
     # Fit transform
     out = model.fit_transform(X)
-    assert X[out['outliers']['y_bool'],:].shape[1]==5
-    
+    assert X[out['outliers']['y_bool'],:].shape[0]==5
+    assert out['outliers'].shape[1]==5
