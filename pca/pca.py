@@ -95,18 +95,25 @@ class pca():
         --------
         >>> from pca import pca
         >>> # Load example data
+        >>> from sklearn.datasets import load_iris
         >>> X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+        >>>
         >>> Initialize
         >>> model = pca(n_components=3)
         >>> # Fit using PCA
         >>> results = model.fit_transform(X)
+        >>>
         >>> # Make plots
         >>> fig, ax = model.scatter()
         >>> fig, ax = model.plot()
         >>> fig, ax = model.biplot()
+        >>> fig, ax = model.biplot(SPE=True, hotellingt2=True)
+        >>>
         >>> 3D plots
         >>> fig, ax = model.scatter3d()
         >>> fig, ax = model.biplot3d()
+        >>> fig, ax = model.biplot3d(SPE=True, hotellingt2=True)
+        >>>
         >>> # Normalize out PCs
         >>> X_norm = pca.norm(X)
 
@@ -266,7 +273,6 @@ class pca():
         # Return
         return df
 
-
     # Check input values
     def _preprocessing(self, X, row_labels, col_labels, verbose=3):
         if self.n_components is None:
@@ -369,7 +375,7 @@ class pca():
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         SPE : Bool, default: False
-            Show the outliers based on SPE/DmodX.
+            Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
@@ -404,7 +410,7 @@ class pca():
         label : Bool, default: True
             Show the labels.
         SPE : Bool, default: False
-            Show the outliers based on SPE/DmodX.
+            Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
@@ -492,7 +498,7 @@ class pca():
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         SPE : Bool, default: False
-            Show the outliers based on SPE/DmodX.
+            Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
@@ -583,7 +589,7 @@ class pca():
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         SPE : Bool, default: False
-            Show the outliers based on SPE/DmodX.
+            Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
