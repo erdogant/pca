@@ -430,9 +430,9 @@ class pca():
         # Plot outliers
         Ioutlier = self.results['outliers']['y_bool'].values
         if d3:
-            if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], zs[Ioutlier], marker='x', color=[0,0,0], s=26, label='outlier')
+            if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], zs[Ioutlier], marker='x', color=[0,0,0], s=26, label='outliers')
         else:
-            if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], marker='x', color=[0,0,0], s=26, label='outlier')
+            if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], marker='x', color=[0,0,0], s=26, label='outliers')
 
         # Set y
         ax.set_xlabel('PC'+str(PC[0]+1)+' ('+ str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')

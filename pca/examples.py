@@ -6,21 +6,23 @@ X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
 outliers = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
 X = np.vstack((X, outliers))
 
-model = pca(normalize=False, n_components=5)
+model = pca(alpha=0.05)
+
 # Fit transform
 out = model.fit_transform(X)
 out['topfeat']
-out['outliers']
+print(out['outliers'])
 
-model.biplot()
+model.biplot(legend=True, outliers=True)
+ax = model.biplot3d(legend=True, outliers=True)
 
-ax = model.scatter(legend=True, outliers=False)
+ax = model.scatter(legend=True, outliers=True)
 ax = model.scatter3d(legend=False, outliers=True)
 ax = model.biplot(n_feat=4, legend=False, label=False, outliers=True)
-ax = model.biplot3d(n_feat=1, legend=False)
 
 import pca
 pca.hotellingsT2(out['PC'].values)
+
 
 # %%
 

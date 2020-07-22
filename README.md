@@ -145,6 +145,8 @@ ax = pca.biplot(model)
 
 ### Example to extract the feature importance:
 
+```python
+
     # Import libraries
     import numpy as np
     import pandas as pd
@@ -185,21 +187,35 @@ ax = pca.biplot(model)
     # 7  PC8      f8
     # 8  PC9      f9
 
+```
+
 #### Make the plots
 
+```python
+
     model.plot()
+
+```
 
 [![Explained variance][1]][1]
 
 Make the biplot. It can be nicely seen that the first feature with most variance (f1), is almost horizontal in the plot, whereas the second most variance (f2) is almost vertical. This is expected because most of the variance is in f1, followed by f2 etc.
 
+```python
+
     ax = model.biplot(n_feat=10, legend=False)
+
+```
 
 [![biplot][2]][2]
 
 Biplot in 3d. Here we see the nice addition of the expected f3 in the plot in the z-direction.
 
+```python
+
     ax = model.biplot3d(n_feat=10, legend=False)
+
+```
 
 [![biplot3d][3]][3]
 
@@ -208,6 +224,91 @@ Biplot in 3d. Here we see the nice addition of the expected f3 in the plot in th
   [2]: https://i.stack.imgur.com/V6BYZ.png
   [3]: https://i.stack.imgur.com/831NF.png
   
+
+
+
+### Example to detect and plot outliers.
+
+To detect any outliers across the multi-dimensional space of PCA I use the hotellings T2 test. 
+This basically means that we compute the chi-square tests for the top n_components (default is PC1 to PC5).
+It is expected that the highest variance will be seen in the first few components because of the nature of PCA, going deeper into PC space seems waste of statistics.
+This results in a P-value matrix (samples x PCs) for which the P-values per sample are combined using fishers method. 
+This approach will not only determine outliers but can also rank the outliers (strongest tot weak). The cut-off of setting an outlier can be set with alpha (default: 0.05).
+
+
+```python
+
+    from pca import pca
+    import pandas as pd
+    import numpy as np
+
+    # Create dataset with 100 samples
+    X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
+    # Create 5 outliers
+    outliers = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
+    # Combine data
+    X = np.vstack((X, outliers))
+
+    # Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.
+    model = pca(alpha=0.05)
+
+    # Fit transform
+    out = model.fit_transform(X)
+
+    # [pca] >The PCA reduction is performed on the [5] columns of the input dataframe.
+    # [pca] >Column labels are auto-completed.
+    # [pca] >Row labels are auto-completed.
+    # [pca] >Fitting using PCA..
+    # [pca] >Computing loadings and PCs..
+    # [pca] >Computing explained variance..
+    # [pca] >Number of components is [4] that covers the [95.00%] explained variance.
+    # [pca] >Outlier detection using alpha=[0.05] and n_components=[5]
+
+```
+
+The information regarding the outliers are stored in the dict 'outliers' (see below).
+The strongest outliers in this example results in y_score of *inf* and Pvalue of almost 0. This can happen due to the properties of the chi-square test.
+The rows are in line with the input samples.
+
+```python
+
+    print(out['outliers'])
+
+    #           y_proba    y_score  y_bool
+    # 1.0  9.584860e-01   3.735632   False
+    # 1.0  9.250756e-01   4.444498   False
+    # 1.0  8.573108e-01   5.474558   False
+    # 1.0  6.174986e-01   8.116088   False
+    # 1.0  9.367808e-01   4.221923   False
+    # ..            ...        ...     ...
+    # 1.0  0.000000e+00        inf    True
+    # 1.0  1.625177e-11  72.253209    True
+    # 1.0  1.639136e-09  61.817369    True
+    # 1.0  0.000000e+00        inf    True
+    # 1.0  0.000000e+00        inf    True
+    
+```
+
+Make the plot
+
+```python
+
+    model.biplot(legend=True, outliers=True)
+    model.biplot3d(legend=True, outliers=True)
+    
+    # Create only the scatter plots
+    model.scatter(legend=True, outliers=True)
+    model.scatter3d(legend=True, outliers=True)
+    
+``` 
+   
+<p align="center">
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/outliers_biplot.png" width="350" />
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/outliers_biplot3d.png" width="350" />
+</p>
+ 
+
+   
 ### Citation
 Please cite distfit in your publications if this is useful for your research. Here is an example BibTeX entry:
 ```BibTeX
