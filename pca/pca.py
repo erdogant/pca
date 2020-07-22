@@ -448,7 +448,7 @@ class pca():
                 ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5,0.5,0.5], s=26, label='outliers (SPE/DmodX)')
                 # Plot the ellipse
                 g_ellipse = spe_dmodx(np.c_[xs,ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
-                ax.add_artist(g_ellipse)
+                if g_ellipse is not None: ax.add_artist(g_ellipse)
 
         # Make scatter plot of all not-outliers
         Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
@@ -782,37 +782,45 @@ def spe_dmodx(X, n_std=2, calpha=0.5, color='green', verbose=3):
 
     if verbose>=3: print('[pca] >Outlier detection using SPE/DmodX with n_std=[%d]' %(n_std))
     # The 2x2 covariance matrix to base the ellipse on the location of the center of the ellipse. Expects a 2-element sequence of [x0, y0].
-    X = X[:, [0, 1]]
-    # Compute mean and covariance
-    g_ell_center = X.mean(axis=0)
-    cov = np.cov(X, rowvar=False)
-    # Width and height are "full" widths, not radius
-    vals, vecs = _eigsorted(cov, n_std)
-    angle = np.degrees(np.arctan2(*vecs[:, 0][::-1]))
-    width, height = 2 * n_std * np.sqrt(vals)
-    # Compute angles of ellipse
-    cos_angle = np.cos(np.radians(180. - angle))
-    sin_angle = np.sin(np.radians(180. - angle))
-    # Determine the elipse range
-    xc = X[:, 0] - g_ell_center[0]
-    yc = X[:, 1] - g_ell_center[1]
-    xct = xc * cos_angle - yc * sin_angle
-    yct = xc * sin_angle + yc * cos_angle
-    rad_cc = (xct**2 / (width / 2.)**2) + (yct**2 / (height / 2.)**2)
+    n_components = np.minimum(2, X.shape[1])
+    X = X[:, 0:n_components]
 
-    # Mark the samples outside the ellipse
-    outliers = rad_cc>1
+    if X.shape[1]>=2:
+        # Compute mean and covariance
+        g_ell_center = X.mean(axis=0)
+        cov = np.cov(X, rowvar=False)
+        # Width and height are "full" widths, not radius
+        vals, vecs = _eigsorted(cov, n_std)
+        angle = np.degrees(np.arctan2(*vecs[:, 0][::-1]))
+        width, height = 2 * n_std * np.sqrt(vals)
+        # Compute angles of ellipse
+        cos_angle = np.cos(np.radians(180. - angle))
+        sin_angle = np.sin(np.radians(180. - angle))
+        # Determine the elipse range
+        xc = X[:, 0] - g_ell_center[0]
+        yc = X[:, 1] - g_ell_center[1]
+        xct = xc * cos_angle - yc * sin_angle
+        yct = xc * sin_angle + yc * cos_angle
+        rad_cc = (xct**2 / (width / 2.)**2) + (yct**2 / (height / 2.)**2)
 
-    # Plot the raw points.
-    g_ellipse = Ellipse(xy=g_ell_center, width=width, height=height, angle=angle, color=color, alpha=calpha)
-    # if ax is None: ax = plt.gca()
-    # g_ellipse = Ellipse(xy=g_ell_center, width=width, height=height, angle=angle, color=color, alpha=calpha)
-    # ax.add_artist(g_ellipse)
-    # ax.scatter(X[:, 0], X[:, 1], c=outliers, linewidths=0.3)
+        # Mark the samples outside the ellipse
+        outliers = rad_cc>1
 
+        # Plot the raw points.
+        g_ellipse = Ellipse(xy=g_ell_center, width=width, height=height, angle=angle, color=color, alpha=calpha)
+        # if ax is None: ax = plt.gca()
+        # g_ellipse = Ellipse(xy=g_ell_center, width=width, height=height, angle=angle, color=color, alpha=calpha)
+        # ax.add_artist(g_ellipse)
+        # ax.scatter(X[:, 0], X[:, 1], c=outliers, linewidths=0.3)
+        y_score = list(map(lambda x: euclidean_distances([g_ell_center], x.reshape(1, -1))[0][0], X))
+    else:
+        outliers = np.repeat(False, X.shape[1])
+        y_score = np.repeat(None, X.shape[1])
+    
     out = pd.DataFrame()
     out['y_bool_spe'] = outliers
-    out['y_score_spe'] = list(map(lambda x: euclidean_distances([g_ell_center], x.reshape(1, -1))[0][0], X))
+    out['y_score_spe'] = y_score
+    g_ellipse = None
 
     return out, g_ellipse
 
