@@ -16,13 +16,15 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import scipy.sparse as sp
 from scipy import stats
+from matplotlib.patches import Ellipse
 import colourmap as colourmap
 import os
 import wget
+from sklearn.metrics.pairwise import euclidean_distances
 
 # %% Association learning across all variables
 class pca():
-    def __init__(self, n_components=0.95, n_feat=25, alpha=0.05, onehot=False, normalize=False, random_state=None):
+    def __init__(self, n_components=0.95, n_feat=25, alpha=0.05, n_std=2, onehot=False, normalize=False, random_state=None):
         """Initialize pca with user-defined parameters.
 
         Parameters
@@ -37,6 +39,8 @@ class pca():
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         alpha : float, default: 0.05
             Alpha to set the threshold to determine the outliers based on on the Hoteling T2 test.
+        n_std : int, default: 2
+            Number of standard deviations to determine the outliers using SPE/DmodX method.
         random_state : int optional
             Random state
         normalize : bool (default : True)
@@ -50,6 +54,7 @@ class pca():
         self.random_state = random_state
         self.n_feat = n_feat
         self.alpha = alpha
+        self.n_std = n_std
 
     # Make PCA fit_transform
     def fit_transform(self, X, row_labels=None, col_labels=None, verbose=3):
@@ -130,12 +135,21 @@ class pca():
         # Top scoring n_components.
         topfeat = self.compute_topfeat(loadings=loadings, verbose=verbose)
         # Detection of outliers
-        outliers = hotellingsT2(PC, alpha=self.alpha, df=1, verbose=verbose)[0]
+        outliers = self.compute_outliers(PC, verbose=verbose)
         # Store
         self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers)
         # Return
         return(self.results)
 
+    # Outlier detection
+    def compute_outliers(self, PC, n_std=2, verbose=3):
+        # Detection of outliers using hotelling T2 test.
+        outliersHT2 = hotellingsT2(PC, alpha=self.alpha, df=1, verbose=verbose)[0]
+        # Detection of outliers using elipse method.
+        outliersELIPS = spe_dmodx(PC, n_std=self.n_std, verbose=verbose)[0]
+        # Combine
+        outliers = pd.concat([outliersHT2, outliersELIPS], axis=1)
+        return outliers
 
     # Post processing.
     def _postprocessing(self, model_pca, loadings, col_labels, n_components, verbose=3):
@@ -340,9 +354,8 @@ class pca():
 
         return y, topfeat, n_feat
 
-
     # Scatter plot
-    def scatter3d(self, y=None, label=True, legend=True, PC=[0,1,2], outliers=True, figsize=(10,8)):
+    def scatter3d(self, y=None, label=True, legend=True, PC=[0,1,2], SPE=False, hotellingt2=False, figsize=(10, 8)):
         """Scatter 3d plot.
 
         Parameters
@@ -355,7 +368,9 @@ class pca():
             Show the labels.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
-        outliers : Bool, default: True
+        SPE : Bool, default: False
+            Show the outliers based on SPE/DmodX.
+        hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
@@ -366,15 +381,14 @@ class pca():
 
         """
         if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, outliers=outliers, figsize=figsize)
+            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, figsize=figsize)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
             fig, ax = None, None
         return fig, ax
 
-
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0,1], outliers=True, figsize=(10,8)):
+    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0, 1], SPE=False, hotellingt2=False, figsize=(10, 8)):
         """Scatter 2d plot.
 
         Parameters
@@ -389,7 +403,9 @@ class pca():
             Show the legend based on the unique y-labels.
         label : Bool, default: True
             Show the labels.
-        outliers : Bool, default: True
+        SPE : Bool, default: False
+            Show the outliers based on SPE/DmodX.
+        hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
@@ -400,39 +416,47 @@ class pca():
 
         """
         fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
+        Ioutlier1 = np.repeat(False, self.results['PC'].shape[0])
+        Ioutlier2 = np.repeat(False, self.results['PC'].shape[0])
 
         if y is None:
             y, _, _ = self._fig_preprocessing(y, None, d3)
 
         # Get coordinates
-        xs = self.results['PC'].iloc[:,PC[0]].values
-        ys = np.zeros(len(xs))
-        # Get y-axis
-        if self.results['PC'].shape[1]>1:
-            ys = self.results['PC'].iloc[:,PC[1]].values
-        # Get Z-axis
-        if d3:
-            zs = self.results['PC'].iloc[:,PC[2]].values
-            ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
+        xs, ys, zs, ax = _get_coordinates(self.results['PC'], PC, fig, ax, d3)
+        
+        # Plot outliers for hotelling T2 test.
+        if hotellingt2:
+            Ioutlier1 = self.results['outliers']['y_bool'].values
+            if d3:
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='x', color=[0,0,0], s=26, label='outliers (hotelling t2)')
+            else:
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0,0,0], s=26, label='outliers (hotelling t2)')
 
-        # Make scatter plot
+        # Plot outliers for hotelling T2 test.
+        if SPE:
+            Ioutlier2 = self.results['outliers']['y_bool_spe'].values
+            if d3:
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='d', color=[0.5,0.5,0.5], s=26, label='outliers (SPE/DmodX)')
+            else:
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5,0.5,0.5], s=26, label='outliers (SPE/DmodX)')
+                # Plot the ellipse
+                g_ellipse = spe_dmodx(np.c_[xs,ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
+                ax.add_artist(g_ellipse)
+
+        # Make scatter plot of all not-outliers
+        Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
         uiy = np.unique(y)
         getcolors = np.array(colourmap.generate(len(uiy), cmap='Set1'))
         for i, yk in enumerate(uiy):
-            Iloc = (yk==y)
+            Iloc_label = (yk==y)
+            Iloc_sampl = np.logical_and(Iloc_label, Inormal)
             if d3:
-                ax.scatter(xs[Iloc], ys[Iloc], zs[Iloc], color=getcolors[i,:], s=25, label=yk)
-                # if label: ax.text(xs[Iloc], ys[Iloc], zs[Iloc], yk, color=getcolors[i,:], ha='center', va='center')
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], color=getcolors[i,:], s=25, label=yk)
+                # if label: ax.text(xs[Iloc_label], ys[Iloc_label], zs[Iloc_label], yk, color=getcolors[i,:], ha='center', va='center')
             else:
-                ax.scatter(xs[Iloc], ys[Iloc], color=getcolors[i,:], s=25, label=yk)
-                if label: ax.annotate(yk, (np.mean(xs[Iloc]), np.mean(ys[Iloc])))
-
-        # Plot outliers
-        Ioutlier = self.results['outliers']['y_bool'].values
-        if d3:
-            if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], zs[Ioutlier], marker='x', color=[0,0,0], s=26, label='outliers')
-        else:
-            if outliers: ax.scatter(xs[Ioutlier], ys[Ioutlier], marker='x', color=[0,0,0], s=26, label='outliers')
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], color=getcolors[i,:], s=25, label=yk)
+                if label: ax.annotate(yk, (np.mean(xs[Iloc_label]), np.mean(ys[Iloc_label])))
 
         # Set y
         ax.set_xlabel('PC'+str(PC[0]+1)+' ('+ str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
@@ -445,7 +469,7 @@ class pca():
         return fig, ax
 
     # biplot
-    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, outliers=True, figsize=(10, 8), verbose=3):
+    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, SPE=False, hotellingt2=False, figsize=(10, 8), verbose=3):
         """Create the Biplot.
 
         Description
@@ -467,7 +491,9 @@ class pca():
             Show the labels.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
-        outliers : Bool, default: True
+        SPE : Bool, default: False
+            Show the outliers based on SPE/DmodX.
+        hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
@@ -510,9 +536,9 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, 2].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, outliers=outliers, figsize=figsize)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, figsize=figsize)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, outliers=outliers, figsize=figsize)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, figsize=figsize)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -539,15 +565,11 @@ class pca():
                 ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color='r', width=0.005, head_width=0.01 * scale, alpha=0.8)
                 ax.text(xarrow * 1.11, yarrow * 1.11, label, color=txtcolor, ha='center', va='center')
 
-        # ax.set_xlim([np.min(self.results['PC'].iloc[:,0].values), np.max(self.results['PC'].iloc[:,0].values)])
-        # ax.set_ylim([np.min(self.results['PC'].iloc[:,1].values), np.max(self.results['PC'].iloc[:,1].values)])
-        # if d3: ax.set_zlim([np.min(self.results['PC'].iloc[:,2].values), np.max(self.results['PC'].iloc[:,2].values)])
-
         plt.show()
         return(fig, ax)
 
     # biplot3d
-    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, outliers=True, figsize=(10, 8)):
+    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, SPE=False, hotellingt2=False, figsize=(10, 8)):
         """Make biplot in 3d.
 
         Parameters
@@ -560,12 +582,12 @@ class pca():
             Show the labels.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
-        outliers : Bool, default: True
+        SPE : Bool, default: False
+            Show the outliers based on SPE/DmodX.
+        hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
-        Verbose : int (default : 3)
-            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
         Returns
         -------
@@ -577,7 +599,7 @@ class pca():
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
 
-        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, outliers=outliers, figsize=figsize)
+        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, figsize=figsize)
 
         return(fig, ax)
 
@@ -621,7 +643,7 @@ class pca():
         plt.xlabel('Principle Component')
         plt.ylim([0, 1.05])
         plt.xlim([0, len(explvar) + 1])
-        titletxt = 'Cumulative explained variance\n ' + str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp']*100)[0:5] + '%] of the variance.'
+        titletxt = 'Cumulative explained variance\n ' + str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance.'
         plt.title(titletxt)
         plt.grid(True)
 
@@ -699,10 +721,99 @@ class pca():
         """
         return import_example(data=data, verbose=verbose)
 
+# %%
+def _get_coordinates(PCs, PC, fig, ax, d3):
+    xs = PCs.iloc[:,PC[0]].values
+    ys = np.zeros(len(xs))
+    zs = None
+
+    # Get y-axis
+    if PCs.shape[1]>1:
+        ys = PCs.iloc[:,PC[1]].values
+
+    # Get Z-axis
+    if d3:
+        zs = PCs.iloc[:,PC[2]].values
+        ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
+
+    return xs, ys, zs, ax
+
+# %%
+def _eigsorted(cov, n_std):
+    vals, vecs = np.linalg.eigh(cov)
+    # vecs = vecs * np.sqrt(scipy.stats.chi2.ppf(0.95, n_std))
+    order = vals.argsort()[::-1]
+    return vals[order], vecs[:, order]
+
+
+def spe_dmodx(X, n_std=2, calpha=0.5, color='green', verbose=3):
+    """Compute SPE/distance to model (DmodX).
+
+    Description
+    -----------
+    Outlier can be detected using SPE/DmodX (distance to model) based on the mean and covariance of the first 2 dimensions of X.
+    On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are complementary to each other.
+
+    Parameters
+    ----------
+    X : Array-like
+        Input data, in this case the Principal components.
+    n_std : int, (default: 2)
+        Standard deviation. The default is 2.
+    calpha : float, (default: 0.05)
+        transperancy color.
+    color : String, (default: 'green')
+        Color of the ellipse.
+
+    Returns
+    -------
+    outliers : pd.DataFrame()
+        column with boolean outliers and euclidean distance of each sample to the center of the ellipse.
+    ax : object
+        Figure axis.
+
+    """
+
+    if verbose>=3: print('[pca] >Outlier detection using SPE/DmodX with n_std=[%d]' %(n_std))
+    # The 2x2 covariance matrix to base the ellipse on the location of the center of the ellipse. Expects a 2-element sequence of [x0, y0].
+    X = X[:, [0, 1]]
+    # Compute mean and covariance
+    g_ell_center = X.mean(axis=0)
+    cov = np.cov(X, rowvar=False)
+    # Width and height are "full" widths, not radius
+    vals, vecs = _eigsorted(cov, n_std)
+    angle = np.degrees(np.arctan2(*vecs[:, 0][::-1]))
+    width, height = 2 * n_std * np.sqrt(vals)
+    # Compute angles of ellipse
+    cos_angle = np.cos(np.radians(180. - angle))
+    sin_angle = np.sin(np.radians(180. - angle))
+    # Determine the elipse range
+    xc = X[:, 0] - g_ell_center[0]
+    yc = X[:, 1] - g_ell_center[1]
+    xct = xc * cos_angle - yc * sin_angle
+    yct = xc * sin_angle + yc * cos_angle
+    rad_cc = (xct**2 / (width / 2.)**2) + (yct**2 / (height / 2.)**2)
+
+    # Mark the samples outside the ellipse
+    outliers = rad_cc>1
+
+    # Plot the raw points.
+    g_ellipse = Ellipse(xy=g_ell_center, width=width, height=height, angle=angle, color=color, alpha=calpha)
+    # if ax is None: ax = plt.gca()
+    # g_ellipse = Ellipse(xy=g_ell_center, width=width, height=height, angle=angle, color=color, alpha=calpha)
+    # ax.add_artist(g_ellipse)
+    # ax.scatter(X[:, 0], X[:, 1], c=outliers, linewidths=0.3)
+
+    out = pd.DataFrame()
+    out['y_bool_spe'] = outliers
+    out['y_score_spe'] = list(map(lambda x: euclidean_distances([g_ell_center], x.reshape(1, -1))[0][0], X))
+
+    return out, g_ellipse
+
 
 # %% Outlier detection
 def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
-    """Test for outlier.
+    """Test for outlier using hotelling T2 test.
 
     Description
     -----------
@@ -736,10 +847,12 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
     X = X[:, 0:n_components]
     y = X
 
-    if verbose>=3: print('[pca] >Outlier detection using alpha=[%.2f] and n_components=[%d]' %(alpha, n_components))
+    if verbose>=3: print('[pca] >Outlier detection using Hotelling T2 test with alpha=[%.2f] and n_components=[%d]' %(alpha, n_components))
     y_score = (y - np.mean(X)) ** 2 / np.var(X)
     # Compute probability per PC whether datapoints are outside the boundary
     y_proba = 1 - stats.chi2.cdf(y_score, df=df)
+    # Set probabilities at a very small value when 0. This is required for the Fishers method. Otherwise inf values will occur.
+    y_proba[y_proba==0]=1e-300
 
     # Compute the anomaly threshold
     anomaly_score_threshold = stats.chi2.ppf(q=(1 - alpha), df=df)
@@ -760,6 +873,7 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
     outliers['y_bool'] = Pcomb[:, 1] <= alpha
     # Return
     return outliers, y_bools
+
 
 # %% Explained variance
 def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=-1, verbose=3):

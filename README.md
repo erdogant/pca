@@ -263,31 +263,32 @@ out = model.fit_transform(X)
 # [pca] >Computing loadings and PCs..
 # [pca] >Computing explained variance..
 # [pca] >Number of components is [4] that covers the [95.00%] explained variance.
-# [pca] >Outlier detection using alpha=[0.05] and n_components=[5]
-
+# [pca] >Outlier detection using Hotelling T2 test with alpha=[0.05] and n_components=[4]
+# [pca] >Outlier detection using SPE/DmodX with n_std=[2]
 ```
 
 The information regarding the outliers are stored in the dict 'outliers' (see below).
-The strongest outliers in this example results in y_score of *inf* and Pvalue of ~0. This can happen due to the properties of the chi-square test.
+The outliers computed using hotelling T2 test are the columns *y_proba*, *y_score* and *y_bool*.
+The outliers computed using SPE/DmodX are the columns *y_bool_spe*, *y_score_spe*, where y_score_spe is the euclidean distance of the center to the samples.
 The rows are in line with the input samples.
 
 ```python
 
 print(out['outliers'])
 
-#           y_proba    y_score  y_bool
-# 1.0  9.584860e-01   3.735632   False
-# 1.0  9.250756e-01   4.444498   False
-# 1.0  8.573108e-01   5.474558   False
-# 1.0  6.174986e-01   8.116088   False
-# 1.0  9.367808e-01   4.221923   False
-# ..            ...        ...     ...
-# 1.0  0.000000e+00        inf    True
-# 1.0  1.625177e-11  72.253209    True
-# 1.0  1.639136e-09  61.817369    True
-# 1.0  0.000000e+00        inf    True
-# 1.0  0.000000e+00        inf    True
-    
+#            y_proba      y_score  y_bool  y_bool_spe  y_score_spe
+# 1.0   9.799576e-01     3.060765   False       False     0.993407
+# 1.0   8.198524e-01     5.945125   False       False     2.331705
+# 1.0   9.793117e-01     3.086609   False       False     0.128518
+# 1.0   9.743937e-01     3.268052   False       False     0.794845
+# 1.0   8.333778e-01     5.780220   False       False     1.523642
+# ..             ...          ...     ...         ...          ...
+# 1.0   6.793085e-11    69.039523    True        True    14.672828
+# 1.0  2.610920e-291  1384.158189    True        True    16.566568
+# 1.0   6.866703e-11    69.015237    True        True    14.936442
+# 1.0  1.765139e-292  1389.577522    True        True    17.183093
+# 1.0  1.351102e-291  1385.483398    True        True    17.319038
+
 ```
 
 
@@ -295,22 +296,22 @@ Make the plot
 
 ```python
 
-model.biplot(legend=True, outliers=True)
-model.biplot3d(legend=True, outliers=True)
+model.biplot(legend=True, SPE=True, hotellingt2=True)
+model.biplot3d(legend=True, SPE=True, hotellingt2=True)
 
 # Create only the scatter plots
-model.scatter(legend=True, outliers=True)
-model.scatter3d(legend=True, outliers=True)
+model.scatter(legend=True, SPE=True, hotellingt2=True)
+model.scatter3d(legend=True, SPE=True, hotellingt2=True)
     
 ``` 
 
 <p align="center">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/outliers_biplot.png" width="350" />
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/outliers_biplot_spe_hot.png" width="350" />
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/outliers_biplot3d.png" width="350" />
 </p>
  
 
-The outliers can can easily be selected for removal or other analysis.
+The outliers can can easily be selected:
 
 ```python
 
