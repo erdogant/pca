@@ -753,7 +753,7 @@ def _eigsorted(cov, n_std):
     return vals[order], vecs[:, order]
 
 
-def spe_dmodx(X, n_std=2, calpha=0.5, color='green', verbose=3):
+def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
     """Compute SPE/distance to model (DmodX).
 
     Description
@@ -767,10 +767,12 @@ def spe_dmodx(X, n_std=2, calpha=0.5, color='green', verbose=3):
         Input data, in this case the Principal components.
     n_std : int, (default: 2)
         Standard deviation. The default is 2.
-    calpha : float, (default: 0.05)
+    calpha : float, (default: 0.3)
         transperancy color.
     color : String, (default: 'green')
         Color of the ellipse.
+    showfig : bool, (default: False)
+        Scatter the points with the ellipse and mark the outliers.
 
     Returns
     -------
@@ -809,15 +811,18 @@ def spe_dmodx(X, n_std=2, calpha=0.5, color='green', verbose=3):
 
         # Plot the raw points.
         g_ellipse = Ellipse(xy=g_ell_center, width=width, height=height, angle=angle, color=color, alpha=calpha)
-        # if ax is None: ax = plt.gca()
-        # g_ellipse = Ellipse(xy=g_ell_center, width=width, height=height, angle=angle, color=color, alpha=calpha)
-        # ax.add_artist(g_ellipse)
-        # ax.scatter(X[:, 0], X[:, 1], c=outliers, linewidths=0.3)
         y_score = list(map(lambda x: euclidean_distances([g_ell_center], x.reshape(1, -1))[0][0], X))
+
+        if showfig:
+            ax = plt.gca()
+            ax.add_artist(g_ellipse)
+            ax.scatter(X[~outliers, 0], X[~outliers, 1], c='black', linewidths=0.3, label='normal')
+            ax.scatter(X[outliers, 0], X[outliers, 1], c='red', linewidths=0.3, label='outlier')
+            ax.legend()
     else:
         outliers = np.repeat(False, X.shape[1])
         y_score = np.repeat(None, X.shape[1])
-    
+
     out = pd.DataFrame()
     out['y_bool_spe'] = outliers
     out['y_score_spe'] = y_score
