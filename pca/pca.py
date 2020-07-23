@@ -119,13 +119,13 @@ class pca():
 
         """
         # Pre-processing
-        if verbose>=3: print('[pca] >The PCA reduction is performed on the [%.d] columns of the input dataframe.' %(X.shape[1]))
         X, row_labels, col_labels = self._preprocessing(X, row_labels, col_labels, verbose=verbose)
 
         if self.n_components<1:
+            if verbose>=3: print('[pca] >The PCA reduction is performed to capture [%.1f%%] explained variance using the [%.d] columns of the input data.' %(self.n_components*100, X.shape[1]))
             pcp = self.n_components
             # Run with all components to get all PCs back. This is needed for the step after.
-            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=None, onehot=self.onehot, random_state=self.random_state)
+            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=None, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
             # Take number of components with minimal [n_components] explained variance
             if percentExplVar is None:
                 self.n_components = X.shape[1] - 1
@@ -134,7 +134,8 @@ class pca():
                 self.n_components = np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
                 if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp*100))
         else:
-            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state)
+            if verbose>=3: print('[pca] >The PCA reduction is performed on the [%.d] columns of the input dataframe.' %(X.shape[1]))
+            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
             pcp = percentExplVar[np.minimum(len(percentExplVar)-1, self.n_components)]
 
         # Combine components relations with features.
@@ -893,7 +894,7 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
 def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=-1, verbose=3):
     # Create the model
     if sp.issparse(X):
-        if verbose>=3: print('[pca] >Fiting using Truncated SVD..')
+        if verbose>=3: print('[pca] >Fitting using Truncated SVD..')
         model = TruncatedSVD(n_components=n_components, random_state=random_state)
     elif onehot:
         if verbose>=3: print('[pca] >Fitting using Sparse PCA..')
