@@ -826,7 +826,6 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
     out = pd.DataFrame()
     out['y_bool_spe'] = outliers
     out['y_score_spe'] = y_score
-    g_ellipse = None
 
     return out, g_ellipse
 
