@@ -122,7 +122,7 @@ class pca():
         X, row_labels, col_labels = self._preprocessing(X, row_labels, col_labels, verbose=verbose)
 
         if self.n_components<1:
-            if verbose>=3: print('[pca] >The PCA reduction is performed to capture [%.1f%%] explained variance using the [%.d] columns of the input data.' %(self.n_components*100, X.shape[1]))
+            if verbose>=3: print('[pca] >The PCA reduction is performed to capture [%.1f%%] explained variance using the [%.d] columns of the input data.' %(self.n_components * 100, X.shape[1]))
             pcp = self.n_components
             # Run with all components to get all PCs back. This is needed for the step after.
             model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=None, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
@@ -132,11 +132,11 @@ class pca():
                 if verbose>=3: print('[pca] >n_components is set to %d' %(self.n_components))
             else:
                 self.n_components = np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
-                if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp*100))
+                if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp * 100))
         else:
             if verbose>=3: print('[pca] >The PCA reduction is performed on the [%.d] columns of the input dataframe.' %(X.shape[1]))
             model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
-            pcp = percentExplVar[np.minimum(len(percentExplVar)-1, self.n_components)]
+            pcp = percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components)]
 
         # Combine components relations with features.
         loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components, verbose=verbose)
@@ -332,7 +332,6 @@ class pca():
 
         return(X, row_labels, col_labels)
 
-
     # Figure pre processing
     def _fig_preprocessing(self, y, n_feat, d3):
         if hasattr(self, 'PC'): raise Exception('[pca] >Error: Principal components are not derived yet. Tip: run fit_transform() first.')
@@ -362,7 +361,7 @@ class pca():
         return y, topfeat, n_feat
 
     # Scatter plot
-    def scatter3d(self, y=None, label=True, legend=True, PC=[0,1,2], SPE=False, hotellingt2=False, figsize=(10, 8)):
+    def scatter3d(self, y=None, label=True, legend=True, PC=[0, 1, 2], SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8)):
         """Scatter 3d plot.
 
         Parameters
@@ -379,6 +378,8 @@ class pca():
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
+        cmap : String, optional, default: 'Set1'
+            Colormap. If set to None, no points are shown.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
 
@@ -388,14 +389,14 @@ class pca():
 
         """
         if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, figsize=figsize)
+            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, figsize=figsize)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
             fig, ax = None, None
         return fig, ax
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0, 1], SPE=False, hotellingt2=False, figsize=(10, 8)):
+    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0, 1], SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8)):
         """Scatter 2d plot.
 
         Parameters
@@ -414,6 +415,8 @@ class pca():
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
+        cmap : String, optional, default: 'Set1'
+            Colormap. If set to None, no points are shown.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
 
@@ -431,52 +434,58 @@ class pca():
 
         # Get coordinates
         xs, ys, zs, ax = _get_coordinates(self.results['PC'], PC, fig, ax, d3)
-        
+
         # Plot outliers for hotelling T2 test.
         if hotellingt2:
             Ioutlier1 = self.results['outliers']['y_bool'].values
             if d3:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='x', color=[0,0,0], s=26, label='outliers (hotelling t2)')
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)')
             else:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0,0,0], s=26, label='outliers (hotelling t2)')
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)')
 
         # Plot outliers for hotelling T2 test.
         if SPE:
             Ioutlier2 = self.results['outliers']['y_bool_spe'].values
             if d3:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='d', color=[0.5,0.5,0.5], s=26, label='outliers (SPE/DmodX)')
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)')
             else:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5,0.5,0.5], s=26, label='outliers (SPE/DmodX)')
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)')
                 # Plot the ellipse
-                g_ellipse = spe_dmodx(np.c_[xs,ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
+                g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
                 if g_ellipse is not None: ax.add_artist(g_ellipse)
 
         # Make scatter plot of all not-outliers
         Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
         uiy = np.unique(y)
-        getcolors = np.array(colourmap.generate(len(uiy), cmap='Set1'))
+
+        # Get the colors
+        if cmap is None:
+            getcolors = np.repeat([1, 1, 1], len(uiy), axis=0).reshape(-1, 3)
+        else:
+            getcolors = np.array(colourmap.generate(len(uiy), cmap=cmap))
+
         for i, yk in enumerate(uiy):
             Iloc_label = (yk==y)
             Iloc_sampl = np.logical_and(Iloc_label, Inormal)
             if d3:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], color=getcolors[i,:], s=25, label=yk)
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], color=getcolors[i, :], s=25, label=yk)
                 # if label: ax.text(xs[Iloc_label], ys[Iloc_label], zs[Iloc_label], yk, color=getcolors[i,:], ha='center', va='center')
             else:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], color=getcolors[i,:], s=25, label=yk)
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], color=getcolors[i, :], s=25, label=yk)
                 if label: ax.annotate(yk, (np.mean(xs[Iloc_label]), np.mean(ys[Iloc_label])))
 
         # Set y
-        ax.set_xlabel('PC'+str(PC[0]+1)+' ('+ str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
-        ax.set_ylabel('PC'+str(PC[1]+1)+' ('+ str(self.results['model'].explained_variance_ratio_[PC[1]] * 100)[0:4] + '% expl.var)')
-        if d3: ax.set_zlabel('PC'+str(PC[2]+1)+' ('+ str(self.results['model'].explained_variance_ratio_[PC[2]] * 100)[0:4] + '% expl.var)')
-        ax.set_title(str(self.n_components)+' Principal Components explain [' + str(self.results['pcp']*100)[0:5] + '%] of the variance')
+        ax.set_xlabel('PC' + str(PC[0] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
+        ax.set_ylabel('PC' + str(PC[1] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[1]] * 100)[0:4] + '% expl.var)')
+        if d3: ax.set_zlabel('PC' + str(PC[2] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[2]] * 100)[0:4] + '% expl.var)')
+        ax.set_title(str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance')
         if legend: ax.legend()
         ax.grid(True)
 
         return fig, ax
 
     # biplot
-    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, SPE=False, hotellingt2=False, figsize=(10, 8), verbose=3):
+    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8), verbose=3):
         """Create the Biplot.
 
         Description
@@ -502,6 +511,8 @@ class pca():
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
+        cmap : String, optional, default: 'Set1'
+            Colormap. If set to None, no points are shown.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
         Verbose : int (default : 3)
@@ -543,9 +554,9 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, 2].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, figsize=figsize)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, figsize=figsize)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, figsize=figsize)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, figsize=figsize)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -784,6 +795,7 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
     """
 
     if verbose>=3: print('[pca] >Outlier detection using SPE/DmodX with n_std=[%d]' %(n_std))
+    g_ellipse = None
     # The 2x2 covariance matrix to base the ellipse on the location of the center of the ellipse. Expects a 2-element sequence of [x0, y0].
     n_components = np.minimum(2, X.shape[1])
     X = X[:, 0:n_components]

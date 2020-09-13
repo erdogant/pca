@@ -2,6 +2,19 @@ from pca import pca
 import pandas as pd
 import numpy as np
 
+# %% Fix for no scatter but only directions
+from pca import pca
+# Initialize
+model = pca(alpha=0.05, n_std=2)
+
+# Example with DataFrame
+X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
+X = pd.DataFrame(data=X, columns=np.arange(0, X.shape[1]).astype(str))
+# Fit transform
+out = model.fit_transform(X)
+# Make plot
+model.biplot(cmap=None, label=False, legend=False)
+
 # %%
 from pca import pca
 
