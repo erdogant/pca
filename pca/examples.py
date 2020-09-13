@@ -2,6 +2,29 @@ from pca import pca
 import pandas as pd
 import numpy as np
 
+# %%
+from pca import pca
+
+# Initialize
+model = pca(alpha=0.05, n_std=2)
+
+# Example with Numpy array
+X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
+row_labels = np.arange(0, X.shape[0]).astype(str)
+# Fit transform
+out = model.fit_transform(X, row_labels=row_labels)
+# Make plot
+model.biplot(legend=False)
+
+# Example with DataFrame
+X = pd.DataFrame(data=X, columns=np.arange(0, X.shape[1]).astype(str))
+# Fit transform
+out = model.fit_transform(X)
+# Make plot
+model.biplot(legend=False)
+
+
+# %%
 X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
 outliers = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
 X = np.vstack((X, outliers))
@@ -12,6 +35,8 @@ model = pca(alpha=0.05, n_std=2)
 out = model.fit_transform(X)
 out['topfeat']
 print(out['outliers'])
+
+model.biplot(legend=True, scatter=True)
 
 model.biplot(legend=True, SPE=True, hotellingt2=True)
 model.biplot(legend=True, SPE=True, hotellingt2=False)
