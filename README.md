@@ -3,7 +3,12 @@
 [![Python](https://img.shields.io/pypi/pyversions/pca)](https://img.shields.io/pypi/pyversions/pca)
 [![PyPI Version](https://img.shields.io/pypi/v/pca)](https://pypi.org/project/pca/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/pca/blob/master/LICENSE)
+[![Github Forks](https://img.shields.io/github/forks/erdogant/pca.svg)](https://github.com/erdogant/pca/network)
+[![GitHub Open Issues](https://img.shields.io/github/issues/erdogant/pca.svg)](https://github.com/erdogant/pca/issues)
+[![Project Status](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![Downloads](https://pepy.tech/badge/pca/month)](https://pepy.tech/project/pca/month)
 [![Downloads](https://pepy.tech/badge/pca)](https://pepy.tech/project/pca)
+
 
          Star it if you like it!
 
