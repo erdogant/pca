@@ -338,6 +338,33 @@ outliers_spe = pca.spe_dmodx(out['PC'].values, n_std=2)
 
 ```
    
+   
+### Example to only plot the directions (arrows).
+
+
+```python
+
+from pca import pca
+# Initialize
+model = pca()
+
+# Example with DataFrame
+X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
+X = pd.DataFrame(data=X, columns=np.arange(0, X.shape[1]).astype(str))
+
+# Fit transform
+out = model.fit_transform(X)
+
+# Make plot with parameters: set cmap to None and label and legend to False. Only directions will be plotted.
+model.biplot(cmap=None, label=False, legend=False)
+
+```
+
+<p align="center">
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/biplot_only_directions.png" width="350" />
+</p>
+
+
 ### Citation
 Please cite distfit in your publications if this is useful for your research. Here is an example BibTeX entry:
 ```BibTeX

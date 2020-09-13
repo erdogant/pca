@@ -5,7 +5,7 @@ import numpy as np
 # %% Fix for no scatter but only directions
 from pca import pca
 # Initialize
-model = pca(alpha=0.05, n_std=2)
+model = pca()
 
 # Example with DataFrame
 X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
