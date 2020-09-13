@@ -62,7 +62,7 @@ class pca():
 
         Parameters
         ----------
-        X : numpy array
+        X : array-like : Can be of type Numpy or DataFrame
             [NxM] array with columns as features and rows as samples.
         row_labels : [list of integers or strings] optional
             Used for colors.
