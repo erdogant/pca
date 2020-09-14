@@ -1,4 +1,4 @@
-"""pca is a python package that performs the principal component analysis and to make insightful plots."""
+"""pca is a python package to perform Principal Component Analysis and to make insightful plots."""
 
 # ----------------------------------
 # Name        : pca.py
@@ -22,8 +22,11 @@ import os
 import wget
 from sklearn.metrics.pairwise import euclidean_distances
 
+
 # %% Association learning across all variables
 class pca():
+    """pca module."""
+
     def __init__(self, n_components=0.95, n_feat=25, alpha=0.05, n_std=2, onehot=False, normalize=False, random_state=None):
         """Initialize pca with user-defined parameters.
 
@@ -151,6 +154,23 @@ class pca():
 
     # Outlier detection
     def compute_outliers(self, PC, n_std=2, verbose=3):
+        """Compute outliers.
+
+        Parameters
+        ----------
+        PC : Array-like
+            Principal Components.
+        n_std : int, (default: 2)
+            Standard deviation. The default is 2.
+        Verbose : int (default : 3)
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+
+        Returns
+        -------
+        outliers : TYPE
+            DESCRIPTION.
+
+        """
         # Detection of outliers using hotelling T2 test.
         outliersHT2 = hotellingsT2(PC, alpha=self.alpha, df=1, verbose=verbose)[0]
         # Detection of outliers using elipse method.
@@ -161,47 +181,11 @@ class pca():
 
     # Post processing.
     def _postprocessing(self, model_pca, loadings, col_labels, n_components, verbose=3):
-        PCzip = list(zip(['PC'] * model_pca.components_.shape[0], np.arange(1,model_pca.components_.shape[0] + 1).astype(str)))
+        PCzip = list(zip(['PC'] * model_pca.components_.shape[0], np.arange(1, model_pca.components_.shape[0] + 1).astype(str)))
         PCnames = list(map(lambda x: ''.join(x), PCzip))
         loadings = pd.DataFrame(loadings, columns=col_labels, index=PCnames)
         # Return
         return(loadings)
-
-    # Top scoring components
-    def compute_topfeat_old(self, loadings=None, n_feat=10, verbose=3):
-        if (loadings is None):
-            try:
-                loadings = self.results['loadings']
-            except:
-                raise Exception('[pca] >Error: loadings is not defined. Tip: run fit_transform() or provide the loadings yourself as input argument.') 
-
-        n_feat = np.maximum(np.minimum(n_feat, loadings.shape[1]), 2)
-        # Top scoring for 1st component
-        I1 = np.argsort(np.abs(loadings.iloc[0,:]))
-        I1 = I1[::-1]
-        # L1_weights = loadings.iloc[0,I1]
-
-        if loadings.shape[0]>=2:
-            # Top scoring for 2nd component
-            I2 = np.argsort(np.abs(loadings.iloc[1,:]))
-            I2 = I2[::-1]
-            # L2_weights = loadings.iloc[0,I2]
-            # Take only top loadings
-            I1 = I1[0:n_feat]
-            I2 = I2[0:n_feat]
-            I = np.append(I1, I2)
-        else:
-            I = I1
-        # Unique without sort:
-        indices = np.unique(I,return_index=True)[1]
-        # feat_weights = loadings.iloc[0:1,I].T
-        # topfeat = feat_weights[0:n_feat]
-        I = [I[index] for index in sorted(indices)]
-        topfeat = loadings.iloc[0:2,I].T
-        topfeat.columns = topfeat.columns.values+'_weights'
-        # topfeat = topfeat.iloc[0:n_feat,:]
-        return topfeat
-
 
     # Top scoring components
     def compute_topfeat(self, loadings=None, verbose=3):
@@ -231,8 +215,8 @@ class pca():
                 initial_feature_names = self.results['loadings'].columns.values
                 loadings = self.results['loadings'].values.copy()
             except:
-                raise Exception('[pca] >Error: loadings is not defined. Tip: run fit_transform() or provide the loadings yourself as input argument.') 
-        
+                raise Exception('[pca] >Error: loadings is not defined. Tip: run fit_transform() or provide the loadings yourself as input argument.')
+
         if isinstance(loadings, pd.DataFrame):
             initial_feature_names = loadings.columns.values
             loadings = loadings.values
@@ -242,28 +226,28 @@ class pca():
         # get the index of the most important feature on EACH component
         idx = [np.abs(loadings[i]).argmax() for i in range(n_pcs)]
         # The the loadings
-        loading_best = loadings[np.arange(0,n_pcs), idx]
+        loading_best = loadings[np.arange(0, n_pcs), idx]
         # get the names
         most_important_names = [initial_feature_names[idx[i]] for i in range(len(idx))]
         # Make dict with most important features
-        dic = {'PC{}'.format(i+1): most_important_names[i] for i in range(len(most_important_names))}
+        dic = {'PC{}'.format(i + 1): most_important_names[i] for i in range(len(most_important_names))}
         # Collect the features that were never discovered. The weak features.
         idxcol = np.setdiff1d(range(loadings.shape[1]), idx)
         # get the names
         least_important_names = [initial_feature_names[idxcol[i]] for i in range(len(idxcol))]
         # Find the strongest loading across the PCs for the least important ones
-        idxrow = [np.abs(loadings[:,i]).argmax() for i in idxcol]
+        idxrow = [np.abs(loadings[:, i]).argmax() for i in idxcol]
         loading_weak = loadings[idxrow, idxcol]
         # Make dict with most important features
         # dic_weak = {'weak'.format(i+1): least_important_names[i] for i in range(len(least_important_names))}
-        PC_weak = ['PC{}'.format(i+1) for i in idxrow]
+        PC_weak = ['PC{}'.format(i + 1) for i in idxrow]
 
         # build the dataframe
-        topfeat = pd.DataFrame(dic.items(), columns=['PC','feature'])
+        topfeat = pd.DataFrame(dic.items(), columns=['PC', 'feature'])
         topfeat['loading'] = loading_best
         topfeat['type'] = 'best'
         # Weak features
-        weakfeat = pd.DataFrame({'PC':PC_weak, 'feature':least_important_names, 'loading':loading_weak, 'type':'weak'})
+        weakfeat = pd.DataFrame({'PC': PC_weak, 'feature': least_important_names, 'loading': loading_weak, 'type': 'weak'})
         # weakfeat = pd.DataFrame(dic_weak.items(), columns=['PC','feature'])
         # weakfeat['loading'] = loading_weak
         # weakfeat['type'] = 'weak'
@@ -297,7 +281,7 @@ class pca():
             self.normalize=False
         if col_labels is None or len(col_labels)==0 or len(col_labels)!=X.shape[1]:
             if verbose>=3: print('[pca] >Column labels are auto-completed.')
-            col_labels = np.arange(1,X.shape[1] + 1).astype(str)
+            col_labels = np.arange(1, X.shape[1] + 1).astype(str)
         if row_labels is None or len(row_labels)!=X.shape[0]:
             row_labels=np.ones(X.shape[0])
             if verbose>=3: print('[pca] >Row labels are auto-completed.')
@@ -307,8 +291,8 @@ class pca():
             col_labels=np.array(col_labels)
         if (sp.issparse(X) is False) and (self.n_components > X.shape[1]):
             # raise Exception('[pca] >Number of components can not be more then number of features.')
-            if verbose>=2: print('[pca] >Warning: >Number of components can not be more then number of features. n_components is set to %d' %(X.shape[1]-1))
-            self.n_components = X.shape[1]-1
+            if verbose>=2: print('[pca] >Warning: >Number of components can not be more then number of features. n_components is set to %d' %(X.shape[1] - 1))
+            self.n_components = X.shape[1] - 1
 
         # normalize data
         if self.normalize:
@@ -484,8 +468,7 @@ class pca():
 
         return fig, ax
 
-    # biplot
-    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8), verbose=3):
+    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8), visible=True, verbose=3):
         """Create the Biplot.
 
         Description
@@ -515,6 +498,8 @@ class pca():
             Colormap. If set to None, no points are shown.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
+        visible : Bool, default: True
+            Visible status of the Figure. When False, figure is created on the background.
         Verbose : int (default : 3)
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
@@ -523,9 +508,9 @@ class pca():
         tuple containing (fig, ax)
 
         References
-        -----------
-        * https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697
-        * https://towardsdatascience.com/pca-clearly-explained-how-when-why-to-use-it-and-feature-importance-a-guide-in-python-7c274582c37e
+        ----------
+            * https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697
+            * https://towardsdatascience.com/pca-clearly-explained-how-when-why-to-use-it-and-feature-importance-a-guide-in-python-7c274582c37e
 
         """
         if self.results['PC'].shape[1]<2:
@@ -586,7 +571,6 @@ class pca():
         plt.show()
         return(fig, ax)
 
-    # biplot3d
     def biplot3d(self, y=None, n_feat=None, label=True, legend=True, SPE=False, hotellingt2=False, figsize=(10, 8)):
         """Make biplot in 3d.
 
@@ -612,7 +596,6 @@ class pca():
         tuple containing (fig, ax)
 
         """
-
         if self.results['PC'].shape[1]<3:
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
@@ -739,22 +722,24 @@ class pca():
         """
         return import_example(data=data, verbose=verbose)
 
+
 # %%
 def _get_coordinates(PCs, PC, fig, ax, d3):
-    xs = PCs.iloc[:,PC[0]].values
+    xs = PCs.iloc[:, PC[0]].values
     ys = np.zeros(len(xs))
     zs = None
 
     # Get y-axis
     if PCs.shape[1]>1:
-        ys = PCs.iloc[:,PC[1]].values
+        ys = PCs.iloc[:, PC[1]].values
 
     # Get Z-axis
     if d3:
-        zs = PCs.iloc[:,PC[2]].values
+        zs = PCs.iloc[:, PC[2]].values
         ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
 
     return xs, ys, zs, ax
+
 
 # %%
 def _eigsorted(cov, n_std):
@@ -793,7 +778,6 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
         Figure axis.
 
     """
-
     if verbose>=3: print('[pca] >Outlier detection using SPE/DmodX with n_std=[%d]' %(n_std))
     g_ellipse = None
     # The 2x2 covariance matrix to base the ellipse on the location of the center of the ellipse. Expects a 2-element sequence of [x0, y0].
@@ -923,7 +907,7 @@ def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=
     model.fit(X)
     # Do the reduction
     if verbose>=3: print('[pca] >Computing loadings and PCs..')
-    loadings = model.components_ # Ook wel de coeeficienten genoemd: coefs!
+    loadings = model.components_  # Ook wel de coeeficienten genoemd: coefs!
     PC = model.transform(X)
     if not onehot:
         # Compute explained variance, top 95% variance
@@ -938,10 +922,10 @@ def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=
 # %% Store results
 def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_labels, row_labels, topfeat, outliers):
     outliers.index = row_labels
-    
+
     out = {}
     out['loadings'] = loadings
-    out['PC'] = pd.DataFrame(data=PC[:,0:n_components], index=row_labels, columns=loadings.index.values[0:n_components])
+    out['PC'] = pd.DataFrame(data=PC[:, 0:n_components], index=row_labels, columns=loadings.index.values[0:n_components])
     out['explained_var'] = percentExplVar
     out['model'] = model_pca
     out['pcp'] = pcp
