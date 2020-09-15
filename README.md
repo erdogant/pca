@@ -12,7 +12,7 @@
 
          Star it if you like it!
 
-* pca is a python package that performs the principal component analysis and creates insightful plots.
+* pca is a python package to perform Principal Component Analysis and to create insightful plots.
 * Biplot to plot the loadings
 * Explained variance 
 * Scatter plot with the loadings
