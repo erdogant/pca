@@ -391,6 +391,10 @@ out = model.fit_transform(X)
 # Make plot with parameters.
 fig, ax = model.biplot(visible=False)
 
+# Set the figure again to True and show the figure.
+fig.set_visible(True)
+fig
+
 ```
 
 ### Citation
