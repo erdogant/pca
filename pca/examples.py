@@ -13,7 +13,8 @@ X = pd.DataFrame(data=X, columns=np.arange(0, X.shape[1]).astype(str))
 # Fit transform
 out = model.fit_transform(X)
 # Make plot
-model.biplot(cmap=None, label=False, legend=False)
+fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=True)
+fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=False)
 
 # %%
 from pca import pca
@@ -49,9 +50,9 @@ out = model.fit_transform(X)
 out['topfeat']
 print(out['outliers'])
 
-model.biplot(legend=True, scatter=True)
+model.biplot(legend=True, visible=True)
 
-model.biplot(legend=True, SPE=True, hotellingt2=True)
+model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True)
 model.biplot(legend=True, SPE=True, hotellingt2=False)
 model.biplot(legend=True, SPE=False, hotellingt2=True)
 model.biplot(legend=True, SPE=False, hotellingt2=False)
@@ -66,7 +67,7 @@ model.scatter(legend=True, SPE=True, hotellingt2=False)
 model.scatter(legend=True, SPE=False, hotellingt2=True)
 model.scatter(legend=True, SPE=False, hotellingt2=False)
 
-model.scatter3d(legend=True, SPE=True, hotellingt2=True)
+model.scatter3d(legend=True, SPE=True, hotellingt2=True, visible=True)
 model.scatter3d(legend=True, SPE=True, hotellingt2=False)
 model.scatter3d(legend=True, SPE=False, hotellingt2=True)
 model.scatter3d(legend=True, SPE=False, hotellingt2=False)

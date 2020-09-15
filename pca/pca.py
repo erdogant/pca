@@ -118,7 +118,7 @@ class pca():
         >>> fig, ax = model.biplot3d(SPE=True, hotellingt2=True)
         >>>
         >>> # Normalize out PCs
-        >>> X_norm = pca.norm(X)
+        >>> X_norm = model.norm(X)
 
         """
         # Pre-processing
@@ -342,7 +342,7 @@ class pca():
         return y, topfeat, n_feat
 
     # Scatter plot
-    def scatter3d(self, y=None, label=True, legend=True, PC=[0, 1, 2], SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8)):
+    def scatter3d(self, y=None, label=True, legend=True, PC=[0, 1, 2], SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8)):
         """Scatter 3d plot.
 
         Parameters
@@ -361,6 +361,8 @@ class pca():
             Show the outliers based on the hotelling T2 test.
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
+        visible : Bool, default: True
+            Visible status of the Figure. When False, figure is created on the background.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
 
@@ -370,14 +372,14 @@ class pca():
 
         """
         if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, figsize=figsize)
+            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
             fig, ax = None, None
         return fig, ax
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0, 1], SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8)):
+    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0, 1], SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8)):
         """Scatter 2d plot.
 
         Parameters
@@ -398,6 +400,8 @@ class pca():
             Show the outliers based on the hotelling T2 test.
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
+        visible : Bool, default: True
+            Visible status of the Figure. When False, figure is created on the background.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
 
@@ -407,6 +411,8 @@ class pca():
 
         """
         fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
+        fig.set_visible(visible)
+
         Ioutlier1 = np.repeat(False, self.results['PC'].shape[0])
         Ioutlier2 = np.repeat(False, self.results['PC'].shape[0])
 
@@ -462,8 +468,8 @@ class pca():
         ax.set_title(str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance')
         if legend: ax.legend()
         ax.grid(True)
-
-        return fig, ax
+        # Return
+        return (fig, ax)
 
     def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8), visible=True, verbose=3):
         """Create the Biplot.
@@ -536,9 +542,9 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, 2].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, figsize=figsize)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, figsize=figsize)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -564,11 +570,11 @@ class pca():
             else:
                 ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color='r', width=0.005, head_width=0.01 * scale, alpha=0.8)
                 ax.text(xarrow * 1.11, yarrow * 1.11, label, color=txtcolor, ha='center', va='center')
-                
+
         if visible: plt.show()
         return(fig, ax)
 
-    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, SPE=False, hotellingt2=False, figsize=(10, 8)):
+    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, SPE=False, hotellingt2=False, visible=True, figsize=(10, 8)):
         """Make biplot in 3d.
 
         Parameters
@@ -585,6 +591,8 @@ class pca():
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
+        visible : Bool, default: True
+            Visible status of the Figure. When False, figure is created on the background.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
 
@@ -597,18 +605,20 @@ class pca():
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
 
-        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, figsize=figsize)
+        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, visible=visible, figsize=figsize)
 
         return(fig, ax)
 
     # Show explained variance plot
-    def plot(self, n_components=None, figsize=(10, 8), xsteps=None):
+    def plot(self, n_components=None, figsize=(10, 8), xsteps=None, visible=True):
         """Make plot.
 
         Parameters
         ----------
         model : dict
             model created by the fit() function.
+        visible : Bool, default: True
+            Visible status of the Figure. When False, figure is created on the background.
         figsize : (float, float), optional, default: None
             (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
 
@@ -627,6 +637,7 @@ class pca():
 
         # Make figure
         fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
+        fig.set_visible(visible)
         plt.plot(xtick_idx, explvarCum, 'o-', color='k', linewidth=1, label='Cumulative explained variance')
 
         # Set xticks if less then 100 datapoints
@@ -650,8 +661,11 @@ class pca():
         ax.axhline(y=self.results['pcp'], xmin=0, xmax=1, linewidth=0.8, color='r')
         if len(xtick_idx)<100:
             plt.bar(xtick_idx, explvar, color='#3182bd', alpha=0.8, label='Explained variance')
-        plt.show()
-        plt.draw()
+
+        if visible:
+            plt.show()
+            plt.draw()
+        # Return
         return(fig, ax)
 
     # Top scoring components

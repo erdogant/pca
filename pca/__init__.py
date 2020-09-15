@@ -9,7 +9,7 @@ from pca.pca import (
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '1.2.0'
+__version__ = '1.3.0'
 
 # module level doc-string
 __doc__ = """
@@ -44,7 +44,7 @@ Examples
 >>> fig, ax = model.biplot3d(SPE=True, hotellingt2=True)
 >>>
 >>> # Normalize out PCs
->>> X_norm = pca.norm(X)
+>>> X_norm = model.norm(X)
 
 References
 ----------
