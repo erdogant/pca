@@ -8,19 +8,19 @@
 
 
 # %% Libraries
-import pandas as pd
-import numpy as np
+import colourmap as colourmap
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
 from sklearn import preprocessing
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-import scipy.sparse as sp
+from sklearn.metrics.pairwise import euclidean_distances
 from scipy import stats
+from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.patches import Ellipse
-import colourmap as colourmap
+import scipy.sparse as sp
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 import os
 import wget
-from sklearn.metrics.pairwise import euclidean_distances
 
 
 # %% Association learning across all variables
@@ -168,7 +168,7 @@ class pca():
         Returns
         -------
         outliers : TYPE
-            DESCRIPTION.
+            Array containing outliers.
 
         """
         # Detection of outliers using hotelling T2 test.
@@ -248,9 +248,6 @@ class pca():
         topfeat['type'] = 'best'
         # Weak features
         weakfeat = pd.DataFrame({'PC': PC_weak, 'feature': least_important_names, 'loading': loading_weak, 'type': 'weak'})
-        # weakfeat = pd.DataFrame(dic_weak.items(), columns=['PC','feature'])
-        # weakfeat['loading'] = loading_weak
-        # weakfeat['type'] = 'weak'
 
         # Combine features
         df = pd.concat([topfeat, weakfeat])
@@ -567,8 +564,8 @@ class pca():
             else:
                 ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color='r', width=0.005, head_width=0.01 * scale, alpha=0.8)
                 ax.text(xarrow * 1.11, yarrow * 1.11, label, color=txtcolor, ha='center', va='center')
-
-        plt.show()
+                
+        if visible: plt.show()
         return(fig, ax)
 
     def biplot3d(self, y=None, n_feat=None, label=True, legend=True, SPE=False, hotellingt2=False, figsize=(10, 8)):

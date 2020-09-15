@@ -18,7 +18,7 @@ pca
 
 Description
 -----------
-pca is a python package that performs the principal component analysis and to make insightful plots.
+pca is a python package to perform Principal Component Analysis and to make insightful plots.
 
 Examples
 --------
