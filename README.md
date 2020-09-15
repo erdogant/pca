@@ -16,6 +16,7 @@
 * Biplot to plot the loadings
 * Explained variance 
 * Scatter plot with the loadings
+* Outlier detections using Hotelling T2 and/or SPE/Dmodx
 
 ## Contents
 - [Installation](#-installation)
