@@ -12,11 +12,18 @@
 
          Star it if you like it!
 
-* pca is a python package to perform Principal Component Analysis and to create insightful plots.
-* Biplot to plot the loadings
-* Explained variance 
-* Scatter plot with the loadings
-* Outlier detection using Hotelling T2 and/or SPE/Dmodx
+**pca** is a python package to perform Principal Component Analysis and to create insightful plots. The core of PCA is build on sklearn functionality to find maximum compatibility when combining with other packages.
+
+But this package can do a lot more. Besides the regular pca, it can also perform **SparsePCA**, and **TruncatedSVD**. Depending on your input data, the best approach will be choosen.
+
+Other functionalities are:
+  * **Biplot** to plot the loadings
+  * Determine the **explained variance** 
+  * Scatter plot with the **loadings**
+  * Outlier detection using **Hotelling T2 and/or SPE/Dmodx**
+
+This notebook will show some examples.
+
 
 ## Contents
 - [Installation](#-installation)
