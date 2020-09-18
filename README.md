@@ -8,6 +8,7 @@
 [![Project Status](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![Downloads](https://pepy.tech/badge/pca/month)](https://pepy.tech/project/pca/month)
 [![Downloads](https://pepy.tech/badge/pca)](https://pepy.tech/project/pca)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/erdogant/pca/blob/master/notebooks/pca_examples.ipynb)
 
 
          Star it if you like it!
