@@ -32,8 +32,6 @@ class pca():
 
         Parameters
         ----------
-        onehot : [Bool] optional, (default: False)
-            Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
         n_components : [0,..,1] or [1,..number of samples-1], (default: 0.95)
             Number of TOP components to be returned. Values>0 are the number of components. Values<0 are the components that covers at least the percentage of variance.
             0.95: Take the number of components that cover at least 95% of variance.
@@ -44,10 +42,12 @@ class pca():
             Alpha to set the threshold to determine the outliers based on on the Hoteling T2 test.
         n_std : int, default: 2
             Number of standard deviations to determine the outliers using SPE/DmodX method.
-        random_state : int optional
-            Random state
+        onehot : [Bool] optional, (default: False)
+            Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
         normalize : bool (default : True)
             Normalize data, Z-score
+        random_state : int optional
+            Random state
 
         """
         # Store in object
@@ -70,7 +70,7 @@ class pca():
         row_labels : [list of integers or strings] optional
             Used for colors.
         col_labels : [list of string] optional
-            Numpy Vector of strings: Name of the features that represent the data features and loadings
+            Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.
         Verbose : int (default : 3)
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
@@ -141,9 +141,9 @@ class pca():
             model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
             pcp = percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components)]
 
-        # Combine components relations with features.
+        # Combine components relations with features
         loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components, verbose=verbose)
-        # Top scoring n_components.
+        # Top scoring n_components
         topfeat = self.compute_topfeat(loadings=loadings, verbose=verbose)
         # Detection of outliers
         outliers = self.compute_outliers(PC, verbose=verbose)
