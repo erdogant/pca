@@ -574,7 +574,7 @@ class pca():
         if visible: plt.show()
         return(fig, ax)
 
-    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, SPE=False, hotellingt2=False, visible=True, figsize=(10, 8)):
+    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8)):
         """Make biplot in 3d.
 
         Parameters
@@ -605,7 +605,7 @@ class pca():
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
 
-        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, visible=visible, figsize=figsize)
+        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, SPE=SPE, cmap=cmap, hotellingt2=hotellingt2, visible=visible, figsize=figsize)
 
         return(fig, ax)
 
