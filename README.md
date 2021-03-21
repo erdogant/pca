@@ -6,8 +6,8 @@
 [![Github Forks](https://img.shields.io/github/forks/erdogant/pca.svg)](https://github.com/erdogant/pca/network)
 [![GitHub Open Issues](https://img.shields.io/github/issues/erdogant/pca.svg)](https://github.com/erdogant/pca/issues)
 [![Project Status](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![Downloads](https://pepy.tech/badge/pca/month)](https://pepy.tech/project/pca/month)
 [![Downloads](https://pepy.tech/badge/pca)](https://pepy.tech/project/pca)
+[![Downloads](https://pepy.tech/badge/pca/month)](https://pepy.tech/project/pca/month)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/erdogant/pca/blob/master/notebooks/pca_examples.ipynb)
 
 
