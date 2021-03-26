@@ -286,4 +286,19 @@ model3 = pca(normalize=False, onehot=True)
 _=model3.fit_transform(X)
 model3.biplot(n_feat=3)
 
+#%% Example with Model initialization outside the for-loop. This will
+# only how the same model results in the first run (model 1 vs model 2)
+from pca import pca
+model1 = pca(n_components=0.95)
+model2 = pca(n_components=0.95)
+
+X = np.array(np.random.normal(0, 1, 5000)).reshape(1000, 5)
+
+for i in range(0, 10):
+    I = np.random.randint(1,1000,100)
+    model1.fit_transform(X[I,:], verbose=2);
+    model2.fit_transform(X[I,:], verbose=2);
+    if np.all(model1.results['loadings']==model2.results['loadings']):
+        print('Run %d is correct!' %(i))
+
 # %%

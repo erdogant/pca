@@ -121,6 +121,9 @@ class pca():
         >>> X_norm = model.norm(X)
 
         """
+
+        # Clean readily fitted models to ensure correct results.
+        self._clean(verbose=verbose)
         # Pre-processing
         X, row_labels, col_labels = self._preprocessing(X, row_labels, col_labels, verbose=verbose)
 
@@ -151,6 +154,12 @@ class pca():
         self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers)
         # Return
         return(self.results)
+
+    def _clean(self, verbose=3):
+        # Clean readily fitted models to ensure correct results.
+        if hasattr(self, 'results'):
+            if verbose>=3: print('[pca] >Cleaning previous fitted model results..')
+            if hasattr(self, 'results'): del self.results
 
     # Outlier detection
     def compute_outliers(self, PC, n_std=2, verbose=3):
