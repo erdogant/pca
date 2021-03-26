@@ -10,7 +10,8 @@
 # %% Libraries
 import colourmap as colourmap
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
-from sklearn import preprocessing
+# from sklearn import preprocessing
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import euclidean_distances
 from scipy import stats
 from mpl_toolkits.mplot3d import Axes3D
@@ -60,7 +61,7 @@ class pca():
         self.n_std = n_std
 
     # Make PCA fit_transform
-    def transform(self, X, verbose=3):
+    def transform(self, X, row_labels=None, col_labels=None, verbose=3):
         """Transform new input data with fitted model.
 
         Parameters
@@ -70,12 +71,51 @@ class pca():
         Verbose : int (default : 3)
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
+        Examples
+        --------
+        >>> import matplotlib.pyplot as plt
+        >>> from sklearn.datasets import load_iris
+        >>> import pandas as pd
+        >>> from pca import pca
+        >>>
+        >>> # Initialize
+        >>> model = pca(n_components=2, normalize=True)
+        >>> # Dataset
+        >>> X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+        >>>
+        >>> # Gather some random samples across the classes.
+        >>> idx=[0,1,2,3,4,50,51,52,53,54,55,100,101,102,103,104,105]
+        >>> X_unseen = X.iloc[idx, :]
+        >>>
+        >>> # Label the unseen samples differently.
+        >>> X.index.values[idx]=3
+        >>>
+        >>> # Fit transform
+        >>> model.fit_transform(X)
+        >>>
+        >>> # Transform the "unseen" data with the fitted model. Note that these datapoints are not really unseen as they are readily fitted above.
+        >>> # But for the sake of example, you can see that these samples will be transformed exactly on top of the orignial ones.
+        >>> PCnew = model.transform(X_unseen)
+        >>>
+        >>> # Plot PC space
+        >>> model.scatter()
+        >>> # Plot the new "unseen" samples on top of the existing space
+        >>> plt.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x')
+
         Returns
         -------
         pca transformed data.
 
         """
-        return
+        # Pre-processing using scaler.
+        X_scaled, row_labels, _, _ = self._preprocessing(X, row_labels, col_labels, scaler=self.results['scaler'], verbose=verbose)
+        # Transform the data using fitted model.
+        PCs = self.results['model'].transform(X_scaled)
+        # Store in dataframe
+        columns = ['PC{}'.format(i + 1) for i in np.arange(0, PCs.shape[1])]
+        PCs = pd.DataFrame(data=PCs, index=row_labels, columns=columns)
+        # Return
+        return PCs
 
     # Make PCA fit_transform
     def fit_transform(self, X, row_labels=None, col_labels=None, verbose=3):
@@ -142,7 +182,7 @@ class pca():
         # Clean readily fitted models to ensure correct results.
         self._clean(verbose=verbose)
         # Pre-processing
-        X, row_labels, col_labels = self._preprocessing(X, row_labels, col_labels, verbose=verbose)
+        X, row_labels, col_labels, scaler = self._preprocessing(X, row_labels, col_labels, verbose=verbose)
 
         if self.n_components<1:
             if verbose>=3: print('[pca] >The PCA reduction is performed to capture [%.1f%%] explained variance using the [%.d] columns of the input data.' %(self.n_components * 100, X.shape[1]))
@@ -168,7 +208,7 @@ class pca():
         # Detection of outliers
         outliers = self.compute_outliers(PC, verbose=verbose)
         # Store
-        self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers)
+        self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler)
         # Return
         return(self.results)
 
@@ -282,7 +322,7 @@ class pca():
         return df
 
     # Check input values
-    def _preprocessing(self, X, row_labels, col_labels, verbose=3):
+    def _preprocessing(self, X, row_labels, col_labels, scaler=None, verbose=3):
         if self.n_components is None:
             self.n_components = X.shape[1] - 1
             if verbose>=3: print('[pca] >n_components is set to %d' %(self.n_components))
@@ -328,7 +368,12 @@ class pca():
             # ax1.set_title('RAW')
             # ax1.grid(True)
 
-            X = preprocessing.scale(X, with_mean=True, with_std=True, axis=0)
+            # X = preprocessing.scale(X, with_mean=True, with_std=True, axis=0)
+
+            # IF the scaler is not yet fitted, make scaler object.
+            if scaler is None:
+                scaler = StandardScaler(with_mean=True, with_std=True).fit(X)
+            X = scaler.transform(X)
 
             # Plot the data distribution
             # ax2.hist(X.ravel().astype(float), bins=50)
@@ -337,7 +382,7 @@ class pca():
             # ax2.set_title('Zero-mean with unit variance normalized')
             # ax2.grid(True)
 
-        return(X, row_labels, col_labels)
+        return(X, row_labels, col_labels, scaler)
 
     # Figure pre processing
     def _fig_preprocessing(self, y, n_feat, d3):
@@ -957,7 +1002,7 @@ def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=
 
 
 # %% Store results
-def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_labels, row_labels, topfeat, outliers):
+def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler):
     outliers.index = row_labels
 
     out = {}
@@ -965,6 +1010,7 @@ def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_label
     out['PC'] = pd.DataFrame(data=PC[:, 0:n_components], index=row_labels, columns=loadings.index.values[0:n_components])
     out['explained_var'] = percentExplVar
     out['model'] = model_pca
+    out['scaler'] = scaler
     out['pcp'] = pcp
     out['topfeat'] = topfeat
     out['outliers'] = outliers

@@ -2,6 +2,35 @@ from pca import pca
 import pandas as pd
 import numpy as np
 
+# %%
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+import pandas as pd
+from pca import pca
+
+# Initialize
+model = pca(n_components=2, normalize=True)
+# Dataset
+X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+
+# Get some random samples across the classes
+idx=[0,1,2,3,4,50,51,52,53,54,55,100,101,102,103,104,105]
+X_unseen = X.iloc[idx, :]
+
+# Label original dataset to make sure the check which samples are overlapping
+X.index.values[idx]=3
+
+# Fit transform
+out = model.fit_transform(X)
+
+# Transform new "unseen" data
+PCnew = model.transform(X_unseen)
+
+# Plot PC space
+model.scatter()
+# Plot the new "unseen" samples on top of the existing space
+plt.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x')
+
 # %% Fix for no scatter but only directions
 from pca import pca
 # Initialize
@@ -16,6 +45,7 @@ out = model.fit_transform(X)
 # Make plot
 fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=True)
 fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=False)
+
 
 # %%
 from pca import pca

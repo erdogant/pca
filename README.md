@@ -398,6 +398,42 @@ fig
 
 ```
 
+### Example to Transform unseen datapoints into fitted space.
+
+```python
+
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+import pandas as pd
+from pca import pca
+
+# Initialize
+model = pca(n_components=2, normalize=True)
+# Dataset
+X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+
+# Get some random samples across the classes
+idx=[0,1,2,3,4,50,51,52,53,54,55,100,101,102,103,104,105]
+X_unseen = X.iloc[idx, :]
+
+# Label original dataset to make sure the check which samples are overlapping
+X.index.values[idx]=3
+
+# Fit transform
+model.fit_transform(X)
+
+# Transform new "unseen" data. Note that these datapoints are not really unseen as they are readily fitted above.
+# But for the sake of example, you can see that these samples will be transformed exactly on top of the orignial ones.
+PCnew = model.transform(X_unseen)
+
+# Plot PC space
+model.scatter()
+# Plot the new "unseen" samples on top of the existing space
+plt.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x')
+
+```
+
+
 ### Citation
 Please cite distfit in your publications if this is useful for your research. Here is an example BibTeX entry:
 ```BibTeX

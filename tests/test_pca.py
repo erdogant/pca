@@ -7,11 +7,19 @@ import itertools as it
 import matplotlib.pyplot as plt
 
 def test_pca():
+    from pca import pca
+    import numpy as np
+    import pandas as pd
+    from sklearn.datasets import load_iris
+    from sklearn.model_selection import GridSearchCV
+    import itertools as it
+    import matplotlib.pyplot as plt
+
     ######## TEST 1 #########
     X = load_iris().data
     labels=load_iris().feature_names
     y=load_iris().target
-    
+
     X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
 
     param_grid = {
@@ -29,7 +37,6 @@ def test_pca():
         assert model.plot()
         assert model.biplot(y=y, SPE=True, hotellingt2=True)
         assert model.biplot3d(y=y, SPE=True, hotellingt2=True)
-
 
 
     ### TEST CORRRECT ORDERING FEATURES IN BIPLOT
