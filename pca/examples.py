@@ -12,6 +12,7 @@ X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
 X = pd.DataFrame(data=X, columns=np.arange(0, X.shape[1]).astype(str))
 # Fit transform
 out = model.fit_transform(X)
+out = model.fit_transform(X)
 # Make plot
 fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=True)
 fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=False)

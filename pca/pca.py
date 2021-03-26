@@ -60,6 +60,24 @@ class pca():
         self.n_std = n_std
 
     # Make PCA fit_transform
+    def transform(self, X, verbose=3):
+        """Transform new input data with fitted model.
+
+        Parameters
+        ----------
+        X : array-like : Can be of type Numpy or DataFrame
+            [NxM] array with columns as features and rows as samples.
+        Verbose : int (default : 3)
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+
+        Returns
+        -------
+        pca transformed data.
+
+        """
+        return
+
+    # Make PCA fit_transform
     def fit_transform(self, X, row_labels=None, col_labels=None, verbose=3):
         """Fit PCA on data.
 
@@ -121,7 +139,6 @@ class pca():
         >>> X_norm = model.norm(X)
 
         """
-
         # Clean readily fitted models to ensure correct results.
         self._clean(verbose=verbose)
         # Pre-processing
