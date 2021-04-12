@@ -128,7 +128,7 @@ fig, ax = model.plot()
 
 # Make 3d plots
 ```python
-fig, ax model.scatter3d()
+fig, ax = model.scatter3d()
 fig, ax = model.biplot3d(n_feat=2)
 ```
 <p align="center">
