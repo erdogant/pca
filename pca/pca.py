@@ -45,7 +45,7 @@ class pca():
             Number of standard deviations to determine the outliers using SPE/DmodX method.
         onehot : [Bool] optional, (default: False)
             Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
-        normalize : bool (default : True)
+        normalize : bool (default : False)
             Normalize data, Z-score
         random_state : int optional
             Random state
