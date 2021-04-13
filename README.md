@@ -249,7 +249,7 @@ This basically means that we compute the chi-square tests across the top n_compo
 It is expected that the highest variance (and thus the outliers) will be seen in the first few components because of the nature of PCA.
 Going deeper into PC space may therefore not required but the depth is optional.
 This approach results in a P-value matrix (samples x PCs) for which the P-values per sample are then combined using *fishers* method. 
-This approach allows to determine outliers and the ranking of the outliers (strongest tot weak). The cut-off of setting an outlier can be set with alpha (default: 0.05).
+This approach allows to determine outliers and the ranking of the outliers (strongest tot weak). The alpha parameter determines the detection of outliers (default: 0.05).
 
 
 ```python
