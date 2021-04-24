@@ -9,9 +9,8 @@ import unittest
 
 class TestPCA(unittest.TestCase):
 
-	def test_all(self):
+	def test_plot_combinations(self):
 
-		######## TEST 1 #########
 		X = load_iris().data
 		labels=load_iris().feature_names
 		y=load_iris().target
@@ -35,7 +34,8 @@ class TestPCA(unittest.TestCase):
 			assert model.biplot3d(y=y, SPE=True, hotellingt2=True)
 
 
-		### TEST CORRRECT ORDERING FEATURES IN BIPLOT
+	def test_correct_ordering_features_in_biplot(self):
+	
 		f1=np.random.randint(0,100,250)
 		f2=np.random.randint(0,50,250)
 		f3=np.random.randint(0,25,250)
@@ -74,8 +74,8 @@ class TestPCA(unittest.TestCase):
 		assert out['topfeat'].feature.values[1]=='f3'
 		assert (out['topfeat'].feature.values[-1]=='f2') | (out['topfeat'].feature.values[-1]=='f9')
 
-		######## TEST FOR OUTLIERS #########
-		
+	def test_for_outliers_and_transparency(self):	
+	
 		X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
 		outliers = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
 		X = np.vstack((X, outliers))
@@ -85,7 +85,7 @@ class TestPCA(unittest.TestCase):
 		out = model.fit_transform(X)
 		assert X[out['outliers']['y_bool'],:].shape[0]==5
 		assert out['outliers'].shape[1]==5
-		
+
 		######## TEST FOR TRANSPARENCY WITH MATPLOTLIB VERSION #########
 		assert model.scatter(alpha_transparency=0.1)
 		assert model.scatter3d(alpha_transparency=0.1)
