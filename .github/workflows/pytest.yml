@@ -20,8 +20,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           # install pandas because we have unittests that include pd.DataFrame()
-          pip install pandas matplotlib numpy sklearn scipy colourmap
-          pip install flake8 pytest
+          pip install -r requirements.txt
+          pip install pandas
       - name: Test with pytest
         run: |
-          python -m pytest
+          pip install pytest
+          pytest
+         
