@@ -135,6 +135,14 @@ fig, ax = model.biplot3d(n_feat=2)
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter3d.png" width="350" />
 </p>
 
+# Set alpha transparency
+```python
+fig, ax = model.scatter(alpha_transparency=1)
+```
+<p align="center">
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter.png" width="350" />
+</p>
+
 
 #### PCA normalization. 
 Normalizing out the 1st and more components from the data. 

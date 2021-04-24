@@ -78,7 +78,6 @@ def test_pca():
     assert out['topfeat'].feature.values[1]=='f3'
     assert (out['topfeat'].feature.values[-1]=='f2') | (out['topfeat'].feature.values[-1]=='f9')
 
-
     ######## TEST FOR OUTLIERS #########
     from pca import pca
     import pandas as pd
@@ -93,3 +92,17 @@ def test_pca():
     out = model.fit_transform(X)
     assert X[out['outliers']['y_bool'],:].shape[0]==5
     assert out['outliers'].shape[1]==5
+    
+    ######## TEST FOR TRANSPARENCY WITH MATPLOTLIB VERSION #########
+    assert model.scatter(alpha_transparency=0.1)
+    assert model.scatter3d(alpha_transparency=0.1)
+    assert model.biplot(alpha_transparency=0.1)
+    assert model.biplot3d(alpha_transparency=0.1)
+    assert model.scatter(alpha_transparency=None)
+    assert model.scatter3d(alpha_transparency=None)
+    assert model.biplot(alpha_transparency=None)
+    assert model.biplot3d(alpha_transparency=None)
+    assert model.scatter(alpha_transparency=0.5)
+    assert model.scatter3d(alpha_transparency=0.5)
+    assert model.biplot(alpha_transparency=0.5)
+    assert model.biplot3d(alpha_transparency=0.5)

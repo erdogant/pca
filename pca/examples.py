@@ -311,6 +311,12 @@ model2.biplot(n_feat=4)
 model2.scatter()
 model2.biplot3d(n_feat=10)
 
+# Set custom transparency levels
+model2.biplot3d(n_feat=10, alpha_transparency=0.5)
+model2.biplot(n_feat=10, alpha_transparency=0.5)
+model2.scatter3d(alpha_transparency=0.5)
+model2.scatter(alpha_transparency=0.5)
+
 # Initialize
 model3 = pca(normalize=False, onehot=True)
 # Run model 2
