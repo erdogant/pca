@@ -6,6 +6,7 @@
 # Contact     : erdogant@gmail.com
 # ----------------------------------
 
+assert 1 == 1
 
 # %% Libraries
 import colourmap as colourmap
