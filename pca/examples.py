@@ -27,7 +27,7 @@ out = model.fit_transform(X)
 PCnew = model.transform(X_unseen)
 
 # Plot PC space
-model.scatter()
+model.scatter(alpha_transparency=0.5)
 # Plot the new "unseen" samples on top of the existing space
 plt.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x')
 
@@ -299,9 +299,7 @@ model1.biplot3d(n_feat=10)
 model1.scatter()
 model1.scatter3d()
 
-import pca
-pca.hotellingsT2(model1.results['PC'].values, model1.results['PC'].values)
-
+from pca import pca
 # Initialize
 model2 = pca(normalize=True, onehot=False)
 # Run model 2
@@ -323,8 +321,7 @@ model3 = pca(normalize=False, onehot=True)
 _=model3.fit_transform(X)
 model3.biplot(n_feat=3)
 
-#%% Example with Model initialization outside the for-loop. This will
-# only how the same model results in the first run (model 1 vs model 2)
+#%% Example with Model initialization outside the for-loop.
 from pca import pca
 model1 = pca(n_components=0.95)
 model2 = pca(n_components=0.95)
