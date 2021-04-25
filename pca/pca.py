@@ -6,6 +6,7 @@
 # Contact     : erdogant@gmail.com
 # ----------------------------------
 
+assert 1 == 1
 
 # %% Libraries
 import colourmap as colourmap
@@ -413,7 +414,8 @@ class pca():
         return y, topfeat, n_feat
 
     # Scatter plot
-    def scatter3d(self, y=None, label=True, legend=True, PC=[0, 1, 2], SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8)):
+    def scatter3d(self, y=None, label=True, legend=True, PC=[0, 1, 2], SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8), 
+                 alpha_transparency=None):
         """Scatter 3d plot.
 
         Parameters
@@ -436,6 +438,8 @@ class pca():
             Visible status of the Figure. When False, figure is created on the background.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
+        alpha_transparency : Float, default: None
+            The alpha blending value, between 0 (transparent) and 1 (opaque).
 
         Returns
         -------
@@ -443,14 +447,16 @@ class pca():
 
         """
         if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize)
+            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, 
+                                   alpha_transparency=alpha_transparency)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
             fig, ax = None, None
         return fig, ax
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0, 1], SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8)):
+    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0, 1], SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8), 
+                alpha_transparency=None):
         """Scatter 2d plot.
 
         Parameters
@@ -475,6 +481,8 @@ class pca():
             Visible status of the Figure. When False, figure is created on the background.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
+        alpha_transparency : Float, default: None
+            The alpha blending value, between 0 (transparent) and 1 (opaque).
 
         Returns
         -------
@@ -497,17 +505,21 @@ class pca():
         if hotellingt2:
             Ioutlier1 = self.results['outliers']['y_bool'].values
             if d3:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)')
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)', 
+                           alpha=alpha_transparency)
             else:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)')
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)',
+                           alpha=alpha_transparency)
 
         # Plot outliers for hotelling T2 test.
         if SPE:
             Ioutlier2 = self.results['outliers']['y_bool_spe'].values
             if d3:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)')
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)',
+                          alpha=alpha_transparency)
             else:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)')
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)',
+                          alpha=alpha_transparency)
                 # Plot the ellipse
                 g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
                 if g_ellipse is not None: ax.add_artist(g_ellipse)
@@ -526,10 +538,12 @@ class pca():
             Iloc_label = (yk==y)
             Iloc_sampl = np.logical_and(Iloc_label, Inormal)
             if d3:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], color=getcolors[i, :], s=25, label=yk)
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], color=getcolors[i, :], s=25, label=yk,
+                          alpha=alpha_transparency)
                 # if label: ax.text(xs[Iloc_label], ys[Iloc_label], zs[Iloc_label], yk, color=getcolors[i,:], ha='center', va='center')
             else:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], color=getcolors[i, :], s=25, label=yk)
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], color=getcolors[i, :], s=25, label=yk,
+                          alpha=alpha_transparency)
                 if label: ax.annotate(yk, (np.mean(xs[Iloc_label]), np.mean(ys[Iloc_label])))
 
         # Set y
@@ -542,7 +556,8 @@ class pca():
         # Return
         return (fig, ax)
 
-    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8), visible=True, verbose=3):
+    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8), visible=True, verbose=3, 
+              alpha_transparency=None):
         """Create the Biplot.
 
         Description
@@ -576,6 +591,8 @@ class pca():
             Visible status of the Figure. When False, figure is created on the background.
         Verbose : int (default : 3)
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+        alpha_transparency : Float, default: None
+            The alpha blending value, between 0 (transparent) and 1 (opaque).
 
         Returns
         -------
@@ -613,9 +630,11 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, 2].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize,
+                                     alpha_transparency=alpha_transparency)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize,
+                                   alpha_transparency=alpha_transparency)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -645,7 +664,8 @@ class pca():
         if visible: plt.show()
         return(fig, ax)
 
-    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8)):
+    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8),
+                alpha_transparency=1):
         """Make biplot in 3d.
 
         Parameters
@@ -666,6 +686,8 @@ class pca():
             Visible status of the Figure. When False, figure is created on the background.
         figsize : (int, int), optional, default: (10,8)
             (width, height) in inches.
+        alpha_transparency : Float, default: None
+            The alpha blending value, between 0 (transparent) and 1 (opaque).
 
         Returns
         -------
@@ -676,7 +698,7 @@ class pca():
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
 
-        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, SPE=SPE, cmap=cmap, hotellingt2=hotellingt2, visible=visible, figsize=figsize)
+        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, SPE=SPE, cmap=cmap, hotellingt2=hotellingt2, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency)
 
         return(fig, ax)
 
