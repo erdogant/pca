@@ -2,7 +2,8 @@ from pca import pca
 import pandas as pd
 import numpy as np
 
-# %%
+
+# %% Transform unseen datapoints into fitted space
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 import pandas as pd
@@ -30,6 +31,7 @@ PCnew = model.transform(X_unseen)
 model.scatter(alpha_transparency=0.5)
 # Plot the new "unseen" samples on top of the existing space
 plt.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x')
+
 
 # %% Fix for no scatter but only directions
 from pca import pca
@@ -70,6 +72,8 @@ model.biplot(legend=False)
 
 
 # %%
+from pca import pca
+
 X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
 outliers = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
 X = np.vstack((X, outliers))
