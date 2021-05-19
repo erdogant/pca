@@ -10,7 +10,7 @@ import pandas as pd
 from pca import pca
 
 # Initialize
-model = pca(n_components=2, normalize=True)
+model = pca(n_components=2, normalize=True, detect_outliers=None)
 # Dataset
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
 

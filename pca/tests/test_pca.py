@@ -20,6 +20,7 @@ class TestPCA(unittest.TestCase):
 		param_grid = {
 			'n_components':[None, 0.01, 1, 0.95, 2, 100000000000],
 			'row_labels':[None, [], y],
+			'detect_outliers' : [None, 'ht2','spe'],
 			}
 
 		allNames = param_grid.keys()
@@ -32,10 +33,13 @@ class TestPCA(unittest.TestCase):
 			assert model.plot()
 			assert model.biplot(y=y, SPE=True, hotellingt2=True)
 			assert model.biplot3d(y=y, SPE=True, hotellingt2=True)
+			assert model.biplot(y=y, SPE=True, hotellingt2=False)
+			assert model.biplot(y=y, SPE=False, hotellingt2=True)
+			assert model.biplot(y=y, SPE=False, hotellingt2=False)
 
 
 	def test_correct_ordering_features_in_biplot(self):
-	
+
 		f1=np.random.randint(0,100,250)
 		f2=np.random.randint(0,50,250)
 		f3=np.random.randint(0,25,250)
@@ -75,16 +79,34 @@ class TestPCA(unittest.TestCase):
 		assert (out['topfeat'].feature.values[-1]=='f2') | (out['topfeat'].feature.values[-1]=='f9')
 
 	def test_for_outliers_and_transparency(self):	
-	
+
 		X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
 		outliers = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
 		X = np.vstack((X, outliers))
-		
+
 		model = pca(alpha=0.05)
 		# Fit transform
 		out = model.fit_transform(X)
 		assert X[out['outliers']['y_bool'],:].shape[0]==5
 		assert out['outliers'].shape[1]==5
+
+		######## TEST FOR HT2 #########
+		model = pca(alpha=0.05, detect_outliers=['ht2'])
+		# Fit transform
+		out = model.fit_transform(X)
+		assert X[out['outliers']['y_bool'],:].shape[0]==5
+
+		######## TEST FOR SPE/DMOX #########
+		model = pca(alpha=0.05, detect_outliers=['spe'])
+		# Fit transform
+		out = model.fit_transform(X)
+		assert 'y_bool_spe' in out['outliers'].columns
+
+		######## TEST WITHOUT OUTLIERS #########
+		model = pca(alpha=0.05, detect_outliers=None)
+		# Fit transform
+		out = model.fit_transform(X)
+		assert out['outliers'].empty
 
 		######## TEST FOR TRANSPARENCY WITH MATPLOTLIB VERSION #########
 		assert model.scatter(alpha_transparency=0.1)

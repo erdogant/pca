@@ -1,13 +1,5 @@
 """pca is a python package to perform Principal Component Analysis and to make insightful plots."""
 
-# ----------------------------------
-# Name        : pca.py
-# Author      : E.Taskesen
-# Contact     : erdogant@gmail.com
-# ----------------------------------
-
-assert 1 == 1
-
 # %% Libraries
 import colourmap as colourmap
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
@@ -29,7 +21,7 @@ import wget
 class pca():
     """pca module."""
 
-    def __init__(self, n_components=0.95, n_feat=25, alpha=0.05, n_std=2, onehot=False, normalize=False, random_state=None):
+    def __init__(self, n_components=0.95, n_feat=25, alpha=0.05, n_std=2, onehot=False, normalize=False, detect_outliers=['ht2','spe'], random_state=None):
         """Initialize pca with user-defined parameters.
 
         Parameters
@@ -48,10 +40,15 @@ class pca():
             Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
         normalize : bool (default : False)
             Normalize data, Z-score
+        detect_outliers : list (default : ['ht2','spe'])
+            None: Do not compute outliers.
+            'ht2': compute outliers based on Hotelling T2.
+            'spe': compute outliers basedon SPE/DmodX method. 
         random_state : int optional
             Random state
 
         """
+        if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
         # Store in object
         self.n_components = n_components
         self.onehot = onehot
@@ -60,6 +57,7 @@ class pca():
         self.n_feat = n_feat
         self.alpha = alpha
         self.n_std = n_std
+        self.detect_outliers = detect_outliers
 
     # Make PCA fit_transform
     def transform(self, X, row_labels=None, col_labels=None, verbose=3):
@@ -234,14 +232,17 @@ class pca():
 
         Returns
         -------
-        outliers : TYPE
+        outliers : numpy array
             Array containing outliers.
 
         """
-        # Detection of outliers using hotelling T2 test.
-        outliersHT2 = hotellingsT2(PC, alpha=self.alpha, df=1, verbose=verbose)[0]
-        # Detection of outliers using elipse method.
-        outliersELIPS = spe_dmodx(PC, n_std=self.n_std, verbose=verbose)[0]
+        outliersHT2, outliersELIPS = pd.DataFrame(), pd.DataFrame()
+        if np.any(np.isin(self.detect_outliers, 'ht2')):
+            # Detection of outliers using hotelling T2 test.
+            outliersHT2 = hotellingsT2(PC, alpha=self.alpha, df=1, verbose=verbose)[0]
+        if np.any(np.isin(self.detect_outliers, 'spe')):
+            # Detection of outliers using elipse method.
+            outliersELIPS = spe_dmodx(PC, n_std=self.n_std, verbose=verbose)[0]
         # Combine
         outliers = pd.concat([outliersHT2, outliersELIPS], axis=1)
         return outliers
@@ -502,7 +503,7 @@ class pca():
         xs, ys, zs, ax = _get_coordinates(self.results['PC'], PC, fig, ax, d3)
 
         # Plot outliers for hotelling T2 test.
-        if hotellingt2:
+        if hotellingt2 and ('y_bool' in self.results['outliers'].columns):
             Ioutlier1 = self.results['outliers']['y_bool'].values
             if d3:
                 ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)', 
@@ -512,7 +513,7 @@ class pca():
                            alpha=alpha_transparency)
 
         # Plot outliers for hotelling T2 test.
-        if SPE:
+        if SPE and ('y_bool_spe' in self.results['outliers'].columns):
             Ioutlier2 = self.results['outliers']['y_bool_spe'].values
             if d3:
                 ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)',
@@ -923,10 +924,8 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
         outliers = np.repeat(False, X.shape[1])
         y_score = np.repeat(None, X.shape[1])
 
-    out = pd.DataFrame()
-    out['y_bool_spe'] = outliers
-    out['y_score_spe'] = y_score
-
+    # Store in dataframe
+    out = pd.DataFrame(data={'y_bool_spe': outliers, 'y_score_spe': y_score})
     return out, g_ellipse
 
 
@@ -986,10 +985,7 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
         Pcomb.append(stats.combine_pvalues(y_proba[i, :], method='fisher'))
 
     Pcomb = np.array(Pcomb)
-    outliers = pd.DataFrame()
-    outliers['y_proba']= Pcomb[:, 1]
-    outliers['y_score'] = Pcomb[:, 0]
-    outliers['y_bool'] = Pcomb[:, 1] <= alpha
+    outliers = pd.DataFrame(data={'y_proba':Pcomb[:, 1], 'y_score': Pcomb[:, 0], 'y_bool': Pcomb[:, 1] <= alpha})
     # Return
     return outliers, y_bools
 
@@ -1025,8 +1021,8 @@ def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=
 
 # %% Store results
 def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler):
-    outliers.index = row_labels
 
+    if not outliers.empty: outliers.index = row_labels
     out = {}
     out['loadings'] = loadings
     out['PC'] = pd.DataFrame(data=PC[:, 0:n_components], index=row_labels, columns=loadings.index.values[0:n_components])
