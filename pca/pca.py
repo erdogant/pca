@@ -854,7 +854,7 @@ def _eigsorted(cov, n_std):
     return vals[order], vecs[:, order]
 
 
-def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
+def spe_dmodx(X, n_std=2, param=None, calpha=0.3, color='green', showfig=False, verbose=3):
     """Compute SPE/distance to model (DmodX).
 
     Description
@@ -868,6 +868,8 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
         Input data, in this case the Principal components.
     n_std : int, (default: 2)
         Standard deviation. The default is 2.
+    param : 2-element tuple (default: None)
+        Pre-computed g_ell_center and cov in the past run. None to compute from scratch with X. 
     calpha : float, (default: 0.3)
         transperancy color.
     color : String, (default: 'green')
@@ -881,7 +883,8 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
         column with boolean outliers and euclidean distance of each sample to the center of the ellipse.
     ax : object
         Figure axis.
-
+    param : 2-element tuple
+        computed g_ell_center and cov from X.
     """
     if verbose>=3: print('[pca] >Outlier detection using SPE/DmodX with n_std=[%d]' %(n_std))
     g_ellipse = None
@@ -891,8 +894,13 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
 
     if X.shape[1]>=2:
         # Compute mean and covariance
-        g_ell_center = X.mean(axis=0)
-        cov = np.cov(X, rowvar=False)
+        if (param is not None):
+            g_ell_center, cov = param
+        else:
+            g_ell_center = X.mean(axis=0)
+            cov = np.cov(X, rowvar=False)
+            param = g_ell_center, cov
+
         # Width and height are "full" widths, not radius
         vals, vecs = _eigsorted(cov, n_std)
         angle = np.degrees(np.arctan2(*vecs[:, 0][::-1]))
@@ -926,7 +934,7 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
 
     # Store in dataframe
     out = pd.DataFrame(data={'y_bool_spe': outliers, 'y_score_spe': y_score})
-    return out, g_ellipse
+    return out, g_ellipse, param
 
 
 # %% Outlier detection
