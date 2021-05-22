@@ -968,7 +968,7 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, param=None, verbose=3):
     X = X[:, 0:n_components]
     y = X
 
-    if (param is None):
+    if (param is not None):
         mean, var = param
     else:
         mean, var = np.mean(X), np.var(X)
