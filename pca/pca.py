@@ -205,11 +205,11 @@ class pca():
         # Top scoring n_components
         topfeat = self.compute_topfeat(loadings=loadings, verbose=verbose)
         # Detection of outliers
-        outliers = self.compute_outliers(PC, verbose=verbose)
+        outliers, param_dict = self.compute_outliers(PC, verbose=verbose)
         # Store
         self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler)
         # Return
-        return(self.results)
+        return(self.results), param_dict
 
     def _clean(self, verbose=3):
         # Clean readily fitted models to ensure correct results.
