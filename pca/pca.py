@@ -239,7 +239,7 @@ class pca():
         outliersHT2, outliersELIPS = pd.DataFrame(), pd.DataFrame()
         if np.any(np.isin(self.detect_outliers, 'ht2')):
             # Detection of outliers using hotelling T2 test.
-            outliersHT2 = hotellingsT2(PC, alpha=self.alpha, df=1, verbose=verbose)[0]
+            outliersHT2 = hotellingsT2(PC, alpha=self.alpha, df=1, n_components=self.n_components, verbose=verbose)[0]
         if np.any(np.isin(self.detect_outliers, 'spe')):
             # Detection of outliers using elipse method.
             outliersELIPS = spe_dmodx(PC, n_std=self.n_std, verbose=verbose)[0]
