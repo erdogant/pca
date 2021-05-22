@@ -930,7 +930,7 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
 
 
 # %% Outlier detection
-def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
+def hotellingsT2(X, alpha=0.05, df=1, n_components=5, param=None, verbose=3):
     """Test for outlier using hotelling T2 test.
 
     Description
@@ -950,6 +950,8 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
         Degrees of freedom.
     n_components : int, (default: 5)
         Number of PC components to be used to compute the Pvalue.
+    param : 2-element tuple (default: None)
+        Pre-computed mean and variance in the past run. None to compute from scratch with X. 
     Verbose : int (default : 3)
         Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
@@ -959,14 +961,20 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
         dataframe containing probability, test-statistics and boolean value.
     y_bools : array-like
         boolean value when significant per PC.
-
+    param : 2-element tuple
+        computed mean and variance from X.
     """
     n_components = np.minimum(n_components, X.shape[1])
     X = X[:, 0:n_components]
     y = X
 
+    if (param is None):
+        mean, var = param
+    else:
+        mean, var = np.mean(X), np.var(X)
+        param = (mean, var)
     if verbose>=3: print('[pca] >Outlier detection using Hotelling T2 test with alpha=[%.2f] and n_components=[%d]' %(alpha, n_components))
-    y_score = (y - np.mean(X)) ** 2 / np.var(X)
+    y_score = (y - mean) ** 2 / var
     # Compute probability per PC whether datapoints are outside the boundary
     y_proba = 1 - stats.chi2.cdf(y_score, df=df)
     # Set probabilities at a very small value when 0. This is required for the Fishers method. Otherwise inf values will occur.
@@ -987,7 +995,7 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
     Pcomb = np.array(Pcomb)
     outliers = pd.DataFrame(data={'y_proba':Pcomb[:, 1], 'y_score': Pcomb[:, 0], 'y_bool': Pcomb[:, 1] <= alpha})
     # Return
-    return outliers, y_bools
+    return outliers, y_bools, param
 
 
 # %% Explained variance
