@@ -253,7 +253,7 @@ class pca():
         if np.any(np.isin(self.detect_outliers, 'spe')):
             # Detection of outliers using elipse method.
             if (paramSPE is not None) and (verbose>=3): print('[pca] >compute SPE with precomputed parameter.')
-            outliersELIPS, _, paramSPE = spe_dmodx(PC, n_std=self.n_std, param=paramSPE, verbose=verbose)[0]
+            outliersELIPS, _, paramSPE = spe_dmodx(PC, n_std=self.n_std, param=paramSPE, verbose=verbose)
         # Combine
         outliers = pd.concat([outliersHT2, outliersELIPS], axis=1)
         param_dict = {
