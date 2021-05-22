@@ -218,7 +218,7 @@ class pca():
             if hasattr(self, 'results'): del self.results
 
     # Outlier detection
-    def compute_outliers(self, PC, n_std=2, verbose=3):
+    def compute_outliers(self, PC, n_std=2, param_dict=None, verbose=3):
         """Compute outliers.
 
         Parameters
@@ -227,6 +227,8 @@ class pca():
             Principal Components.
         n_std : int, (default: 2)
             Standard deviation. The default is 2.
+        param_dict: dictionary, (default: None)
+            Contains parameters for hotellingsT2() and spe_dmodx().
         Verbose : int (default : 3)
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
@@ -234,18 +236,31 @@ class pca():
         -------
         outliers : numpy array
             Array containing outliers.
-
+        param_dict: dictionary, (default: None)
+            Contains parameters for hotellingsT2() and spe_dmodx(), reusable in the future.
         """
         outliersHT2, outliersELIPS = pd.DataFrame(), pd.DataFrame()
+        if (param_dict is not None):
+            paramT2 = param_dict.get('paramT2', None)
+            paramSPE = param_dict.get('paramSPE', None)
+        else:
+            paramT2, paramSPE = None, None
+
         if np.any(np.isin(self.detect_outliers, 'ht2')):
             # Detection of outliers using hotelling T2 test.
-            outliersHT2 = hotellingsT2(PC, alpha=self.alpha, df=1, n_components=self.n_components, verbose=verbose)[0]
+            if (paramT2 is not None) and (verbose>=3): print('[pca] >compute hotellingsT2 with precomputed parameter.')
+            outliersHT2, _, paramT2 = hotellingsT2(PC, alpha=self.alpha, df=1, n_components=self.n_components, param=paramT2, verbose=verbose)
         if np.any(np.isin(self.detect_outliers, 'spe')):
             # Detection of outliers using elipse method.
-            outliersELIPS = spe_dmodx(PC, n_std=self.n_std, verbose=verbose)[0]
+            if (paramSPE is not None) and (verbose>=3): print('[pca] >compute SPE with precomputed parameter.')
+            outliersELIPS, _, paramSPE = spe_dmodx(PC, n_std=self.n_std, param=paramSPE, verbose=verbose)[0]
         # Combine
         outliers = pd.concat([outliersHT2, outliersELIPS], axis=1)
-        return outliers
+        param_dict = {
+            'paramT2': paramT2,
+            'paramSPE': paramSPE,
+        }
+        return outliers, param_dict
 
     # Post processing.
     def _postprocessing(self, model_pca, loadings, col_labels, n_components, verbose=3):
