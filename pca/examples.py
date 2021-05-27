@@ -2,6 +2,44 @@ from pca import pca
 import pandas as pd
 import numpy as np
 
+# %%
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from pca import pca
+
+np.random.seed(42)
+# Load dataset
+n_total, train_ratio = 10000, 0.8
+n_features = 10
+my_array = np.random.randint(low=1, high=10, size=(n_total, n_features))
+features = [f'f{i}' for i in range(1, n_features+1, 1)]
+X = pd.DataFrame(my_array, columns=features)
+X_train = X.sample(frac=train_ratio)
+X_test = X.drop(X_train.index)
+
+# Training
+model = pca(n_components=5, alpha=0.5, n_std=3, normalize=True, random_state=42)
+results = model.fit_transform(X=X_train[features])
+
+# Inference: mapping of data into space.
+PC_test = model.transform(X=X_test[features])
+# Compute new outliers
+scores, _ = model.compute_outliers(PC=PC_test, n_std=3, verbose=3) 
+
+# Prepare for plotting
+T2_train = np.log(results['outliers']['y_score'])
+T2_mu, T2_sigma = T2_train.agg(['mean', 'std'])
+T2_limit = T2_mu + T2_sigma*3
+T2_test = np.log(scores['y_score'])
+
+# Plot
+plt.figure(figsize=(14, 4))
+plt.axhline(T2_mu, color='blue')
+plt.axhline(T2_limit, color = 'red', linestyle = 'dashed')
+plt.scatter([i for i in range(T2_train.shape[0])], T2_train, c='black', s=100, alpha=0.5)
+plt.scatter([i for i in range(T2_train.shape[0], T2_train.shape[0]+T2_test.shape[0], 1)], T2_test, c='blue', s=100, alpha=0.5)
+plt.show()
 
 # %% Transform unseen datapoints into fitted space
 import matplotlib.pyplot as plt
