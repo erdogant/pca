@@ -205,11 +205,11 @@ class pca():
         # Top scoring n_components
         topfeat = self.compute_topfeat(loadings=loadings, verbose=verbose)
         # Detection of outliers
-        outliers = self.compute_outliers(PC, verbose=verbose)
+        outliers, param_dict = self.compute_outliers(PC, verbose=verbose)
         # Store
         self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler)
         # Return
-        return(self.results)
+        return(self.results), param_dict
 
     def _clean(self, verbose=3):
         # Clean readily fitted models to ensure correct results.
@@ -218,7 +218,7 @@ class pca():
             if hasattr(self, 'results'): del self.results
 
     # Outlier detection
-    def compute_outliers(self, PC, n_std=2, verbose=3):
+    def compute_outliers(self, PC, n_std=2, param_dict=None, verbose=3):
         """Compute outliers.
 
         Parameters
@@ -227,6 +227,8 @@ class pca():
             Principal Components.
         n_std : int, (default: 2)
             Standard deviation. The default is 2.
+        param_dict: dictionary, (default: None)
+            Contains parameters for hotellingsT2() and spe_dmodx().
         Verbose : int (default : 3)
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
@@ -234,18 +236,31 @@ class pca():
         -------
         outliers : numpy array
             Array containing outliers.
-
+        param_dict: dictionary, (default: None)
+            Contains parameters for hotellingsT2() and spe_dmodx(), reusable in the future.
         """
         outliersHT2, outliersELIPS = pd.DataFrame(), pd.DataFrame()
+        if (param_dict is not None):
+            paramT2 = param_dict.get('paramT2', None)
+            paramSPE = param_dict.get('paramSPE', None)
+        else:
+            paramT2, paramSPE = None, None
+
         if np.any(np.isin(self.detect_outliers, 'ht2')):
             # Detection of outliers using hotelling T2 test.
-            outliersHT2 = hotellingsT2(PC, alpha=self.alpha, df=1, verbose=verbose)[0]
+            if (paramT2 is not None) and (verbose>=3): print('[pca] >compute hotellingsT2 with precomputed parameter.')
+            outliersHT2, _, paramT2 = hotellingsT2(PC, alpha=self.alpha, df=1, n_components=self.n_components, param=paramT2, verbose=verbose)
         if np.any(np.isin(self.detect_outliers, 'spe')):
             # Detection of outliers using elipse method.
-            outliersELIPS = spe_dmodx(PC, n_std=self.n_std, verbose=verbose)[0]
+            if (paramSPE is not None) and (verbose>=3): print('[pca] >compute SPE with precomputed parameter.')
+            outliersELIPS, _, paramSPE = spe_dmodx(PC, n_std=self.n_std, param=paramSPE, verbose=verbose)
         # Combine
         outliers = pd.concat([outliersHT2, outliersELIPS], axis=1)
-        return outliers
+        param_dict = {
+            'paramT2': paramT2,
+            'paramSPE': paramSPE,
+        }
+        return outliers, param_dict
 
     # Post processing.
     def _postprocessing(self, model_pca, loadings, col_labels, n_components, verbose=3):
@@ -854,7 +869,7 @@ def _eigsorted(cov, n_std):
     return vals[order], vecs[:, order]
 
 
-def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
+def spe_dmodx(X, n_std=2, param=None, calpha=0.3, color='green', showfig=False, verbose=3):
     """Compute SPE/distance to model (DmodX).
 
     Description
@@ -868,6 +883,8 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
         Input data, in this case the Principal components.
     n_std : int, (default: 2)
         Standard deviation. The default is 2.
+    param : 2-element tuple (default: None)
+        Pre-computed g_ell_center and cov in the past run. None to compute from scratch with X. 
     calpha : float, (default: 0.3)
         transperancy color.
     color : String, (default: 'green')
@@ -881,7 +898,8 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
         column with boolean outliers and euclidean distance of each sample to the center of the ellipse.
     ax : object
         Figure axis.
-
+    param : 2-element tuple
+        computed g_ell_center and cov from X.
     """
     if verbose>=3: print('[pca] >Outlier detection using SPE/DmodX with n_std=[%d]' %(n_std))
     g_ellipse = None
@@ -891,8 +909,13 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
 
     if X.shape[1]>=2:
         # Compute mean and covariance
-        g_ell_center = X.mean(axis=0)
-        cov = np.cov(X, rowvar=False)
+        if (param is not None):
+            g_ell_center, cov = param
+        else:
+            g_ell_center = X.mean(axis=0)
+            cov = np.cov(X, rowvar=False)
+            param = g_ell_center, cov
+
         # Width and height are "full" widths, not radius
         vals, vecs = _eigsorted(cov, n_std)
         angle = np.degrees(np.arctan2(*vecs[:, 0][::-1]))
@@ -926,11 +949,11 @@ def spe_dmodx(X, n_std=2, calpha=0.3, color='green', showfig=False, verbose=3):
 
     # Store in dataframe
     out = pd.DataFrame(data={'y_bool_spe': outliers, 'y_score_spe': y_score})
-    return out, g_ellipse
+    return out, g_ellipse, param
 
 
 # %% Outlier detection
-def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
+def hotellingsT2(X, alpha=0.05, df=1, n_components=5, param=None, verbose=3):
     """Test for outlier using hotelling T2 test.
 
     Description
@@ -950,6 +973,8 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
         Degrees of freedom.
     n_components : int, (default: 5)
         Number of PC components to be used to compute the Pvalue.
+    param : 2-element tuple (default: None)
+        Pre-computed mean and variance in the past run. None to compute from scratch with X. 
     Verbose : int (default : 3)
         Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
@@ -959,14 +984,20 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
         dataframe containing probability, test-statistics and boolean value.
     y_bools : array-like
         boolean value when significant per PC.
-
+    param : 2-element tuple
+        computed mean and variance from X.
     """
     n_components = np.minimum(n_components, X.shape[1])
     X = X[:, 0:n_components]
     y = X
 
+    if (param is not None):
+        mean, var = param
+    else:
+        mean, var = np.mean(X), np.var(X)
+        param = (mean, var)
     if verbose>=3: print('[pca] >Outlier detection using Hotelling T2 test with alpha=[%.2f] and n_components=[%d]' %(alpha, n_components))
-    y_score = (y - np.mean(X)) ** 2 / np.var(X)
+    y_score = (y - mean) ** 2 / var
     # Compute probability per PC whether datapoints are outside the boundary
     y_proba = 1 - stats.chi2.cdf(y_score, df=df)
     # Set probabilities at a very small value when 0. This is required for the Fishers method. Otherwise inf values will occur.
@@ -987,7 +1018,7 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, verbose=3):
     Pcomb = np.array(Pcomb)
     outliers = pd.DataFrame(data={'y_proba':Pcomb[:, 1], 'y_score': Pcomb[:, 0], 'y_bool': Pcomb[:, 1] <= alpha})
     # Return
-    return outliers, y_bools
+    return outliers, y_bools, param
 
 
 # %% Explained variance
