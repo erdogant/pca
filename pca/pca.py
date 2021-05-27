@@ -205,11 +205,11 @@ class pca():
         # Top scoring n_components
         topfeat = self.compute_topfeat(loadings=loadings, verbose=verbose)
         # Detection of outliers
-        outliers, param_dict = self.compute_outliers(PC, verbose=verbose)
+        outliers, outliers_params = self.compute_outliers(PC, verbose=verbose)
         # Store
-        self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler)
+        self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler, outliers_params)
         # Return
-        return(self.results), param_dict
+        return(self.results)
 
     def _clean(self, verbose=3):
         # Clean readily fitted models to ensure correct results.
@@ -218,7 +218,7 @@ class pca():
             if hasattr(self, 'results'): del self.results
 
     # Outlier detection
-    def compute_outliers(self, PC, n_std=2, param_dict=None, verbose=3):
+    def compute_outliers(self, PC, n_std=2, verbose=3):
         """Compute outliers.
 
         Parameters
@@ -227,8 +227,6 @@ class pca():
             Principal Components.
         n_std : int, (default: 2)
             Standard deviation. The default is 2.
-        param_dict: dictionary, (default: None)
-            Contains parameters for hotellingsT2() and spe_dmodx().
         Verbose : int (default : 3)
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
@@ -236,13 +234,16 @@ class pca():
         -------
         outliers : numpy array
             Array containing outliers.
-        param_dict: dictionary, (default: None)
+        outliers_params: dictionary, (default: None)
             Contains parameters for hotellingsT2() and spe_dmodx(), reusable in the future.
         """
+        # Convert to numpy array if required
+        if isinstance(PC, pd.DataFrame): PC = np.array(PC)
+        # Initialize
         outliersHT2, outliersELIPS = pd.DataFrame(), pd.DataFrame()
-        if (param_dict is not None):
-            paramT2 = param_dict.get('paramT2', None)
-            paramSPE = param_dict.get('paramSPE', None)
+        if hasattr(self, 'results'):
+            paramT2 = self.results['outliers_params'].get('paramT2', None)
+            paramSPE = self.results['outliers_params'].get('paramSPE', None)
         else:
             paramT2, paramSPE = None, None
 
@@ -256,11 +257,8 @@ class pca():
             outliersELIPS, _, paramSPE = spe_dmodx(PC, n_std=self.n_std, param=paramSPE, verbose=verbose)
         # Combine
         outliers = pd.concat([outliersHT2, outliersELIPS], axis=1)
-        param_dict = {
-            'paramT2': paramT2,
-            'paramSPE': paramSPE,
-        }
-        return outliers, param_dict
+        outliers_params = {'paramT2': paramT2, 'paramSPE': paramSPE}
+        return outliers, outliers_params
 
     # Post processing.
     def _postprocessing(self, model_pca, loadings, col_labels, n_components, verbose=3):
@@ -1051,7 +1049,7 @@ def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=
 
 
 # %% Store results
-def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler):
+def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler, outliers_params):
 
     if not outliers.empty: outliers.index = row_labels
     out = {}
@@ -1063,6 +1061,7 @@ def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_label
     out['pcp'] = pcp
     out['topfeat'] = topfeat
     out['outliers'] = outliers
+    out['outliers_params'] = outliers_params
     return out
 
 
