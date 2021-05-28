@@ -145,3 +145,14 @@ class TestPCA(unittest.TestCase):
         
         assert model.results.get('outliers_params', None) is not None
         assert scores.shape[0]==X_test.shape[0]
+
+    def test_fit_transform_type(self):
+        # Checks that fitting works for expected file types
+        X = [[1,2],
+             [2,1],
+             [3,3]]
+
+        p = pca(n_components=2,normalize=True)
+        p.fit_transform(X)
+        p.transform(X)
+        
