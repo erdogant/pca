@@ -106,6 +106,11 @@ class pca():
         pca transformed data.
 
         """
+        
+        # Check type to make sure we can perform matrix operations
+        if isinstance(X, list):
+            X = np.array(X)
+        
         # Pre-processing using scaler.
         X_scaled, row_labels, _, _ = self._preprocessing(X, row_labels, col_labels, scaler=self.results['scaler'], verbose=verbose)
         # Transform the data using fitted model.
@@ -178,6 +183,11 @@ class pca():
         >>> X_norm = model.norm(X)
 
         """
+        
+        # Check type to make sure we can perform matrix operations
+        if isinstance(X, list):
+            X = np.array(X)
+        
         # Clean readily fitted models to ensure correct results.
         self._clean(verbose=verbose)
         # Pre-processing
