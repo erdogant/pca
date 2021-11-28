@@ -29,6 +29,7 @@ class TestPCA(unittest.TestCase):
         
         for combination in combinations:
         	model = pca(n_components=combination[0])
+        	model = pca(n_components=0.95)
         	model.fit_transform(X)
         	assert model.plot()
         	assert model.biplot(y=y, SPE=True, hotellingt2=True)
@@ -36,6 +37,7 @@ class TestPCA(unittest.TestCase):
         	assert model.biplot(y=y, SPE=True, hotellingt2=False)
         	assert model.biplot(y=y, SPE=False, hotellingt2=True)
         	assert model.biplot(y=y, SPE=False, hotellingt2=False)
+        	assert model.results['PC'].shape[1]==model.n_components
 
 
     def test_correct_ordering_features_in_biplot(self):

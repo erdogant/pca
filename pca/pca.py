@@ -197,7 +197,7 @@ class pca():
             if verbose>=3: print('[pca] >The PCA reduction is performed to capture [%.1f%%] explained variance using the [%.d] columns of the input data.' %(self.n_components * 100, X.shape[1]))
             pcp = self.n_components
             # Run with all components to get all PCs back. This is needed for the step after.
-            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=None, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
+            _, _, _, percentExplVar = _explainedvar(X, n_components=None, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
             # Take number of components with minimal [n_components] explained variance
             if percentExplVar is None:
                 self.n_components = X.shape[1] - 1
@@ -205,10 +205,10 @@ class pca():
             else:
                 self.n_components = np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
                 if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp * 100))
-        else:
-            if verbose>=3: print('[pca] >The PCA reduction is performed on the [%.d] columns of the input dataframe.' %(X.shape[1]))
-            model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
-            pcp = percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components)]
+
+        if verbose>=3: print('[pca] >The PCA reduction is performed on the [%.d] columns of the input dataframe.' %(X.shape[1]))
+        model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
+        pcp = percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components)]
 
         # Combine components relations with features
         loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components, verbose=verbose)
