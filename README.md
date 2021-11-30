@@ -10,6 +10,7 @@
 [![Downloads](https://pepy.tech/badge/pca/month)](https://pepy.tech/project/pca)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/erdogant/pca/blob/master/notebooks/pca_examples.ipynb)
 [![BuyMeCoffee](https://img.shields.io/badge/buymea-coffee-yellow.svg)](https://www.buymeacoffee.com/erdogant)
+[![DOI](https://zenodo.org/badge/233232884.svg)](https://zenodo.org/badge/latestdoi/233232884)
 <!---[![Coffee](https://img.shields.io/badge/coffee-black-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)-->
 
 
@@ -442,19 +443,6 @@ model.scatter()
 plt.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x')
 
 ```
-
-
-### Citation
-Please cite distfit in your publications if this is useful for your research. Here is an example BibTeX entry:
-```BibTeX
-@misc{erdogant2019pca,
-  title={pca},
-  author={Erdogan Taskesen},
-  year={2019},
-  howpublished={\url{https://github.com/erdogant/pca}},
-}
-```
-
 
 ### Maintainer
 	Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
