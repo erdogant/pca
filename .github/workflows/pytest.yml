@@ -1,4 +1,4 @@
-name: Pytest with pandas
+name: Pytest for pca
 on: [push]
 
 jobs:

@@ -4,3 +4,5 @@ sklearn
 scipy
 colourmap
 wget
+pandas
+tqdm
