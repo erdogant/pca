@@ -593,6 +593,8 @@ class pca():
             3d plot is created when True.
         label : Bool, default: True
             Show the labels.
+        PC : list, default : [0, 1]
+            Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         SPE : Bool, default: False
@@ -623,6 +625,7 @@ class pca():
         if self.results['PC'].shape[1]<2:
             print('[pca] >Requires 2 PCs to make 2d plot.')
             return None, None
+        if d3 and len(PC)<3: raise Exception(print('[pca] >[Warning] in case of biplot3d or d3=True, at least 3 PCs are required.'))
 
         # Pre-processing
         y, topfeat, n_feat = self._fig_preprocessing(y, n_feat, d3)
@@ -689,6 +692,8 @@ class pca():
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         label : Bool, default: True
             Show the labels.
+        PC : list, default : [0, 1, 2]
+            Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         SPE : Bool, default: False
@@ -711,7 +716,7 @@ class pca():
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
 
-        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, legend=legend, SPE=SPE, cmap=cmap, hotellingt2=hotellingt2, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency)
+        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, PC=PC, legend=legend, SPE=SPE, cmap=cmap, hotellingt2=hotellingt2, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency)
 
         return(fig, ax)
 

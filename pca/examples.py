@@ -106,7 +106,8 @@ X = pd.DataFrame(data=X, columns=np.arange(0, X.shape[1]).astype(str))
 # Fit transform
 out = model.fit_transform(X)
 # Make plot
-model.biplot(legend=False)
+model.biplot(legend=False, PC=[0, 1])
+model.biplot3d(legend=False, PC=[0, 1, 2])
 
 
 # %%
