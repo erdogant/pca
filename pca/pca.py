@@ -21,7 +21,7 @@ import wget
 class pca():
     """pca module."""
 
-    def __init__(self, n_components=0.95, n_feat=25, alpha=0.05, n_std=2, onehot=False, normalize=False, detect_outliers=['ht2','spe'], random_state=None):
+    def __init__(self, n_components=0.95, n_feat=25, alpha=0.05, n_std=2, onehot=False, normalize=False, detect_outliers=['ht2', 'spe'], random_state=None):
         """Initialize pca with user-defined parameters.
 
         Parameters
@@ -43,10 +43,9 @@ class pca():
         detect_outliers : list (default : ['ht2','spe'])
             None: Do not compute outliers.
             'ht2': compute outliers based on Hotelling T2.
-            'spe': compute outliers basedon SPE/DmodX method. 
+            'spe': compute outliers basedon SPE/DmodX method.
         random_state : int optional
             Random state
-
         """
         if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
         # Store in object
@@ -106,11 +105,10 @@ class pca():
         pca transformed data.
 
         """
-        
         # Check type to make sure we can perform matrix operations
         if isinstance(X, list):
             X = np.array(X)
-        
+
         # Pre-processing using scaler.
         X_scaled, row_labels, _, _ = self._preprocessing(X, row_labels, col_labels, scaler=self.results['scaler'], verbose=verbose)
         # Transform the data using fitted model.
@@ -183,11 +181,10 @@ class pca():
         >>> X_norm = model.norm(X)
 
         """
-        
         # Check type to make sure we can perform matrix operations
         if isinstance(X, list):
             X = np.array(X)
-        
+
         # Clean readily fitted models to ensure correct results.
         self._clean(verbose=verbose)
         # Pre-processing
@@ -438,18 +435,17 @@ class pca():
         return y, topfeat, n_feat
 
     # Scatter plot
-    def scatter3d(self, y=None, label=True, legend=True, PC=[0, 1, 2], SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8), 
-                 alpha_transparency=None):
+    def scatter3d(self, y=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8), alpha_transparency=None):
         """Scatter 3d plot.
 
         Parameters
         ----------
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
-        PC : list, default : [0,1,2]
-            Plot the first three Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
         label : Bool, default: True
             Show the labels.
+        PC : list, default : [0, 1, 2]
+            Plot the first three Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         SPE : Bool, default: False
@@ -471,16 +467,14 @@ class pca():
 
         """
         if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, 
-                                   alpha_transparency=alpha_transparency)
+            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
             fig, ax = None, None
         return fig, ax
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, legend=True, PC=[0, 1], SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8), 
-                alpha_transparency=None):
+    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8), alpha_transparency=None):
         """Scatter 2d plot.
 
         Parameters
@@ -489,12 +483,12 @@ class pca():
             Label for each sample. The labeling is used for coloring the samples.
         d3 : Bool, default: False
             3d plot is created when True.
-        PC : list, default : [0,1]
+        label : Bool, default: True
+            Show the labels.
+        PC : list, default : [0, 1]
             Plot the first two Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
-        label : Bool, default: True
-            Show the labels.
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
@@ -529,8 +523,7 @@ class pca():
         if hotellingt2 and ('y_bool' in self.results['outliers'].columns):
             Ioutlier1 = self.results['outliers']['y_bool'].values
             if d3:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)', 
-                           alpha=alpha_transparency)
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)', alpha=alpha_transparency)
             else:
                 ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)',
                            alpha=alpha_transparency)
@@ -539,11 +532,9 @@ class pca():
         if SPE and ('y_bool_spe' in self.results['outliers'].columns):
             Ioutlier2 = self.results['outliers']['y_bool_spe'].values
             if d3:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)',
-                          alpha=alpha_transparency)
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)', alpha=alpha_transparency)
             else:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)',
-                          alpha=alpha_transparency)
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)', alpha=alpha_transparency)
                 # Plot the ellipse
                 g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
                 if g_ellipse is not None: ax.add_artist(g_ellipse)
@@ -562,12 +553,10 @@ class pca():
             Iloc_label = (yk==y)
             Iloc_sampl = np.logical_and(Iloc_label, Inormal)
             if d3:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], color=getcolors[i, :], s=25, label=yk,
-                          alpha=alpha_transparency)
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], color=getcolors[i, :], s=25, label=yk, alpha=alpha_transparency)
                 # if label: ax.text(xs[Iloc_label], ys[Iloc_label], zs[Iloc_label], yk, color=getcolors[i,:], ha='center', va='center')
             else:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], color=getcolors[i, :], s=25, label=yk,
-                          alpha=alpha_transparency)
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], color=getcolors[i, :], s=25, label=yk, alpha=alpha_transparency)
                 if label: ax.annotate(yk, (np.mean(xs[Iloc_label]), np.mean(ys[Iloc_label])))
 
         # Set y
@@ -584,13 +573,12 @@ class pca():
         # Return
         return (fig, ax)
 
-    def biplot(self, y=None, n_feat=None, d3=False, label=True, legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8), visible=True, verbose=3, 
-              alpha_transparency=None):
+    def biplot(self, y=None, n_feat=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8), visible=True, alpha_transparency=None, verbose=3):
         """Create the Biplot.
 
         Description
         -----------
-        Plots the PC1 vs PC2 (vs PC3) with the samples, and the best performing features.
+        Plots the Principal components with the samples, and the best performing features.
         Per PC, The feature with absolute highest loading is gathered. This can result into features that are seen over multiple PCs, and some features may never be detected.
         For vizualization purposes we will keep only the unique feature-names and plot them with red arrows and green labels.
         The feature-names that were never discovered (described as weak) are colored yellow.
@@ -654,15 +642,13 @@ class pca():
         # Include additional parameters if 3d-plot is desired.
         if d3:
             if self.results['PC'].shape[1]<3:
-                if verbose>=2: print('[pca] >Warning: requires 3 PCs to make 3d plot.')
+                if verbose>=2: print('[pca] >Warning: requires 3 PCs to make 3d plot <return>.')
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, 2].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize,
-                                     alpha_transparency=alpha_transparency)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize,
-                                   alpha_transparency=alpha_transparency)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -692,8 +678,7 @@ class pca():
         if visible: plt.show()
         return(fig, ax)
 
-    def biplot3d(self, y=None, n_feat=None, label=True, legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8),
-                alpha_transparency=1):
+    def biplot3d(self, y=None, n_feat=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8), alpha_transparency=1):
         """Make biplot in 3d.
 
         Parameters
