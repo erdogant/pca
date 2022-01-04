@@ -4,3 +4,4 @@ spyder-kernels==2.2.*
 sphinx
 pytest
 git+git://github.com/SuperKogito/sphinxcontrib-pdfembed
+irelease
