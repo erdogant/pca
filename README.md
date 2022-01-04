@@ -115,7 +115,7 @@ fig, ax = model.scatter()
 
 # Make biplot
 ```python
-fig, ax = model.biplot(n_feat=4)
+fig, ax = model.biplot(n_feat=4, PC=[0,1])
 ```
 <p align="center">
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot.png" width="350" />
@@ -132,7 +132,7 @@ fig, ax = model.plot()
 # Make 3d plots
 ```python
 fig, ax = model.scatter3d()
-fig, ax = model.biplot3d(n_feat=2)
+fig, ax = model.biplot3d(n_feat=2, PC=[0,1,2])
 ```
 <p align="center">
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter3d.png" width="350" />
