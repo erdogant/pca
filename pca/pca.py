@@ -622,23 +622,31 @@ class pca():
             * https://towardsdatascience.com/pca-clearly-explained-how-when-why-to-use-it-and-feature-importance-a-guide-in-python-7c274582c37e
 
         """
-        if self.results['PC'].shape[1]<2:
-            print('[pca] >Requires 2 PCs to make 2d plot.')
-            return None, None
-        if d3 and len(PC)<3: raise Exception(print('[pca] >[Warning] in case of biplot3d or d3=True, at least 3 PCs are required.'))
+        if self.results['PC'].shape[1]<2: raise ValueError('[pca] >[Error] Requires 2 PCs to make 2d plot.')
+        if d3 and len(PC)<3: raise ValueError('[pca] >[Error] in case of biplot3d or d3=True, at least 3 PCs are required.')
+        if np.max(PC)>=self.results['PC'].shape[1]: raise ValueError('[pca] >[Error] PC%.0d does not exist!' %(np.max(PC) + 1))
+        if verbose>=3 and d3:
+            print('[pca] >Plot PC%.0d vs PC%.0d vs PC%.0d.' %(PC[0] + 1, PC[1] + 1, PC[2] + 1))
+        elif verbose>=3:
+            print('[pca] >Plot PC%.0d vs PC%.0d.' %(PC[0] + 1, PC[1] + 1))
 
         # Pre-processing
         y, topfeat, n_feat = self._fig_preprocessing(y, n_feat, d3)
+        topfeat = pd.concat([topfeat.iloc[PC, :], topfeat.loc[~topfeat.index.isin(PC), :]])
+        topfeat.reset_index(inplace=True)
+
         # coeff = self.results['loadings'][topfeat['feature'].values].iloc[0:n_feat,:]
         coeff = self.results['loadings'].iloc[0:n_feat, :]
+        # coeff = pd.concat([coeff.iloc[PC, :], coeff.loc[~np.isin(np.arange(0, coeff.shape[0]), PC), :]])
+
         # Use the PCs only for scaling purposes
-        mean_x = np.mean(self.results['PC'].iloc[:, 0].values)
-        mean_y = np.mean(self.results['PC'].iloc[:, 1].values)
+        mean_x = np.mean(self.results['PC'].iloc[:, PC[0]].values)
+        mean_y = np.mean(self.results['PC'].iloc[:, PC[1]].values)
 
         # Plot and scale values for arrows and text
         # Take the absolute minimum range of the x-axis and y-axis
         # max_axis = np.min(np.abs(self.results['PC'].iloc[:,0:2]).max())
-        max_axis = np.max(np.abs(self.results['PC'].iloc[:, 0:2]).min(axis=1))
+        max_axis = np.max(np.abs(self.results['PC'].iloc[:, PC]).min(axis=1))
         max_arrow = np.abs(coeff).max().max()
         scale = (np.max([1, np.round(max_axis / max_arrow, 2)])) * 0.93
 
@@ -647,7 +655,7 @@ class pca():
             if self.results['PC'].shape[1]<3:
                 if verbose>=2: print('[pca] >Warning: requires 3 PCs to make 3d plot <return>.')
                 return None, None
-            mean_z = np.mean(self.results['PC'].iloc[:, 2].values)
+            mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
             # zs = self.results['PC'].iloc[:,2].values
             fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency)
         else:
@@ -664,24 +672,24 @@ class pca():
             getfeat = topfeat['feature'].iloc[i]
             label = getfeat + ' (' + ('%.2f' %topfeat['loading'].iloc[i]) + ')'
             getcoef = coeff[getfeat].values
-            # Set PC1 vs PC2 direction. Note that these are not neccarily the best loading.
-            xarrow = getcoef[0] * scale  # PC1 direction (aka the x-axis)
-            yarrow = getcoef[1] * scale  # PC2 direction (aka the y-axis)
+            # Set first PC vs second PC direction. Note that these are not neccarily the best loading.
+            xarrow = getcoef[PC[0]] * scale  # First PC in the x-axis direction
+            yarrow = getcoef[PC[1]] * scale  # Second PC in the y-axis direction
             txtcolor = 'y' if topfeat['type'].iloc[i] == 'weak' else 'g'
 
             if d3:
                 # zarrow = getcoef[np.minimum(2,len(getcoef))] * scale
-                zarrow = getcoef[2] * scale
-                ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color='red', alpha=0.8, lw=2)
+                zarrow = getcoef[PC[2]] * scale
+                ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=color_arrow, alpha=0.8, lw=2)
                 ax.text(xarrow * 1.11, yarrow * 1.11, zarrow * 1.11, label, color=txtcolor, ha='center', va='center')
             else:
-                ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color='r', width=0.005, head_width=0.01 * scale, alpha=0.8)
+                ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, width=0.005, head_width=0.02 * scale, alpha=0.8)
                 ax.text(xarrow * 1.11, yarrow * 1.11, label, color=txtcolor, ha='center', va='center')
 
         if visible: plt.show()
         return(fig, ax)
 
-    def biplot3d(self, y=None, n_feat=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8), alpha_transparency=1):
+    def biplot3d(self, y=None, n_feat=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=1):
         """Make biplot in 3d.
 
         Parameters
