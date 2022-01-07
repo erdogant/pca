@@ -155,6 +155,15 @@ class TestPCA(unittest.TestCase):
              [3,3]]
 
         p = pca(n_components=2,normalize=True)
-        p.fit_transform(X)
+        set(p.fit_transform(X).keys())==set({'PC',
+         'explained_var',
+         'loadings',
+         'model',
+         'outliers',
+         'outliers_params',
+         'pcp',
+         'scaler',
+         'topfeat'})
+
         p.transform(X)
         
