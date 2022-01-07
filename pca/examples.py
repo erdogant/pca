@@ -3,6 +3,75 @@ import pandas as pd
 import numpy as np
 
 # %%
+from sklearn.datasets import load_iris
+X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+model = pca(n_components=3, normalize=True)
+out = model.fit_transform(X)
+fig, ax = model.biplot(label=True, legend=False, PC=[1,0])
+print(out['topfeat'])
+
+fig, ax = model.biplot(cmap=None, label=False, legend=False)
+
+# %%
+import numpy as np
+import pandas as pd
+from pca import pca
+
+f1=np.random.randint(0,100,250)
+f2=np.random.randint(0,50,250)
+f3=np.random.randint(0,25,250)
+
+f4=np.random.randint(0,10,250)
+f5=np.random.randint(0,5,250)
+f6=np.random.randint(0,4,250)
+f7=np.random.randint(0,3,250)
+f8=np.random.randint(0,2,250)
+f9=np.random.randint(0,1,250)
+X = np.c_[f1,f2,f3,f4,f5,f6,f7,f8,f9]
+X = pd.DataFrame(data=X, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
+
+# Initialize
+model = pca()
+# Fit transform
+out = model.fit_transform(X)
+out['topfeat']
+
+ax = model.biplot(n_feat=10, legend=False, PC=[0, 1])
+ax = model.biplot(n_feat=10, legend=False, PC=[1, 0])
+ax = model.biplot(n_feat=10, legend=False, PC=[0, 1, 2], d3=True)
+ax = model.biplot(n_feat=10, legend=False, PC=[2, 1, 0], d3=True)
+ax = model.biplot(n_feat=10, legend=False, PC=[2, 0, 1], d3=True)
+ax = model.biplot(n_feat=10, legend=False, PC=[0, 1])
+ax = model.biplot(n_feat=10, legend=False, PC=[0, 2])
+ax = model.biplot(n_feat=10, legend=False, PC=[2, 1])
+ax = model.biplot3d(n_feat=10, legend=False)
+
+
+# %%
+from pca import pca
+
+# Initialize
+model = pca(alpha=0.05, n_std=2)
+
+# Example with Numpy array
+X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
+row_labels = np.arange(0, X.shape[0]).astype(str)
+# Fit transform
+out = model.fit_transform(X, row_labels=row_labels)
+# Make plot
+model.biplot(legend=False, PC=[0, 1])
+
+# Example with DataFrame
+X = pd.DataFrame(data=X, columns=np.arange(0, X.shape[1]).astype(str))
+# Fit transform
+out = model.fit_transform(X)
+# Make plot
+model.biplot(legend=False, PC=[1, 2])
+model.biplot(legend=False, PC=[1, 2, 3], d3=True)
+model.biplot3d(legend=False, PC=[0, 1, 2])
+
+
+# %%
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -87,27 +156,6 @@ fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=True)
 fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=False)
 
 
-# %%
-from pca import pca
-
-# Initialize
-model = pca(alpha=0.05, n_std=2)
-
-# Example with Numpy array
-X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
-row_labels = np.arange(0, X.shape[0]).astype(str)
-# Fit transform
-out = model.fit_transform(X, row_labels=row_labels)
-# Make plot
-model.biplot(legend=False)
-
-# Example with DataFrame
-X = pd.DataFrame(data=X, columns=np.arange(0, X.shape[1]).astype(str))
-# Fit transform
-out = model.fit_transform(X)
-# Make plot
-model.biplot(legend=False, PC=[0, 1])
-model.biplot3d(legend=False, PC=[0, 1, 2])
 
 
 # %%
@@ -239,8 +287,7 @@ model = pca()
 out = model.fit_transform(X)
 out['topfeat']
 
-model.plot()
-ax = model.biplot(n_feat=10, legend=False)
+ax = model.biplot(n_feat=10, legend=False, PC=[1, 0])
 ax = model.biplot3d(n_feat=10, legend=False)
 
 # %% Normalize out PC1, PC2
@@ -252,9 +299,6 @@ out['topfeat']
 model.plot()
 ax = model.biplot(n_feat=10, legend=False)
 
-# %%
-import pca
-print(pca.__version__)
 
 # %% IRIS DATASET EXAMPLE
 from sklearn.datasets import load_iris
@@ -314,6 +358,7 @@ x_new = pca.transform(X)
 import pca
 # Import example
 df = pca.import_example()
+# !pip install df2onehot
 
 # Transform data into one-hot
 from df2onehot import df2onehot
