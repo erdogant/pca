@@ -303,7 +303,7 @@ class pca():
                 initial_feature_names = self.results['loadings'].columns.values
                 loadings = self.results['loadings'].values.copy()
             except:
-                raise Exception('[pca] >Error: loadings is not defined. Tip: run fit_transform() or provide the loadings yourself as input argument.')
+                raise Exception('[pca] >Error: loadings is not defined. Tip: run model.fit_transform() or provide the loadings yourself as input argument.')
 
         if isinstance(loadings, pd.DataFrame):
             initial_feature_names = loadings.columns.values
@@ -435,7 +435,7 @@ class pca():
         return y, topfeat, n_feat
 
     # Scatter plot
-    def scatter3d(self, y=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8), alpha_transparency=None):
+    def scatter3d(self, y=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None):
         """Scatter 3d plot.
 
         Parameters
@@ -456,7 +456,7 @@ class pca():
             Colormap. If set to None, no points are shown.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
-        figsize : (int, int), optional, default: (10,8)
+        figsize : (int, int), optional, default: (15, 10)
             (width, height) in inches.
         alpha_transparency : Float, default: None
             The alpha blending value, between 0 (transparent) and 1 (opaque).
@@ -474,7 +474,7 @@ class pca():
         return fig, ax
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(10, 8), alpha_transparency=None):
+    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None):
         """Scatter 2d plot.
 
         Parameters
@@ -497,7 +497,7 @@ class pca():
             Colormap. If set to None, no points are shown.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
-        figsize : (int, int), optional, default: (10,8)
+        figsize : (int, int), optional, default: (15, 10)
             (width, height) in inches.
         alpha_transparency : Float, default: None
             The alpha blending value, between 0 (transparent) and 1 (opaque).
@@ -573,7 +573,7 @@ class pca():
         # Return
         return (fig, ax)
 
-    def biplot(self, y=None, n_feat=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(10, 8), visible=True, alpha_transparency=None, verbose=3):
+    def biplot(self, y=None, n_feat=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(15, 10), visible=True, alpha_transparency=None, color_arrow='r', verbose=3):
         """Create the Biplot.
 
         Description
@@ -603,7 +603,7 @@ class pca():
             Show the outliers based on the hotelling T2 test.
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
-        figsize : (int, int), optional, default: (10,8)
+        figsize : (int, int), optional, default: (15, 10)
             (width, height) in inches.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
@@ -702,7 +702,7 @@ class pca():
             Show the outliers based on the hotelling T2 test.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
-        figsize : (int, int), optional, default: (10,8)
+        figsize : (int, int), optional, default: (15, 10)
             (width, height) in inches.
         alpha_transparency : Float, default: None
             The alpha blending value, between 0 (transparent) and 1 (opaque).
@@ -721,7 +721,7 @@ class pca():
         return(fig, ax)
 
     # Show explained variance plot
-    def plot(self, n_components=None, figsize=(10, 8), xsteps=None, visible=True):
+    def plot(self, n_components=None, figsize=(15, 10), xsteps=None, visible=True):
         """Make plot.
 
         Parameters
@@ -731,7 +731,7 @@ class pca():
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
         figsize : (float, float), optional, default: None
-            (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (10,8)
+            (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (15, 10)
 
         Returns
         -------
