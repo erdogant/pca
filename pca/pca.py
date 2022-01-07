@@ -626,25 +626,23 @@ class pca():
         if d3 and len(PC)<3: raise ValueError('[pca] >[Error] in case of biplot3d or d3=True, at least 3 PCs are required.')
         if np.max(PC)>=self.results['PC'].shape[1]: raise ValueError('[pca] >[Error] PC%.0d does not exist!' %(np.max(PC) + 1))
         if verbose>=3 and d3:
-            print('[pca] >Plot PC%.0d vs PC%.0d vs PC%.0d.' %(PC[0] + 1, PC[1] + 1, PC[2] + 1))
+            print('[pca] >Plot PC%.0d vs PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1, PC[2] + 1))
         elif verbose>=3:
-            print('[pca] >Plot PC%.0d vs PC%.0d.' %(PC[0] + 1, PC[1] + 1))
+            print('[pca] >Plot PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1))
 
         # Pre-processing
         y, topfeat, n_feat = self._fig_preprocessing(y, n_feat, d3)
         topfeat = pd.concat([topfeat.iloc[PC, :], topfeat.loc[~topfeat.index.isin(PC), :]])
         topfeat.reset_index(inplace=True)
 
-        # coeff = self.results['loadings'][topfeat['feature'].values].iloc[0:n_feat,:]
+        # Collect coefficients
         coeff = self.results['loadings'].iloc[0:n_feat, :]
-        # coeff = pd.concat([coeff.iloc[PC, :], coeff.loc[~np.isin(np.arange(0, coeff.shape[0]), PC), :]])
 
         # Use the PCs only for scaling purposes
         mean_x = np.mean(self.results['PC'].iloc[:, PC[0]].values)
         mean_y = np.mean(self.results['PC'].iloc[:, PC[1]].values)
 
-        # Plot and scale values for arrows and text
-        # Take the absolute minimum range of the x-axis and y-axis
+        # Plot and scale values for arrows and text by taking the absolute minimum range of the x-axis and y-axis.
         # max_axis = np.min(np.abs(self.results['PC'].iloc[:,0:2]).max())
         max_axis = np.max(np.abs(self.results['PC'].iloc[:, PC]).min(axis=1))
         max_arrow = np.abs(coeff).max().max()
@@ -683,7 +681,7 @@ class pca():
                 ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=color_arrow, alpha=0.8, lw=2)
                 ax.text(xarrow * 1.11, yarrow * 1.11, zarrow * 1.11, label, color=txtcolor, ha='center', va='center')
             else:
-                ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, width=0.005, head_width=0.02 * scale, alpha=0.8)
+                ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, width=0.005, head_width=0.025 * scale, alpha=0.8)
                 ax.text(xarrow * 1.11, yarrow * 1.11, label, color=txtcolor, ha='center', va='center')
 
         if visible: plt.show()
