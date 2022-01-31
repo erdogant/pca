@@ -175,8 +175,8 @@ ax = pca.biplot(model)
     X = np.c_[f1,f2,f3,f4,f5,f6,f7,f8,f9]
     X = pd.DataFrame(data=X, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
     
-    # Initialize
-    model = pca()
+    # Initialize and keep all PCs
+    model = pca(n_components=None)
     # Fit transform
     out = model.fit_transform(X)
 
@@ -258,7 +258,7 @@ outliers = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
 X = np.vstack((X, outliers))
 
 # Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.
-model = pca(alpha=0.05)
+model = pca(alpha=0.05, detect_outliers=['ht2', 'spe'])
 
 # Fit transform
 out = model.fit_transform(X)
