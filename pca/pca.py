@@ -28,6 +28,7 @@ class pca():
         ----------
         n_components : [0,..,1] or [1,..number of samples-1], (default: 0.95)
             Number of TOP components to be returned. Values>0 are the number of components. Values<0 are the components that covers at least the percentage of variance.
+            None: Take all components
             0.95: Take the number of components that cover at least 95% of variance.
             k: Take the top k components
         n_feat : int, default: 10
@@ -982,8 +983,8 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, param=None, verbose=3):
     n_components : int, (default: 5)
         Number of PC components to be used to compute the Pvalue.
     param : 2-element tuple (default: None)
-        Pre-computed mean and variance in the past run. None to compute from scratch with X. 
-    Verbose : int (default : 3)
+        Pre-computed mean and variance in the past run. None to compute from scratch with X.
+    Verbose: int (default : 3)
         Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
     Returns
