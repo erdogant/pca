@@ -138,7 +138,7 @@ print(X.shape)
 
 # Normalize out 1st component and return data
 model = pca()
-Xnew = model.norm(X, pcexclude=[1])
+Xnorm = model.norm(X, pcexclude=[1])
 
 
 print(Xnorm.shape)
