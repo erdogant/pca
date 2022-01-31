@@ -27,30 +27,11 @@ Other functionalities are:
   * Scatter plot with the **loadings**
   * Outlier detection using **Hotelling T2 and/or SPE/Dmodx**
 
-This notebook will show some examples.
-
-
-## Contents
-- [Installation](#-installation)
-- [Requirements](#-Requirements)
-- [Contribute](#-contribute)
-- [Maintainers](#-maintainers)
-- [License](#-copyright)
-
 ### Installation
 * Install pca from PyPI (recommended). pca is compatible with Python 3.6+ and runs on Linux, MacOS X and Windows. 
 * It is distributed under the MIT license.
 
-### Requirements
-* Creation of a new environment is not required but if you wish to do it:
-```python
-conda create -n env_pca python=3.6
-conda activate env_pca
-pip install numpy matplotlib sklearn
-```
-
-### Installation
-```
+```bash
 pip install pca
 ```
 
