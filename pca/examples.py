@@ -3,6 +3,31 @@ import pandas as pd
 import numpy as np
 
 # %%
+import pca
+print(pca.__version__)
+
+# %%
+import numpy as np
+from sklearn.datasets import load_iris
+
+# Load dataset
+X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+
+# Load pca
+from pca import pca
+
+# Initialize to reduce the data up to the nubmer of componentes that explains 95% of the variance.
+model = pca(n_components=0.95)
+
+# Reduce the data towards 3 PCs
+model = pca(n_components=3)
+
+# Fit transform
+results = model.fit_transform(X)
+
+model.plot()
+
+# %%
 from sklearn.datasets import load_iris
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
 model = pca(n_components=3, normalize=True)
@@ -291,7 +316,7 @@ ax = model.biplot(n_feat=10, legend=False, PC=[1, 0])
 ax = model.biplot3d(n_feat=10, legend=False)
 
 # %% Normalize out PC1, PC2
-X_norm = model.norm(X, pcexclude=[1,2])
+X_norm = model.norm(X, pcexclude=[1, 2])
 X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
 out = model.fit_transform(X_norm)
 out['topfeat']
