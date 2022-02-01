@@ -187,6 +187,7 @@ class pca():
         # Check type to make sure we can perform matrix operations
         if isinstance(X, list):
             X = np.array(X)
+        percentExplVar=None
 
         # Clean readily fitted models to ensure correct results.
         self._clean(verbose=verbose)
