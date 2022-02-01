@@ -47,6 +47,7 @@ class pca():
             'spe': compute outliers basedon SPE/DmodX method.
         random_state : int optional
             Random state
+
         """
         if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
         # Store in object
@@ -133,6 +134,7 @@ class pca():
         col_labels : [list of string] optional
             Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.
         Verbose : int (default : 3)
+            The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
         Returns
@@ -608,10 +610,11 @@ class pca():
             (width, height) in inches.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
-        Verbose : int (default : 3)
-            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
         alpha_transparency : Float, default: None
             The alpha blending value, between 0 (transparent) and 1 (opaque).
+        Verbose : int (default : 3)
+            The higher the number, the more information is printed.
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
         Returns
         -------
@@ -728,7 +731,7 @@ class pca():
         return(fig, ax)
 
     # Show explained variance plot
-    def plot(self, n_components=None, figsize=(15, 10), xsteps=None, visible=True):
+    def plot(self, n_components=None, figsize=(15, 10), xsteps=None, visible=True, verbose=3):
         """Make plot.
 
         Parameters
@@ -899,7 +902,7 @@ def spe_dmodx(X, n_std=2, param=None, calpha=0.3, color='green', showfig=False, 
     n_std : int, (default: 2)
         Standard deviation. The default is 2.
     param : 2-element tuple (default: None)
-        Pre-computed g_ell_center and cov in the past run. None to compute from scratch with X. 
+        Pre-computed g_ell_center and cov in the past run. None to compute from scratch with X.
     calpha : float, (default: 0.3)
         transperancy color.
     color : String, (default: 'green')
