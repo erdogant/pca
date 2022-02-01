@@ -176,7 +176,7 @@ ax = pca.biplot(model)
     X = pd.DataFrame(data=X, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
     
     # Initialize and keep all PCs
-    model = pca(n_components=None)
+    model = pca()
     # Fit transform
     out = model.fit_transform(X)
 
