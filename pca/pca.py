@@ -205,7 +205,7 @@ class pca():
                 if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp * 100))
 
         if verbose>=3: print('[pca] >The PCA reduction is performed on the [%.d] columns of the input dataframe.' %(X.shape[1]))
-        model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
+        model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, percentExplVar=percentExplVar, verbose=verbose)
         pcp = percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components)]
 
         # Combine components relations with features
@@ -1037,7 +1037,8 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, param=None, verbose=3):
 
 
 # %% Explained variance
-def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=-1, verbose=3):
+def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=-1, percentExplVar=None, verbose=3):
+
     # Create the model
     if sp.issparse(X):
         if verbose>=3: print('[pca] >Fitting using Truncated SVD..')
@@ -1055,12 +1056,11 @@ def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=
     if verbose>=3: print('[pca] >Computing loadings and PCs..')
     loadings = model.components_  # Ook wel de coeeficienten genoemd: coefs!
     PC = model.transform(X)
-    if not onehot:
-        # Compute explained variance, top 95% variance
+    # Compute explained variance, top 95% variance
+    if (not onehot) and (percentExplVar is None):
         if verbose>=3: print('[pca] >Computing explained variance..')
         percentExplVar = model.explained_variance_ratio_.cumsum()
-    else:
-        percentExplVar = None
+
     # Return
     return(model, PC, loadings, percentExplVar)
 
@@ -1073,6 +1073,7 @@ def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_label
     out['loadings'] = loadings
     out['PC'] = pd.DataFrame(data=PC[:, 0:n_components], index=row_labels, columns=loadings.index.values[0:n_components])
     out['explained_var'] = percentExplVar
+    out['variance_ratio'] = np.diff(percentExplVar, prepend=0)
     out['model'] = model_pca
     out['scaler'] = scaler
     out['pcp'] = pcp
