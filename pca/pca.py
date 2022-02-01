@@ -739,6 +739,9 @@ class pca():
             Visible status of the Figure. When False, figure is created on the background.
         figsize : (float, float), optional, default: None
             (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (15, 10)
+        Verbose : int (default : 3)
+            The higher the number, the more information is printed.
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
         Returns
         -------
@@ -746,11 +749,14 @@ class pca():
 
         """
         if n_components is not None:
+            if n_components>len(self.results['explained_var']):
+                if verbose>=2: print('[pca] >Warning: Input "n_components=%s" is > then number of PCs (=%s)' %(n_components, len(self.results['explained_var'])))
+            n_components = np.minimum(len(self.results['explained_var']), n_components)
             explvarCum = self.results['explained_var'][0:n_components]
-            explvar = self.results['model'].explained_variance_ratio_[0:n_components]
+            explvar = self.results['variance_ratio'][0:n_components]
         else:
             explvarCum = self.results['explained_var']
-            explvar = self.results['model'].explained_variance_ratio_
+            explvar = self.results['variance_ratio']
         xtick_idx = np.arange(1, len(explvar) + 1)
 
         # Make figure
