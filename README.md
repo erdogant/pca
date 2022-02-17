@@ -24,9 +24,7 @@ Other functionalities of PCA are:
   * Scatter plot with the **loadings**
   * Outlier detection using **Hotelling T2 and/or SPE/Dmodx**
 
-#
-**Star this repo if you like it! ⭐️**
-#
+
 
 ## Installation
 * Install pca from PyPI (recommended). pca is compatible with Python 3.6+ and runs on Linux, MacOS X and Windows. 
