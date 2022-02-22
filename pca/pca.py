@@ -209,7 +209,7 @@ class pca():
 
         if verbose>=3: print('[pca] >The PCA reduction is performed on the [%.d] columns of the input dataframe.' %(X.shape[1]))
         model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, percentExplVar=percentExplVar, verbose=verbose)
-        pcp = percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components)]
+        pcp = None if percentExplVar is None else percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components)]
 
         # Combine components relations with features
         loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components, verbose=verbose)
@@ -1077,7 +1077,10 @@ def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_label
     out['loadings'] = loadings
     out['PC'] = pd.DataFrame(data=PC[:, 0:n_components], index=row_labels, columns=loadings.index.values[0:n_components])
     out['explained_var'] = percentExplVar
-    out['variance_ratio'] = np.diff(percentExplVar, prepend=0)
+    if percentExplVar is None:
+        out['variance_ratio'] = None
+    else:
+        out['variance_ratio'] = np.diff(percentExplVar, prepend=0)
     out['model'] = model_pca
     out['scaler'] = scaler
     out['pcp'] = pcp
