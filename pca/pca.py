@@ -411,7 +411,7 @@ class pca():
         return(X, row_labels, col_labels, scaler)
 
     # Figure pre processing
-    def _fig_preprocessing(self, y, n_feat, d3):
+    def _fig_preprocessing(self, y, n_feat, d3, verbose=3):
         if hasattr(self, 'PC'): raise Exception('[pca] >Error: Principal components are not derived yet. Tip: run fit_transform() first.')
         if self.results['PC'].shape[1]<1: raise Exception('[pca] >Requires at least 1 PC to make plot.')
 
@@ -433,8 +433,8 @@ class pca():
         else:
             y = self.results['PC'].index.values.astype(str)
 
-        if len(self.results['explained_var'])<=1:
-            raise Exception('[pca] >Error: No PCs are found with explained variance..')
+        if (self.results['explained_var'] is None) or len(self.results['explained_var'])<=1:
+            raise Exception('[pca] >Error: No PCs are found with explained variance.')
 
         return y, topfeat, n_feat
 
