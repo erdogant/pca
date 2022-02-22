@@ -335,7 +335,7 @@ class pca():
         PC_weak = ['PC{}'.format(i + 1) for i in idxrow]
 
         # build the dataframe
-        topfeat = pd.DataFrame(dic.items(), columns=['PC', 'feature'])
+        topfeat = pd.DataFrame(list(dic.items()), columns=['PC', 'feature'])
         topfeat['loading'] = loading_best
         topfeat['type'] = 'best'
         # Weak features
