@@ -411,7 +411,7 @@ class pca():
         return(X, row_labels, col_labels, scaler)
 
     # Figure pre processing
-    def _fig_preprocessing(self, y, n_feat, d3, verbose=3):
+    def _fig_preprocessing(self, y, n_feat, d3):
         if hasattr(self, 'PC'): raise Exception('[pca] >Error: Principal components are not derived yet. Tip: run fit_transform() first.')
         if self.results['PC'].shape[1]<1: raise Exception('[pca] >Requires at least 1 PC to make plot.')
 
