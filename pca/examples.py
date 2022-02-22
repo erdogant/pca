@@ -181,8 +181,6 @@ fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=True)
 fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=False)
 
 
-
-
 # %%
 from pca import pca
 
@@ -234,39 +232,39 @@ Xnormal = X[~out['outliers']['y_bool'],:]
 
 
 # %%
-from hnet import hnet
-df = pd.read_csv('C://temp//usarrest.txt')
-hn = hnet(y_min=3, perc_min_num=None)
-results=hn.association_learning(df)
-hn.plot()
+# from hnet import hnet
+# df = pd.read_csv('C://temp//usarrest.txt')
+# hn = hnet(y_min=3, perc_min_num=None)
+# results=hn.association_learning(df)
+# hn.plot()
 
 # %%
 
-from pca import pca
-import pandas as pd
+# from pca import pca
+# import pandas as pd
 
-model = pca(normalize=True)
-# Dataset
-df = pd.read_csv('C://temp//usarrest.txt')
-# Setup dataset
-X = df[['Murder','Assault','UrbanPop','Rape']].astype(float)
-X.index = df['state'].values
+# model = pca(normalize=True)
+# # Dataset
+# df = pd.read_csv('C://temp//usarrest.txt')
+# # Setup dataset
+# X = df[['Murder','Assault','UrbanPop','Rape']].astype(float)
+# X.index = df['state'].values
 
-# Fit transform
-out = model.fit_transform(X)
-out['topfeat']
-out['outliers']
+# # Fit transform
+# out = model.fit_transform(X)
+# out['topfeat']
+# out['outliers']
 
-ax = model.scatter(legend=False, )
-ax = model.scatter3d(legend=False)
+# ax = model.scatter(legend=False, )
+# ax = model.scatter3d(legend=False)
 
-# Make plot
-ax = model.biplot(n_feat=4, legend=False)
-ax = model.biplot(n_feat=4, legend=False, label=False)
+# # Make plot
+# ax = model.biplot(n_feat=4, legend=False)
+# ax = model.biplot(n_feat=4, legend=False, label=False)
 
-ax = model.biplot3d(n_feat=1, legend=False)
-ax = model.biplot3d(n_feat=2, legend=False)
-ax = model.biplot3d(n_feat=4, legend=False, label=False)
+# ax = model.biplot3d(n_feat=1, legend=False)
+# ax = model.biplot3d(n_feat=2, legend=False)
+# ax = model.biplot3d(n_feat=4, legend=False, label=False)
 
 # %%
 from sklearn.datasets import load_iris
