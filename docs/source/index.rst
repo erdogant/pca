@@ -34,7 +34,6 @@ Content
   :caption: Methods
 
   Algorithm
-  Save and Load
 
 
 .. toctree::
