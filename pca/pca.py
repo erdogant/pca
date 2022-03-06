@@ -439,7 +439,7 @@ class pca():
         return y, topfeat, n_feat
 
     # Scatter plot
-    def scatter3d(self, y=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None):
+    def scatter3d(self, y=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None, title=None):
         """Scatter 3d plot.
 
         Parameters
@@ -464,6 +464,8 @@ class pca():
             (width, height) in inches.
         alpha_transparency : Float, default: None
             The alpha blending value, between 0 (transparent) and 1 (opaque).
+        title : str, default: None
+            Title of the figure.
 
         Returns
         -------
@@ -471,14 +473,14 @@ class pca():
 
         """
         if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency)
+            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
             fig, ax = None, None
         return fig, ax
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None):
+    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None, title=None):
         """Scatter 2d plot.
 
         Parameters
@@ -505,6 +507,8 @@ class pca():
             (width, height) in inches.
         alpha_transparency : Float, default: None
             The alpha blending value, between 0 (transparent) and 1 (opaque).
+        title : str, (default: None)
+            Title of the figure.
 
         Returns
         -------
@@ -571,13 +575,16 @@ class pca():
             ax.set_ylabel('PC2 (0% expl.var)')
         if d3 and (len(self.results['model'].explained_variance_ratio_)>=3):
             ax.set_zlabel('PC' + str(PC[2] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[2]] * 100)[0:4] + '% expl.var)')
-        ax.set_title(str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance')
+
+        if title is None:
+            title = str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance'
+        ax.set_title(title)
         if legend: ax.legend()
         ax.grid(True)
         # Return
         return (fig, ax)
 
-    def biplot(self, y=None, n_feat=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(15, 10), visible=True, alpha_transparency=None, color_arrow='r', verbose=3):
+    def biplot(self, y=None, n_feat=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(15, 10), visible=True, alpha_transparency=None, color_arrow='r', title=None, verbose=3):
         """Create the Biplot.
 
         Description
@@ -616,6 +623,8 @@ class pca():
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+        title : str, (default: None)
+            Title of the figure.
 
         Returns
         -------
@@ -660,9 +669,9 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -692,7 +701,7 @@ class pca():
         if visible: plt.show()
         return(fig, ax)
 
-    def biplot3d(self, y=None, n_feat=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=1):
+    def biplot3d(self, y=None, n_feat=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=1, title=None):
         """Make biplot in 3d.
 
         Parameters
@@ -717,6 +726,8 @@ class pca():
             (width, height) in inches.
         alpha_transparency : Float, default: None
             The alpha blending value, between 0 (transparent) and 1 (opaque).
+        title : str, (default: None)
+            Title of the figure.
 
         Returns
         -------
@@ -727,12 +738,12 @@ class pca():
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
 
-        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, PC=PC, legend=legend, SPE=SPE, cmap=cmap, hotellingt2=hotellingt2, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency)
+        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, PC=PC, legend=legend, SPE=SPE, cmap=cmap, hotellingt2=hotellingt2, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title)
 
         return(fig, ax)
 
     # Show explained variance plot
-    def plot(self, n_components=None, figsize=(15, 10), xsteps=None, visible=True, verbose=3):
+    def plot(self, n_components=None, figsize=(15, 10), xsteps=None, visible=True, title=None, verbose=3):
         """Make plot.
 
         Parameters
@@ -746,6 +757,8 @@ class pca():
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+        title : str, (default: None)
+            Title of the figure.
 
         Returns
         -------
@@ -780,8 +793,9 @@ class pca():
         plt.xlabel('Principle Component')
         plt.ylim([0, 1.05])
         plt.xlim([0, len(explvar) + 1])
-        titletxt = 'Cumulative explained variance\n ' + str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance.'
-        plt.title(titletxt)
+        if title is None:
+            title = 'Cumulative explained variance\n ' + str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance.'
+        plt.title(title)
         plt.grid(True)
 
         # Plot vertical line To stress the cut-off point
