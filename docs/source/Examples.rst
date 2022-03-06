@@ -97,7 +97,7 @@ Biplot
 
 
 
-Extract the feature importance
+Feature importance
 #####################################################
 
 This example is created to showcase the working of extracting features that are most important in a PCA reduction.

@@ -14,13 +14,13 @@ Sponsor
 Advertising
 ############
 
-
 .. note::
 	I recently started experimenting with advertisement on this page as a small source of revenue that helps me to keep working on this library. 
 
 	If you don’t see the ad, you might be using an ad blocker. The Carbon ads respects your privacy, doesn’t target you, and tries to be as unobstrusive as possible, so I would like to kindly ask you to not block it ❤️
 
 	If you still don't like the ads, and want to remain fully ad-free, I understand. Being a sponser may be more interesting to you.
+
 
 
 Blog
@@ -34,6 +34,16 @@ Github
 
 .. note::
 	`Source code of pca can be found at Github <https://github.com/erdogant/pca/>`_
+
+
+
+Colab Notebook
+################
+
+.. note::
+	Experiment with ``pca`` library using the `Colab notebook`_.
+
+.. _Colab notebook: https://colab.research.google.com/github/erdogant/pca/blob/master/notebooks/pca_examples.ipynb
 
 
 .. raw:: html
