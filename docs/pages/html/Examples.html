@@ -54,8 +54,6 @@
 <p class="caption" role="heading"><span class="caption-text">Methods</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html">Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#normalizing-out-pcs">Normalizing out PCs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Save%20and%20Load.html">Saving</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Save%20and%20Load.html#loading">Loading</a></li>
 </ul>
@@ -91,6 +89,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#normalizing-out-pcs">Normalizing out PCs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>
@@ -351,6 +351,66 @@ To demonstrate how to do this, I will use the Titanic dataset. We need to pip in
 <span class="c1"># Run model 2</span>
 <span class="n">_</span><span class="o">=</span><span class="n">model3</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="n">model3</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">n_feat</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="map-unseen-datapoints-into-fitted-space">
+<h1>Map unseen datapoints into fitted space<a class="headerlink" href="#map-unseen-datapoints-into-fitted-space" title="Permalink to this headline"></a></h1>
+<p>After fitting variables into the new principal component space, we can map new unseen samples into this space too. However, there is also normalization step which can be tricky because you now need standardize the values of the unseen samples first based on the previously performed standardization. This step is also integrated in the <code class="docutils literal notranslate"><span class="pre">pca</span></code> library by simply setting the parameter <code class="docutils literal notranslate"><span class="pre">normalize=True</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load libraries</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pca</span> <span class="kn">import</span> <span class="n">pca</span>
+
+<span class="c1"># Load dataset</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_wine</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">feature_names</span>
+
+<span class="c1"># Initialize with normalization and take the number of components that covers at least 95% of the variance.</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="c1"># Get some random samples across the classes</span>
+<span class="n">idx</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">53</span><span class="p">,</span><span class="mi">54</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">103</span><span class="p">,</span><span class="mi">104</span><span class="p">,</span><span class="mi">105</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span>
+<span class="n">X_unseen</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
+<span class="n">y_unseen</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+<span class="c1"># Label original dataset to make sure the check which samples are overlapping</span>
+<span class="n">y</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;unseen&#39;</span>
+
+<span class="c1"># Fit transform</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">col_labels</span><span class="o">=</span><span class="n">col_labels</span><span class="p">,</span> <span class="n">row_labels</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># Transform new &quot;unseen&quot; data. Note that these datapoints are not really unseen as they are readily fitted above.</span>
+<span class="c1"># But for the sake of example, you can see that these samples will be transformed exactly on top of the orignial ones.</span>
+<span class="n">PCnew</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_unseen</span><span class="p">)</span>
+
+<span class="c1"># Plot PC space</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Map unseen samples in the existing space.&#39;</span><span class="p">)</span>
+<span class="c1"># Plot the new &quot;unseen&quot; samples on top of the existing space</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">PCnew</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">PCnew</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/wine_mapping_samples.png"><img alt="_images/wine_mapping_samples.png" class="align-center" src="_images/wine_mapping_samples.png" style="width: 600px;" /></a>
+</section>
+<section id="normalizing-out-pcs">
+<h1>Normalizing out PCs<a class="headerlink" href="#normalizing-out-pcs" title="Permalink to this headline"></a></h1>
+<p>Normalize your data using the principal components. As an example, suppose there is (technical) variation in the fist component and you want that out. This function transforms the data using the components that you want, e.g., starting from the 2nd PC, up to the OC that contains at least 95% of the explained variance.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">178</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+
+<span class="c1"># Normalize out 1st component and return data</span>
+<span class="n">Xnorm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pcexclude</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># The data remains the same samples and variables but the all variance that covered the 1st PC is removed.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Xnorm</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">178</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+
+<span class="c1"># In this case, PC1 is &quot;removed&quot; and the PC2 has become PC1 etc</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">col_labels</span><span class="o">=</span><span class="n">col_labels</span><span class="p">,</span> <span class="n">row_labels</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
 <hr>
