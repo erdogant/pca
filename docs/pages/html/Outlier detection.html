@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hotelling T2 &mdash; pca pca documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Load dataset" href="Plots.html" />
+    <link rel="prev" title="Saving" href="Save%20and%20Load.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> pca
+          </a>
+              <div class="version">
+                1.6.4
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <p class="caption" role="heading"><span class="caption-text">Background</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Abstract.html">Background</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html#uninstalling">Uninstalling</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Methods</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#normalizing-out-pcs">Normalizing out PCs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save%20and%20Load.html">Saving</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save%20and%20Load.html#loading">Loading</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Outlier detection</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Hotelling T2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#spe-dmodx">SPE/Dmodx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#selection-of-the-outliers">Selection of the Outliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#detection-of-outliers-without-pca">Detection of outliers without PCA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html">Load dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot">Scatter plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot">Biplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-only-arrows">Biplot (only arrows)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-plot">Explained variance plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#alpha-transparency">Alpha Transparency</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#d-plots">3D plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#toggle-visible-status">Toggle visible status</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#extract-the-feature-importance">Extract the feature importance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html">Sponsor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#advertising">Advertising</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#blog">Blog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#github">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Coding%20quality.html">Coding quality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pca.pca.html">API References</a></li>
+</ul>
+
+    <a href= "genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pca</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Hotelling T2</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Outlier detection.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hotelling-t2">
+<h1>Hotelling T2<a class="headerlink" href="#hotelling-t2" title="Permalink to this headline"></a></h1>
+<p>To detect outliers across the multidimensional space of PCA, the <strong>hotellings T2</strong> test is implemented.
+It works by computing the <strong>chi-square tests</strong> across the top n_components: default is PC1 to PC5. The reason for not using more PC’s is that it is expected that the highest variance (and thus the outliers) will be seen in the first few components. Going deeper into PC space may therefore not be required. Nevertheless, the depth is optional.</p>
+<p>The <strong>hotellings T2</strong> test outputs a P-value matrix (samples x PCs), which are are subsequently combined using <strong>fishers method</strong>. This allows to determine outliers with its ranking (strongest to weak). The alpha parameter determines the detection of outliers (default: 0.05).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import libraries</span>
+<span class="kn">from</span> <span class="nn">pca</span> <span class="kn">import</span> <span class="n">pca</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Create dataset with 100 samples</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="c1"># Create 5 outliers</span>
+<span class="n">outliers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="c1"># Combine data</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">X</span><span class="p">,</span> <span class="n">outliers</span><span class="p">))</span>
+
+<span class="c1"># Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">detect_outliers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ht2&#39;</span><span class="p">,</span> <span class="s1">&#39;spe&#39;</span><span class="p">])</span>
+
+<span class="c1"># Fit transform</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="c1"># [pca] &gt;Column labels are auto-completed.</span>
+<span class="c1"># [pca] &gt;Row labels are auto-completed.</span>
+<span class="c1"># [pca] &gt;The PCA reduction is performed to capture [95.0%] explained variance using the [5] columns of the input data.</span>
+<span class="c1"># [pca] &gt;Fitting using PCA..</span>
+<span class="c1"># [pca] &gt;Computing loadings and PCs..</span>
+<span class="c1"># [pca] &gt;Computing explained variance..</span>
+<span class="c1"># [pca] &gt;Number of components is [4] that covers the [95.00%] explained variance.</span>
+<span class="c1"># [pca] &gt;The PCA reduction is performed on the [5] columns of the input dataframe.</span>
+<span class="c1"># [pca] &gt;Fitting using PCA..</span>
+<span class="c1"># [pca] &gt;Computing loadings and PCs..</span>
+<span class="c1"># [pca] &gt;Outlier detection using Hotelling T2 test with alpha=[0.05] and n_components=[4]</span>
+<span class="c1"># [pca] &gt;Outlier detection using SPE/DmodX with n_std=[2]</span>
+</pre></div>
+</div>
+<p>The information regarding the outliers are stored in the dict ‘outliers’ (see below). The outliers computed using <strong>hotelling T2</strong> test are the columns <strong>y_proba</strong>, <strong>y_score</strong> and <strong>y_bool</strong>. The outliers computed using <strong>SPE/DmodX</strong> are the columns <strong>y_bool_spe</strong>, <strong>y_score_spe</strong>, where <strong>y_score_spe</strong> is the euclidean distance of the center to the samples. The rows belong the same rows on the input samples.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">])</span>
+<span class="c1"># or</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">])</span>
+
+
+<span class="c1">#            y_proba      y_score  y_bool  y_bool_spe  y_score_spe</span>
+<span class="c1"># 1.0   9.799576e-01     3.060765   False       False     0.993407</span>
+<span class="c1"># 1.0   8.198524e-01     5.945125   False       False     2.331705</span>
+<span class="c1"># 1.0   9.793117e-01     3.086609   False       False     0.128518</span>
+<span class="c1"># 1.0   9.743937e-01     3.268052   False       False     0.794845</span>
+<span class="c1"># 1.0   8.333778e-01     5.780220   False       False     1.523642</span>
+<span class="c1"># ..             ...          ...     ...         ...          ...</span>
+<span class="c1"># 1.0   6.793085e-11    69.039523    True        True    14.672828</span>
+<span class="c1"># 1.0  2.610920e-291  1384.158189    True        True    16.566568</span>
+<span class="c1"># 1.0   6.866703e-11    69.015237    True        True    14.936442</span>
+<span class="c1"># 1.0  1.765139e-292  1389.577522    True        True    17.183093</span>
+<span class="c1"># 1.0  1.351102e-291  1385.483398    True        True    17.319038</span>
+</pre></div>
+</div>
+</section>
+<section id="spe-dmodx">
+<h1>SPE/Dmodx<a class="headerlink" href="#spe-dmodx" title="Permalink to this headline"></a></h1>
+<p>Outlier can be detected using SPE/DmodX (distance to model) based on the mean and covariance of the first 2 dimensions of X.
+On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are complementary to each other.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hotellingt2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hotellingt2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Create only the scatter plots</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hotellingt2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hotellingt2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils align-center" id="id1">
+<caption><span class="caption-text">Detected outliers</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="figO1" src="_images/outliers_biplot_spe_hot.png" /></p></td>
+<td><p><img alt="figO2" src="_images/outliers_biplot3d.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="selection-of-the-outliers">
+<h1>Selection of the Outliers<a class="headerlink" href="#selection-of-the-outliers" title="Permalink to this headline"></a></h1>
+<p>Selecting the outliers can be usefull to remove them from the dataset or for deeper investigation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select the outliers</span>
+<span class="n">Xoutliers</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">][</span><span class="s1">&#39;y_bool&#39;</span><span class="p">],:]</span>
+
+<span class="c1"># Select the other set</span>
+<span class="n">Xnormal</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">][</span><span class="s1">&#39;y_bool&#39;</span><span class="p">],:]</span>
+</pre></div>
+</div>
+</section>
+<section id="detection-of-outliers-without-pca">
+<h1>Detection of outliers without PCA<a class="headerlink" href="#detection-of-outliers-without-pca" title="Permalink to this headline"></a></h1>
+<p>If desired, the outliers can also be detected directly using the hotelling T2 and/or SPE/DmodX functionality.
+For demonstration purposes I use the PCs from the results but any other dataset would also work.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pca</span>
+<span class="n">outliers_hot</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">hotellingsT2</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;PC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">outliers_spe</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">spe_dmodx</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;PC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">n_std</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<hr>
+<center>
+        <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CEADP27U&placement=erdogantgithubio" id="_carbonads_js"></script>
+</center>
+<hr></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Save%20and%20Load.html" class="btn btn-neutral float-left" title="Saving" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Plots.html" class="btn btn-neutral float-right" title="Load dataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Erdogan Taskesen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
