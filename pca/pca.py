@@ -841,6 +841,11 @@ class pca():
         else:
             self.n_components = n_components
 
+        if isinstance(X, list):
+            X = np.array(X)
+        if isinstance(X, pd.DataFrame):
+            X = X.values
+
         if not isinstance(pcexclude, list): pcexclude=[pcexclude]
 
         # Fit using PCA
@@ -852,7 +857,7 @@ class pca():
         ndims = np.where(q<=self.n_components)[0]
         ndims = (np.setdiff1d(ndims + 1, pcexclude)) - 1
         # Transform data
-        out = np.repeat(np.mean(X.values, axis=1).reshape(-1, 1), X.shape[1], axis=1) + np.dot(score.values[:, ndims], coeff[:, ndims].T)
+        out = np.repeat(np.mean(X, axis=1).reshape(-1, 1), X.shape[1], axis=1) + np.dot(score.values[:, ndims], coeff[:, ndims].T)
         # Return
         return(out)
 
