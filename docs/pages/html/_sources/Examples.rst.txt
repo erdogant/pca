@@ -7,14 +7,16 @@ A quick example how perform feature reduction using ``pca`` on a given dataset.
 
 	import numpy as np
 	from sklearn.datasets import load_iris
+	import pandas as pd
+
+	# Load pca
+	from pca import pca
 
 	# Load dataset
 	label = load_iris().feature_names
 	y = load_iris().target
 	X = pd.DataFrame(data=load_iris().data, columns=label, index=y)
 
-	# Load pca
-	from pca import pca
 
 	# Initialize to reduce the data up to the nubmer of componentes that explains 95% of the variance.
 	model = pca(n_components=0.95)
@@ -44,16 +46,43 @@ A quick example how perform feature reduction using ``pca`` on a given dataset.
 	#	 'petal width (cm)']
 
 
-Explained variance plot
+
+Computing explained variance
 ************************************
+
+After the ``fit_transform``, the cumulative expained variance is stored together with the explained variance per PC.
 
 .. code:: python
 
+	# Cumulative explained variance
+	print(model.results['explained_var'])
+	# [0.92461872 0.97768521 0.99478782]
+
+	# Explained variance per PC
+	print(model.results['variance_ratio'])
+	[0.92461872, 0.05306648, 0.01710261]
+	
+	# Make plot
 	fig, ax = model.plot()
 
 .. image:: ../figs/fig_plot.png
    :width: 600
    :align: center
+
+
+PCs that cover 95% of the explained variance
+************************************************************************
+
+The number of PCs can be reduced by setting the ``n_components`` parameter. Note that the number of components can never be larger than the number of variables in your dataset. By setting ``n_components`` **larger than 1**, a feature reduction will be performed to exactly that number of components. By setting ``n_components`` **smaller than 1**, it describes the percentage of explained variance that needs to be covered at least. Or in other words, by setting ``n_components=0.95``, the number of components are extracted that cover at least 95% of the explained variance.
+
+.. code:: python
+
+	# Reduce the data towards 3 PCs
+	model = pca(n_components=3)
+
+	# The number of components are extracted that cover at least 95% of the explained variance.
+	model = pca(n_components=0.95)
+
 
 
 Scatter plot
