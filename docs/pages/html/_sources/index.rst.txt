@@ -84,7 +84,7 @@ Github
 ------------------------------
 
 Please report bugs, issues and feature extensions there.
-Github, `erdogant/d3graph <https://github.com/erdogant/pca/>`_.
+Github, `erdogant/pca <https://github.com/erdogant/pca/>`_.
 
 
 Citing *pca*
