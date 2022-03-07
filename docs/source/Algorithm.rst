@@ -272,8 +272,8 @@ We see that the most of the variance for the 1st PC is derived from the variable
 
 
 
-References
-------------
+**References**
+
 
 * [1] https://builtin.com/data-science/step-step-explanation-principal-component-analysis
 * [2] http://strata.uga.edu/8370/lecturenotes/principalComponents.html
