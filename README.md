@@ -9,7 +9,7 @@
 [![Downloads](https://pepy.tech/badge/pca)](https://pepy.tech/project/pca)
 [![Downloads](https://pepy.tech/badge/pca/month)](https://pepy.tech/project/pca)
 [![DOI](https://zenodo.org/badge/233232884.svg)](https://zenodo.org/badge/latestdoi/233232884)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/erdogant/pca/blob/master/notebooks/pca_examples.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://erdogant.github.io/pca/pages/html/Documentation.html#colab-notebook)
 [![Sphinx](https://img.shields.io/badge/Sphinx-Docs-Green)](https://erdogant.github.io/pca/)
 <!---[![BuyMeCoffee](https://img.shields.io/badge/buymea-coffee-yellow.svg)](https://www.buymeacoffee.com/erdogant)-->
 <!---[![Coffee](https://img.shields.io/badge/coffee-black-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)-->
