@@ -47,7 +47,7 @@ A quick example how perform feature reduction using ``pca`` on a given dataset.
 
 
 
-Computing explained variance
+Compute explained variance
 ************************************
 
 After the ``fit_transform``, the cumulative expained variance is stored together with the explained variance per PC.
@@ -126,7 +126,7 @@ Biplot
 
 
 
-Feature importance
+Demonstration of feature importance
 #####################################################
 
 This example is created to showcase the working of extracting features that are most important in a PCA reduction.

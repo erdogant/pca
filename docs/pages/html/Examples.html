@@ -54,6 +54,11 @@
 <p class="caption" role="heading"><span class="caption-text">Methods</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#standardization">Standardization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#explained-variance">Explained Variance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#loadings">Loadings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#examination-of-the-loadings">Examination of the loadings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#best-performing-features">Best Performing Features</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Outlier detection</span></p>
 <ul>
@@ -76,13 +81,13 @@
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#computing-explained-variance">Computing explained variance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compute-explained-variance">Compute explained variance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pcs-that-cover-95-of-the-explained-variance">PCs that cover 95% of the explained variance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#scatter-plot">Scatter plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#biplot">Biplot</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#feature-importance">Feature importance</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="#demonstration-of-feature-importance">Demonstration of feature importance</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#explained-variance-plot">Explained variance plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">Biplot</a></li>
 </ul>
@@ -172,8 +177,8 @@
 <span class="c1">#        &#39;petal width (cm)&#39;]</span>
 </pre></div>
 </div>
-<section id="computing-explained-variance">
-<h2>Computing explained variance<a class="headerlink" href="#computing-explained-variance" title="Permalink to this headline"></a></h2>
+<section id="compute-explained-variance">
+<h2>Compute explained variance<a class="headerlink" href="#compute-explained-variance" title="Permalink to this headline"></a></h2>
 <p>After the <code class="docutils literal notranslate"><span class="pre">fit_transform</span></code>, the cumulative expained variance is stored together with the explained variance per PC.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cumulative explained variance</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;explained_var&#39;</span><span class="p">])</span>
@@ -234,8 +239,8 @@
 <a class="reference internal image-reference" href="_images/fig_biplot.png"><img alt="_images/fig_biplot.png" class="align-center" src="_images/fig_biplot.png" style="width: 600px;" /></a>
 </section>
 </section>
-<section id="feature-importance">
-<h1>Feature importance<a class="headerlink" href="#feature-importance" title="Permalink to this headline"></a></h1>
+<section id="demonstration-of-feature-importance">
+<h1>Demonstration of feature importance<a class="headerlink" href="#demonstration-of-feature-importance" title="Permalink to this headline"></a></h1>
 <p>This example is created to showcase the working of extracting features that are most important in a PCA reduction.
 We will create random variables with increasingly more variance. The first feature (f1) will have most of the variance, followed by feature 2 (f2) etc.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print the top features.</span>

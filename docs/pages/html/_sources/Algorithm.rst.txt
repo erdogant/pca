@@ -12,7 +12,7 @@ The ``pca`` library contains various functionalities to carefully examine the da
 
 
 Standardization
-*********************
+#################
 
 Feature scaling through standardization (or Z-score normalization) is an important preprocessing step for many machine learning algorithms. Standardization involves rescaling the features such that they have the properties of a standard normal distribution with a mean of zero and a standard deviation of one. The standardization step depends on the type of variables, the distribution of the data, and your aim. In general, the standardizing step is to range the continuous initial variables so that each one of them contributes *equally* to the analysis.
 
@@ -80,7 +80,8 @@ An example of the differences of feature reduction using PCA with and without st
 
 
 Explained Variance
-*********************
+##################################
+
 
 Before getting to the explanation of **explained variance**, we first need to understand what principal components are.
 
@@ -115,7 +116,7 @@ In this example we have 13 variables in the **wine** dataset, and thus 13 dimens
 There are as many principal components as there are variables in the data. The **explained variance plot** can therefore never have more then 13 PCs in this case. Principal components are constructed in such a manner that the first principal component accounts for the largest possible variance in the data set.
 
 Loadings
-**************************
+#################
 
 An important thing to realize here is that, the principal components are less interpretable and don’t have any real meaning since they are constructed as **linear combinations** of the initial variables. But we can analyze the **loadings** which describe the importance of the independent variables.
 The first principal component (Y1) is given by a linear combination of the variables X1, X2, ..., Xp, and is calculated such that it accounts for the greatest possible variance in the data. 
@@ -175,7 +176,8 @@ First of all, we see a nice seperation of the 3 wine classes (red, orange and gr
 
 
 Examination of the loadings
-******************************
+##################################
+
 
 Let's examine the **loadings** (arrows) a bit more to become even more aware what is going on in the distribution of samples given the variables. The variable **flavanoids** has a positive loading and explaines mostly the variance in the first PC1 (it is almost a horizontal line). If we would color the samples in the scatter plot based on **flavanoids** values, we expect to see a distinction between samples that are respectively left and right side of the scatter plot. 
 
@@ -236,7 +238,8 @@ Let's take another variable for demonstration purposes. The variable **alcohol**
 
 
 Best Performing Features
-**************************
+##################################
+
 
 Extracting the best performing features is based on the loadings of the Principal Components, which are readily computed.
 The information is stored in the object itself and we can extract it as shown underneath. 
