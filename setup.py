@@ -22,7 +22,7 @@ setuptools.setup(
      description="pca is a python package that performs the principal component analysis and makes insightful plots.",
      long_description=long_description,
      long_description_content_type="text/markdown",
-     url="https://github.com/erdogant/pca",
+     url="https://erdogant.github.io/pca",
 	 download_url = 'https://github.com/erdogant/pca/archive/'+new_version+'.tar.gz',
      packages=setuptools.find_packages(), # Searches throughout all dirs for files to include
      include_package_data=True, # Must be true to include files depicted in MANIFEST.in
