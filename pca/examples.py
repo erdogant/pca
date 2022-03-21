@@ -4,7 +4,9 @@ import numpy as np
 
 # %%
 import pca
-print(pca.__version__)
+# print(pca.__version__)
+
+
 
 # %%
 import numpy as np
@@ -12,6 +14,7 @@ from sklearn.datasets import load_iris
 
 # Load dataset
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+# X.reset_index(drop=True, inplace=True)
 
 # Load pca
 from pca import pca
@@ -25,9 +28,22 @@ model = pca(n_components=3)
 # Fit transform
 results = model.fit_transform(X)
 
-model.plot()
+# model.plot()
+
+model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True, gradient='#ffffff')
+
+model.scatter(cmap='Set1', legend=False, label=True, gradient='#ffffff')
+model.scatter(cmap='Set1', legend=False, label=True, gradient=None)
+model.scatter3d(cmap='Set1', legend=False, label=True, gradient='#ffffff')
+model.scatter3d(cmap='Set1', legend=False, label=True, gradient=None)
+
+model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True, gradient=None)
+model.biplot3d(legend=True, SPE=True, hotellingt2=True, visible=True, gradient='#ffffff')
+model.biplot3d(legend=True, SPE=True, hotellingt2=True, visible=True, gradient=None)
+
 
 # %%
+from pca import pca
 from sklearn.datasets import load_iris
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
 model = pca(n_components=3, normalize=True)
@@ -36,6 +52,7 @@ fig, ax = model.biplot(label=True, legend=False, PC=[1,0])
 print(out['topfeat'])
 
 fig, ax = model.biplot(cmap=None, label=False, legend=False)
+
 
 # %%
 import numpy as np
@@ -135,34 +152,6 @@ plt.scatter([i for i in range(T2_train.shape[0])], T2_train, c='black', s=100, a
 plt.scatter([i for i in range(T2_train.shape[0], T2_train.shape[0]+T2_test.shape[0], 1)], T2_test, c='blue', s=100, alpha=0.5)
 plt.show()
 
-# %% Transform unseen datapoints into fitted space
-import matplotlib.pyplot as plt
-from sklearn.datasets import load_iris
-import pandas as pd
-from pca import pca
-
-# Initialize
-model = pca(n_components=2, normalize=True, detect_outliers=None)
-# Dataset
-X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
-
-# Get some random samples across the classes
-idx=[0,1,2,3,4,50,51,52,53,54,55,100,101,102,103,104,105]
-X_unseen = X.iloc[idx, :]
-
-# Label original dataset to make sure the check which samples are overlapping
-X.index.values[idx]=3
-
-# Fit transform
-out = model.fit_transform(X)
-
-# Transform new "unseen" data
-PCnew = model.transform(X_unseen)
-
-# Plot PC space
-model.scatter(alpha_transparency=0.5)
-# Plot the new "unseen" samples on top of the existing space
-plt.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x')
 
 
 # %% Fix for no scatter but only directions
@@ -229,6 +218,36 @@ Xoutliers = X[out['outliers']['y_bool'],:]
 
 # Select the other set
 Xnormal = X[~out['outliers']['y_bool'],:]
+
+
+# %% Transform unseen datapoints into fitted space
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+import pandas as pd
+from pca import pca
+
+# Initialize
+model = pca(n_components=2, normalize=True, detect_outliers=None)
+# Dataset
+X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+
+# Get some random samples across the classes
+idx=[0,1,2,3,4,50,51,52,53,54,55,100,101,102,103,104,105]
+X_unseen = X.iloc[idx, :]
+
+# Label original dataset to make sure the check which samples are overlapping
+X.index.values[idx]=3
+
+# Fit transform
+out = model.fit_transform(X)
+
+# Transform new "unseen" data
+PCnew = model.transform(X_unseen)
+
+# Plot PC space
+model.scatter(alpha_transparency=0.5)
+# Plot the new "unseen" samples on top of the existing space
+plt.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x')
 
 
 # %%

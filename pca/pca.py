@@ -439,7 +439,7 @@ class pca():
         return y, topfeat, n_feat
 
     # Scatter plot
-    def scatter3d(self, y=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None, title=None):
+    def scatter3d(self, y=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None, title=None, gradient=None):
         """Scatter 3d plot.
 
         Parameters
@@ -466,6 +466,9 @@ class pca():
             The alpha blending value, between 0 (transparent) and 1 (opaque).
         title : str, default: None
             Title of the figure.
+        gradient : String, (default: None)
+            Hex (ending) color for the gradient of the scatterplot colors.
+            '#FFFFFF'
 
         Returns
         -------
@@ -473,14 +476,14 @@ class pca():
 
         """
         if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title)
+            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
             fig, ax = None, None
         return fig, ax
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None, title=None):
+    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None, title=None, gradient=None):
         """Scatter 2d plot.
 
         Parameters
@@ -509,12 +512,16 @@ class pca():
             The alpha blending value, between 0 (transparent) and 1 (opaque).
         title : str, (default: None)
             Title of the figure.
+        gradient : String, (default: None)
+            Hex (ending) color for the gradient of the scatterplot colors.
+            '#FFFFFF'
 
         Returns
         -------
         tuple containing (fig, ax)
 
         """
+        if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
         fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
         fig.set_visible(visible)
 
@@ -533,8 +540,7 @@ class pca():
             if d3:
                 ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)', alpha=alpha_transparency)
             else:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)',
-                           alpha=alpha_transparency)
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=50, label='outliers (hotelling t2)', alpha=alpha_transparency)
 
         # Plot outliers for hotelling T2 test.
         if SPE and ('y_bool_spe' in self.results['outliers'].columns):
@@ -542,7 +548,7 @@ class pca():
             if d3:
                 ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)', alpha=alpha_transparency)
             else:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)', alpha=alpha_transparency)
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=50, label='outliers (SPE/DmodX)', alpha=alpha_transparency)
                 # Plot the ellipse
                 g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
                 if g_ellipse is not None: ax.add_artist(g_ellipse)
@@ -553,19 +559,31 @@ class pca():
 
         # Get the colors
         if cmap is None:
-            getcolors = np.repeat([1, 1, 1], len(uiy), axis=0).reshape(-1, 3)
+            getcolors = np.repeat([1, 1, 1], len(y), axis=0).reshape(-1, 3)
         else:
-            getcolors = np.array(colourmap.generate(len(uiy), cmap=cmap))
+            # getcolors = np.array(colourmap.generate(len(uiy), cmap=cmap))
+            figcolors = colourmap.fromlist(y, cmap=cmap, gradient=gradient)
+            getcolors = figcolors[0]
 
-        for i, yk in enumerate(uiy):
+        # Compute the density per group and sort the colors on density
+        if (gradient is not None) and (len(np.unique(y))!=len(y)):
+            for yk in uiy:
+                idx = np.where(yk==y)[0]
+                xy = np.vstack([xs[idx], ys[idx]])
+                z = stats.gaussian_kde(xy)(xy)
+                idx_sort = idx[np.argsort(z)]
+                getcolors[idx, :] = getcolors[idx_sort, :]
+
+        # Add the labels
+        for yk in uiy:
             Iloc_label = (yk==y)
             Iloc_sampl = np.logical_and(Iloc_label, Inormal)
+
             if d3:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], color=getcolors[i, :], s=25, label=yk, alpha=alpha_transparency)
-                # if label: ax.text(xs[Iloc_label], ys[Iloc_label], zs[Iloc_label], yk, color=getcolors[i,:], ha='center', va='center')
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], color=getcolors[Iloc_sampl, :], s=50, label=yk, alpha=alpha_transparency)
             else:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], color=getcolors[i, :], s=25, label=yk, alpha=alpha_transparency)
-                if label: ax.annotate(yk, (np.mean(xs[Iloc_label]), np.mean(ys[Iloc_label])))
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], color=getcolors[Iloc_sampl, :], s=50, label=yk, alpha=alpha_transparency)
+                if label: ax.annotate(yk, (np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl])))
 
         # Set y
         ax.set_xlabel('PC' + str(PC[0] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
@@ -584,7 +602,7 @@ class pca():
         # Return
         return (fig, ax)
 
-    def biplot(self, y=None, n_feat=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(15, 10), visible=True, alpha_transparency=None, color_arrow='r', title=None, verbose=3):
+    def biplot(self, y=None, n_feat=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(15, 10), visible=True, alpha_transparency=None, color_arrow='r', title=None, gradient=None, verbose=3):
         """Create the Biplot.
 
         Description
@@ -623,6 +641,9 @@ class pca():
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+        gradient : String, (default: None)
+            Hex (ending) color for the gradient of the scatterplot colors.
+            '#FFFFFF'
         title : str, (default: None)
             Title of the figure.
 
@@ -669,9 +690,9 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -701,7 +722,7 @@ class pca():
         if visible: plt.show()
         return(fig, ax)
 
-    def biplot3d(self, y=None, n_feat=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=1, title=None):
+    def biplot3d(self, y=None, n_feat=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=1, title=None, gradient=None):
         """Make biplot in 3d.
 
         Parameters
@@ -728,6 +749,9 @@ class pca():
             The alpha blending value, between 0 (transparent) and 1 (opaque).
         title : str, (default: None)
             Title of the figure.
+        gradient : String, (default: None)
+            Hex (ending) color for the gradient of the scatterplot colors.
+            '#FFFFFF'
 
         Returns
         -------
@@ -738,7 +762,7 @@ class pca():
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
 
-        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, PC=PC, legend=legend, SPE=SPE, cmap=cmap, hotellingt2=hotellingt2, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title)
+        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, PC=PC, legend=legend, SPE=SPE, cmap=cmap, hotellingt2=hotellingt2, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient)
 
         return(fig, ax)
 
