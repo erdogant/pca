@@ -21,6 +21,7 @@ class TestPCA(unittest.TestCase):
         	'n_components':[None, 0.01, 1, 0.95, 2, 100000000000],
         	'row_labels':[None, [], y],
         	'detect_outliers' : [None, 'ht2','spe'],
+            'gradient' : [None, '#FFFFFF']
         	}
         
         allNames = param_grid.keys()
@@ -32,11 +33,11 @@ class TestPCA(unittest.TestCase):
         	model = pca(n_components=0.95)
         	model.fit_transform(X)
         	assert model.plot()
-        	assert model.biplot(y=y, SPE=True, hotellingt2=True)
-        	assert model.biplot3d(y=y, SPE=True, hotellingt2=True)
-        	assert model.biplot(y=y, SPE=True, hotellingt2=False)
-        	assert model.biplot(y=y, SPE=False, hotellingt2=True)
-        	assert model.biplot(y=y, SPE=False, hotellingt2=False)
+        	assert model.biplot(y=y, SPE=True, hotellingt2=True, gradient=combination[3])
+        	assert model.biplot3d(y=y, SPE=True, hotellingt2=True, gradient=combination[3])
+        	assert model.biplot(y=y, SPE=True, hotellingt2=False, gradient=combination[3])
+        	assert model.biplot(y=y, SPE=False, hotellingt2=True, gradient=combination[3])
+        	assert model.biplot(y=y, SPE=False, hotellingt2=False, gradient=combination[3])
         	assert model.results['PC'].shape[1]==model.n_components
 
 
