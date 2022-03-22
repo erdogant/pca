@@ -123,7 +123,7 @@ class TestPCA(unittest.TestCase):
         assert model.scatter3d(alpha_transparency=0.5)
         assert model.biplot(alpha_transparency=0.5)
         assert model.biplot3d(alpha_transparency=0.5)
-        
+
     def test_for_new_outliers_after_transformation(self):
         # Generate dataset
         np.random.seed(42)
