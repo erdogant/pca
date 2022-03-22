@@ -2,6 +2,7 @@
 
 # %% Libraries
 import colourmap as colourmap
+from scatterd import scatterd
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
 # from sklearn import preprocessing
 from sklearn.preprocessing import StandardScaler
@@ -483,7 +484,7 @@ class pca():
         return fig, ax
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None, title=None, gradient=None):
+    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(20, 15), alpha_transparency=None, title=None, gradient=None):
         """Scatter 2d plot.
 
         Parameters
@@ -513,7 +514,7 @@ class pca():
         title : str, (default: None)
             Title of the figure.
         gradient : String, (default: None)
-            Hex (ending) color for the gradient of the scatterplot colors.
+            Hex color to make a lineair gradient for the scatterplot.
             '#FFFFFF'
 
         Returns
@@ -522,9 +523,13 @@ class pca():
 
         """
         if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
-        fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
+        fig = plt.figure(figsize=figsize)
+        if d3:
+            ax = fig.add_subplot(projection='3d')
+        else:
+            ax = fig.add_subplot()
+        # fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
         fig.set_visible(visible)
-
         Ioutlier1 = np.repeat(False, self.results['PC'].shape[0])
         Ioutlier2 = np.repeat(False, self.results['PC'].shape[0])
 
@@ -557,6 +562,12 @@ class pca():
         Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
         uiy = np.unique(y)
 
+        # if d3:
+        #     # _, ax = scatterd(xs[Inormal], ys[Inormal], z=zs[Inormal], s=50, labels=y[Inormal], alpha=alpha_transparency, cmap=cmap, ax=None, gradient=gradient)
+        #     _, ax = scatterd(xs, ys, z=zs, s=50, labels=y, alpha=alpha_transparency, cmap=cmap, ax=None, gradient=gradient)
+        # else:
+        #     _, ax = scatterd(xs[Inormal], ys[Inormal], s=50, labels=y[Inormal], alpha=alpha_transparency, cmap=cmap, ax=ax, gradient=gradient)
+
         # Get the colors
         if cmap is None:
             getcolors = np.repeat([1, 1, 1], len(y), axis=0).reshape(-1, 3)
@@ -564,49 +575,49 @@ class pca():
             # getcolors = np.array(colourmap.generate(len(uiy), cmap=cmap))
             figcolors = colourmap.fromlist(y, cmap=cmap, gradient=gradient)
             getcolors = figcolors[0]
-            # plt.figure()
-            # plt.scatter(np.arange(0, len(getcolors)), np.arange(0, len(getcolors)), color=getcolors)
+        
+        import scatterd
+        # Figure properties
+        xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
+        getcolors, fontcolor = scatterd.set_colors(xyz, y, None, [[0, 0, 0]], cmap, gradient=gradient)
 
         # Compute the density per group and sort the colors on density
         # getcolors = sort_colors_on_gradient(xy, ys, y, getcolors)
-        density_colors= np.repeat([1., 1., 1.], len(y), axis=0).reshape(-1, 3)
-        if (gradient is not None):
-            # getcolors=np.zeros_like(xs)
-            if (len(np.unique(y))!=len(y)):
-                for yk in uiy:
-                    idx = np.where(yk==y)[0]
-                    if d3:
-                        xy = np.vstack([xs[idx], ys[idx], zs[idx]])
-                    else:
-                        xy = np.vstack([xs[idx], ys[idx]])
-                    # Compute density
-                    z = stats.gaussian_kde(xy)(xy)
-                    # Sort on density
-                    didx = idx[np.argsort(z)[::-1]]
-                    # order colors correctly based Density
-                    density_colors[didx] = getcolors[idx, :]
-                    # plt.figure()
-                    # plt.scatter(xs[didx], ys[didx], color=getcolors[idx, :])
-                    # plt.figure()
-                    # plt.scatter(idx, idx, color=getcolors[idx, :])
-                getcolors=density_colors
-            else:
-                xy = np.vstack([xs, ys])
-                z = stats.gaussian_kde(xy)(xy)
-                idx_sort = np.argsort(z)
-                getcolors = getcolors[idx_sort, :]
-                # getcolors = z
+        # density_colors= np.repeat([1., 1., 1.], len(y), axis=0).reshape(-1, 3)
+        # if (gradient is not None):
+        #     # getcolors=np.zeros_like(xs)
+        #     if (len(np.unique(y))!=len(y)):
+        #         for yk in uiy:
+        #             idx = np.where(yk==y)[0]
+        #             if d3:
+        #                 xy = np.vstack([xs[idx], ys[idx], zs[idx]])
+        #             else:
+        #                 xy = np.vstack([xs[idx], ys[idx]])
+        #             # Compute density
+        #             z = stats.gaussian_kde(xy)(xy)
+        #             # Sort on density
+        #             didx = idx[np.argsort(z)[::-1]]
+        #             # order colors correctly based Density
+        #             density_colors[didx] = getcolors[idx, :]
+        #             # plt.figure()
+        #             # plt.scatter(xs[didx], ys[didx], color=getcolors[idx, :])
+        #             # plt.figure()
+        #             # plt.scatter(idx, idx, color=getcolors[idx, :])
+        #         getcolors=density_colors
+        #     else:
+        #         xy = np.vstack([xs, ys])
+        #         z = stats.gaussian_kde(xy)(xy)
+        #         idx_sort = np.argsort(z)
+        #         getcolors = getcolors[idx_sort, :]
 
-        # plt.figure()
-        # plt.scatter(xs, ys, color=getcolors)
         # Add the labels
         for yk in uiy:
             Iloc_label = (yk==y)
             Iloc_sampl = np.logical_and(Iloc_label, Inormal)
 
-            # color = {'color': getcolors[Iloc_sampl, :]}
             if d3:
                 ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
+                ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=fontcolor.get(yk), fontdict={'weight': 'bold', 'size': 16})
             else:
                 ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
                 if label: ax.annotate(yk, (np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl])))
