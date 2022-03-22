@@ -2,7 +2,7 @@
 
 # %% Libraries
 import colourmap as colourmap
-from scatterd import scatterd
+import scatterd
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
 # from sklearn import preprocessing
 from sklearn.preprocessing import StandardScaler
@@ -562,12 +562,6 @@ class pca():
         Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
         uiy = np.unique(y)
 
-        # if d3:
-        #     # _, ax = scatterd(xs[Inormal], ys[Inormal], z=zs[Inormal], s=50, labels=y[Inormal], alpha=alpha_transparency, cmap=cmap, ax=None, gradient=gradient)
-        #     _, ax = scatterd(xs, ys, z=zs, s=50, labels=y, alpha=alpha_transparency, cmap=cmap, ax=None, gradient=gradient)
-        # else:
-        #     _, ax = scatterd(xs[Inormal], ys[Inormal], s=50, labels=y[Inormal], alpha=alpha_transparency, cmap=cmap, ax=ax, gradient=gradient)
-
         # Get the colors
         if cmap is None:
             getcolors = np.repeat([1, 1, 1], len(y), axis=0).reshape(-1, 3)
@@ -575,40 +569,10 @@ class pca():
             # getcolors = np.array(colourmap.generate(len(uiy), cmap=cmap))
             figcolors = colourmap.fromlist(y, cmap=cmap, gradient=gradient)
             getcolors = figcolors[0]
-        
-        import scatterd
+
         # Figure properties
         xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
         getcolors, fontcolor = scatterd.set_colors(xyz, y, None, [[0, 0, 0]], cmap, gradient=gradient)
-
-        # Compute the density per group and sort the colors on density
-        # getcolors = sort_colors_on_gradient(xy, ys, y, getcolors)
-        # density_colors= np.repeat([1., 1., 1.], len(y), axis=0).reshape(-1, 3)
-        # if (gradient is not None):
-        #     # getcolors=np.zeros_like(xs)
-        #     if (len(np.unique(y))!=len(y)):
-        #         for yk in uiy:
-        #             idx = np.where(yk==y)[0]
-        #             if d3:
-        #                 xy = np.vstack([xs[idx], ys[idx], zs[idx]])
-        #             else:
-        #                 xy = np.vstack([xs[idx], ys[idx]])
-        #             # Compute density
-        #             z = stats.gaussian_kde(xy)(xy)
-        #             # Sort on density
-        #             didx = idx[np.argsort(z)[::-1]]
-        #             # order colors correctly based Density
-        #             density_colors[didx] = getcolors[idx, :]
-        #             # plt.figure()
-        #             # plt.scatter(xs[didx], ys[didx], color=getcolors[idx, :])
-        #             # plt.figure()
-        #             # plt.scatter(idx, idx, color=getcolors[idx, :])
-        #         getcolors=density_colors
-        #     else:
-        #         xy = np.vstack([xs, ys])
-        #         z = stats.gaussian_kde(xy)(xy)
-        #         idx_sort = np.argsort(z)
-        #         getcolors = getcolors[idx_sort, :]
 
         # Add the labels
         for yk in uiy:

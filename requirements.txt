@@ -6,3 +6,4 @@ colourmap
 wget
 pandas
 tqdm
+scatterd
