@@ -2,7 +2,7 @@
 
 # %% Libraries
 import colourmap as colourmap
-import scatterd
+import scatterd as scatterd
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
 # from sklearn import preprocessing
 from sklearn.preprocessing import StandardScaler
@@ -558,21 +558,21 @@ class pca():
                 g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
                 if g_ellipse is not None: ax.add_artist(g_ellipse)
 
-        # Make scatter plot of all not-outliers
-        Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
-        uiy = np.unique(y)
-
         # Get the colors
-        if cmap is None:
-            getcolors = np.repeat([1, 1, 1], len(y), axis=0).reshape(-1, 3)
-        else:
+        # if cmap is None:
+            # getcolors = np.repeat([1, 1, 1], len(y), axis=0).reshape(-1, 3)
+        # else:
             # getcolors = np.array(colourmap.generate(len(uiy), cmap=cmap))
-            figcolors = colourmap.fromlist(y, cmap=cmap, gradient=gradient)
-            getcolors = figcolors[0]
+            # figcolors = colourmap.fromlist(y, cmap=cmap, gradient=gradient)
+            # getcolors = figcolors[0]
 
         # Figure properties
         xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
         getcolors, fontcolor = scatterd.set_colors(xyz, y, None, [[0, 0, 0]], cmap, gradient=gradient)
+
+        # Make scatter plot of all not-outliers
+        Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
+        uiy = np.unique(y)
 
         # Add the labels
         for yk in uiy:
@@ -581,7 +581,7 @@ class pca():
 
             if d3:
                 ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
-                ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=fontcolor.get(yk), fontdict={'weight': 'bold', 'size': 16})
+                # ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=fontcolor.get(yk), fontdict={'weight': 'bold', 'size': 16})
             else:
                 ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
                 if label: ax.annotate(yk, (np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl])))
