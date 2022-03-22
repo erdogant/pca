@@ -13,7 +13,7 @@ else:
 with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
-     install_requires=['wget','matplotlib','numpy','sklearn','scipy','colourmap','pandas','tqdm'],
+     install_requires=['wget','matplotlib','numpy','sklearn','scipy','colourmap','pandas','tqdm','scatterd'],
      python_requires='>=3',
      name='pca',
      version=new_version,
