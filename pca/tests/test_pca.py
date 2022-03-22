@@ -9,78 +9,6 @@ import unittest
 
 class TestPCA(unittest.TestCase):
 
-    def test_plot_combinations(self):
-
-        X = load_iris().data
-        labels=load_iris().feature_names
-        y=load_iris().target
-        
-        X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
-        
-        param_grid = {
-        	'n_components':[None, 0.01, 1, 0.95, 2, 100000000000],
-        	'row_labels':[None, [], y],
-        	'detect_outliers' : [None, 'ht2','spe'],
-            'gradient' : [None, '#FFFFFF']
-        	}
-        
-        allNames = param_grid.keys()
-        combinations = it.product(*(param_grid[Name] for Name in allNames))
-        combinations=list(combinations)
-        
-        for combination in combinations:
-        	model = pca(n_components=combination[0])
-        	model = pca(n_components=0.95)
-        	model.fit_transform(X)
-        	assert model.plot()
-        	assert model.biplot(y=y, SPE=True, hotellingt2=True, gradient=combination[3])
-        	assert model.biplot3d(y=y, SPE=True, hotellingt2=True, gradient=combination[3])
-        	assert model.biplot(y=y, SPE=True, hotellingt2=False, gradient=combination[3])
-        	assert model.biplot(y=y, SPE=False, hotellingt2=True, gradient=combination[3])
-        	assert model.biplot(y=y, SPE=False, hotellingt2=False, gradient=combination[3])
-        	assert model.results['PC'].shape[1]==model.n_components
-
-
-    def test_correct_ordering_features_in_biplot(self):
-
-        f1=np.random.randint(0,100,250)
-        f2=np.random.randint(0,50,250)
-        f3=np.random.randint(0,25,250)
-        f4=np.random.randint(0,10,250)
-        f5=np.random.randint(0,5,250)
-        f6=np.random.randint(0,4,250)
-        f7=np.random.randint(0,3,250)
-        f8=np.random.randint(0,2,250)
-        f9=np.random.randint(0,1,250)
-        X = np.c_[f1,f2,f3,f4,f5,f6,f7,f8,f9]
-        X = pd.DataFrame(data=X, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
-        
-        model = pca(n_components=9, normalize=False)
-        out = model.fit_transform(X)
-        assert np.all(out['topfeat'].feature.values == ['f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9'])
-        assert model.biplot(n_feat=10, legend=False)
-        assert model.biplot3d(n_feat=10, legend=False)
-        
-        ##### NORMALIZE OUT PC1
-        X_norm = model.norm(X, pcexclude=[1])
-        X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
-        out = model.fit_transform(X_norm)
-        assert (out['topfeat'].feature.values[-1]=='f1') | (out['topfeat'].feature.values[-2]=='f1')
-        assert out['topfeat'].feature.values[0]=='f2'
-        
-        ##### NORMALIZE OUT PC1 AND PC2
-        X_norm = model.norm(X, pcexclude=[1,2])
-        X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
-        out = model.fit_transform(X_norm)
-        assert (out['topfeat'].feature.values[-1]=='f2') | (out['topfeat'].feature.values[-1]=='f9') | (out['topfeat'].feature.values[-1]=='f1')
-        
-        ##### NORMALIZE OUT PC2 AND PC4
-        X_norm = model.norm(X, pcexclude=[2])
-        X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
-        out = model.fit_transform(X_norm)
-        assert out['topfeat'].feature.values[1]=='f3'
-        assert (out['topfeat'].feature.values[-1]=='f2') | (out['topfeat'].feature.values[-1]=='f9')
-
     def test_for_outliers_and_transparency(self):
 
         X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
@@ -124,6 +52,79 @@ class TestPCA(unittest.TestCase):
         assert model.scatter3d(alpha_transparency=0.5)
         assert model.biplot(alpha_transparency=0.5)
         assert model.biplot3d(alpha_transparency=0.5)
+
+    def test_plot_combinations(self):
+
+        X = load_iris().data
+        labels=load_iris().feature_names
+        y=load_iris().target
+        
+        X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+        
+        param_grid = {
+        	'n_components':[None, 0.01, 1, 0.95, 2, 100000000000],
+        	'row_labels':[None, [], y],
+        	'detect_outliers' : [None, 'ht2','spe'],
+            'gradient' : [None, '#FFFFFF']
+        	}
+        
+        allNames = param_grid.keys()
+        combinations = it.product(*(param_grid[Name] for Name in allNames))
+        combinations=list(combinations)
+        
+        for combination in combinations:
+         	model = pca(n_components=combination[0])
+         	model = pca(n_components=0.95)
+         	model.fit_transform(X)
+         	assert model.plot()
+         	assert model.biplot(y=y, SPE=True, hotellingt2=True, gradient=combination[3])
+         	assert model.biplot3d(y=y, SPE=True, hotellingt2=True, gradient=combination[3])
+         	assert model.biplot(y=y, SPE=True, hotellingt2=False, gradient=combination[3])
+         	assert model.biplot(y=y, SPE=False, hotellingt2=True, gradient=combination[3])
+         	assert model.biplot(y=y, SPE=False, hotellingt2=False, gradient=combination[3])
+         	assert model.results['PC'].shape[1]==model.n_components
+
+
+    def test_correct_ordering_features_in_biplot(self):
+
+        f1=np.random.randint(0,100,250)
+        f2=np.random.randint(0,50,250)
+        f3=np.random.randint(0,25,250)
+        f4=np.random.randint(0,10,250)
+        f5=np.random.randint(0,5,250)
+        f6=np.random.randint(0,4,250)
+        f7=np.random.randint(0,3,250)
+        f8=np.random.randint(0,2,250)
+        f9=np.random.randint(0,1,250)
+        X = np.c_[f1,f2,f3,f4,f5,f6,f7,f8,f9]
+        X = pd.DataFrame(data=X, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
+        
+        model = pca(n_components=9, normalize=False)
+        out = model.fit_transform(X)
+        assert np.all(out['topfeat'].feature.values == ['f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9'])
+        assert model.biplot(n_feat=10, legend=False)
+        assert model.biplot3d(n_feat=10, legend=False)
+        
+        ##### NORMALIZE OUT PC1
+        X_norm = model.norm(X, pcexclude=[1])
+        X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
+        out = model.fit_transform(X_norm)
+        assert (out['topfeat'].feature.values[-1]=='f1') | (out['topfeat'].feature.values[-2]=='f1')
+        assert out['topfeat'].feature.values[0]=='f2'
+        
+        ##### NORMALIZE OUT PC1 AND PC2
+        X_norm = model.norm(X, pcexclude=[1,2])
+        X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
+        out = model.fit_transform(X_norm)
+        assert (out['topfeat'].feature.values[-1]=='f2') | (out['topfeat'].feature.values[-1]=='f9') | (out['topfeat'].feature.values[-1]=='f1')
+        
+        ##### NORMALIZE OUT PC2 AND PC4
+        X_norm = model.norm(X, pcexclude=[2])
+        X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
+        out = model.fit_transform(X_norm)
+        assert out['topfeat'].feature.values[1]=='f3'
+        assert (out['topfeat'].feature.values[-1]=='f2') | (out['topfeat'].feature.values[-1]=='f9')
+
 
     def test_for_new_outliers_after_transformation(self):
         # Generate dataset
