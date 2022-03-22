@@ -14,7 +14,7 @@ from sklearn.datasets import load_iris
 
 # Load dataset
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
-# X.reset_index(drop=True, inplace=True)
+X.reset_index(drop=True, inplace=True)
 
 # Load pca
 from pca import pca
@@ -30,13 +30,13 @@ results = model.fit_transform(X)
 
 # model.plot()
 
-model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True, gradient='#ffffff')
-
 model.scatter(cmap='Set1', legend=False, label=True, gradient='#ffffff')
+model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True, gradient='#ffffff')
 model.scatter(cmap='Set1', legend=False, label=True, gradient=None)
 model.scatter3d(cmap='Set1', legend=False, label=True, gradient='#ffffff')
 model.scatter3d(cmap='Set1', legend=False, label=True, gradient=None)
 
+model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True, gradient='#ffffff')
 model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True, gradient=None)
 model.biplot3d(legend=True, SPE=True, hotellingt2=True, visible=True, gradient='#ffffff')
 model.biplot3d(legend=True, SPE=True, hotellingt2=True, visible=True, gradient=None)
