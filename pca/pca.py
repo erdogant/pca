@@ -559,8 +559,8 @@ class pca():
                 if g_ellipse is not None: ax.add_artist(g_ellipse)
 
         # Get the colors
-        # if cmap is None:
-            # getcolors = np.repeat([1, 1, 1], len(y), axis=0).reshape(-1, 3)
+        if cmap is None:
+            getcolors = np.repeat([0., 0., 0.], len(y), axis=0).reshape(-1, 3)
         # else:
             # getcolors = np.array(colourmap.generate(len(uiy), cmap=cmap))
             # figcolors = colourmap.fromlist(y, cmap=cmap, gradient=gradient)
