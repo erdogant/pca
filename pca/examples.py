@@ -14,7 +14,7 @@ from sklearn.datasets import load_iris
 
 # Load dataset
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
-# X.reset_index(drop=True, inplace=True)
+X.reset_index(drop=True, inplace=True)
 
 # Load pca
 from pca import pca
@@ -30,6 +30,7 @@ results = model.fit_transform(X)
 
 # model.plot()
 
+model.scatter(gradient='#ffffff', cmap='Set1')
 model.scatter(cmap='Set1', legend=True, label=True, gradient='#ffffff')
 model.scatter(cmap='Set1', legend=True, label=True, gradient=None)
 
