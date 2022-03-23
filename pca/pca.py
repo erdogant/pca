@@ -581,7 +581,7 @@ class pca():
 
             if d3:
                 ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
-                # ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=fontcolor.get(yk), fontdict={'weight': 'bold', 'size': 16})
+                if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict={'weight': 'bold', 'size': 16})
             else:
                 ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
                 if label: ax.annotate(yk, (np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl])))
