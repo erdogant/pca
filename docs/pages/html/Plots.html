@@ -31,7 +31,7 @@
             <a href="index.html" class="icon icon-home"> pca
           </a>
               <div class="version">
-                1.6.4
+                1.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -137,7 +137,7 @@
 <span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Fit transform and include the column labels and row labels</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">col_labels</span><span class="o">=</span><span class="n">col_labels</span><span class="p">,</span> <span class="n">row_labels</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">col_labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">row_labels</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
 
 <span class="c1"># [pca] &gt;Normalizing input data per feature (zero mean and unit variance)..</span>
 <span class="c1"># [pca] &gt;The PCA reduction is performed to capture [95.0%] explained variance using the [13] columns of the input data.</span>
@@ -158,6 +158,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make scatterplot</span>
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">()</span>
 
+<span class="c1"># Gradient over the samples. High dense areas will be more colourful.</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">gradient</span><span class="o">=</span><span class="s1">&#39;#FFFFFF&#39;</span><span class="p">)</span>
+
 <span class="c1"># Include the outlier detection</span>
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -176,11 +179,13 @@
 <tbody>
 <tr class="row-odd"><td><p><img alt="figP1" src="_images/wine_scatter.png" /></p></td>
 </tr>
-<tr class="row-even"><td><p><img alt="figP2" src="_images/wine_scatter_spe.png" /></p></td>
+<tr class="row-even"><td><p><img alt="figP7" src="_images/wine_scatter_density.png" /></p></td>
 </tr>
-<tr class="row-odd"><td><p><img alt="figP3" src="_images/wine_scatter_hotel.png" /></p></td>
+<tr class="row-odd"><td><p><img alt="figP2" src="_images/wine_scatter_spe.png" /></p></td>
 </tr>
-<tr class="row-even"><td><p><img alt="figP4" src="_images/wine_scatter_PC13.png" /></p></td>
+<tr class="row-even"><td><p><img alt="figP3" src="_images/wine_scatter_hotel.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="figP4" src="_images/wine_scatter_PC13.png" /></p></td>
 </tr>
 </tbody>
 </table>

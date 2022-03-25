@@ -16,7 +16,7 @@ Let's load the **wine** dataset to demonstrate the plots.
 	model = pca(normalize=True)
 
 	# Fit transform and include the column labels and row labels
-	results = model.fit_transform(X, col_labels=col_labels, row_labels=y)
+	results = model.fit_transform(X, col_labels=labels, row_labels=y)
 
 	# [pca] >Normalizing input data per feature (zero mean and unit variance)..
 	# [pca] >The PCA reduction is performed to capture [95.0%] explained variance using the [13] columns of the input data.
@@ -40,6 +40,9 @@ Scatter plot
 	# Make scatterplot
 	model.scatter()
 
+	# Gradient over the samples. High dense areas will be more colourful.
+	model.scatter(gradient='#FFFFFF')
+
 	# Include the outlier detection
 	model.scatter(SPE=True)
 
@@ -54,12 +57,15 @@ Scatter plot
 .. |figP2| image:: ../figs/wine_scatter_spe.png
 .. |figP3| image:: ../figs/wine_scatter_hotel.png
 .. |figP4| image:: ../figs/wine_scatter_PC13.png
+.. |figP7| image:: ../figs/wine_scatter_density.png
 
 .. table:: Scatterplots
    :align: center
 
    +----------+
    | |figP1|  |
+   +----------+
+   | |figP7|  |
    +----------+
    | |figP2|  |
    +----------+

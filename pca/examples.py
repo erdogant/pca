@@ -3,10 +3,8 @@ import pandas as pd
 import numpy as np
 
 # %%
-import pca
+# import pca
 # print(pca.__version__)
-
-
 
 # %%
 import numpy as np
@@ -14,7 +12,6 @@ from sklearn.datasets import load_iris
 
 # Load dataset
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
-X.reset_index(drop=True, inplace=True)
 
 # Load pca
 from pca import pca
