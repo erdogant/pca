@@ -93,14 +93,18 @@ from pca import pca
 # Initialize
 model = pca(alpha=0.05, n_std=2)
 
+n_total = 10000
+n_features = 10
+X = np.random.randint(low=1, high=10, size=(n_total, n_features))
+
 # Example with Numpy array
-X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
 row_labels = np.arange(0, X.shape[0]).astype(str)
 # Fit transform
 out = model.fit_transform(X, row_labels=row_labels)
 # Make plot
-model.biplot(legend=False, PC=[0, 1])
+model.biplot(legend=False, PC=[0, 1], label=None)
 
+# %%
 # Example with DataFrame
 X = pd.DataFrame(data=X, columns=np.arange(0, X.shape[1]).astype(str))
 # Fit transform
