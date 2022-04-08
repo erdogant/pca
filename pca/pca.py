@@ -448,7 +448,9 @@ class pca():
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
         label : Bool, default: True
-            Show the labels.
+            True Show the labels.
+            False: Do not show the labels
+            None: Ignore all labels (this will significanly speed up the scatterplot)
         PC : list, default : [0, 1, 2]
             Plot the first three Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
         legend : Bool, default: True
@@ -494,7 +496,9 @@ class pca():
         d3 : Bool, default: False
             3d plot is created when True.
         label : Bool, default: True
-            Show the labels.
+            True Show the labels.
+            False: Do not show the labels
+            None: Ignore all labels (this will significanly speed up the scatterplot)
         PC : list, default : [0, 1]
             Plot the first two Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
         legend : Bool, default: True
@@ -632,7 +636,9 @@ class pca():
         d3 : Bool, default: False
             3d plot is created when True.
         label : Bool, default: True
-            Show the labels.
+            True Show the labels.
+            False: Do not show the labels
+            None: Ignore all labels (this will significanly speed up the scatterplot)
         PC : list, default : [0, 1]
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         legend : Bool, default: True
@@ -743,7 +749,9 @@ class pca():
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         label : Bool, default: True
-            Show the labels.
+            True Show the labels.
+            False: Do not show the labels
+            None: Ignore all labels (this will significanly speed up the scatterplot)
         PC : list, default : [0, 1, 2]
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         legend : Bool, default: True
