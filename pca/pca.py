@@ -484,7 +484,7 @@ class pca():
         return fig, ax
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(20, 15), alpha_transparency=None, title=None, gradient=None):
+    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(20, 15), alpha_transparency=None, title=None, gradient=None, verbose=3):
         """Scatter 2d plot.
 
         Parameters
@@ -516,6 +516,8 @@ class pca():
         gradient : String, (default: None)
             Hex color to make a lineair gradient for the scatterplot.
             '#FFFFFF'
+        Verbose : int (default : 3)
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
         Returns
         -------
@@ -574,17 +576,25 @@ class pca():
         Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
         uiy = np.unique(y)
 
+        if (len(uiy)==len(y)) and (len(uiy)>=1000) and (label is not None):
+            if verbose>=2: print('[pca] >Set parameter "label=None" to ignore the labels and significanly speed up the scatter plot.')
         # Add the labels
-        for yk in uiy:
-            Iloc_label = (yk==y)
-            Iloc_sampl = np.logical_and(Iloc_label, Inormal)
-
+        if label is None:
             if d3:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
-                if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict={'weight': 'bold', 'size': 16})
+                ax.scatter(xs, ys, zs, s=50, alpha=alpha_transparency, color=getcolors, label=None)
             else:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
-                if label: ax.annotate(yk, (np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl])))
+                ax.scatter(xs, ys, s=50, alpha=alpha_transparency, color=getcolors, label=None)
+        else:
+            for yk in uiy:
+                Iloc_label = (yk==y)
+                Iloc_sampl = np.logical_and(Iloc_label, Inormal)
+
+                if d3:
+                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
+                    if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict={'weight': 'bold', 'size': 16})
+                else:
+                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
+                    if label: ax.annotate(yk, (np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl])))
 
         # Set y
         ax.set_xlabel('PC' + str(PC[0] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
