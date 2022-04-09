@@ -45,11 +45,17 @@ from pca import pca
 from sklearn.datasets import load_iris
 X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
 model = pca(n_components=3, normalize=True)
+
 out = model.fit_transform(X)
-fig, ax = model.biplot(label=True, legend=False, PC=[1,0])
+# fig, ax = model.biplot(label=True, legend=False, PC=[1,0])
 print(out['topfeat'])
 
+fig, ax = model.biplot(cmap='Set1', label=True, legend=True)
+fig, ax = model.biplot(cmap='Set1', label=True, legend=False)
+fig, ax = model.biplot(cmap='Set1', label=False, legend=False)
 fig, ax = model.biplot(cmap=None, label=False, legend=False)
+fig, ax = model.biplot(cmap=None, label=False, legend=True)
+fig, ax = model.biplot(cmap=None, label=False, legend=True)
 
 
 # %%
@@ -65,10 +71,9 @@ f4=np.random.randint(0,10,250)
 f5=np.random.randint(0,5,250)
 f6=np.random.randint(0,4,250)
 f7=np.random.randint(0,3,250)
-f8=np.random.randint(0,2,250)
-f9=np.random.randint(0,1,250)
-X = np.c_[f1,f2,f3,f4,f5,f6,f7,f8,f9]
-X = pd.DataFrame(data=X, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
+f8=np.random.randint(0,1,250)
+X = np.c_[f1,f2,f3,f4,f5,f6,f7,f8]
+X = pd.DataFrame(data=X, columns=['feat_1','feat_2','feat_3','feat_4','feat_5','feat_6','feat_7','feat_8'])
 
 # Initialize
 model = pca()
@@ -76,7 +81,10 @@ model = pca()
 out = model.fit_transform(X)
 out['topfeat']
 
-ax = model.biplot(n_feat=10, legend=False, PC=[0, 1])
+model.biplot(cmap=None, label=False, legend=False)
+
+ax = model.biplot(n_feat=10, legend=False, cmap=None, label=False)
+ax = model.biplot(n_feat=10, legend=False, PC=[0, 1], label=None)
 ax = model.biplot(n_feat=10, legend=False, PC=[1, 0])
 ax = model.biplot(n_feat=10, legend=False, PC=[0, 1, 2], d3=True)
 ax = model.biplot(n_feat=10, legend=False, PC=[2, 1, 0], d3=True)
@@ -86,6 +94,7 @@ ax = model.biplot(n_feat=10, legend=False, PC=[0, 2])
 ax = model.biplot(n_feat=10, legend=False, PC=[2, 1])
 ax = model.biplot3d(n_feat=10, legend=False)
 
+model.scatter(y=X.index.values==0)
 
 # %%
 from pca import pca
@@ -166,9 +175,9 @@ X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
 X = pd.DataFrame(data=X, columns=np.arange(0, X.shape[1]).astype(str))
 # Fit transform
 out = model.fit_transform(X)
-out = model.fit_transform(X)
 # Make plot
 fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=True)
+fig, ax = model.biplot(cmap='Set2', label=True, legend=False, visible=True)
 fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=False)
 
 
@@ -407,7 +416,7 @@ df = pca.import_example()
 # Transform data into one-hot
 from df2onehot import df2onehot
 y = df['Survived'].values
-del df['Survived']
+# del df['Survived']
 del df['PassengerId']
 del df['Name']
 out = df2onehot(df)
@@ -450,8 +459,15 @@ model2.scatter(alpha_transparency=0.5)
 # Initialize
 model3 = pca(normalize=False, onehot=True)
 # Run model 2
-_=model3.fit_transform(X)
+model3.fit_transform(X)
 model3.biplot(n_feat=3)
+
+# from sklearn.manifold import TSNE
+# coord = TSNE(metric='hamming').fit_transform(X)
+# from scatterd import scatterd
+# scatterd(coord[:, 0], coord[:, 1], labels=y)
+
+
 
 #%% Example with Model initialization outside the for-loop.
 from pca import pca

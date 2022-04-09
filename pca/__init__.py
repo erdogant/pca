@@ -34,8 +34,14 @@ Examples
 >>>
 >>> # Make plots
 >>> fig, ax = model.scatter()
+>>>
+>>> # Scree plot together with explained variance.
 >>> fig, ax = model.plot()
+>>>
+>>> # Plot loadings.
 >>> fig, ax = model.biplot()
+>>>
+>>> # Plot loadings with outliers
 >>> fig, ax = model.biplot(SPE=True, hotellingt2=True)
 >>>
 >>> 3D plots

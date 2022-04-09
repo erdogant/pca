@@ -566,15 +566,15 @@ class pca():
 
         # Get the colors
         if cmap is None:
-            getcolors = np.repeat([0., 0., 0.], len(y), axis=0).reshape(-1, 3)
-        # else:
+            getcolors = np.repeat([1., 1., 1.], len(y), axis=0).reshape(-1, 3)
+        else:
+            # Figure properties
+            xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
+            getcolors, fontcolor = scatterd.set_colors(xyz, y, None, [[0, 0, 0]], cmap, gradient=gradient)
             # getcolors = np.array(colourmap.generate(len(uiy), cmap=cmap))
             # figcolors = colourmap.fromlist(y, cmap=cmap, gradient=gradient)
             # getcolors = figcolors[0]
 
-        # Figure properties
-        xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
-        getcolors, fontcolor = scatterd.set_colors(xyz, y, None, [[0, 0, 0]], cmap, gradient=gradient)
 
         # Make scatter plot of all not-outliers
         Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
@@ -583,7 +583,7 @@ class pca():
         if (len(uiy)==len(y)) and (len(uiy)>=1000) and (label is not None):
             if verbose>=2: print('[pca] >Set parameter "label=None" to ignore the labels and significanly speed up the scatter plot.')
         # Add the labels
-        if label is None:
+        if (label is None):
             if d3:
                 ax.scatter(xs, ys, zs, s=50, alpha=alpha_transparency, color=getcolors, label=None)
             else:
@@ -681,6 +681,7 @@ class pca():
             print('[pca] >Plot PC%.0d vs PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1, PC[2] + 1))
         elif verbose>=3:
             print('[pca] >Plot PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1))
+        if cmap is False: cmap=None
 
         # Pre-processing
         y, topfeat, n_feat = self._fig_preprocessing(y, n_feat, d3)
@@ -787,7 +788,7 @@ class pca():
 
     # Show explained variance plot
     def plot(self, n_components=None, figsize=(15, 10), xsteps=None, visible=True, title=None, verbose=3):
-        """Make plot.
+        """Scree together with explained variance.
 
         Parameters
         ----------
@@ -1107,24 +1108,24 @@ def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=
 
     # Create the model
     if sp.issparse(X):
-        if verbose>=3: print('[pca] >Fitting using Truncated SVD..')
+        if verbose>=3: print('[pca] >Fit using Truncated SVD.')
         model = TruncatedSVD(n_components=n_components, random_state=random_state)
     elif onehot:
-        if verbose>=3: print('[pca] >Fitting using Sparse PCA..')
+        if verbose>=3: print('[pca] >Fit using Sparse PCA.')
         model = SparsePCA(n_components=n_components, random_state=random_state, n_jobs=n_jobs)
     else:
-        if verbose>=3: print('[pca] >Fitting using PCA..')
+        if verbose>=3: print('[pca] >Fit using PCA.')
         model = PCA(n_components=n_components, random_state=random_state)
 
     # Fit model
     model.fit(X)
     # Do the reduction
-    if verbose>=3: print('[pca] >Computing loadings and PCs..')
+    if verbose>=3: print('[pca] >Compute loadings and PCs.')
     loadings = model.components_  # Ook wel de coeeficienten genoemd: coefs!
     PC = model.transform(X)
     # Compute explained variance, top 95% variance
     if (not onehot) and (percentExplVar is None):
-        if verbose>=3: print('[pca] >Computing explained variance..')
+        if verbose>=3: print('[pca] >Compute explained variance.')
         percentExplVar = model.explained_variance_ratio_.cumsum()
 
     # Return
