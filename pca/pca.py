@@ -721,7 +721,7 @@ class pca():
         # Plot arrows and text
         for i in range(0, n_feat):
             getfeat = topfeat['feature'].iloc[i]
-            label = getfeat + ' (' + ('%.2f' %topfeat['loading'].iloc[i]) + ')'
+            label = getfeat + ' (' + ('%g' %topfeat['loading'].iloc[i]) + ')'
             getcoef = coeff[getfeat].values
             # Set first PC vs second PC direction. Note that these are not neccarily the best loading.
             xarrow = getcoef[PC[0]] * scale  # First PC in the x-axis direction

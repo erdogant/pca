@@ -7,6 +7,29 @@ import numpy as np
 # print(pca.__version__)
 
 # %%
+from pca import pca
+from sklearn.datasets import load_iris
+
+index_name = load_iris().target.astype(str)
+index_name[index_name=='0'] = load_iris().target_names[0]
+index_name[index_name=='1'] = load_iris().target_names[1]
+index_name[index_name=='2'] = load_iris().target_names[2]
+
+X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=index_name)
+model = pca(n_components=3, normalize=True)
+
+out = model.fit_transform(X)
+# fig, ax = model.biplot(label=True, legend=False, PC=[1,0])
+print(out['topfeat'])
+
+fig, ax = model.biplot(cmap='Set1', label=True, legend=True)
+fig, ax = model.biplot(cmap='Set1', label=True, legend=False)
+fig, ax = model.biplot(cmap='Set1', label=False, legend=False)
+fig, ax = model.biplot(cmap=None, label=False, legend=False)
+fig, ax = model.biplot(cmap=None, label=False, legend=True)
+fig, ax = model.biplot(cmap=None, label=False, legend=True)
+
+# %%
 import numpy as np
 from sklearn.datasets import load_iris
 
@@ -63,25 +86,57 @@ import numpy as np
 import pandas as pd
 from pca import pca
 
-f1=np.random.randint(0,100,250)
-f2=np.random.randint(0,50,250)
-f3=np.random.randint(0,25,250)
+feat_1 = np.random.randint(0,100,250)
+feat_2 = np.random.randint(0,50,250)
+feat_3 = np.random.randint(0,25,250)
+feat_4 = np.random.randint(0,10,250)
+feat_5 = np.random.randint(0,5,250)
+feat_6 = np.random.randint(0,4,250)
+feat_7 = np.random.randint(0,3,250)
+feat_8 = np.random.randint(0,1,250)
 
-f4=np.random.randint(0,10,250)
-f5=np.random.randint(0,5,250)
-f6=np.random.randint(0,4,250)
-f7=np.random.randint(0,3,250)
-f8=np.random.randint(0,1,250)
-X = np.c_[f1,f2,f3,f4,f5,f6,f7,f8]
+# Make dataset
+X = np.c_[feat_1, feat_2, feat_3, feat_4, feat_5, feat_6 ,feat_7, feat_8]
 X = pd.DataFrame(data=X, columns=['feat_1','feat_2','feat_3','feat_4','feat_5','feat_6','feat_7','feat_8'])
 
-# Initialize
-model = pca()
-# Fit transform
-out = model.fit_transform(X)
-out['topfeat']
+# fig, ax = plt.subplots(figsize=(20, 12))
+# X = np.c_[f8,f7,f6,f5,f4,f3,f2,f1]
+# X = pd.DataFrame(data=X, columns=['feat_8','feat_7','feat_6','feat_5','feat_4','feat_3','feat_2','feat_1'])
+# X.plot.hist(bins=50, cmap='Set1', ax=ax)
+# ax.grid(True)
+# ax.set_xlabel('Value')
 
-model.biplot(cmap=None, label=False, legend=False)
+# Initialize
+model = pca(n_components=None)
+# Fit transform data
+results = model.fit_transform(X)
+# Extract the most informative features
+results['topfeat']
+
+#     PC feature   loading  type
+# 0  PC1  feat_1 -0.997830  best
+# 1  PC2  feat_2 -0.997603  best
+# 2  PC3  feat_3  0.998457  best
+# 3  PC4  feat_4  0.997536  best
+# 4  PC5  feat_5 -0.952390  best
+# 5  PC6  feat_6 -0.955873  best
+# 6  PC7  feat_7 -0.994602  best
+# 7  PC1  feat_8 -0.000000  weak
+
+# Plot the explained variance
+model.plot()
+# Biplot with the loadings
+ax = model.biplot(legend=False)
+# Biplot with the loadings
+ax = model.biplot(n_feat=3, legend=False, label=False)
+# Cleaning the biplot by removing the scatter, and looking only at the top 3 features.
+ax = model.biplot(n_feat=3, legend=False, label=False, cmap=None)
+# Make plot with 3 dimensions
+model.biplot3d(n_feat=3, legend=False, label=False, cmap=None)
+
+ax = model.biplot(n_feat=3, legend=False, label=False, cmap=None, PC=[1,2])
+ax = model.biplot(n_feat=3, legend=False, label=False, cmap=None, PC=[2,3])
+
 
 ax = model.biplot(n_feat=10, legend=False, cmap=None, label=False)
 ax = model.biplot(n_feat=10, legend=False, PC=[0, 1], label=None)
@@ -94,7 +149,7 @@ ax = model.biplot(n_feat=10, legend=False, PC=[0, 2])
 ax = model.biplot(n_feat=10, legend=False, PC=[2, 1])
 ax = model.biplot3d(n_feat=10, legend=False)
 
-model.scatter(y=X.index.values==0)
+# model.scatter(y=X.index.values==0)
 
 # %%
 from pca import pca

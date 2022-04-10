@@ -5,6 +5,8 @@ Let's load the **wine** dataset to demonstrate the plots.
 
 .. code:: python
 
+	# Load library
+	from sklearn.datasets import load_wine
 	# Load dataset
 	data = datasets.load_wine()
 	X = data.data
@@ -144,7 +146,7 @@ All plots can also be created in 3D by setting the ``d3=True`` parameter.
 
 .. code:: python
 
-	model.biplot(d3=True)
+	model.biplot3d()
 
 
 Toggle visible status
