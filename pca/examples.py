@@ -107,7 +107,7 @@ X = pd.DataFrame(data=X, columns=['feat_1','feat_2','feat_3','feat_4','feat_5','
 # ax.set_xlabel('Value')
 
 # Initialize
-model = pca(n_components=None)
+model = pca(n_components=None, normalize=False)
 # Fit transform data
 results = model.fit_transform(X)
 # Extract the most informative features

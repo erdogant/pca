@@ -57,6 +57,7 @@ Content
   :caption: Examples
 
   Examples
+  notebook
 
 
 .. toctree::
@@ -64,6 +65,7 @@ Content
   :caption: Documentation
   
   Documentation
+  Additional_Information
   Coding quality
   pca.pca
 

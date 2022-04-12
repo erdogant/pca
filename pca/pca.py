@@ -571,10 +571,6 @@ class pca():
             # Figure properties
             xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
             getcolors, fontcolor = scatterd.set_colors(xyz, y, None, [[0, 0, 0]], cmap, gradient=gradient)
-            # getcolors = np.array(colourmap.generate(len(uiy), cmap=cmap))
-            # figcolors = colourmap.fromlist(y, cmap=cmap, gradient=gradient)
-            # getcolors = figcolors[0]
-
 
         # Make scatter plot of all not-outliers
         Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
