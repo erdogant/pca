@@ -3,7 +3,7 @@
 # %% Libraries
 import colourmap as colourmap
 import scatterd as scatterd
-from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
+from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD #, MiniBatchSparsePCA
 # from sklearn import preprocessing
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import euclidean_distances
@@ -22,7 +22,7 @@ import wget
 class pca():
     """pca module."""
 
-    def __init__(self, n_components=0.95, n_feat=25, alpha=0.05, n_std=2, onehot=False, normalize=False, detect_outliers=['ht2', 'spe'], random_state=None):
+    def __init__(self, n_components=0.95, n_feat=25, method='pca', alpha=0.05, n_std=2, onehot=False, normalize=False, detect_outliers=['ht2', 'spe'], random_state=None, verbose=3):
         """Initialize pca with user-defined parameters.
 
         Parameters
@@ -34,12 +34,17 @@ class pca():
             k: Take the top k components
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
+        method : 'pca' (default)
+            'pca' : Principal Component Analysis.
+            'sparse_pca' : Sparse Principal Components Analysis.
+            'trunc_svd' : truncated SVD (aka LSA).
         alpha : float, default: 0.05
             Alpha to set the threshold to determine the outliers based on on the Hoteling T2 test.
         n_std : int, default: 2
             Number of standard deviations to determine the outliers using SPE/DmodX method.
         onehot : [Bool] optional, (default: False)
-            Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers. Note this is different then a sparse matrix. Sparse data can be in a sparse matrix.
+            Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers.
+            Note this is different then a sparse matrix. In case of a sparse matrix, use method='trunc_svd'.
         normalize : bool (default : False)
             Normalize data, Z-score
         detect_outliers : list (default : ['ht2','spe'])
@@ -48,11 +53,23 @@ class pca():
             'spe': compute outliers basedon SPE/DmodX method.
         random_state : int optional
             Random state
+        Verbose : int (default : 3)
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+
+        References
+        ----------
+            * https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.SparsePCA.html
+            * https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html
 
         """
         if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
+        if onehot:
+            if verbose>=3: print('[pca] >Method is set to: [sparse_pca] because onehot=True.')
+            method = 'sparse_pca'
+
         # Store in object
         self.n_components = n_components
+        self.method = method.lower()
         self.onehot = onehot
         self.normalize = normalize
         self.random_state = random_state
@@ -60,9 +77,10 @@ class pca():
         self.alpha = alpha
         self.n_std = n_std
         self.detect_outliers = detect_outliers
+        self.verbose = verbose
 
     # Make PCA fit_transform
-    def transform(self, X, row_labels=None, col_labels=None, verbose=3):
+    def transform(self, X, row_labels=None, col_labels=None, verbose=None):
         """Transform new input data with fitted model.
 
         Parameters
@@ -70,7 +88,7 @@ class pca():
         X : array-like : Can be of type Numpy or DataFrame
             [NxM] array with columns as features and rows as samples.
         Verbose : int (default : 3)
-            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+            Set verbose during initialization.
 
         Examples
         --------
@@ -108,6 +126,7 @@ class pca():
         pca transformed data.
 
         """
+        if verbose is None: verbose = self.verbose
         # Check type to make sure we can perform matrix operations
         if isinstance(X, list):
             X = np.array(X)
@@ -123,7 +142,7 @@ class pca():
         return PCs
 
     # Make PCA fit_transform
-    def fit_transform(self, X, row_labels=None, col_labels=None, verbose=3):
+    def fit_transform(self, X, row_labels=None, col_labels=None, verbose=None):
         """Fit PCA on data.
 
         Parameters
@@ -135,8 +154,7 @@ class pca():
         col_labels : [list of string] optional
             Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.
         Verbose : int (default : 3)
-            The higher the number, the more information is printed.
-            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+            Set verbose during initialization.
 
         Returns
         -------
@@ -185,10 +203,14 @@ class pca():
         >>> X_norm = model.norm(X)
 
         """
+        if verbose is None: verbose = self.verbose
+        percentExplVar=None
         # Check type to make sure we can perform matrix operations
+        if sp.issparse(X):
+            if self.verbose>=3: print('[pca] >Input data is a sparse matrix. Method is set to: [trunc_svd].')
+            self.method = 'trunc_svd'
         if isinstance(X, list):
             X = np.array(X)
-        percentExplVar=None
 
         # Clean readily fitted models to ensure correct results.
         self._clean(verbose=verbose)
@@ -199,7 +221,7 @@ class pca():
             if verbose>=3: print('[pca] >The PCA reduction is performed to capture [%.1f%%] explained variance using the [%.d] columns of the input data.' %(self.n_components * 100, X.shape[1]))
             pcp = self.n_components
             # Run with all components to get all PCs back. This is needed for the step after.
-            _, _, _, percentExplVar = _explainedvar(X, n_components=None, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
+            _, _, _, percentExplVar = _explainedvar(X, method=self.method, n_components=None, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
             # Take number of components with minimal [n_components] explained variance
             if percentExplVar is None:
                 self.n_components = X.shape[1] - 1
@@ -209,7 +231,7 @@ class pca():
                 if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp * 100))
 
         if verbose>=3: print('[pca] >The PCA reduction is performed on the [%.d] columns of the input dataframe.' %(X.shape[1]))
-        model_pca, PC, loadings, percentExplVar = _explainedvar(X, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, percentExplVar=percentExplVar, verbose=verbose)
+        model_pca, PC, loadings, percentExplVar = _explainedvar(X, method=self.method, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, percentExplVar=percentExplVar, verbose=verbose)
         pcp = None if percentExplVar is None else percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components)]
 
         # Combine components relations with features
@@ -433,6 +455,12 @@ class pca():
             y = y.astype(str)
         else:
             y = self.results['PC'].index.values.astype(str)
+
+        if self.method=='sparse_pca':
+            print('[pca] >sparse pca does not supported variance ratio and therefore, biplots will not be supported. <return>')
+            self.results['explained_var'] = [None, None]
+            self.results['model'].explained_variance_ratio_ = [0, 0]
+            self.results['pcp'] = 0
 
         if (self.results['explained_var'] is None) or len(self.results['explained_var'])<=1:
             raise Exception('[pca] >Error: No PCs are found with explained variance.')
@@ -805,6 +833,9 @@ class pca():
         tuple containing (fig, ax)
 
         """
+        if self.method=='sparse_pca':
+            print('[pca] >sparse pca does not support variance ratio and therefores scree plots are not supported. <return>')
+            return None, None
         if n_components is not None:
             if n_components>len(self.results['explained_var']):
                 if verbose>=2: print('[pca] >Warning: Input "n_components=%s" is > then number of PCs (=%s)' %(n_components, len(self.results['explained_var'])))
@@ -1100,15 +1131,18 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, param=None, verbose=3):
 
 
 # %% Explained variance
-def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=-1, percentExplVar=None, verbose=3):
-
+def _explainedvar(X, method='pca', n_components=None, onehot=False, random_state=None, n_jobs=-1, percentExplVar=None, verbose=3):
     # Create the model
-    if sp.issparse(X):
+    if method=='trunc_svd':
         if verbose>=3: print('[pca] >Fit using Truncated SVD.')
+        if n_components is None:
+            n_components = X.shape[1] - 1
         model = TruncatedSVD(n_components=n_components, random_state=random_state)
-    elif onehot:
+    elif method=='sparse_pca':
         if verbose>=3: print('[pca] >Fit using Sparse PCA.')
+        onehot=True
         model = SparsePCA(n_components=n_components, random_state=random_state, n_jobs=n_jobs)
+        # model = MiniBatchSparsePCA(n_components=n_components, random_state=random_state, n_jobs=n_jobs)
     else:
         if verbose>=3: print('[pca] >Fit using PCA.')
         model = PCA(n_components=n_components, random_state=random_state)
@@ -1119,10 +1153,15 @@ def _explainedvar(X, n_components=None, onehot=False, random_state=None, n_jobs=
     if verbose>=3: print('[pca] >Compute loadings and PCs.')
     loadings = model.components_  # Ook wel de coeeficienten genoemd: coefs!
     PC = model.transform(X)
+
     # Compute explained variance, top 95% variance
     if (not onehot) and (percentExplVar is None):
         if verbose>=3: print('[pca] >Compute explained variance.')
         percentExplVar = model.explained_variance_ratio_.cumsum()
+    # if method=='sparse_pca':
+    #     model.explained_variance_ = _get_explained_variance(X.T, PC.T)
+    #     model.explained_variance_ratio_ = model.explained_variance_ / model.explained_variance_.sum()
+    #     percentExplVar = model.explained_variance_ratio_.cumsum()
 
     # Return
     return(model, PC, loadings, percentExplVar)
@@ -1188,3 +1227,59 @@ def import_example(data='titanic', verbose=3):
     df = pd.read_csv(PATH_TO_DATA)
     # Return
     return df
+
+
+# %%
+def _get_explained_variance(X, components):
+    '''Get the explained variance.
+    Get the explained variance from the principal components of the
+    data. This follows the method outlined in [1] section 3.4 (Adjusted Total
+    Variance). For an alternate approach (not implemented here), see [2].
+    Parameters
+    ----------
+    X : ndarray, shape (n_samples, n_features)
+        The feature vector. n_samples and n_features are the number of
+        samples and features, respectively.
+    components : array, shape (n_components, n_features)
+        The (un-normalized) principle components. [1]
+    Notes
+    -----
+    The variance ratio may not be computed. The main reason is that we
+    do not know what the total variance is since we did not compute all
+    the components.
+    Orthogonality is enforced in this case. Other variants exist that don't
+    enforce this [2].
+    References
+    ----------
+    .. [1] Journal of Computational and Graphical Statistics, Volume 15, Number
+        2, Pages 265–286. DOI: 10.1198/106186006X113430
+    .. [2] Rodolphe Jenatton, Guillaume Obozinski, Francis Bach ; Proceedings
+        of the Thirteenth International Conference on Artificial Intelligence
+        and Statistics, PMLR 9:366-373, 2010.
+    '''
+    # the number of samples
+    n_samples = X.shape[0]
+    n_components = components.shape[0]
+    unit_vecs = components.copy()
+    components_norm = np.linalg.norm(components, axis=1)[:, np.newaxis]
+    components_norm[components_norm == 0] = 1
+    unit_vecs /= components_norm
+
+    # Algorithm, as we compute the adjustd variance for each component, we
+    # subtract the variance from components in the direction of previous axes
+    proj_corrected_vecs = np.zeros_like(components)
+    for i in range(n_components):
+        vec = components[i].copy()
+        # subtract the previous projections
+        for j in range(i):
+            vec -= np.dot(unit_vecs[j], vec)*unit_vecs[j]
+
+        proj_corrected_vecs[i] = vec
+
+    # get estimated variance of Y which is matrix product of feature vector
+    # and the adjusted components
+    Y = np.tensordot(X, proj_corrected_vecs.T, axes=(1, 0))
+    YYT = np.tensordot(Y.T, Y, axes=(1, 0))
+    explained_variance = np.diag(YYT)/(n_samples-1)
+
+    return explained_variance

@@ -7,6 +7,33 @@ import numpy as np
 # print(pca.__version__)
 
 # %%
+from sklearn.datasets import make_friedman1
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+model = pca(method='sparse_pca')
+model.fit_transform(X)
+model.plot()
+model.biplot()
+model.scatter()
+
+# %%
+from sklearn.decomposition import TruncatedSVD
+from scipy.sparse import csr_matrix
+import numpy as np
+np.random.seed(0)
+X_dense = np.random.rand(100, 100)
+X_dense[:, 2 * np.arange(50)] = 0
+X = csr_matrix(X_dense)
+
+# svd = TruncatedSVD(n_components=2)
+# svd.fit(S)
+model3 = pca(method='trunc_svd')
+model3.fit_transform(X)
+model3.biplot(n_feat=3)
+
+
+
+# %%
 from pca import pca
 from sklearn.datasets import load_iris
 
@@ -474,7 +501,7 @@ y = df['Survived'].values
 # del df['Survived']
 del df['PassengerId']
 del df['Name']
-out = df2onehot(df)
+out = df2onehot(df, verbose=4)
 X = out['onehot'].copy()
 X.index = y
 
@@ -511,8 +538,22 @@ model2.biplot(n_feat=10, alpha_transparency=0.5)
 model2.scatter3d(alpha_transparency=0.5)
 model2.scatter(alpha_transparency=0.5)
 
+
+model = pca(normalize=False, method='pca')
+model.fit_transform(X)
+model.biplot(n_feat=3)
+
 # Initialize
-model3 = pca(normalize=False, onehot=True)
+model3 = pca(normalize=False, method='sparse_pca')
+# Run model 2
+model3.fit_transform(X)
+model3.biplot(n_feat=3)
+
+from pca import pca
+from scipy.sparse import csr_matrix
+S = csr_matrix(X)
+
+model3 = pca(normalize=True, method='trunc_svd')
 # Run model 2
 model3.fit_transform(X)
 model3.biplot(n_feat=3)
