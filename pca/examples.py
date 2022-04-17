@@ -11,9 +11,11 @@ from sklearn.datasets import make_friedman1
 X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
 
 model = pca(method='sparse_pca')
+model = pca(method='trunc_svd')
 model.fit_transform(X)
 model.plot()
 model.biplot()
+model.biplot3d()
 model.scatter()
 
 # %%
@@ -486,7 +488,7 @@ X=scaler.transform(X)
 
 pca = PCA()
 pca.fit(X,y)
-x_new = pca.transform(X)   
+x_new = pca.transform(X)
 
 
 # %% Exmample with mixed dataset

@@ -30,7 +30,7 @@
             <a href="index.html" class="icon icon-home"> pca
           </a>
               <div class="version">
-                1.7.2
+                1.8.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -89,7 +89,6 @@
 <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Documentation.html">Sponsor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Documentation.html#advertising">Advertising</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Documentation.html#blog">Blog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Documentation.html#github">Github</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Documentation.html#colab-notebook">Colab Notebook</a></li>
@@ -179,7 +178,7 @@ across multiple dimensions will be more significant then others.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pca.pca.pca">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">pca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onehot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['ht2',</span> <span class="pre">'spe']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">pca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pca'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onehot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['ht2',</span> <span class="pre">'spe']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca" title="Permalink to this definition"></a></dt>
 <dd><p>pca module.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.biplot">
@@ -213,8 +212,11 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 <li><p><strong>title</strong> (<em>str</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Title of the figure.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 <p class="rubric">References</p>
@@ -248,8 +250,11 @@ None: Ignore all labels (this will significanly speed up the scatterplot)</p></l
 ‘#FFFFFF’</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -300,7 +305,7 @@ This can result into the detection of PCs that contain the same features. The fe
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.fit_transform">
-<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.fit_transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.fit_transform" title="Permalink to this definition"></a></dt>
 <dd><p>Fit PCA on data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -308,8 +313,7 @@ This can result into the detection of PCs that contain the same features. The fe
 <li><p><strong>X</strong> (<em>array-like : Can be of type Numpy</em><em> or </em><em>DataFrame</em>) – [NxM] array with columns as features and rows as samples.</p></li>
 <li><p><strong>row_labels</strong> (<em>[</em><em>list of integers</em><em> or </em><em>strings</em><em>] </em><em>optional</em>) – Used for colors.</p></li>
 <li><p><strong>col_labels</strong> (<em>[</em><em>list of string</em><em>] </em><em>optional</em>) – Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.</p></li>
-<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – The higher the number, the more information is printed.
-Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
+<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Set verbose during initialization.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -392,8 +396,11 @@ pc that contains at least 95% of the explained variance</p>
 <li><p><strong>pcexclude</strong> (<em>list of int</em><em>, </em><em>optional</em>) – The PCs to exclude. The default is [1].</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Normalized numpy array.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Normalized numpy array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -413,8 +420,11 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 <li><p><strong>title</strong> (<em>str</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Title of the figure.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -445,8 +455,11 @@ None: Ignore all labels (this will significanly speed up the scatterplot)</p></l
 <li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -475,21 +488,24 @@ None: Ignore all labels (this will significanly speed up the scatterplot)</p></l
 ‘#FFFFFF’</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Transform new input data with fitted model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>array-like : Can be of type Numpy</em><em> or </em><em>DataFrame</em>) – [NxM] array with columns as features and rows as samples.</p></li>
-<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
+<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Set verbose during initialization.</p></li>
 </ul>
 </dd>
 </dl>
@@ -525,8 +541,11 @@ None: Ignore all labels (this will significanly speed up the scatterplot)</p></l
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pca transformed data.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pca transformed data.</p>
 </dd>
 </dl>
 </dd></dl>
