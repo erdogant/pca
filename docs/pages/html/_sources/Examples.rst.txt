@@ -1,7 +1,7 @@
 Quickstart
 ############
 
-A quick example how perform feature reduction using ``pca`` on a given dataset.
+A quick example how perform feature reduction using ``pca``.
 
 .. code:: python
 

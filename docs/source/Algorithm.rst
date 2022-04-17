@@ -1,10 +1,9 @@
 Algorithm
 #################
 
-Principal Component Analysis, or PCA, is a dimensionality-reduction method that is often used to reduce the dimensionality of large data sets, by transforming a large set of variables into a smaller one that still contains most of the information in the large set.
+Principal Component Analysis, or PCA, is a dimensionality-reduction method that is often used to reduce the dimensionality of large data sets.
 
-
-Reducing the number of variables of a data set naturally comes at the expense of accuracy, but the trick in dimensionality reduction is to trade a little accuracy for *simplicity*. Because smaller data sets are easier to explore and visualize and make analyzing data much easier and faster for machine learning algorithms without extraneous variables to process.
+Reducing the number of variables of a data set naturally comes at the expense of accuracy, but the trick in dimensionality reduction is to trade a little accuracy for *simplicity*. Because smaller data sets are easier to explore and visualize, it becomes easier and faster to analyze your data.
 
 The idea of PCA is simple — **reduce the number of variables** of a data set, while **preserving** as much **information** as possible.
 
@@ -14,11 +13,11 @@ The ``pca`` library contains various functionalities to carefully examine the da
 Standardization
 #################
 
-Feature scaling through standardization (or Z-score normalization) is an important preprocessing step for many machine learning algorithms. Standardization involves rescaling the features such that they have the properties of a standard normal distribution with a mean of zero and a standard deviation of one. The standardization step depends on the type of variables, the distribution of the data, and your aim. In general, the standardizing step is to range the continuous initial variables so that each one of them contributes *equally* to the analysis.
+Feature scaling through standardization (or Z-score normalization) is an important preprocessing step for many machine learning algorithms. Standardization involves rescaling the features such that they have the properties of a standard normal distribution with a mean of zero and a standard deviation of one. The standardization step depends on the type of variables, the distribution of the data, and also your aim. In general, the standardizing step is to range the continuous initial variables so that each one of them contributes *equally* to the analysis.
 
-It is utterly important to carefully standardize your data because PCA works under the assumption that the data is *normal distributed*, and is very *sensitive* to the variances of the variables. Or in other words, large differences between the ranges of variables will dominate over those with small ranges. Let me explain this by example; a variable that ranges between 0 and 100 will dominate over a variable that ranges between 0 and 1. Transforming the data to comparable scales can prevent this problem.
+It is utterly important to carefully standardize your data because PCA works under the assumption that the data is *normal distributed*, and is very *sensitive* to the variance of the variables. Or in other words, large differences between the ranges of variables will dominate over those with small ranges. Let me explain this by example; a variable that ranges between 0 and 100 will dominate over a variable that ranges between 0 and 1. Transforming the data to comparable scales can prevent this issue.
 
-The most straightforward manner is by computing the *Z-scores* or *Standardized scores*.
+The most straightforward manner for standardization is by computing the *Z-scores* or *Standardized scores*.
 Once the standardization is done, all the variables will be transformed to the same scale.
 
 .. |figA7| image:: ../figs/z_score.svg
@@ -33,7 +32,7 @@ Once the standardization is done, all the variables will be transformed to the s
 
 
 
-Scaling your data can easily being done with the sklearn library. In the following example we will import the well known **wine dataset** and scale the variables. Think carefully whether you want to standardize column-wise or row-wise. In general, you want to standardize row-wise. This means that the Z-score is computer per row.
+Scaling your data can easily being done with the sklearn library. In the following example we will import the **wine dataset** and scale the variables. Think carefully whether you want to standardize column-wise or row-wise. In general, you want to standardize row-wise. This means that the Z-score is computer per row.
 
 .. code:: python
 
@@ -83,9 +82,9 @@ Explained Variance
 ##################################
 
 
-Before getting to the explanation of **explained variance**, we first need to understand what principal components are.
+Before jumping into the **explained variance**, we first need to understand what principal components are.
 
-**Principal components** are new **variables** that are constructed as **linear combinations** or **mixtures** of the initial variables. These combinations are done in such a way that the new variables (i.e., principal components) are uncorrelated and most of the information within the initial variables is squeezed or compressed into the first components. 
+**Principal components** are new (latent) **variables** that are constructed as **linear combinations** or **mixtures** of the initial variables. These combinations are in such a way that the new variables (i.e., principal components) are uncorrelated and most of the information within the initial variables is squeezed or compressed into the first components. 
 **Explained variance** refers to the variance explained by each of the principal components (eigenvectors). By organizing information Principal 
 
 Let's compute the explained variance for the wine dataset (this is a follow up from the previous standardization part).
@@ -105,7 +104,7 @@ Let's compute the explained variance for the wine dataset (this is a follow up f
 	model.plot()
 
 
-In this example we have 13 variables in the **wine** dataset, and thus 13 dimensions. PCA will try to put maximum possible information in the first component, then maximum remaining information in the second and so on, until having something like shown in the plot below. This plot will help us to retrieve the insights in the amount of *information* or *explained variance* in the data. We can clearly see that the 1st PC contains almost 36% of explained variance in total. With the top 10 PCs we cover 97.9% of all variance.
+In this example we have 13 variables in the **wine** dataset, and thus 13 dimensions. PCA will optimize to store maximum variance in the first PC, then in the second and so on, until having something like shown in the plot below. This plot provides insights in the amount of *information* or *explained variance* in the data. We can clearly see that the 1st PC contains almost 36% of explained variance in total. With the top 10 PCs we cover 97.9% of all variance.
 
 
 .. image:: ../figs/wine_explained_variance.png
@@ -118,7 +117,7 @@ There are as many principal components as there are variables in the data. The *
 Loadings
 #################
 
-An important thing to realize here is that, the principal components are less interpretable and don’t have any real meaning since they are constructed as **linear combinations** of the initial variables. But we can analyze the **loadings** which describe the importance of the independent variables.
+It is important to realize that principal components are less interpretable and don’t have any real meaning since they are constructed as **linear combinations** of the initial variables. But we can analyze the **loadings** which describe the importance of the independent variables.
 The first principal component (Y1) is given by a linear combination of the variables X1, X2, ..., Xp, and is calculated such that it accounts for the greatest possible variance in the data. 
 
 .. image:: ../figs/PCAequation1.png
@@ -130,7 +129,7 @@ Of course, one could make the variance of Y1 as large as possible by choosing la
 .. image:: ../figs/PCAequation3.png
    :width: 300
 
-For example, let’s assume that the scatter plot of our data set is as shown below, can we guess the first principal component ? Yes, it’s approximately the line that matches the purple marks because it goes through the origin and it’s the line in which the projection of the points (red dots) is the most spread out. Or mathematically speaking, it’s the line that maximizes the variance (the average of the squared distances from the projected points (red dots) to the origin).
+For example, let’s assume that the scatter plot of our data set is as shown below. Can we guess the first principal component? Yes, it's approximately the line that matches the purple marks because it goes through the origin and it’s the line in which the projection of the points (red dots) is the most spread out. Or mathematically speaking, it’s the line that maximizes the variance which is the average of the squared distances from the projected points (red dots) to the origin.
 
 .. image:: ../figs/PCA_rotation.gif
    :width: 900
@@ -143,7 +142,7 @@ The second principal component is calculated in the same way, with the condition
    :width: 300
 
 
-This continues until a total of p principal components have been calculated, that is, the number of principal components is the same as the original number of variables. At this point, the total variance on all of the principal components will equal the total variance among all of the variables. In this way, all of the information contained in the original data is preserved; no information is lost: PCA is just a rotation of the data. 
+This continues until a total of **p** principal components have been calculated, that is, the number of principal components is the same as the original number of variables. At this point, the total variance on all of the principal components will equal the total variance among all of the variables. In this way, all of the information contained in the original data is preserved; no information is lost: PCA is just a rotation of the data. 
 
 The elements of an eigenvector, that is, the values within a particular row of matrix, are the weights **aij**. These values are called the **loadings**, and they describe how much each variable contributes to a particular principal component. 
 
@@ -168,7 +167,7 @@ Let's go back to our **wine** example and plot the **loadings** of the PCs.
 	model.biplot()
 
 
-First of all, we see a nice seperation of the 3 wine classes (red, orange and gray samples). In the middle of the plot we see various arrows. Each of the arrows describes its story in the Principal Components. The angle of the arrow describes the variance of the variable that is seen in the particular PC. The length describes the strength of the loading. 
+First of all, we see a nice seperation of the 3 wine classes (red, orange and gray samples). In the middle of the plot we see various arrows. Each of the arrows describes its story in the Principal Components. The angle of the arrow describes the contribution of the variable that is seen in the particular PC. The length describes the strength of the loading. 
 
 .. image:: ../figs/wine_biplot.png
    :width: 600
@@ -178,8 +177,7 @@ First of all, we see a nice seperation of the 3 wine classes (red, orange and gr
 Examination of the loadings
 ##################################
 
-
-Let's examine the **loadings** (arrows) a bit more to become even more aware what is going on in the distribution of samples given the variables. The variable **flavanoids** has a positive loading and explaines mostly the variance in the first PC1 (it is almost a horizontal line). If we would color the samples in the scatter plot based on **flavanoids** values, we expect to see a distinction between samples that are respectively left and right side of the scatter plot. 
+Let's examine the **loadings** (arrows) a bit more to understand what is going on in the distribution of the samples given the variables. The variable **flavanoids** has a positive loading and explaines mostly the variance in the first PC1 (it is almost a horizontal line). If we would color the samples in the scatter plot based on **flavanoids** values, we expect to see a distinction between samples that are respectively left and right side of the scatter plot. 
 
 .. code:: python
 	
@@ -235,14 +233,11 @@ Let's take another variable for demonstration purposes. The variable **alcohol**
 
 
 
-
-
 Best Performing Features
 ##################################
 
-
 Extracting the best performing features is based on the loadings of the Principal Components, which are readily computed.
-The information is stored in the object itself and we can extract it as shown underneath. 
+The information is stored in the object itself. We can extract it as following: 
 
 .. code:: python
 
@@ -266,7 +261,7 @@ The information is stored in the object itself and we can extract it as shown un
 	#     PC6               proanthocyanins  0.533795  weak
 
 
-We see that the most of the variance for the 1st PC is derived from the variable **flavanoids**. For the 2nd component, the most variance is seen in **color_intensity**, etc.
+We see that most of the variance for the 1st PC is derived from the variable **flavanoids**. For the 2nd component, it is by **color_intensity**, etc.
 
 
 
@@ -286,3 +281,4 @@ We see that the most of the variance for the 1st PC is derived from the variable
      <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CEADP27U&placement=erdogantgithubio" id="_carbonads_js"></script>
    </center>
    <hr>
+
