@@ -4,7 +4,7 @@ rst2pdf
 spyder-kernels==2.2.1
 sphinx
 pytest
-git+git://github.com/SuperKogito/sphinxcontrib-pdfembed
+git+https://github.com/SuperKogito/sphinxcontrib-pdfembed.git
 irelease
 sphinxcontrib-fulltoc
 nbconvert # jupyter nbconvert --to html notebook.ipynb

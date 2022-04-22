@@ -307,7 +307,7 @@ After fitting variables into the new principal component space, we can map new u
 	data = datasets.load_wine()
 	X = data.data
 	y = data.target.astype(str)
-	labels = data.feature_names
+	col_labels = data.feature_names
 
 	# Initialize with normalization and take the number of components that covers at least 95% of the variance.
 	model = pca(n_components=0.95, normalize=True)
