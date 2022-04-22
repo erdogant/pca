@@ -329,9 +329,9 @@ After fitting variables into the new principal component space, we can map new u
 	PCnew = model.transform(X_unseen)
 
 	# Plot PC space
-	model.scatter(title='Map unseen samples in the existing space.')
+	fig, ax = model.scatter(title='Map unseen samples in the existing space.')
 	# Plot the new "unseen" samples on top of the existing space
-	plt.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x', s=200)
+	ax.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x', s=200)
 
 
 .. image:: ../figs/wine_mapping_samples.png
