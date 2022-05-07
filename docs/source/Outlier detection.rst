@@ -99,8 +99,8 @@ Detect new unseen outliers
 
 After fitting a model on the data you may want to use this model in a later stage to find possible outliers in new unseen data.
 Detection of new unseen outliers is straightforward and is readily performed in the transform function. An example is shown below.
-You should note that the unseen samples will be added to the existing space because the when outliers are seen frequently over and over again,
-they may not be an outlier at a certain point anymore. If you do not want to add the unseen samples to the existing space, you can for example
+You should note that the unseen samples will be added to the existing space because the when outliers are seen over and over again,
+they may not be an outlier at a certain point anymore. If you **do not** want to add the unseen samples to the existing space, you can for example
 load the model for every run.
 
 

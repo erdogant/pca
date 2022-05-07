@@ -31,7 +31,7 @@
             <a href="index.html" class="icon icon-home"> pca
           </a>
               <div class="version">
-                1.8.0
+                1.8.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -212,8 +212,8 @@ On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are comple
 <h1>Detect new unseen outliers<a class="headerlink" href="#detect-new-unseen-outliers" title="Permalink to this headline"></a></h1>
 <p>After fitting a model on the data you may want to use this model in a later stage to find possible outliers in new unseen data.
 Detection of new unseen outliers is straightforward and is readily performed in the transform function. An example is shown below.
-You should note that the unseen samples will be added to the existing space because the when outliers are seen frequently over and over again,
-they may not be an outlier at a certain point anymore. If you do not want to add the unseen samples to the existing space, you can for example
+You should note that the unseen samples will be added to the existing space because the when outliers are seen over and over again,
+they may not be an outlier at a certain point anymore. If you <strong>do not</strong> want to add the unseen samples to the existing space, you can for example
 load the model for every run.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import libraries</span>
 <span class="kn">from</span> <span class="nn">pca</span> <span class="kn">import</span> <span class="n">pca</span>
