@@ -11,6 +11,9 @@ Functionalities of PCA are:
 	* Scatter plot with the loadings
 	* Outlier detection using Hotelling T2 and/or SPE/Dmodx
 
+..	tip::
+	`Read more details and the usage in the Medium Blog: What are PCA loadings and Biplots? <https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559>`_
+
 
 Content
 =======

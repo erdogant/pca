@@ -15,7 +15,7 @@ Blog
 ######
 
 .. note::
-	`Medium Blog: Coming soon (Wishfull thinking) <https://towardsdatascience.com/creating-beautiful-stand-alone-interactive-d3-charts-with-python-804117cb95a7>`_
+	`Read more details and the usage in the Medium Blog: What are PCA loadings and Biplots? <https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559>`_
 
 Github
 ############

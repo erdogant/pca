@@ -155,7 +155,7 @@ Once the standardization is done, all the variables will be transformed to the s
 <span class="n">data</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_wine</span><span class="p">()</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">target</span>
-<span class="n">labels</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">feature_names</span>
+<span class="n">col_labels</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">feature_names</span>
 
 <span class="c1">#In general it is a good idea to scale the data</span>
 <span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">(</span><span class="n">with_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_std</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -227,7 +227,13 @@ The first principal component (Y1) is given by a linear combination of the varia
 </ul>
 </div></blockquote>
 <p>Let’s go back to our <strong>wine</strong> example and plot the <strong>loadings</strong> of the PCs.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load library</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load dataset</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_wine</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">target</span>
+<span class="n">col_labels</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">feature_names</span>
+
+<span class="c1"># Load library</span>
 <span class="kn">from</span> <span class="nn">pca</span> <span class="kn">import</span> <span class="n">pca</span>
 
 <span class="c1"># Initialize pca with default parameters</span>

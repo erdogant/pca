@@ -44,7 +44,7 @@ Scaling your data can easily being done with the sklearn library. In the followi
 	data = datasets.load_wine()
 	X = data.data
 	y = data.target
-	labels = data.feature_names
+	col_labels = data.feature_names
 
 	#In general it is a good idea to scale the data
 	scaler = StandardScaler(with_mean=True, with_std=True)
@@ -153,7 +153,13 @@ The elements of an eigenvector, that is, the values within a particular row of m
 Let's go back to our **wine** example and plot the **loadings** of the PCs.
 
 .. code:: python
-	
+
+	# Load dataset
+	data = datasets.load_wine()
+	X = data.data
+	y = data.target
+	col_labels = data.feature_names
+
 	# Load library
 	from pca import pca
 
