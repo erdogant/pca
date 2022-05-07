@@ -6,6 +6,33 @@ import numpy as np
 # import pca
 # print(pca.__version__)
 
+# %% Detect unseen outliers
+# Import libraries
+from pca import pca
+import pandas as pd
+import numpy as np
+
+# Create dataset with 100 samples
+X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
+
+# Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.
+model = pca(alpha=0.05, detect_outliers=['ht2', 'spe'])
+# model = pca(alpha=0.05, detect_outliers=None)
+
+# Fit transform
+model.fit_transform(X)
+
+# Create 5 outliers
+X_unseen = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
+
+# Transform new "unseen" data.
+PCnew = model.transform(X_unseen)
+
+# Plot image
+# model.scatter(title='Map unseen samples in the existing space.')
+model.scatter(SPE=True, hotellingt2=True)
+
+
 # %%
 from sklearn.datasets import make_friedman1
 X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)

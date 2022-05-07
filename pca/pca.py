@@ -138,6 +138,16 @@ class pca():
         # Store in dataframe
         columns = ['PC{}'.format(i + 1) for i in np.arange(0, PCs.shape[1])]
         PCs = pd.DataFrame(data=PCs, index=row_labels, columns=columns)
+
+        # Add mapped PCs to dataframe
+        if self.detect_outliers is not None:
+            PCs.index = np.repeat('mapped', PCs.shape[0])
+            PCtot = pd.concat([self.results['PC'], PCs], axis=0)
+            # Detection of outliers
+            self.results['outliers'], self.results['outliers_params'] = self.compute_outliers(PCtot, verbose=verbose)
+            # Store
+            self.results['PC'] = PCtot
+
         # Return
         return PCs
 
@@ -616,6 +626,8 @@ class pca():
             for yk in uiy:
                 Iloc_label = (yk==y)
                 Iloc_sampl = np.logical_and(Iloc_label, Inormal)
+                # Set color back to the mapped samples
+                if yk=='mapped': Iloc_sampl[y=='mapped']=True
 
                 if d3:
                     ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
