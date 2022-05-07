@@ -94,6 +94,43 @@ On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are comple
    +----------+----------+
 
 
+Detect new unseen outliers
+###########################################
+
+After fitting a model on the data you may want to use this model in a later stage to find possible outliers in new unseen data.
+Detection of new unseen outliers is straightforward and is readily performed in the transform function. An example is shown below.
+You should note that the unseen samples will be added to the existing space because the when outliers are seen frequently over and over again,
+they may not be an outlier at a certain point anymore. If you do not want to add the unseen samples to the existing space, you can for example
+load the model for every run.
+
+
+.. code:: python
+
+	# Import libraries
+	from pca import pca
+	import pandas as pd
+	import numpy as np
+
+	# Create dataset with 100 samples
+	X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
+
+	# Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.
+	model = pca(alpha=0.05, detect_outliers=['ht2', 'spe'])
+
+	# Fit transform
+	model.fit_transform(X)
+
+	# Create 5 outliers
+	X_unseen = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
+
+	# map the new "unseen" data in the existing space
+	PCnew = model.transform(X_unseen)
+
+	# Plot image
+	# model.scatter(title='Map unseen samples in the existing space.')
+	model.scatter(SPE=True, hotellingt2=True)
+
+
 
 Selection of the Outliers
 ###########################################
