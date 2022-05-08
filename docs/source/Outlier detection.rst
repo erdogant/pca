@@ -146,7 +146,7 @@ Detection of *outliers* is performed in the **transform** function and does not 
    +----------+
 
 
-Note that the transform function will add the *new* samples to the readily fitted space and update the outlier parameters (default is True). If for example outliers are seen over and over again, they may not be an outlier at a certain point anymore. If you **do not** want to add samples to the existing space after the transform function, you can for example save and load the existing model. Let me demonstrate this by example:
+The ``transform`` function will add the *new* samples to the readily fitted space and update the outlier parameters (default is True). If for example outliers are seen over and over again, they may not be an outlier anymore at a certain point. If you **do not** want to keep all outliers as being an outlier, set the update outlier parameter to False ``update_outlier_params=False``. In case you do not want to add any samples. Let me demonstrate this by example:
 
 
 .. code:: python
@@ -177,6 +177,8 @@ Note that the transform function will add the *new* samples to the readily fitte
 	    # Biplot
 	    # Model.biplot(SPE=True, hotellingt2=True)
 
+
+In each iteration, the elips is growing towards the outliers. If you look carefully at the number of outliers, you may notice that the number of outliers is not increasing but even decreasing at a certain point. 
 
 .. |figO4| image:: ../figs/outliers/pca_outliers_iteration.gif
 
