@@ -108,11 +108,8 @@ Selecting the outliers can be usefull to remove them from the dataset or for dee
 
 Detect new unseen outliers
 ###########################################
-After fitting a model on the data, you may want to use the model in a later stage to find possible outliers in new unseen data.
-Detection of new outliers is performed in the **transform** function and does not require any additional action. An example is shown in the code block below.
-
-Note that the transform function will add the *new* samples to the readily fitted space. If for example outliers are seen over and over again, they may not be an outlier at a certain point anymore. If you **do not** want to add samples to the existing space after the transform function, you can for example save and load the existing model.
-
+After fitting a model on the data, you may want to use the model in a later stage to detect outliers on *unseen* data.
+Detection of *outliers* is performed in the **transform** function and does not require any additional action. An example is shown in the code block below.
 
 .. code:: python
 
@@ -133,12 +130,62 @@ Note that the transform function will add the *new* samples to the readily fitte
 	# Create 5 outliers
 	X_unseen = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
 
-	# map the new "unseen" data in the existing space
+	# Transform new "unseen" data into existing PC space.
 	PCnew = model.transform(X_unseen)
 
 	# Plot image
-	# model.scatter(title='Map unseen samples in the existing space.')
-	model.scatter(SPE=True, hotellingt2=True)
+	model.biplot(SPE=True, hotellingt2=True)
+
+.. |figO3| image:: ../figs/outliers/biplot_outliers.png
+
+.. table:: Detected outliers
+   :align: center
+
+   +----------+
+   | |figO3|  |
+   +----------+
+
+
+Note that the transform function will add the *new* samples to the readily fitted space and update the outlier parameters (default is True). If for example outliers are seen over and over again, they may not be an outlier at a certain point anymore. If you **do not** want to add samples to the existing space after the transform function, you can for example save and load the existing model. Let me demonstrate this by example:
+
+
+.. code:: python
+
+	from pca import pca
+	import pandas as pd
+	import numpy as np
+
+	# Create dataset with 100 samples
+	X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
+
+	# Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.
+	model = pca(alpha=0.05, detect_outliers=['ht2', 'spe'])
+	# model = pca(alpha=0.05, detect_outliers=None)
+
+	# Fit transform
+	model.fit_transform(X)
+
+	for i in range(0, 10):
+	    # Create 5 outliers
+	    X_unseen = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
+
+	    # Transform new "unseen" data into existing PC space.
+	    PCnew = model.transform(X_unseen, row_labels=np.repeat('mapped_' + str(i), X_unseen.shape[0]), update_outlier_params=True)
+
+	    # Scatterplot
+	    model.scatter(SPE=True, hotellingt2=True)
+	    # Biplot
+	    # Model.biplot(SPE=True, hotellingt2=True)
+
+
+.. |figO4| image:: ../figs/outliers/pca_outliers_iteration.gif
+
+.. table:: Detected outliers
+   :align: center
+
+   +----------+
+   | |figO4|  |
+   +----------+
 
 
 Detection of outliers without PCA
