@@ -6,6 +6,30 @@ import numpy as np
 # import pca
 # print(pca.__version__)
 
+# %% Detect outliers in new unseen data.
+# Import libraries
+from pca import pca
+import pandas as pd
+import numpy as np
+
+# Create dataset with 100 samples
+X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
+
+# Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.
+model = pca(alpha=0.05, detect_outliers=['ht2', 'spe'])
+
+# Fit transform
+model.fit_transform(X)
+
+# Create 5 outliers
+X_unseen = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
+
+# map the new "unseen" data in the existing space
+PCnew = model.transform(X_unseen)
+
+# Plot image
+model.biplot(SPE=True, hotellingt2=True)
+
 # %% Detect unseen outliers
 # Import libraries
 from pca import pca
