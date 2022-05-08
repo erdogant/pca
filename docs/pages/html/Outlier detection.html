@@ -64,8 +64,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Hotelling T2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#spe-dmodx">SPE/Dmodx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#detect-new-unseen-outliers">Detect new unseen outliers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#selection-of-the-outliers">Selection of the Outliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#detect-new-unseen-outliers">Detect new unseen outliers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#detection-of-outliers-without-pca">Detection of outliers without PCA</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plots</span></p>
@@ -208,13 +208,22 @@ On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are comple
 </tbody>
 </table>
 </section>
+<section id="selection-of-the-outliers">
+<h1>Selection of the Outliers<a class="headerlink" href="#selection-of-the-outliers" title="Permalink to this headline"></a></h1>
+<p>Selecting the outliers can be usefull to remove them from the dataset or for deeper investigation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select the outliers</span>
+<span class="n">Xoutliers</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">][</span><span class="s1">&#39;y_bool&#39;</span><span class="p">],:]</span>
+
+<span class="c1"># Select the other set</span>
+<span class="n">Xnormal</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">][</span><span class="s1">&#39;y_bool&#39;</span><span class="p">],:]</span>
+</pre></div>
+</div>
+</section>
 <section id="detect-new-unseen-outliers">
 <h1>Detect new unseen outliers<a class="headerlink" href="#detect-new-unseen-outliers" title="Permalink to this headline"></a></h1>
-<p>After fitting a model on the data you may want to use this model in a later stage to find possible outliers in new unseen data.
-Detection of new unseen outliers is straightforward and is readily performed in the transform function. An example is shown below.
-You should note that the unseen samples will be added to the existing space because the when outliers are seen over and over again,
-they may not be an outlier at a certain point anymore. If you <strong>do not</strong> want to add the unseen samples to the existing space, you can for example
-load the model for every run.</p>
+<p>After fitting a model on the data, you may want to use the model in a later stage to find possible outliers in new unseen data.
+Detection of new outliers is performed in the <strong>transform</strong> function and does not require any additional action. An example is shown in the code block below.</p>
+<p>Note that the transform function will add the <em>new</em> samples to the readily fitted space. If for example outliers are seen over and over again, they may not be an outlier at a certain point anymore. If you <strong>do not</strong> want to add samples to the existing space after the transform function, you can for example save and load the existing model.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import libraries</span>
 <span class="kn">from</span> <span class="nn">pca</span> <span class="kn">import</span> <span class="n">pca</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -238,17 +247,6 @@ load the model for every run.</p>
 <span class="c1"># Plot image</span>
 <span class="c1"># model.scatter(title=&#39;Map unseen samples in the existing space.&#39;)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hotellingt2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="selection-of-the-outliers">
-<h1>Selection of the Outliers<a class="headerlink" href="#selection-of-the-outliers" title="Permalink to this headline"></a></h1>
-<p>Selecting the outliers can be usefull to remove them from the dataset or for deeper investigation.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select the outliers</span>
-<span class="n">Xoutliers</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">][</span><span class="s1">&#39;y_bool&#39;</span><span class="p">],:]</span>
-
-<span class="c1"># Select the other set</span>
-<span class="n">Xnormal</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">][</span><span class="s1">&#39;y_bool&#39;</span><span class="p">],:]</span>
 </pre></div>
 </div>
 </section>

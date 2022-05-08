@@ -22,15 +22,18 @@ model = pca(alpha=0.05, detect_outliers=['ht2', 'spe'])
 # Fit transform
 model.fit_transform(X)
 
-# Create 5 outliers
-X_unseen = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
-
-# Transform new "unseen" data.
-PCnew = model.transform(X_unseen)
-
-# Plot image
-# model.scatter(title='Map unseen samples in the existing space.')
 model.scatter(SPE=True, hotellingt2=True)
+
+for i in range(0, 10):
+    # Create 5 outliers
+    X_unseen = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
+
+    # Transform new "unseen" data.
+    PCnew = model.transform(X_unseen, row_labels=np.repeat('mapped_' + str(i), X_unseen.shape[0]))
+
+    # Plot image
+    # model.scatter(title='Map unseen samples in the existing space.')
+    model.scatter(SPE=True, hotellingt2=True)
 
 
 # %%

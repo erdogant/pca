@@ -1,6 +1,5 @@
 Hotelling T2
 ###########################################
-
 To detect outliers across the multidimensional space of PCA, the **hotellings T2** test is implemented. 
 It works by computing the **chi-square tests** across the top n_components: default is PC1 to PC5. The reason for not using more PC's is that it is expected that the highest variance (and thus the outliers) will be seen in the first few components. Going deeper into PC space may therefore not be required. Nevertheless, the depth is optional. 
 
@@ -68,7 +67,6 @@ The information regarding the outliers are stored in the dict 'outliers' (see be
 
 SPE/Dmodx
 ###########################################
-
 Outlier can be detected using SPE/DmodX (distance to model) based on the mean and covariance of the first 2 dimensions of X.
 On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are complementary to each other.
 
@@ -94,14 +92,26 @@ On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are comple
    +----------+----------+
 
 
+
+Selection of the Outliers
+###########################################
+Selecting the outliers can be usefull to remove them from the dataset or for deeper investigation.
+
+.. code:: python
+
+	# Select the outliers
+	Xoutliers = X[results['outliers']['y_bool'],:]
+
+	# Select the other set
+	Xnormal = X[~results['outliers']['y_bool'],:]
+
+
 Detect new unseen outliers
 ###########################################
+After fitting a model on the data, you may want to use the model in a later stage to find possible outliers in new unseen data.
+Detection of new outliers is performed in the **transform** function and does not require any additional action. An example is shown in the code block below.
 
-After fitting a model on the data you may want to use this model in a later stage to find possible outliers in new unseen data.
-Detection of new unseen outliers is straightforward and is readily performed in the transform function. An example is shown below.
-You should note that the unseen samples will be added to the existing space because the when outliers are seen over and over again,
-they may not be an outlier at a certain point anymore. If you **do not** want to add the unseen samples to the existing space, you can for example
-load the model for every run.
+Note that the transform function will add the *new* samples to the readily fitted space. If for example outliers are seen over and over again, they may not be an outlier at a certain point anymore. If you **do not** want to add samples to the existing space after the transform function, you can for example save and load the existing model.
 
 
 .. code:: python
@@ -131,24 +141,8 @@ load the model for every run.
 	model.scatter(SPE=True, hotellingt2=True)
 
 
-
-Selection of the Outliers
-###########################################
-
-Selecting the outliers can be usefull to remove them from the dataset or for deeper investigation.
-
-.. code:: python
-
-	# Select the outliers
-	Xoutliers = X[results['outliers']['y_bool'],:]
-
-	# Select the other set
-	Xnormal = X[~results['outliers']['y_bool'],:]
-
-
 Detection of outliers without PCA
 ###########################################
-
 If desired, the outliers can also be detected directly using the hotelling T2 and/or SPE/DmodX functionality.
 For demonstration purposes I use the PCs from the results but any other dataset would also work.
 

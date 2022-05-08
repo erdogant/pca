@@ -130,7 +130,8 @@ class pca():
         # Check type to make sure we can perform matrix operations
         if isinstance(X, list):
             X = np.array(X)
-
+        if row_labels is None:
+            row_labels = np.repeat('mapped', X.shape[0])
         # Pre-processing using scaler.
         X_scaled, row_labels, _, _ = self._preprocessing(X, row_labels, col_labels, scaler=self.results['scaler'], verbose=verbose)
         # Transform the data using fitted model.
@@ -141,10 +142,9 @@ class pca():
 
         # Add mapped PCs to dataframe
         if self.detect_outliers is not None:
-            PCs.index = np.repeat('mapped', PCs.shape[0])
             PCtot = pd.concat([self.results['PC'], PCs], axis=0)
             # Detection of outliers
-            self.results['outliers'], self.results['outliers_params'] = self.compute_outliers(PCtot, verbose=verbose)
+            self.results['outliers'], _ = self.compute_outliers(PCtot, verbose=verbose)
             # Store
             self.results['PC'] = PCtot
 
@@ -574,6 +574,8 @@ class pca():
             ax = fig.add_subplot()
         # fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
         fig.set_visible(visible)
+
+        # Mark the outliers for plotting purposes.
         Ioutlier1 = np.repeat(False, self.results['PC'].shape[0])
         Ioutlier2 = np.repeat(False, self.results['PC'].shape[0])
 
@@ -583,25 +585,6 @@ class pca():
         # Get coordinates
         xs, ys, zs, ax = _get_coordinates(self.results['PC'], PC, fig, ax, d3)
 
-        # Plot outliers for hotelling T2 test.
-        if hotellingt2 and ('y_bool' in self.results['outliers'].columns):
-            Ioutlier1 = self.results['outliers']['y_bool'].values
-            if d3:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='x', color=[0, 0, 0], s=26, label='outliers (hotelling t2)', alpha=alpha_transparency)
-            else:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=50, label='outliers (hotelling t2)', alpha=alpha_transparency)
-
-        # Plot outliers for hotelling T2 test.
-        if SPE and ('y_bool_spe' in self.results['outliers'].columns):
-            Ioutlier2 = self.results['outliers']['y_bool_spe'].values
-            if d3:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=26, label='outliers (SPE/DmodX)', alpha=alpha_transparency)
-            else:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=50, label='outliers (SPE/DmodX)', alpha=alpha_transparency)
-                # Plot the ellipse
-                g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
-                if g_ellipse is not None: ax.add_artist(g_ellipse)
-
         # Get the colors
         if cmap is None:
             getcolors = np.repeat([1., 1., 1.], len(y), axis=0).reshape(-1, 3)
@@ -609,6 +592,15 @@ class pca():
             # Figure properties
             xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
             getcolors, fontcolor = scatterd.set_colors(xyz, y, None, [[0, 0, 0]], cmap, gradient=gradient)
+
+        if hotellingt2 and ('y_bool' in self.results['outliers'].columns):
+            Ioutlier1 = self.results['outliers']['y_bool'].values
+        if SPE and ('y_bool_spe' in self.results['outliers'].columns):
+            Ioutlier2 = self.results['outliers']['y_bool_spe'].values
+            if not d3:
+                # Plot the ellipse
+                g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
+                if g_ellipse is not None: ax.add_artist(g_ellipse)
 
         # Make scatter plot of all not-outliers
         Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
@@ -624,17 +616,36 @@ class pca():
                 ax.scatter(xs, ys, s=50, alpha=alpha_transparency, color=getcolors, label=None)
         else:
             for yk in uiy:
-                Iloc_label = (yk==y)
-                Iloc_sampl = np.logical_and(Iloc_label, Inormal)
+                Iloc_sampl = (yk==y)
+                # Iloc_sampl = np.logical_and(Iloc_sampl, Inormal)
                 # Set color back to the mapped samples
-                if yk=='mapped': Iloc_sampl[y=='mapped']=True
+                # if yk=='mapped': Iloc_sampl[y=='mapped']=True
 
                 if d3:
-                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
+                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=60, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
                     if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict={'weight': 'bold', 'size': 16})
                 else:
-                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=50, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
+                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=60, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
                     if label: ax.annotate(yk, (np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl])))
+
+        # Plot outliers for hotelling T2 test.
+        if SPE and ('y_bool_spe' in self.results['outliers'].columns):
+            label_spe = str(sum(Ioutlier2)) + ' outliers (SPE/DmodX)'
+            if d3:
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[0.5, 0.5, 0.5], s=50, label=label_spe, alpha=alpha_transparency)
+            else:
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=50, label=label_spe, alpha=alpha_transparency)
+                # Plot the ellipse
+                # g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
+                # if g_ellipse is not None: ax.add_artist(g_ellipse)
+
+        # Plot outliers for hotelling T2 test.
+        if hotellingt2 and ('y_bool' in self.results['outliers'].columns):
+            label_t2 = str(sum(Ioutlier1)) + ' outliers (hotelling t2)'
+            if d3:
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[0, 0, 0], s=50, label=label_t2, alpha=alpha_transparency)
+            else:
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=50, label=label_t2, alpha=alpha_transparency)
 
         # Set y
         ax.set_xlabel('PC' + str(PC[0] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
