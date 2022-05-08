@@ -1,10 +1,8 @@
 """pca is a python package to perform Principal Component Analysis and to make insightful plots."""
 
 # %% Libraries
-import colourmap as colourmap
 import scatterd as scatterd
-from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD #, MiniBatchSparsePCA
-# from sklearn import preprocessing
+from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD  # MiniBatchSparsePCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import euclidean_distances
 from scipy import stats
@@ -80,13 +78,20 @@ class pca():
         self.verbose = verbose
 
     # Make PCA fit_transform
-    def transform(self, X, row_labels=None, col_labels=None, verbose=None):
+    def transform(self, X, row_labels=None, col_labels=None, update_outlier_params=True, verbose=None):
         """Transform new input data with fitted model.
 
         Parameters
         ----------
         X : array-like : Can be of type Numpy or DataFrame
             [NxM] array with columns as features and rows as samples.
+        update_outlier_params : bool (default: True)
+            True : Update the parameters for outlier detection so that the model learns from the new unseen input. This will cause that some initial outliers may not be an outlier anymore after a certain point.
+            False: Do not update outlier parameters and outliers that were initially detected, will always stay an outlier.
+        row_labels : [list of integers or strings] optional
+            Used for colors.
+        col_labels : [list of string] optional
+            Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.
         Verbose : int (default : 3)
             Set verbose during initialization.
 
@@ -142,6 +147,10 @@ class pca():
 
         # Add mapped PCs to dataframe
         if self.detect_outliers is not None:
+            # By setting the outliers params to None, it will update the parameters on the new input data.
+            if update_outlier_params:
+                self.results['outliers_params']['paramT2']=None
+                self.results['outliers_params']['paramSPE']=None
             PCtot = pd.concat([self.results['PC'], PCs], axis=0)
             # Detection of outliers
             self.results['outliers'], _ = self.compute_outliers(PCtot, verbose=verbose)
