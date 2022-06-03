@@ -262,7 +262,7 @@ class pca():
         # Store
         self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler, outliers_params)
         # Return
-        return(self.results)
+        return self.results
 
     def _clean(self, verbose=3):
         # Clean readily fitted models to ensure correct results.
