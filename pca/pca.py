@@ -533,7 +533,7 @@ class pca():
         return fig, ax
 
     # Scatter plot
-    def scatter(self, y=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(20, 15), alpha_transparency=None, title=None, gradient=None, verbose=3):
+    def scatter(self, y=None, s=50, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(20, 15), alpha_transparency=None, title=None, gradient=None, verbose=3):
         """Scatter 2d plot.
 
         Parameters
@@ -620,9 +620,9 @@ class pca():
         # Add the labels
         if (label is None):
             if d3:
-                ax.scatter(xs, ys, zs, s=50, alpha=alpha_transparency, color=getcolors, label=None)
+                ax.scatter(xs, ys, zs, s=s, alpha=alpha_transparency, color=getcolors, label=None)
             else:
-                ax.scatter(xs, ys, s=50, alpha=alpha_transparency, color=getcolors, label=None)
+                ax.scatter(xs, ys, s=s, alpha=alpha_transparency, color=getcolors, label=None)
         else:
             for yk in uiy:
                 Iloc_sampl = (yk==y)
@@ -631,10 +631,10 @@ class pca():
                 # if yk=='mapped': Iloc_sampl[y=='mapped']=True
 
                 if d3:
-                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=60, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
+                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=s + 10, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
                     if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict={'weight': 'bold', 'size': 16})
                 else:
-                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=60, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
+                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=s + 10, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
                     if label: ax.annotate(yk, (np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl])))
 
         # Plot outliers for hotelling T2 test.
