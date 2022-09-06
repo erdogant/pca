@@ -8,7 +8,7 @@ Let's load the **wine** dataset to demonstrate the plots.
 	# Load library
 	from sklearn.datasets import load_wine
 	# Load dataset
-	data = datasets.load_wine()
+	data = load_wine()
 	X = data.data
 	y = data.target
 	labels = data.feature_names
