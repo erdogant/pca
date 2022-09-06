@@ -745,7 +745,7 @@ class pca():
         topfeat.reset_index(inplace=True)
 
         # Collect coefficients
-        coeff = self.results['loadings'].iloc[0:n_feat, :]
+        coeff = self.results['loadings'].iloc[PC, :]
 
         # Use the PCs only for scaling purposes
         mean_x = np.mean(self.results['PC'].iloc[:, PC[0]].values)
@@ -780,17 +780,16 @@ class pca():
             label = getfeat + ' (' + ('%g' %topfeat['loading'].iloc[i]) + ')'
             getcoef = coeff[getfeat].values
             # Set first PC vs second PC direction. Note that these are not neccarily the best loading.
-            xarrow = getcoef[PC[0]] * scale  # First PC in the x-axis direction
-            yarrow = getcoef[PC[1]] * scale  # Second PC in the y-axis direction
+            xarrow = getcoef[0] * scale  # First PC in the x-axis direction
+            yarrow = getcoef[1] * scale  # Second PC in the y-axis direction
             txtcolor = 'y' if topfeat['type'].iloc[i] == 'weak' else 'g'
 
             if d3:
-                # zarrow = getcoef[np.minimum(2,len(getcoef))] * scale
-                zarrow = getcoef[PC[2]] * scale
+                zarrow = getcoef[2] * scale
                 ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=color_arrow, alpha=0.8, lw=2)
                 ax.text(xarrow * 1.11, yarrow * 1.11, zarrow * 1.11, label, color=txtcolor, ha='center', va='center')
             else:
-                ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, width=0.005, head_width=0.025 * scale, alpha=0.8)
+                ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, alpha=0.8, width=0.002, head_width=0.1, head_length=0.1 * 1.1, length_includes_head=True)
                 ax.text(xarrow * 1.11, yarrow * 1.11, label, color=txtcolor, ha='center', va='center')
 
         if visible: plt.show()
