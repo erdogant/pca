@@ -8,12 +8,29 @@ make.bat clean
 echo "Building new html.."
 make.bat html
 
-read -p "Press [Enter] key to: git add -> commit -> push."
-
 cd ..
 
-git add .
-git commit -m "update sphinx pages"
-git push
+echo "Press [q]uit to Quit and [Enter] key to: git add -> commit -> push."
+read VAR
 
-read -p "All done! Press [Enter] to close this window."
+
+if [[ $VAR = "" ]]; then 
+    read -p "Ready?"
+    git pull
+    git add .
+    git commit -m "update sphinx pages"
+    git push
+
+    read -p "All done! Press [Enter] to close this window."
+    exit
+fi
+
+
+if [ $VAR == "q" ]; then
+  echo Quit!
+fi
+
+read -p "Press [Enter] to close this window."
+
+
+

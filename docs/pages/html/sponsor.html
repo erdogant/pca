@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coding quality &mdash; pca pca documentation</title>
+  <title>&lt;no title&gt; &mdash; pca pca documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -19,9 +19,7 @@
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API References" href="pca.pca.html" />
-    <link rel="prev" title="Additional Information" href="Additional_Information.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -90,20 +88,14 @@
 <li class="toctree-l1"><a class="reference internal" href="notebook.html">Notebook</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="Documentation.html">Sponsor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Documentation.html#blog">Blog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Documentation.html#github">Github</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Documentation.html#colab-notebook">Colab Notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Documentation.html#citing">Citing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Additional_Information.html">Additional Information</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Coding quality</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#library">Library</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#style">Style</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#complexity">Complexity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#unit-tests">Unit tests</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="Coding%20quality.html">Coding quality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pca.pca.html">API References</a></li>
 </ul>
 
@@ -123,9 +115,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Coding quality</li>
+      <li>&lt;no title&gt;</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/Coding quality.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/sponsor.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -133,83 +125,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="coding-quality">
-<h1>Coding quality<a class="headerlink" href="#coding-quality" title="Permalink to this heading"></a></h1>
-<p>I value software quality. Higher quality software has fewer defects, better security, and better performance, which leads to happier users who can work more effectively.
-Code reviews are an effective method for improving software quality. McConnell (2004) suggests that unit testing finds approximately 25% of defects, function testing 35%, integration testing 45%, and code review 55-60%.
-While this means that none of these methods are good enough on their own and that they should be combined, clearly code review is an essential tool here.</p>
-<p>This library is therefore developed with several techniques, such as coding styling, low complexity, docstrings, reviews, and unit tests.
-Such conventions are helpfull to improve the quality, make the code cleaner and more understandable but alos to trace future bugs, and spot syntax errors.</p>
-<section id="library">
-<h2>Library<a class="headerlink" href="#library" title="Permalink to this heading"></a></h2>
-<p>The file structure of the generated package looks like:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>path/to/pca/
-├── .editorconfig
-├── .gitignore
-├── .pre-commit-config.yml
-├── .prospector.yml
-├── CHANGELOG.rst
-├── docs
-│   ├── conf.py
-│   ├── index.rst
-│   └── ...
-├── LICENSE
-├── MANIFEST.in
-├── NOTICE
-├── pca
-│   ├── __init__.py
-│   ├── __version__.py
-│   └── pca.py
-├── README.md
-├── requirements.txt
-├── setup.cfg
-├── setup.py
-└── tests
-    ├── __init__.py
-    └── test_pca.py
-</pre></div>
+  <div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you ❤️ this project, you can help in various ways.</p>
+<ul class="simple">
+<li><p>Become a <a class="reference external" href="https://github.com/sponsors/erdogant?o=esb/">Sponsor</a>!</p></li>
+<li><p><a class="reference external" href="https://www.buymeacoffee.com/erdogant">Buy</a> me a coffee! I ❤️ coffee :)</p></li>
+<li><p><a class="reference external" href="https://erdogant.github.io/donate/?currency=USD&amp;amount=1000">Donate</a> in Bitcoin.</p></li>
+<li><p>Follow me on medium! Go to my <a class="reference external" href="https://erdogant.medium.com/">medium profile</a> and press <em>follow</em>.</p></li>
+<li><p><strong>Star</strong> this repo at the github page.</p></li>
+<li><p>Other contributions can be in the form of feature requests, idea discussions, reporting bugs, opening pull requests.</p></li>
+</ul>
+<p>Cheers Mate.</p>
 </div>
-</section>
-<section id="style">
-<h2>Style<a class="headerlink" href="#style" title="Permalink to this heading"></a></h2>
-<p>This library is compliant with the PEP-8 standards.
-PEP stands for Python Enhancement Proposal and sets a baseline for the readability of Python code.
-Each public function contains a docstring that is based on numpy standards.</p>
-</section>
-<section id="complexity">
-<h2>Complexity<a class="headerlink" href="#complexity" title="Permalink to this heading"></a></h2>
-<p>This library has been developed by using measures that help decreasing technical debt.
-Developing software with low(er) technical dept may take extra development time, but has many advantages:</p>
-<ul class="simple">
-<li><p>Higher quality code</p></li>
-<li><p>easier maintanable</p></li>
-<li><p>Less prone to bugs and errors</p></li>
-<li><p>Higher security</p></li>
-</ul>
-</section>
-<section id="unit-tests">
-<h2>Unit tests<a class="headerlink" href="#unit-tests" title="Permalink to this heading"></a></h2>
-<p>The use of unit tests is essential to garantee a consistent output of developed functions.
-The following tests are secured using <code class="xref py py-func docutils literal notranslate"><span class="pre">tests.test_pca()</span></code>:</p>
-<ul class="simple">
-<li><p>The input are checked.</p></li>
-<li><p>The output values are checked and whether they are encoded properly.</p></li>
-<li><p>The check of whether parameters are handled correctly.</p></li>
-</ul>
-<hr>
-<center>
-        <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CEADP27U&placement=erdogantgithubio" id="_carbonads_js"></script>
-</center>
-<hr></section>
-</section>
-
+<iframe src="https://github.com/sponsors/erdogant/button" title="Sponsor erdogant" height="35" width="116" style="border: 0;"></iframe>
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="Additional_Information.html" class="btn btn-neutral float-left" title="Additional Information" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pca.pca.html" class="btn btn-neutral float-right" title="API References" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

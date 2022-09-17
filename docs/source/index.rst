@@ -15,6 +15,17 @@ Functionalities of PCA are:
 	`Read more details and the usage in the Medium Blog: What are PCA loadings and Biplots? <https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559>`_
 
 
+Star is important
+======================
+If you ❤️ this project, **star** this repo at the `github page <https://github.com/erdogant/pca/>`_!
+
+
+Github
+======
+Please report bugs, issues and feature extensions at `github <https://github.com/erdogant/pca/>`_.
+
+
+
 Content
 =======
 
@@ -73,40 +84,6 @@ Content
   pca.pca
 
 * :ref:`genindex`
-
-
-Quick install
--------------
-
-.. code-block:: console
-
-   pip install pca
-
-
-
-
-Github
-------------------------------
-
-Please report bugs, issues and feature extensions there.
-Github, `erdogant/pca <https://github.com/erdogant/pca/>`_.
-
-
-Citing *pca*
------------------------
-
-The bibtex can be found in the right side menu at the `github page <https://github.com/erdogant/pca/>`_.
-
-
-Sponsor this project
-------------------------------
-
-If you like this project, **Star** this repo at the github page and become a **sponsor**!
-Read more why this is important on my sponsor page. The **sponsor button** will direct you to the sponsor github page.
-
-.. raw:: html
-
-	<iframe src="https://github.com/sponsors/erdogant/button" title="Sponsor erdogant" height="35" width="116" style="border: 0;"></iframe>
 
 
 

@@ -1,15 +1,7 @@
 Sponsor
 ############
 
-
-.. tip::
-	If you like this project, **Star** this repo at the github page and become a **sponsor**!
-	Read more why this is important on my sponsor page. The **sponsor button** will direct you to the sponsor github page.
-
-.. raw:: html
-
-	<iframe src="https://github.com/sponsors/erdogant/button" title="Sponsor erdogant" height="35" width="116" style="border: 0;"></iframe>
-
+.. include:: sponsor.rst
 
 Blog
 ######
@@ -24,7 +16,6 @@ Github
 	`Source code of pca can be found at Github <https://github.com/erdogant/pca/>`_
 
 
-
 Colab Notebook
 ################
 
@@ -32,6 +23,13 @@ Colab Notebook
 	Experiment with ``pca`` library using the `Colab notebook`_.
 
 .. _Colab notebook: https://colab.research.google.com/github/erdogant/pca/blob/master/notebooks/pca_examples.ipynb
+
+
+Citing
+#########
+
+.. note::
+	Bibtex can be found at the right side at the `github page <https://github.com/erdogant/pca/>`_.
 
 
 .. raw:: html
