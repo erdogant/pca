@@ -15,9 +15,10 @@ Functionalities of PCA are:
 	`Read more details and the usage in the Medium Blog: What are PCA loadings and Biplots? <https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559>`_
 
 
-Star is important
-======================
-If you ❤️ this project, **star** this repo at the `github page <https://github.com/erdogant/pca/>`_!
+You contribution is important
+==============================
+If you ❤️ this project, **star** this repo at the `github page <https://github.com/erdogant/pca/>`_ and have a look at the `sponser page <https://erdogant.github.io/pca/pages/html/Documentation.html>`_!
+
 
 
 Github
@@ -82,9 +83,6 @@ Content
   Additional_Information
   Coding quality
   pca.pca
-
-* :ref:`genindex`
-
 
 
 Indices and tables
