@@ -54,7 +54,7 @@ Examples
 
 References
 ----------
-* https://github.com/erdogant/pca
-* https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.SparsePCA.html
+* https://erdogant.github.io/pca
+* https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
 
 """

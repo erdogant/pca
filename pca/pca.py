@@ -18,48 +18,48 @@ import wget
 
 # %% Association learning across all variables
 class pca():
-    """pca module."""
+    """pca module.
+
+    Parameters
+    ----------
+    n_components : [0..1] or [1..number of samples-1], (default: 0.95)
+        Number of PCs to be returned. When n_components is set >0, the specified number of PCs is returned.
+        When n_components is set between [0..1], the number of PCs is returned that covers at least this percentage of variance.
+        n_components=None : Return all PCs
+        n_components=0.95 : Return the number of PCs that cover at least 95% of variance.
+        n_components=3    : Return the top 3 PCs.
+    n_feat : int, default: 10
+        Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
+    method : 'pca' (default)
+        'pca' : Principal Component Analysis.
+        'sparse_pca' : Sparse Principal Components Analysis.
+        'trunc_svd' : truncated SVD (aka LSA).
+    alpha : float, default: 0.05
+        Alpha to set the threshold to determine the outliers based on on the Hoteling T2 test.
+    n_std : int, default: 2
+        Number of standard deviations to determine the outliers using SPE/DmodX method.
+    onehot : [Bool] optional, (default: False)
+        Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers.
+        Note this is different then a sparse matrix. In case of a sparse matrix, use method='trunc_svd'.
+    normalize : bool (default : False)
+        Normalize data, Z-score
+    detect_outliers : list (default : ['ht2','spe'])
+        None: Do not compute outliers.
+        'ht2': compute outliers based on Hotelling T2.
+        'spe': compute outliers basedon SPE/DmodX method.
+    random_state : int optional
+        Random state
+    Verbose : int (default : 3)
+        Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+
+    References
+    ----------
+        * https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
+
+    """
 
     def __init__(self, n_components=0.95, n_feat=25, method='pca', alpha=0.05, n_std=2, onehot=False, normalize=False, detect_outliers=['ht2', 'spe'], random_state=None, verbose=3):
-        """Initialize pca with user-defined parameters.
-
-        Parameters
-        ----------
-        n_components : [0,..,1] or [1,..number of samples-1], (default: 0.95)
-            Number of TOP components to be returned. Values>0 are the number of components. Values<0 are the components that covers at least the percentage of variance.
-            None: Take all components
-            0.95: Take the number of components that cover at least 95% of variance.
-            k: Take the top k components
-        n_feat : int, default: 10
-            Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
-        method : 'pca' (default)
-            'pca' : Principal Component Analysis.
-            'sparse_pca' : Sparse Principal Components Analysis.
-            'trunc_svd' : truncated SVD (aka LSA).
-        alpha : float, default: 0.05
-            Alpha to set the threshold to determine the outliers based on on the Hoteling T2 test.
-        n_std : int, default: 2
-            Number of standard deviations to determine the outliers using SPE/DmodX method.
-        onehot : [Bool] optional, (default: False)
-            Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers.
-            Note this is different then a sparse matrix. In case of a sparse matrix, use method='trunc_svd'.
-        normalize : bool (default : False)
-            Normalize data, Z-score
-        detect_outliers : list (default : ['ht2','spe'])
-            None: Do not compute outliers.
-            'ht2': compute outliers based on Hotelling T2.
-            'spe': compute outliers basedon SPE/DmodX method.
-        random_state : int optional
-            Random state
-        Verbose : int (default : 3)
-            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
-
-        References
-        ----------
-            * https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.SparsePCA.html
-            * https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html
-
-        """
+        """Initialize pca with user-defined parameters."""
         if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
         if onehot:
             if verbose>=3: print('[pca] >Method is set to: [sparse_pca] because onehot=True.')
@@ -287,7 +287,7 @@ class pca():
         -------
         outliers : numpy array
             Array containing outliers.
-        outliers_params: dictionary, (default: None)
+        outliers_params: dict, (default: None)
             Contains parameters for hotellingsT2() and spe_dmodx(), reusable in the future.
         """
         # Convert to numpy array if required
@@ -726,8 +726,8 @@ class pca():
 
         References
         ----------
+            * https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
             * https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697
-            * https://towardsdatascience.com/pca-clearly-explained-how-when-why-to-use-it-and-feature-importance-a-guide-in-python-7c274582c37e
 
         """
         if self.results['PC'].shape[1]<2: raise ValueError('[pca] >[Error] Requires 2 PCs to make 2d plot.')
@@ -842,22 +842,27 @@ class pca():
         return(fig, ax)
 
     # Show explained variance plot
-    def plot(self, n_components=None, figsize=(15, 10), xsteps=None, visible=True, title=None, verbose=3):
-        """Scree together with explained variance.
+    def plot(self, n_components=None, xsteps=None, title=None, visible=True, figsize=(15, 10), verbose=3):
+        """Scree-plot together with explained variance.
 
         Parameters
         ----------
-        model : dict
-            model created by the fit() function.
+        n_components : int [0..1], optional
+            Number of PCs that are returned for the plot.
+            None: All PCs.
+        xsteps : int, optional
+            Set the number of xticklabels.
+        title : str, (default: None)
+            Title of the figure.
         visible : Bool, default: True
-            Visible status of the Figure. When False, figure is created on the background.
-        figsize : (float, float), optional, default: None
-            (width, height) in inches. If not provided, defaults to rcParams["figure.figsize"] = (15, 10)
+            Visible status of the Figure
+            True : Figure is shown.
+            False: Figure is created on the background.
+        figsize : (int, int)
+            (width, height) in inches.
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
-        title : str, (default: None)
-            Title of the figure.
 
         Returns
         -------
@@ -918,18 +923,18 @@ class pca():
 
         Description
         -----------
-        Normalize your data using the principal components.
-        As an example, suppose there is (technical) variation in the fist
-        component and you want that out. This function transforms the data using
-        the components that you want, e.g., starting from the 2nd pc, up to the
-        pc that contains at least 95% of the explained variance
+        Normalize your data using the variance seen in hte Principal Components. This allows to remove (technical)
+        variation in the data by normalizing out e.g., the 1st or 2nd etc component. This function transforms the
+        original data using the PCs that you want to normalize out. As an example, if you aim to remove the variation
+        seen in the 1st PC, the returned dataset will contain only the variance seen from the 2nd PC and more.
 
         Parameters
         ----------
         X : numpy array
             Data set.
-        n_components : float [0..1], optional
-            Number of PCs to keep based on the explained variance. The default is 1 (keeping all)
+        n_components : int [0..1], optional
+            Number of PCs that are returned for the plot.
+            None: All PCs.
         pcexclude : list of int, optional
             The PCs to exclude. The default is [1].
 
@@ -971,8 +976,9 @@ class pca():
         ----------
         data : str, optional
             Name of the dataset 'sprinkler' or 'titanic' or 'student'.
-        verbose : int, optional
-            Print message to screen. The default is 3.
+        Verbose : int (default : 3)
+            The higher the number, the more information is printed.
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
         Returns
         -------
@@ -1262,10 +1268,11 @@ def import_example(data='titanic', verbose=3):
 
 # %%
 def _get_explained_variance(X, components):
-    '''Get the explained variance.
+    """Get the explained variance.
     Get the explained variance from the principal components of the
     data. This follows the method outlined in [1] section 3.4 (Adjusted Total
     Variance). For an alternate approach (not implemented here), see [2].
+
     Parameters
     ----------
     X : ndarray, shape (n_samples, n_features)
@@ -1273,6 +1280,7 @@ def _get_explained_variance(X, components):
         samples and features, respectively.
     components : array, shape (n_components, n_features)
         The (un-normalized) principle components. [1]
+
     Notes
     -----
     The variance ratio may not be computed. The main reason is that we
@@ -1280,14 +1288,12 @@ def _get_explained_variance(X, components):
     the components.
     Orthogonality is enforced in this case. Other variants exist that don't
     enforce this [2].
+
     References
     ----------
-    .. [1] Journal of Computational and Graphical Statistics, Volume 15, Number
-        2, Pages 265–286. DOI: 10.1198/106186006X113430
-    .. [2] Rodolphe Jenatton, Guillaume Obozinski, Francis Bach ; Proceedings
-        of the Thirteenth International Conference on Artificial Intelligence
-        and Statistics, PMLR 9:366-373, 2010.
-    '''
+        * Journal of Computational and Graphical Statistics, Volume 15, Number 2, Pages 265–286. DOI: 10.1198/106186006X113430.
+        * Rodolphe Jenatton, Guillaume Obozinski, Francis Bach ; Proceedings of the Thirteenth International Conference on Artificial Intelligence and Statistics, PMLR 9:366-373, 2010.
+    """
     # the number of samples
     n_samples = X.shape[0]
     n_components = components.shape[0]

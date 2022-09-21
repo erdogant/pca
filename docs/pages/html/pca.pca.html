@@ -182,6 +182,35 @@ across multiple dimensions will be more significant then others.</p>
 <dt class="sig sig-object py" id="pca.pca.pca">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">pca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pca'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onehot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['ht2',</span> <span class="pre">'spe']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca" title="Permalink to this definition"></a></dt>
 <dd><p>pca module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_components</strong> (<em>[</em><em>0..1</em><em>] or </em><em>[</em><em>1..number of samples-1</em><em>]</em><em>, </em><em>(</em><em>default: 0.95</em><em>)</em>) – Number of PCs to be returned. When n_components is set &gt;0, the specified number of PCs is returned.
+When n_components is set between [0..1], the number of PCs is returned that covers at least this percentage of variance.
+n_components=None : Return all PCs
+n_components=0.95 : Return the number of PCs that cover at least 95% of variance.
+n_components=3    : Return the top 3 PCs.</p></li>
+<li><p><strong>n_feat</strong> (<em>int</em><em>, </em><em>default: 10</em>) – Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.</p></li>
+<li><p><strong>method</strong> (<em>'pca'</em><em> (</em><em>default</em><em>)</em>) – ‘pca’ : Principal Component Analysis.
+‘sparse_pca’ : Sparse Principal Components Analysis.
+‘trunc_svd’ : truncated SVD (aka LSA).</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>default: 0.05</em>) – Alpha to set the threshold to determine the outliers based on on the Hoteling T2 test.</p></li>
+<li><p><strong>n_std</strong> (<em>int</em><em>, </em><em>default: 2</em>) – Number of standard deviations to determine the outliers using SPE/DmodX method.</p></li>
+<li><p><strong>onehot</strong> (<em>[</em><em>Bool</em><em>] </em><em>optional</em><em>, </em><em>(</em><em>default: False</em><em>)</em>) – Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers.
+Note this is different then a sparse matrix. In case of a sparse matrix, use method=’trunc_svd’.</p></li>
+<li><p><strong>normalize</strong> (<em>bool</em><em> (</em><em>default : False</em><em>)</em>) – Normalize data, Z-score</p></li>
+<li><p><strong>detect_outliers</strong> (<em>list</em><em> (</em><em>default :</em><em> [</em><em>'ht2'</em><em>,</em><em>'spe'</em><em>]</em><em>)</em>) – None: Do not compute outliers.
+‘ht2’: compute outliers based on Hotelling T2.
+‘spe’: compute outliers basedon SPE/DmodX method.</p></li>
+<li><p><strong>random_state</strong> (<em>int optional</em>) – Random state</p></li>
+<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559">https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559</a></p></li>
+</ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.biplot">
 <span class="sig-name descname"><span class="pre">biplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hotellingt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Set1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(15,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_transparency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_arrow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.biplot" title="Permalink to this definition"></a></dt>
@@ -220,8 +249,8 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 </dl>
 <p class="rubric">References</p>
 <ul class="simple">
+<li><p><a class="reference external" href="https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559">https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559</a></p></li>
 <li><p><a class="reference external" href="https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697">https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697</a></p></li>
-<li><p><a class="reference external" href="https://towardsdatascience.com/pca-clearly-explained-how-when-why-to-use-it-and-feature-importance-a-guide-in-python-7c274582c37e">https://towardsdatascience.com/pca-clearly-explained-how-when-why-to-use-it-and-feature-importance-a-guide-in-python-7c274582c37e</a></p></li>
 </ul>
 </dd></dl>
 
@@ -270,7 +299,7 @@ None: Ignore all labels (this will significanly speed up the scatterplot)</p></l
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>outliers</strong> (<em>numpy array</em>) – Array containing outliers.</p></li>
-<li><p><strong>outliers_params</strong> (<em>dictionary, (default: None)</em>) – Contains parameters for hotellingsT2() and spe_dmodx(), reusable in the future.</p></li>
+<li><p><strong>outliers_params</strong> (<em>dict, (default: None)</em>) – Contains parameters for hotellingsT2() and spe_dmodx(), reusable in the future.</p></li>
 </ul>
 </p>
 </dd>
@@ -363,7 +392,8 @@ This can result into the detection of PCs that contain the same features. The fe
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the dataset ‘sprinkler’ or ‘titanic’ or ‘student’.</p></li>
-<li><p><strong>verbose</strong> (<em>int</em><em>, </em><em>optional</em>) – Print message to screen. The default is 3.</p></li>
+<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – The higher the number, the more information is printed.
+Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -379,16 +409,16 @@ This can result into the detection of PCs that contain the same features. The fe
 <dt class="sig sig-object py" id="pca.pca.pca.norm">
 <span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcexclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.norm" title="Permalink to this definition"></a></dt>
 <dd><p>Normalize out PCs.</p>
-<p>Normalize your data using the principal components.
-As an example, suppose there is (technical) variation in the fist
-component and you want that out. This function transforms the data using
-the components that you want, e.g., starting from the 2nd pc, up to the
-pc that contains at least 95% of the explained variance</p>
+<p>Normalize your data using the variance seen in hte Principal Components. This allows to remove (technical)
+variation in the data by normalizing out e.g., the 1st or 2nd etc component. This function transforms the
+original data using the PCs that you want to normalize out. As an example, if you aim to remove the variation
+seen in the 1st PC, the returned dataset will contain only the variance seen from the 2nd PC and more.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>numpy array</em>) – Data set.</p></li>
-<li><p><strong>n_components</strong> (<em>float</em><em> [</em><em>0..1</em><em>]</em><em>, </em><em>optional</em>) – Number of PCs to keep based on the explained variance. The default is 1 (keeping all)</p></li>
+<li><p><strong>n_components</strong> (<em>int</em><em> [</em><em>0..1</em><em>]</em><em>, </em><em>optional</em>) – Number of PCs that are returned for the plot.
+None: All PCs.</p></li>
 <li><p><strong>pcexclude</strong> (<em>list of int</em><em>, </em><em>optional</em>) – The PCs to exclude. The default is [1].</p></li>
 </ul>
 </dd>
@@ -400,17 +430,21 @@ pc that contains at least 95% of the explained variance</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(15,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xsteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.plot" title="Permalink to this definition"></a></dt>
-<dd><p>Scree together with explained variance.</p>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xsteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(15,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Scree-plot together with explained variance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>dict</em>) – model created by the fit() function.</p></li>
-<li><p><strong>visible</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Visible status of the Figure. When False, figure is created on the background.</p></li>
-<li><p><strong>figsize</strong> (<em>(</em><em>float</em><em>, </em><em>float</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>default: None</em>) – (width, height) in inches. If not provided, defaults to rcParams[“figure.figsize”] = (15, 10)</p></li>
+<li><p><strong>n_components</strong> (<em>int</em><em> [</em><em>0..1</em><em>]</em><em>, </em><em>optional</em>) – Number of PCs that are returned for the plot.
+None: All PCs.</p></li>
+<li><p><strong>xsteps</strong> (<em>int</em><em>, </em><em>optional</em>) – Set the number of xticklabels.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Title of the figure.</p></li>
+<li><p><strong>visible</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Visible status of the Figure
+True : Figure is shown.
+False: Figure is created on the background.</p></li>
+<li><p><strong>figsize</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – (width, height) in inches.</p></li>
 <li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – The higher the number, the more information is printed.
 Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
-<li><p><strong>title</strong> (<em>str</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Title of the figure.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
