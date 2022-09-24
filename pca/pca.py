@@ -54,7 +54,9 @@ class pca():
 
     References
     ----------
-        * https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
+    * Blog: https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
+    * Github: https://github.com/erdogant/pca
+    * Documentation: https://erdogant.github.io/pca/
 
     """
 
