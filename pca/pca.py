@@ -489,7 +489,21 @@ class pca():
         return y, topfeat, n_feat
 
     # Scatter plot
-    def scatter3d(self, y=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=None, title=None, gradient=None):
+    def scatter3d(self,
+                  y=None,
+                  label=True,
+                  PC=[0, 1, 2],
+                  SPE=False,
+                  hotellingt2=False,
+                  alpha_transparency=None,
+                  gradient=None,
+                  fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center'},
+                  cmap='Set1',
+                  title=None,
+                  legend=True,
+                  figsize=(15, 10),
+                  visible=True,
+                  verbose=3):
         """Scatter 3d plot.
 
         Parameters
@@ -849,15 +863,33 @@ class pca():
             if d3:
                 zarrow = getcoef[2] * scale
                 ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=color_arrow, alpha=0.8, lw=2)
-                ax.text(xarrow * 1.11, yarrow * 1.11, zarrow * 1.11, label, color=txtcolor, ha='center', va='center')
+                texts.append(ax.text(xarrow * 1.11, yarrow * 1.11, zarrow * 1.11, label, color=txtcolor, ha='center', va='center'))
             else:
                 ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, alpha=0.8, width=0.002, head_width=0.1, head_length=0.1 * 1.1, length_includes_head=True)
-                ax.text(xarrow * 1.11, yarrow * 1.11, label, color=txtcolor, ha='center', va='center')
+                texts.append(ax.text(xarrow * 1.11, yarrow * 1.11, label, color=txtcolor, fontdict=fontdict))
 
+        # Plot the adjusted text labels to prevent overlap
+        if len(texts)>0: adjust_text(texts)
         if visible: plt.show()
         return(fig, ax)
 
-    def biplot3d(self, y=None, n_feat=None, label=True, PC=[0, 1, 2], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(15, 10), alpha_transparency=1, title=None, gradient=None):
+    def biplot3d(self,
+                 y=None,
+                 n_feat=None,
+                 label=True,
+                 PC=[0, 1, 2],
+                 SPE=False,
+                 hotellingt2=False,
+                 alpha_transparency=1,
+                 gradient=None,
+                 color_arrow='r',
+                 fontdict={'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'},
+                 cmap='Set1',
+                 title=None,
+                 legend=True,
+                 figsize=(15, 10),
+                 visible=True,
+                 verbose=3):
         """Make biplot in 3d.
 
         Parameters
@@ -910,7 +942,23 @@ class pca():
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
 
-        fig, ax = self.biplot(y=y, n_feat=n_feat, d3=True, label=label, PC=PC, legend=legend, SPE=SPE, cmap=cmap, hotellingt2=hotellingt2, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient)
+        fig, ax = self.biplot(y=y,
+                              n_feat=n_feat,
+                              d3=True,
+                              label=label,
+                              PC=PC,
+                              SPE=SPE,
+                              hotellingt2=hotellingt2,
+                              alpha_transparency=alpha_transparency,
+                              gradient=gradient,
+                              color_arrow=color_arrow,
+                              fontdict=fontdict,
+                              cmap=cmap,
+                              title=title,
+                              legend=legend,
+                              figsize=figsize,
+                              visible=visible,
+                              verbose=verbose)
 
         return(fig, ax)
 
