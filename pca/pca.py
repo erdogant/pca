@@ -14,6 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import wget
+from adjustText import adjust_text
 
 
 # %% Association learning across all variables
@@ -629,6 +630,8 @@ class pca():
 
         """
         if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
+        fontdict = {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}, **fontdict}
+        # Setup figure
         fig = plt.figure(figsize=figsize)
         if d3:
             ax = fig.add_subplot(projection='3d')
@@ -665,7 +668,7 @@ class pca():
                 if g_ellipse is not None: ax.add_artist(g_ellipse)
 
         # Make scatter plot of all not-outliers
-        Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
+        # Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
         uiy = np.unique(y)
 
         if (len(uiy)==len(y)) and (len(uiy)>=1000) and (label is not None):
@@ -685,10 +688,11 @@ class pca():
 
                 if d3:
                     ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=s + 10, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
-                    if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict={'weight': 'bold', 'size': 16})
+                    if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict=fontdict)
                 else:
                     ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=s + 10, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
-                    if label: ax.annotate(yk, (np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl])))
+                    if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict=fontdict)
+                    # if label: ax.annotate(yk, np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]))
 
         # Plot outliers for hotelling T2 test.
         if SPE and ('y_bool_spe' in self.results['outliers'].columns):
@@ -814,6 +818,7 @@ class pca():
         elif verbose>=3:
             print('[pca] >Plot PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1))
         if cmap is False: cmap=None
+        fontdict = {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}, **fontdict}
 
         # Pre-processing
         y, topfeat, n_feat = self._fig_preprocessing(y, n_feat, d3)
@@ -851,6 +856,7 @@ class pca():
             if verbose>=2: print('[pca] >Warning: n_feat can not be reached because of the limitation of n_components (=%d). n_feat is reduced to %d.' %(self.n_components, n_feat))
 
         # Plot arrows and text
+        texts = []
         for i in range(0, n_feat):
             getfeat = topfeat['feature'].iloc[i]
             label = getfeat + ' (' + ('%g' %topfeat['loading'].iloc[i]) + ')'
