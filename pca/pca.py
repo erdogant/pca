@@ -502,25 +502,30 @@ class pca():
             None: Ignore all labels (this will significanly speed up the scatterplot)
         PC : list, default : [0, 1, 2]
             Plot the first three Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
-        legend : Bool, default: True
-            Show the legend based on the unique y-labels.
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
-        cmap : String, optional, default: 'Set1'
-            Colormap. If set to None, no points are shown.
-        visible : Bool, default: True
-            Visible status of the Figure. When False, figure is created on the background.
-        figsize : (int, int), optional, default: (15, 10)
-            (width, height) in inches.
         alpha_transparency : Float, default: None
             The alpha blending value, between 0 (transparent) and 1 (opaque).
-        title : str, default: None
-            Title of the figure.
         gradient : String, (default: None)
             Hex (ending) color for the gradient of the scatterplot colors.
             '#FFFFFF'
+        fontdict : dict.
+            dictionary containing properties for the arrow font-text
+            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}
+        cmap : String, optional, default: 'Set1'
+            Colormap. If set to None, no points are shown.
+        title : str, default: None
+            Title of the figure.
+        legend : Bool, default: True
+            Show the legend based on the unique y-labels.
+        figsize : (int, int), optional, default: (15, 10)
+            (width, height) in inches.
+        visible : Bool, default: True
+            Visible status of the Figure. When False, figure is created on the background.
+        Verbose : int (default : 3)
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
         Returns
         -------
@@ -528,14 +533,43 @@ class pca():
 
         """
         if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y, d3=True, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient)
+            fig, ax = self.scatter(y=y,
+                                   d3=True,
+                                   label=label,
+                                   PC=PC, SPE=SPE,
+                                   hotellingt2=hotellingt2,
+                                   alpha_transparency=alpha_transparency,
+                                   gradient=gradient,
+                                   fontdict=fontdict,
+                                   cmap=cmap,
+                                   title=title,
+                                   legend=legend,
+                                   figsize=figsize,
+                                   visible=visible,
+                                   verbose=verbose)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
             fig, ax = None, None
         return fig, ax
 
     # Scatter plot
-    def scatter(self, y=None, s=50, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', visible=True, figsize=(20, 15), alpha_transparency=None, title=None, gradient=None, verbose=3):
+    def scatter(self,
+                y=None,
+                s=50,
+                d3=False,
+                label=True,
+                PC=[0, 1],
+                SPE=False,
+                hotellingt2=False,
+                alpha_transparency=None,
+                gradient=None,
+                fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center'},
+                cmap='Set1',
+                title=None,
+                legend=True,
+                figsize=(20, 15),
+                visible=True,
+                verbose=3):
         """Scatter 2d plot.
 
         Parameters
@@ -550,25 +584,28 @@ class pca():
             None: Ignore all labels (this will significanly speed up the scatterplot)
         PC : list, default : [0, 1]
             Plot the first two Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
-        legend : Bool, default: True
-            Show the legend based on the unique y-labels.
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
-        cmap : String, optional, default: 'Set1'
-            Colormap. If set to None, no points are shown.
-        visible : Bool, default: True
-            Visible status of the Figure. When False, figure is created on the background.
-        figsize : (int, int), optional, default: (15, 10)
-            (width, height) in inches.
         alpha_transparency : Float, default: None
             The alpha blending value, between 0 (transparent) and 1 (opaque).
-        title : str, (default: None)
-            Title of the figure.
         gradient : String, (default: None)
             Hex color to make a lineair gradient for the scatterplot.
             '#FFFFFF'
+        fontdict : dict.
+            dictionary containing properties for the arrow font-text
+            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}
+        cmap : String, optional, default: 'Set1'
+            Colormap. If set to None, no points are shown.
+        title : str, (default: None)
+            Title of the figure.
+        legend : Bool, default: True
+            Show the legend based on the unique y-labels.
+        figsize : (int, int), optional, default: (15, 10)
+            (width, height) in inches.
+        visible : Bool, default: True
+            Visible status of the Figure. When False, figure is created on the background.
         Verbose : int (default : 3)
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
@@ -675,7 +712,24 @@ class pca():
         # Return
         return (fig, ax)
 
-    def biplot(self, y=None, n_feat=None, d3=False, label=True, PC=[0, 1], legend=True, SPE=False, hotellingt2=False, cmap='Set1', figsize=(15, 10), visible=True, alpha_transparency=None, color_arrow='r', title=None, gradient=None, verbose=3):
+    def biplot(self,
+               y=None,
+               n_feat=None,
+               d3=False,
+               label=True,
+               PC=[0, 1],
+               SPE=False,
+               hotellingt2=False,
+               alpha_transparency=None,
+               gradient=None,
+               color_arrow='r',
+               fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center'},
+               cmap='Set1',
+               title=None,
+               legend=True,
+               figsize=(15, 10),
+               visible=True,
+               verbose=3):
         """Create the Biplot.
 
         Description
@@ -699,28 +753,34 @@ class pca():
             None: Ignore all labels (this will significanly speed up the scatterplot)
         PC : list, default : [0, 1]
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
-        legend : Bool, default: True
-            Show the legend based on the unique y-labels.
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
+        alpha_transparency : Float, default: None
+            The alpha blending value, between 0 (transparent) and 1 (opaque).
+        gradient : String, (default: None)
+            Hex (ending) color for the gradient of the scatterplot colors.
+            '#FFFFFF'
+        color_arrow : String, (default: 'r')
+            color for the arrow.
+            'r' (default)
+        fontdict : dict.
+            dictionary containing properties for the arrow font-text
+            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
+        title : str, (default: None)
+            Title of the figure.
+        legend : Bool, default: True
+            Show the legend based on the unique y-labels.
         figsize : (int, int), optional, default: (15, 10)
             (width, height) in inches.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
-        alpha_transparency : Float, default: None
-            The alpha blending value, between 0 (transparent) and 1 (opaque).
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
-        gradient : String, (default: None)
-            Hex (ending) color for the gradient of the scatterplot colors.
-            '#FFFFFF'
-        title : str, (default: None)
-            Title of the figure.
 
         Returns
         -------
@@ -812,23 +872,34 @@ class pca():
             None: Ignore all labels (this will significanly speed up the scatterplot)
         PC : list, default : [0, 1, 2]
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
-        legend : Bool, default: True
-            Show the legend based on the unique y-labels.
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
-        visible : Bool, default: True
-            Visible status of the Figure. When False, figure is created on the background.
-        figsize : (int, int), optional, default: (15, 10)
-            (width, height) in inches.
         alpha_transparency : Float, default: None
             The alpha blending value, between 0 (transparent) and 1 (opaque).
-        title : str, (default: None)
-            Title of the figure.
         gradient : String, (default: None)
             Hex (ending) color for the gradient of the scatterplot colors.
             '#FFFFFF'
+        color_arrow : String, (default: 'r')
+            color for the arrow.
+            'r' (default)
+        fontdict : dict.
+            dictionary containing properties for the arrow font-text
+            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}
+        cmap : String, optional, default: 'Set1'
+            Colormap. If set to None, no points are shown.
+        title : str, (default: None)
+            Title of the figure.
+        legend : Bool, default: True
+            Show the legend based on the unique y-labels.
+        figsize : (int, int), optional, default: (15, 10)
+            (width, height) in inches.
+        visible : Bool, default: True
+            Visible status of the Figure. When False, figure is created on the background.
+        Verbose : int (default : 3)
+            The higher the number, the more information is printed.
+            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
         Returns
         -------
