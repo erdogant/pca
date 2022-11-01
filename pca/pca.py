@@ -869,10 +869,10 @@ class pca():
             if d3:
                 zarrow = getcoef[2] * scale
                 ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=color_arrow, alpha=0.8, lw=2)
-                texts.append(ax.text(xarrow * 1.11, yarrow * 1.11, zarrow * 1.11, label, color=txtcolor, ha='center', va='center'))
+                texts.append(ax.text(xarrow, yarrow, zarrow, label, color=txtcolor, ha='center', va='center'))
             else:
                 ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, alpha=0.8, width=0.002, head_width=0.1, head_length=0.1 * 1.1, length_includes_head=True)
-                texts.append(ax.text(xarrow * 1.11, yarrow * 1.11, label, color=txtcolor, fontdict=fontdict))
+                texts.append(ax.text(xarrow, yarrow, label, color=txtcolor, fontdict=fontdict))
 
         # Plot the adjusted text labels to prevent overlap
         if len(texts)>0: adjust_text(texts)

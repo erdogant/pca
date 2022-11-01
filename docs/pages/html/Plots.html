@@ -15,6 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -127,7 +128,7 @@
            <div itemprop="articleBody">
              
   <section id="load-dataset">
-<h1>Load dataset<a class="headerlink" href="#load-dataset" title="Permalink to this headline"></a></h1>
+<h1>Load dataset<a class="headerlink" href="#load-dataset" title="Permalink to this heading"></a></h1>
 <p>Let’s load the <strong>wine</strong> dataset to demonstrate the plots.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load library</span>
 <span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_wine</span>
@@ -159,7 +160,7 @@
 </div>
 </section>
 <section id="scatter-plot">
-<h1>Scatter plot<a class="headerlink" href="#scatter-plot" title="Permalink to this headline"></a></h1>
+<h1>Scatter plot<a class="headerlink" href="#scatter-plot" title="Permalink to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make scatterplot</span>
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">()</span>
 
@@ -196,7 +197,7 @@
 </table>
 </section>
 <section id="biplot">
-<h1>Biplot<a class="headerlink" href="#biplot" title="Permalink to this headline"></a></h1>
+<h1>Biplot<a class="headerlink" href="#biplot" title="Permalink to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make biplot</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">()</span>
 
@@ -219,7 +220,7 @@
 <p></p>
 </section>
 <section id="biplot-only-arrows">
-<h1>Biplot (only arrows)<a class="headerlink" href="#biplot-only-arrows" title="Permalink to this headline"></a></h1>
+<h1>Biplot (only arrows)<a class="headerlink" href="#biplot-only-arrows" title="Permalink to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make plot with parameters: set cmap to None and label and legend to False. Only directions will be plotted.</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -227,27 +228,27 @@
 <a class="reference internal image-reference" href="_images/biplot_only_directions.png"><img alt="_images/biplot_only_directions.png" class="align-center" src="_images/biplot_only_directions.png" style="width: 600px;" /></a>
 </section>
 <section id="explained-variance-plot">
-<h1>Explained variance plot<a class="headerlink" href="#explained-variance-plot" title="Permalink to this headline"></a></h1>
+<h1>Explained variance plot<a class="headerlink" href="#explained-variance-plot" title="Permalink to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/wine_explained_variance.png"><img alt="_images/wine_explained_variance.png" class="align-center" src="_images/wine_explained_variance.png" style="width: 600px;" /></a>
 </section>
 <section id="alpha-transparency">
-<h1>Alpha Transparency<a class="headerlink" href="#alpha-transparency" title="Permalink to this headline"></a></h1>
+<h1>Alpha Transparency<a class="headerlink" href="#alpha-transparency" title="Permalink to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">alpha_transparency</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="d-plots">
-<h1>3D plots<a class="headerlink" href="#d-plots" title="Permalink to this headline"></a></h1>
+<h1>3D plots<a class="headerlink" href="#d-plots" title="Permalink to this heading"></a></h1>
 <p>All plots can also be created in 3D by setting the <code class="docutils literal notranslate"><span class="pre">d3=True</span></code> parameter.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="toggle-visible-status">
-<h1>Toggle visible status<a class="headerlink" href="#toggle-visible-status" title="Permalink to this headline"></a></h1>
+<h1>Toggle visible status<a class="headerlink" href="#toggle-visible-status" title="Permalink to this heading"></a></h1>
 <p>The visible status for can be turned on and off.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make plot but not visible.</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

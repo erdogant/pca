@@ -6,6 +6,25 @@ import numpy as np
 # import pca
 # print(pca.__version__)
 
+# np.random.seed(0)
+# x, y = np.random.random((2,30))
+# fig, ax = plt.subplots()
+# plt.plot(x, y, 'bo')
+# texts = [plt.text(x[i], y[i], 'Text%s' %i) for i in range(len(x))]
+# adjust_text(texts)
+
+# %%
+from sklearn.datasets import make_friedman1
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+# model = pca(method='sparse_pca')
+model = pca(method='trunc_svd')
+model.fit_transform(X)
+model.plot()
+model.biplot(fontdict={'size':16, 'weight':'bold'})
+model.biplot3d()
+model.scatter()
+
 # %% Detect outliers in new unseen data.
 # Import libraries
 from pca import pca
@@ -106,7 +125,7 @@ out = model.fit_transform(X)
 # fig, ax = model.biplot(label=True, legend=False, PC=[1,0])
 print(out['topfeat'])
 
-fig, ax = model.biplot(cmap='Set1', label=True, legend=True)
+fig, ax = model.biplot(cmap='Set1', label=True, legend=True, fontdict={'size':16})
 fig, ax = model.biplot(cmap='Set1', label=True, legend=False)
 fig, ax = model.biplot(cmap='Set1', label=False, legend=False)
 fig, ax = model.biplot(cmap=None, label=False, legend=False)
@@ -362,6 +381,8 @@ ax = model.biplot(n_feat=4, legend=False, label=False)
 import pca
 outliers_hot = pca.hotellingsT2(out['PC'].values, alpha=0.05)
 outliers_spe = pca.spe_dmodx(out['PC'].values, n_std=2)
+
+model.biplot(SPE=True, hotellingt2=False)
 
 # Select the outliers
 Xoutliers = X[out['outliers']['y_bool'],:]

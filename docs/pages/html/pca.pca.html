@@ -15,6 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -126,7 +127,7 @@
            <div itemprop="articleBody">
              
   <section id="module-pca.pca">
-<span id="api-references"></span><h1>API References<a class="headerlink" href="#module-pca.pca" title="Permalink to this headline"></a></h1>
+<span id="api-references"></span><h1>API References<a class="headerlink" href="#module-pca.pca" title="Permalink to this heading"></a></h1>
 <p>pca is a python package to perform Principal Component Analysis and to make insightful plots.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pca.pca.hotellingsT2">
@@ -215,7 +216,7 @@ Note this is different then a sparse matrix. In case of a sparse matrix, use met
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.biplot">
-<span class="sig-name descname"><span class="pre">biplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hotellingt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Set1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(15,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_transparency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_arrow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.biplot" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">biplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hotellingt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_transparency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_arrow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontdict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'ha':</span> <span class="pre">'center',</span> <span class="pre">'size':</span> <span class="pre">12,</span> <span class="pre">'va':</span> <span class="pre">'center',</span> <span class="pre">'weight':</span> <span class="pre">'normal'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Set1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(15,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.biplot" title="Permalink to this definition"></a></dt>
 <dd><p>Create the Biplot.</p>
 <p>Plots the Principal components with the samples, and the best performing features.
 Per PC, The feature with absolute highest loading is gathered. This can result into features that are seen over multiple PCs, and some features may never be detected.
@@ -231,25 +232,26 @@ The feature-names that were never discovered (described as weak) are colored yel
 False: Do not show the labels
 None: Ignore all labels (this will significanly speed up the scatterplot)</p></li>
 <li><p><strong>PC</strong> (<em>list</em><em>, </em><em>default :</em><em> [</em><em>0</em><em>, </em><em>1</em><em>]</em>) – Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.</p></li>
-<li><p><strong>legend</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Show the legend based on the unique y-labels.</p></li>
 <li><p><strong>SPE</strong> (<em>Bool</em><em>, </em><em>default: False</em>) – Show the outliers based on SPE/DmodX method.</p></li>
 <li><p><strong>hotellingt2</strong> (<em>Bool</em><em>, </em><em>default: False</em>) – Show the outliers based on the hotelling T2 test.</p></li>
-<li><p><strong>cmap</strong> (<em>String</em><em>, </em><em>optional</em><em>, </em><em>default: 'Set1'</em>) – Colormap. If set to None, no points are shown.</p></li>
-<li><p><strong>figsize</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>default:</em><em> (</em><em>15</em><em>, </em><em>10</em><em>)</em>) – (width, height) in inches.</p></li>
-<li><p><strong>visible</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Visible status of the Figure. When False, figure is created on the background.</p></li>
 <li><p><strong>alpha_transparency</strong> (<em>Float</em><em>, </em><em>default: None</em>) – The alpha blending value, between 0 (transparent) and 1 (opaque).</p></li>
-<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – The higher the number, the more information is printed.
-Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 <li><p><strong>gradient</strong> (<em>String</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Hex (ending) color for the gradient of the scatterplot colors.
 ‘#FFFFFF’</p></li>
+<li><p><strong>color_arrow</strong> (<em>String</em><em>, </em><em>(</em><em>default: 'r'</em><em>)</em>) – color for the arrow.
+‘r’ (default)</p></li>
+<li><p><strong>fontdict</strong> (<em>dict.</em>) – dictionary containing properties for the arrow font-text
+{‘weight’: ‘normal’, ‘size’: 10, ‘ha’: ‘center’, ‘va’: ‘center’}</p></li>
+<li><p><strong>cmap</strong> (<em>String</em><em>, </em><em>optional</em><em>, </em><em>default: 'Set1'</em>) – Colormap. If set to None, no points are shown.</p></li>
 <li><p><strong>title</strong> (<em>str</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Title of the figure.</p></li>
+<li><p><strong>legend</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Show the legend based on the unique y-labels.</p></li>
+<li><p><strong>figsize</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>default:</em><em> (</em><em>15</em><em>, </em><em>10</em><em>)</em>) – (width, height) in inches.</p></li>
+<li><p><strong>visible</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Visible status of the Figure. When False, figure is created on the background.</p></li>
+<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – The higher the number, the more information is printed.
+Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 <p class="rubric">References</p>
@@ -261,7 +263,7 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.biplot3d">
-<span class="sig-name descname"><span class="pre">biplot3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hotellingt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Set1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(15,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_transparency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.biplot3d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">biplot3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hotellingt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_transparency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_arrow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontdict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'ha':</span> <span class="pre">'center',</span> <span class="pre">'size':</span> <span class="pre">10,</span> <span class="pre">'va':</span> <span class="pre">'center',</span> <span class="pre">'weight':</span> <span class="pre">'normal'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Set1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(15,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.biplot3d" title="Permalink to this definition"></a></dt>
 <dd><p>Make biplot in 3d.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -272,22 +274,26 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 False: Do not show the labels
 None: Ignore all labels (this will significanly speed up the scatterplot)</p></li>
 <li><p><strong>PC</strong> (<em>list</em><em>, </em><em>default :</em><em> [</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>]</em>) – Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.</p></li>
-<li><p><strong>legend</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Show the legend based on the unique y-labels.</p></li>
 <li><p><strong>SPE</strong> (<em>Bool</em><em>, </em><em>default: False</em>) – Show the outliers based on SPE/DmodX method.</p></li>
 <li><p><strong>hotellingt2</strong> (<em>Bool</em><em>, </em><em>default: False</em>) – Show the outliers based on the hotelling T2 test.</p></li>
-<li><p><strong>visible</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Visible status of the Figure. When False, figure is created on the background.</p></li>
-<li><p><strong>figsize</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>default:</em><em> (</em><em>15</em><em>, </em><em>10</em><em>)</em>) – (width, height) in inches.</p></li>
 <li><p><strong>alpha_transparency</strong> (<em>Float</em><em>, </em><em>default: None</em>) – The alpha blending value, between 0 (transparent) and 1 (opaque).</p></li>
-<li><p><strong>title</strong> (<em>str</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Title of the figure.</p></li>
 <li><p><strong>gradient</strong> (<em>String</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Hex (ending) color for the gradient of the scatterplot colors.
 ‘#FFFFFF’</p></li>
+<li><p><strong>color_arrow</strong> (<em>String</em><em>, </em><em>(</em><em>default: 'r'</em><em>)</em>) – color for the arrow.
+‘r’ (default)</p></li>
+<li><p><strong>fontdict</strong> (<em>dict.</em>) – dictionary containing properties for the arrow font-text
+{‘weight’: ‘normal’, ‘size’: 10, ‘ha’: ‘center’, ‘va’: ‘center’}</p></li>
+<li><p><strong>cmap</strong> (<em>String</em><em>, </em><em>optional</em><em>, </em><em>default: 'Set1'</em>) – Colormap. If set to None, no points are shown.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Title of the figure.</p></li>
+<li><p><strong>legend</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Show the legend based on the unique y-labels.</p></li>
+<li><p><strong>figsize</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>default:</em><em> (</em><em>15</em><em>, </em><em>10</em><em>)</em>) – (width, height) in inches.</p></li>
+<li><p><strong>visible</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Visible status of the Figure. When False, figure is created on the background.</p></li>
+<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – The higher the number, the more information is printed.
+Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -430,11 +436,8 @@ None: All PCs.</p></li>
 <li><p><strong>pcexclude</strong> (<em>list of int</em><em>, </em><em>optional</em>) – The PCs to exclude. The default is [1].</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Normalized numpy array.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Normalized numpy array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -458,18 +461,15 @@ False: Figure is created on the background.</p></li>
 Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.scatter">
-<span class="sig-name descname"><span class="pre">scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hotellingt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Set1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(20,</span> <span class="pre">15)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_transparency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.scatter" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hotellingt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_transparency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontdict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'ha':</span> <span class="pre">'center',</span> <span class="pre">'size':</span> <span class="pre">12,</span> <span class="pre">'va':</span> <span class="pre">'center',</span> <span class="pre">'weight':</span> <span class="pre">'normal'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Set1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(20,</span> <span class="pre">15)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.scatter" title="Permalink to this definition"></a></dt>
 <dd><p>Scatter 2d plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -480,31 +480,30 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 False: Do not show the labels
 None: Ignore all labels (this will significanly speed up the scatterplot)</p></li>
 <li><p><strong>PC</strong> (<em>list</em><em>, </em><em>default :</em><em> [</em><em>0</em><em>, </em><em>1</em><em>]</em>) – Plot the first two Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc</p></li>
-<li><p><strong>legend</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Show the legend based on the unique y-labels.</p></li>
 <li><p><strong>SPE</strong> (<em>Bool</em><em>, </em><em>default: False</em>) – Show the outliers based on SPE/DmodX method.</p></li>
 <li><p><strong>hotellingt2</strong> (<em>Bool</em><em>, </em><em>default: False</em>) – Show the outliers based on the hotelling T2 test.</p></li>
-<li><p><strong>cmap</strong> (<em>String</em><em>, </em><em>optional</em><em>, </em><em>default: 'Set1'</em>) – Colormap. If set to None, no points are shown.</p></li>
-<li><p><strong>visible</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Visible status of the Figure. When False, figure is created on the background.</p></li>
-<li><p><strong>figsize</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>default:</em><em> (</em><em>15</em><em>, </em><em>10</em><em>)</em>) – (width, height) in inches.</p></li>
 <li><p><strong>alpha_transparency</strong> (<em>Float</em><em>, </em><em>default: None</em>) – The alpha blending value, between 0 (transparent) and 1 (opaque).</p></li>
-<li><p><strong>title</strong> (<em>str</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Title of the figure.</p></li>
 <li><p><strong>gradient</strong> (<em>String</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Hex color to make a lineair gradient for the scatterplot.
 ‘#FFFFFF’</p></li>
+<li><p><strong>fontdict</strong> (<em>dict.</em>) – dictionary containing properties for the arrow font-text
+{‘weight’: ‘normal’, ‘size’: 10, ‘ha’: ‘center’, ‘va’: ‘center’}</p></li>
+<li><p><strong>cmap</strong> (<em>String</em><em>, </em><em>optional</em><em>, </em><em>default: 'Set1'</em>) – Colormap. If set to None, no points are shown.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Title of the figure.</p></li>
+<li><p><strong>legend</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Show the legend based on the unique y-labels.</p></li>
+<li><p><strong>figsize</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>default:</em><em> (</em><em>15</em><em>, </em><em>10</em><em>)</em>) – (width, height) in inches.</p></li>
+<li><p><strong>visible</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Visible status of the Figure. When False, figure is created on the background.</p></li>
 <li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.scatter3d">
-<span class="sig-name descname"><span class="pre">scatter3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hotellingt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Set1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(15,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_transparency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.scatter3d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scatter3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hotellingt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_transparency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontdict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'ha':</span> <span class="pre">'center',</span> <span class="pre">'size':</span> <span class="pre">12,</span> <span class="pre">'va':</span> <span class="pre">'center',</span> <span class="pre">'weight':</span> <span class="pre">'normal'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Set1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(15,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.scatter3d" title="Permalink to this definition"></a></dt>
 <dd><p>Scatter 3d plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -514,23 +513,23 @@ None: Ignore all labels (this will significanly speed up the scatterplot)</p></l
 False: Do not show the labels
 None: Ignore all labels (this will significanly speed up the scatterplot)</p></li>
 <li><p><strong>PC</strong> (<em>list</em><em>, </em><em>default :</em><em> [</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>]</em>) – Plot the first three Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc</p></li>
-<li><p><strong>legend</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Show the legend based on the unique y-labels.</p></li>
 <li><p><strong>SPE</strong> (<em>Bool</em><em>, </em><em>default: False</em>) – Show the outliers based on SPE/DmodX method.</p></li>
 <li><p><strong>hotellingt2</strong> (<em>Bool</em><em>, </em><em>default: False</em>) – Show the outliers based on the hotelling T2 test.</p></li>
-<li><p><strong>cmap</strong> (<em>String</em><em>, </em><em>optional</em><em>, </em><em>default: 'Set1'</em>) – Colormap. If set to None, no points are shown.</p></li>
-<li><p><strong>visible</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Visible status of the Figure. When False, figure is created on the background.</p></li>
-<li><p><strong>figsize</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>default:</em><em> (</em><em>15</em><em>, </em><em>10</em><em>)</em>) – (width, height) in inches.</p></li>
 <li><p><strong>alpha_transparency</strong> (<em>Float</em><em>, </em><em>default: None</em>) – The alpha blending value, between 0 (transparent) and 1 (opaque).</p></li>
-<li><p><strong>title</strong> (<em>str</em><em>, </em><em>default: None</em>) – Title of the figure.</p></li>
 <li><p><strong>gradient</strong> (<em>String</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Hex (ending) color for the gradient of the scatterplot colors.
 ‘#FFFFFF’</p></li>
+<li><p><strong>fontdict</strong> (<em>dict.</em>) – dictionary containing properties for the arrow font-text
+{‘weight’: ‘normal’, ‘size’: 10, ‘ha’: ‘center’, ‘va’: ‘center’}</p></li>
+<li><p><strong>cmap</strong> (<em>String</em><em>, </em><em>optional</em><em>, </em><em>default: 'Set1'</em>) – Colormap. If set to None, no points are shown.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>default: None</em>) – Title of the figure.</p></li>
+<li><p><strong>legend</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Show the legend based on the unique y-labels.</p></li>
+<li><p><strong>figsize</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>default:</em><em> (</em><em>15</em><em>, </em><em>10</em><em>)</em>) – (width, height) in inches.</p></li>
+<li><p><strong>visible</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Visible status of the Figure. When False, figure is created on the background.</p></li>
+<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -583,11 +582,8 @@ False: Do not update outlier parameters and outliers that were initially detecte
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>pca transformed data.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pca transformed data.</p>
 </dd>
 </dl>
 </dd></dl>

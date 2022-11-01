@@ -3,6 +3,17 @@ pca's documentation!
 
 ``pca`` is a python package to perform *Principal Component Analysis* and to create insightful *plots*. The core of PCA is build on **sklearn** functionality to find maximum compatibility when combining with other packages. But this package can do a lot more. Besides the regular **Principal Components**, it can also perform **SparsePCA**, **TruncatedSVD**, and provide you with the information that can be extracted from the components. 
 
+.. |figD1| image:: ../figs/wine_biplot.png
+.. |figD2| image:: ../figs/wine_biplot_with_outliers.png
+
+.. table:: Biplots
+   :align: center
+
+   +----------+----------+
+   | |figD1|  | |figD2|  |
+   +----------+----------+
+
+
 Functionalities of PCA are:
 
 	* Biplot to plot the loadings
