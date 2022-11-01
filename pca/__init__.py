@@ -38,7 +38,7 @@ Examples
 >>> # Scree plot together with explained variance.
 >>> fig, ax = model.plot()
 >>>
->>> # Plot loadings.
+>>> # Plot loadings
 >>> fig, ax = model.biplot()
 >>>
 >>> # Plot loadings with outliers
