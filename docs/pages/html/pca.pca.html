@@ -15,7 +15,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -96,7 +98,26 @@
 <li class="toctree-l1"><a class="reference internal" href="Documentation.html#citing">Citing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Additional_Information.html">Additional Information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Coding%20quality.html">Coding quality</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API References</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.hotellingsT2"><code class="docutils literal notranslate"><span class="pre">hotellingsT2()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.import_example"><code class="docutils literal notranslate"><span class="pre">import_example()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.pca"><code class="docutils literal notranslate"><span class="pre">pca</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.biplot"><code class="docutils literal notranslate"><span class="pre">pca.biplot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.biplot3d"><code class="docutils literal notranslate"><span class="pre">pca.biplot3d()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.compute_outliers"><code class="docutils literal notranslate"><span class="pre">pca.compute_outliers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.compute_topfeat"><code class="docutils literal notranslate"><span class="pre">pca.compute_topfeat()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.fit_transform"><code class="docutils literal notranslate"><span class="pre">pca.fit_transform()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.import_example"><code class="docutils literal notranslate"><span class="pre">pca.import_example()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.norm"><code class="docutils literal notranslate"><span class="pre">pca.norm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.plot"><code class="docutils literal notranslate"><span class="pre">pca.plot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.scatter"><code class="docutils literal notranslate"><span class="pre">pca.scatter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.scatter3d"><code class="docutils literal notranslate"><span class="pre">pca.scatter3d()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.transform"><code class="docutils literal notranslate"><span class="pre">pca.transform()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.spe_dmodx"><code class="docutils literal notranslate"><span class="pre">spe_dmodx()</span></code></a></li>
+</ul>
+</li>
 </ul>
 
     <a href= "genindex.html">Index</a>
@@ -126,7 +147,7 @@
            <div itemprop="articleBody">
              
   <section id="module-pca.pca">
-<span id="api-references"></span><h1>API References<a class="headerlink" href="#module-pca.pca" title="Permalink to this headline"></a></h1>
+<span id="api-references"></span><h1>API References<a class="headerlink" href="#module-pca.pca" title="Permalink to this heading"></a></h1>
 <p>pca is a python package to perform Principal Component Analysis and to make insightful plots.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pca.pca.hotellingsT2">
@@ -185,7 +206,7 @@ across multiple dimensions will be more significant then others.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_components</strong> (<em>[</em><em>0..1</em><em>] or </em><em>[</em><em>1..number of samples-1</em><em>]</em><em>, </em><em>(</em><em>default: 0.95</em><em>)</em>) – Number of PCs to be returned. When n_components is set &gt;0, the specified number of PCs is returned.
+<li><p><strong>n_components</strong> (<em>[</em><em>0..1</em><em>] or </em><em>[</em><em>1..number</em><em> of </em><em>samples-1</em><em>]</em><em>, </em><em>(</em><em>default: 0.95</em><em>)</em>) – Number of PCs to be returned. When n_components is set &gt;0, the specified number of PCs is returned.
 When n_components is set between [0..1], the number of PCs is returned that covers at least this percentage of variance.
 n_components=None : Return all PCs
 n_components=0.95 : Return the number of PCs that cover at least 95% of variance.
@@ -249,11 +270,8 @@ None: Ignore all labels (this will significanly speed up the scatterplot)</p></l
 Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 <p class="rubric">References</p>
@@ -294,11 +312,8 @@ None: Ignore all labels (this will significanly speed up the scatterplot)</p></l
 Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -354,9 +369,9 @@ This can result into the detection of PCs that contain the same features. The fe
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like : Can be of type Numpy</em><em> or </em><em>DataFrame</em>) – [NxM] array with columns as features and rows as samples.</p></li>
-<li><p><strong>row_labels</strong> (<em>[</em><em>list of integers</em><em> or </em><em>strings</em><em>] </em><em>optional</em>) – Used for colors.</p></li>
-<li><p><strong>col_labels</strong> (<em>[</em><em>list of string</em><em>] </em><em>optional</em>) – Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.</p></li>
+<li><p><strong>X</strong> (<em>array-like : Can be</em><em> of </em><em>type Numpy</em><em> or </em><em>DataFrame</em>) – [NxM] array with columns as features and rows as samples.</p></li>
+<li><p><strong>row_labels</strong> (<em>[</em><em>list</em><em> of </em><em>integers</em><em> or </em><em>strings</em><em>] </em><em>optional</em>) – Used for colors.</p></li>
+<li><p><strong>col_labels</strong> (<em>[</em><em>list</em><em> of </em><em>string</em><em>] </em><em>optional</em>) – Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.</p></li>
 <li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Set verbose during initialization.</p></li>
 </ul>
 </dd>
@@ -438,14 +453,11 @@ seen in the 1st PC, the returned dataset will contain only the variance seen fro
 <li><p><strong>X</strong> (<em>numpy array</em>) – Data set.</p></li>
 <li><p><strong>n_components</strong> (<em>int</em><em> [</em><em>0..1</em><em>]</em><em>, </em><em>optional</em>) – Number of PCs that are returned for the plot.
 None: All PCs.</p></li>
-<li><p><strong>pcexclude</strong> (<em>list of int</em><em>, </em><em>optional</em>) – The PCs to exclude. The default is [1].</p></li>
+<li><p><strong>pcexclude</strong> (<em>list</em><em> of </em><em>int</em><em>, </em><em>optional</em>) – The PCs to exclude. The default is [1].</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Normalized numpy array.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Normalized numpy array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -469,11 +481,8 @@ False: Figure is created on the background.</p></li>
 Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -506,11 +515,8 @@ None: Ignore all labels (this will significanly speed up the scatterplot)</p></l
 <li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -542,11 +548,8 @@ None: Ignore all labels (this will significanly speed up the scatterplot)</p></l
 <li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -558,11 +561,11 @@ None: Ignore all labels (this will significanly speed up the scatterplot)</p></l
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like : Can be of type Numpy</em><em> or </em><em>DataFrame</em>) – [NxM] array with columns as features and rows as samples.</p></li>
+<li><p><strong>X</strong> (<em>array-like : Can be</em><em> of </em><em>type Numpy</em><em> or </em><em>DataFrame</em>) – [NxM] array with columns as features and rows as samples.</p></li>
 <li><p><strong>update_outlier_params</strong> (<em>bool</em><em> (</em><em>default: True</em><em>)</em>) – True : Update the parameters for outlier detection so that the model learns from the new unseen input. This will cause that some initial outliers may not be an outlier anymore after a certain point.
 False: Do not update outlier parameters and outliers that were initially detected, will always stay an outlier.</p></li>
-<li><p><strong>row_labels</strong> (<em>[</em><em>list of integers</em><em> or </em><em>strings</em><em>] </em><em>optional</em>) – Used for colors.</p></li>
-<li><p><strong>col_labels</strong> (<em>[</em><em>list of string</em><em>] </em><em>optional</em>) – Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.</p></li>
+<li><p><strong>row_labels</strong> (<em>[</em><em>list</em><em> of </em><em>integers</em><em> or </em><em>strings</em><em>] </em><em>optional</em>) – Used for colors.</p></li>
+<li><p><strong>col_labels</strong> (<em>[</em><em>list</em><em> of </em><em>string</em><em>] </em><em>optional</em>) – Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.</p></li>
 <li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Set verbose during initialization.</p></li>
 </ul>
 </dd>
@@ -599,11 +602,8 @@ False: Do not update outlier parameters and outliers that were initially detecte
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>pca transformed data.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pca transformed data.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -15,7 +15,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -127,14 +129,14 @@
            <div itemprop="articleBody">
              
   <section id="algorithm">
-<h1>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline"></a></h1>
+<h1>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this heading"></a></h1>
 <p>Principal Component Analysis, or PCA, is a dimensionality-reduction method that is often used to reduce the dimensionality of large data sets.</p>
 <p>Reducing the number of variables of a data set naturally comes at the expense of accuracy, but the trick in dimensionality reduction is to trade a little accuracy for <em>simplicity</em>. Because smaller data sets are easier to explore and visualize, it becomes easier and faster to analyze your data.</p>
 <p>The idea of PCA is simple — <strong>reduce the number of variables</strong> of a data set, while <strong>preserving</strong> as much <strong>information</strong> as possible.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">pca</span></code> library contains various functionalities to carefully examine the data, which can help for better understanding and removal of redundant information.</p>
 </section>
 <section id="standardization">
-<h1>Standardization<a class="headerlink" href="#standardization" title="Permalink to this headline"></a></h1>
+<h1>Standardization<a class="headerlink" href="#standardization" title="Permalink to this heading"></a></h1>
 <p>Feature scaling through standardization (or Z-score normalization) is an important preprocessing step for many machine learning algorithms. Standardization involves rescaling the features such that they have the properties of a standard normal distribution with a mean of zero and a standard deviation of one. The standardization step depends on the type of variables, the distribution of the data, and also your aim. In general, the standardizing step is to range the continuous initial variables so that each one of them contributes <em>equally</em> to the analysis.</p>
 <p>It is utterly important to carefully standardize your data because PCA works under the assumption that the data is <em>normal distributed</em>, and is very <em>sensitive</em> to the variance of the variables. Or in other words, large differences between the ranges of variables will dominate over those with small ranges. Let me explain this by example; a variable that ranges between 0 and 100 will dominate over a variable that ranges between 0 and 1. Transforming the data to comparable scales can prevent this issue.</p>
 <p>The most straightforward manner for standardization is by computing the <em>Z-scores</em> or <em>Standardized scores</em>.
@@ -187,7 +189,7 @@ Once the standardization is done, all the variables will be transformed to the s
 </table>
 </section>
 <section id="explained-variance">
-<h1>Explained Variance<a class="headerlink" href="#explained-variance" title="Permalink to this headline"></a></h1>
+<h1>Explained Variance<a class="headerlink" href="#explained-variance" title="Permalink to this heading"></a></h1>
 <p>Before jumping into the <strong>explained variance</strong>, we first need to understand what principal components are.</p>
 <p><strong>Principal components</strong> are new (latent) <strong>variables</strong> that are constructed as <strong>linear combinations</strong> or <strong>mixtures</strong> of the initial variables. These combinations are in such a way that the new variables (i.e., principal components) are uncorrelated and most of the information within the initial variables is squeezed or compressed into the first components.
 <strong>Explained variance</strong> refers to the variance explained by each of the principal components (eigenvectors). By organizing information Principal</p>
@@ -210,7 +212,7 @@ Once the standardization is done, all the variables will be transformed to the s
 <p>There are as many principal components as there are variables in the data. The <strong>explained variance plot</strong> can therefore never have more then 13 PCs in this case. Principal components are constructed in such a manner that the first principal component accounts for the largest possible variance in the data set.</p>
 </section>
 <section id="loadings">
-<h1>Loadings<a class="headerlink" href="#loadings" title="Permalink to this headline"></a></h1>
+<h1>Loadings<a class="headerlink" href="#loadings" title="Permalink to this heading"></a></h1>
 <p>It is important to realize that principal components are less interpretable and don’t have any real meaning since they are constructed as <strong>linear combinations</strong> of the initial variables. But we can analyze the <strong>loadings</strong> which describe the importance of the independent variables.
 The first principal component (Y1) is given by a linear combination of the variables X1, X2, …, Xp, and is calculated such that it accounts for the greatest possible variance in the data.</p>
 <a class="reference internal image-reference" href="_images/PCAequation1.png"><img alt="_images/PCAequation1.png" src="_images/PCAequation1.png" style="width: 300px;" /></a>
@@ -252,7 +254,7 @@ The first principal component (Y1) is given by a linear combination of the varia
 <a class="reference internal image-reference" href="_images/wine_biplot.png"><img alt="_images/wine_biplot.png" class="align-center" src="_images/wine_biplot.png" style="width: 600px;" /></a>
 </section>
 <section id="examination-of-the-loadings">
-<h1>Examination of the loadings<a class="headerlink" href="#examination-of-the-loadings" title="Permalink to this headline"></a></h1>
+<h1>Examination of the loadings<a class="headerlink" href="#examination-of-the-loadings" title="Permalink to this heading"></a></h1>
 <p>Let’s examine the <strong>loadings</strong> (arrows) a bit more to understand what is going on in the distribution of the samples given the variables. The variable <strong>flavanoids</strong> has a positive loading and explaines mostly the variance in the first PC1 (it is almost a horizontal line). If we would color the samples in the scatter plot based on <strong>flavanoids</strong> values, we expect to see a distinction between samples that are respectively left and right side of the scatter plot.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grap the values for flavanoids</span>
 <span class="n">X_feat</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">col_labels</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;flavanoids&#39;</span><span class="p">]</span>
@@ -307,7 +309,7 @@ The first principal component (Y1) is given by a linear combination of the varia
 </table>
 </section>
 <section id="best-performing-features">
-<h1>Best Performing Features<a class="headerlink" href="#best-performing-features" title="Permalink to this headline"></a></h1>
+<h1>Best Performing Features<a class="headerlink" href="#best-performing-features" title="Permalink to this heading"></a></h1>
 <p>Extracting the best performing features is based on the loadings of the Principal Components, which are readily computed.
 The information is stored in the object itself. We can extract it as following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print the top features.</span>
