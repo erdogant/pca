@@ -15,6 +15,6 @@ keywords:
 license: "MIT"
 message: "If you use this software, please cite it using these metadata."
 repository-code: "https://erdogant.github.io/pca"
-title: "pca is a python package that performs the principal component analysis and makes insightful plots."
-version: "0.1.0"
+title: "The Python Package for Principal Component Analysis."
+version: "1.8.4"
 ...
