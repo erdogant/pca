@@ -1,4 +1,9 @@
-# pca
+
+<p align="left">
+  <a href="https://erdogant.github.io/pca/">
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/logo.png" width="350" />
+  </a>
+</p>
 
 
 
