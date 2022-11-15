@@ -1,7 +1,7 @@
 
-<p align="left">
+<p align="center">
   <a href="https://erdogant.github.io/pca/">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/logo.png" width="350" />
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/logo.png" width="600" />
   </a>
 </p>
 
