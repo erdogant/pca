@@ -1,16 +1,19 @@
 # pca
 
+
+
 [![Python](https://img.shields.io/pypi/pyversions/pca)](https://img.shields.io/pypi/pyversions/pca)
-[![PyPI Version](https://img.shields.io/pypi/v/pca)](https://pypi.org/project/pca/)
+[![Pypi](https://img.shields.io/pypi/v/pca)](https://pypi.org/project/pca/)
+[![Docs](https://img.shields.io/badge/Sphinx-Docs-Green)](https://erdogant.github.io/pca/)
+[![LOC](https://sloc.xyz/github/erdogant/pca/?category=code)](https://github.com/erdogant/pca/)
+[![Downloads](https://static.pepy.tech/personalized-badge/pca?period=month&units=international_system&left_color=grey&right_color=brightgreen&left_text=PyPI%20downloads/month)](https://pepy.tech/project/pca)
+[![Downloads](https://static.pepy.tech/personalized-badge/pca?period=total&units=international_system&left_color=grey&right_color=brightgreen&left_text=Downloads)](https://pepy.tech/project/pca)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/pca/blob/master/LICENSE)
 [![Github Forks](https://img.shields.io/github/forks/erdogant/pca.svg)](https://github.com/erdogant/pca/network)
-[![GitHub Open Issues](https://img.shields.io/github/issues/erdogant/pca.svg)](https://github.com/erdogant/pca/issues)
+[![Open Issues](https://img.shields.io/github/issues/erdogant/pca.svg)](https://github.com/erdogant/pca/issues)
 [![Project Status](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![Downloads](https://pepy.tech/badge/pca)](https://pepy.tech/project/pca)
-[![Downloads](https://pepy.tech/badge/pca/month)](https://pepy.tech/project/pca)
-[![DOI](https://zenodo.org/badge/233232884.svg)](https://zenodo.org/badge/latestdoi/233232884)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://erdogant.github.io/pca/pages/html/Documentation.html#colab-notebook)
-[![Sphinx](https://img.shields.io/badge/Sphinx-Docs-Green)](https://erdogant.github.io/pca/)
+[![Medium](https://img.shields.io/badge/Medium-Blog-green)](https://erdogant.github.io/pca/pages/html/Documentation.html#medium-blog)
+[![Donate](https://img.shields.io/badge/Support%20this%20project-grey.svg?logo=github%20sponsors)](https://erdogant.github.io/pca/pages/html/Documentation.html#)
 <!---[![BuyMeCoffee](https://img.shields.io/badge/buymea-coffee-yellow.svg)](https://www.buymeacoffee.com/erdogant)-->
 <!---[![Coffee](https://img.shields.io/badge/coffee-black-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)-->
 
