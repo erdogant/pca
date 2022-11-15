@@ -15,7 +15,6 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -32,7 +31,7 @@
             <a href="index.html" class="icon icon-home"> pca
           </a>
               <div class="version">
-                1.8.3
+                1.8.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -128,7 +127,7 @@
            <div itemprop="articleBody">
              
   <section id="hotelling-t2">
-<h1>Hotelling T2<a class="headerlink" href="#hotelling-t2" title="Permalink to this heading"></a></h1>
+<h1>Hotelling T2<a class="headerlink" href="#hotelling-t2" title="Permalink to this headline"></a></h1>
 <p>To detect outliers across the multidimensional space of PCA, the <strong>hotellings T2</strong> test is implemented.
 It works by computing the <strong>chi-square tests</strong> across the top n_components: default is PC1 to PC5. The reason for not using more PC’s is that it is expected that the highest variance (and thus the outliers) will be seen in the first few components. Going deeper into PC space may therefore not be required. Nevertheless, the depth is optional.</p>
 <p>The <strong>hotellings T2</strong> test outputs a P-value matrix (samples x PCs), which are are subsequently combined using <strong>fishers method</strong>. This allows to determine outliers with its ranking (strongest to weak). The alpha parameter determines the detection of outliers (default: 0.05).</p>
@@ -186,7 +185,7 @@ It works by computing the <strong>chi-square tests</strong> across the top n_com
 </div>
 </section>
 <section id="spe-dmodx">
-<h1>SPE/Dmodx<a class="headerlink" href="#spe-dmodx" title="Permalink to this heading"></a></h1>
+<h1>SPE/Dmodx<a class="headerlink" href="#spe-dmodx" title="Permalink to this headline"></a></h1>
 <p>Outlier can be detected using SPE/DmodX (distance to model) based on the mean and covariance of the first 2 dimensions of X.
 On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are complementary to each other.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hotellingt2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -211,7 +210,7 @@ On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are comple
 </table>
 </section>
 <section id="selection-of-the-outliers">
-<h1>Selection of the Outliers<a class="headerlink" href="#selection-of-the-outliers" title="Permalink to this heading"></a></h1>
+<h1>Selection of the Outliers<a class="headerlink" href="#selection-of-the-outliers" title="Permalink to this headline"></a></h1>
 <p>Selecting the outliers can be usefull to remove them from the dataset or for deeper investigation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select the outliers</span>
 <span class="n">Xoutliers</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">][</span><span class="s1">&#39;y_bool&#39;</span><span class="p">],:]</span>
@@ -222,7 +221,7 @@ On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are comple
 </div>
 </section>
 <section id="detect-new-unseen-outliers">
-<h1>Detect new unseen outliers<a class="headerlink" href="#detect-new-unseen-outliers" title="Permalink to this heading"></a></h1>
+<h1>Detect new unseen outliers<a class="headerlink" href="#detect-new-unseen-outliers" title="Permalink to this headline"></a></h1>
 <p>After fitting a model on the data, you may want to use the model in a later stage to detect outliers on <em>unseen</em> data.
 Detection of <em>outliers</em> is performed in the <strong>transform</strong> function and does not require any additional action. An example is shown in the code block below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import libraries</span>
@@ -300,7 +299,7 @@ Detection of <em>outliers</em> is performed in the <strong>transform</strong> fu
 </table>
 </section>
 <section id="detection-of-outliers-without-pca">
-<h1>Detection of outliers without PCA<a class="headerlink" href="#detection-of-outliers-without-pca" title="Permalink to this heading"></a></h1>
+<h1>Detection of outliers without PCA<a class="headerlink" href="#detection-of-outliers-without-pca" title="Permalink to this headline"></a></h1>
 <p>If desired, the outliers can also be detected directly using the hotelling T2 and/or SPE/DmodX functionality.
 For demonstration purposes I use the PCs from the results but any other dataset would also work.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pca</span>
