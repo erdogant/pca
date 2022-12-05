@@ -533,6 +533,9 @@ class pca():
             Colormap. If set to None, no points are shown.
         title : str, default: None
             Title of the figure.
+            None: Automatically create title text based on results.
+            '' : Remove all title text.
+            'title text' : Add custom title text.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         figsize : (int, int), optional, default: (15, 10)
@@ -613,8 +616,11 @@ class pca():
             {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
-        title : str, (default: None)
+        title : str, default: None
             Title of the figure.
+            None: Automatically create title text based on results.
+            '' : Remove all title text.
+            'title text' : Add custom title text.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         figsize : (int, int), optional, default: (15, 10)
@@ -788,8 +794,11 @@ class pca():
             {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
-        title : str, (default: None)
+        title : str, default: None
             Title of the figure.
+            None: Automatically create title text based on results.
+            '' : Remove all title text.
+            'title text' : Add custom title text.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         figsize : (int, int), optional, default: (15, 10)
@@ -927,8 +936,11 @@ class pca():
             {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
-        title : str, (default: None)
+        title : str, default: None
             Title of the figure.
+            None: Automatically create title text based on results.
+            '' : Remove all title text.
+            'title text' : Add custom title text.
         legend : Bool, default: True
             Show the legend based on the unique y-labels.
         figsize : (int, int), optional, default: (15, 10)
@@ -979,8 +991,11 @@ class pca():
             None: All PCs.
         xsteps : int, optional
             Set the number of xticklabels.
-        title : str, (default: None)
+        title : str, default: None
             Title of the figure.
+            None: Automatically create title text based on results.
+            '' : Remove all title text.
+            'title text' : Add custom title text.
         visible : Bool, default: True
             Visible status of the Figure
             True : Figure is shown.
