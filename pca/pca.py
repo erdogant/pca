@@ -322,7 +322,7 @@ class pca():
         PCnames = list(map(lambda x: ''.join(x), PCzip))
         loadings = pd.DataFrame(loadings, columns=col_labels, index=PCnames)
         # Return
-        return(loadings)
+        return loadings
 
     # Top scoring components
     def compute_topfeat(self, loadings=None, verbose=3):
@@ -453,7 +453,7 @@ class pca():
             # ax2.set_title('Zero-mean with unit variance normalized')
             # ax2.grid(True)
 
-        return(X, row_labels, col_labels, scaler)
+        return (X, row_labels, col_labels, scaler)
 
     # Figure pre processing
     def _fig_preprocessing(self, y, n_feat, d3):
@@ -594,6 +594,8 @@ class pca():
         ----------
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
+        s: Int or list/array of sizes with same size as number of PCs -> .results['PC']
+            Size(s) of the scatter-points.
         d3 : Bool, default: False
             3d plot is created when True.
         label : Bool, default: True
@@ -658,6 +660,7 @@ class pca():
 
         # Get the colors
         if cmap is None:
+            # Hide the scatterpoints by making them all white.
             getcolors = np.repeat([1., 1., 1.], len(y), axis=0).reshape(-1, 3)
         else:
             # Figure properties
@@ -886,7 +889,7 @@ class pca():
         # Plot the adjusted text labels to prevent overlap
         if len(texts)>0: adjust_text(texts)
         if visible: plt.show()
-        return(fig, ax)
+        return (fig, ax)
 
     def biplot3d(self,
                  y=None,
@@ -978,7 +981,7 @@ class pca():
                               visible=visible,
                               verbose=verbose)
 
-        return(fig, ax)
+        return (fig, ax)
 
     # Show explained variance plot
     def plot(self, n_components=None, xsteps=None, title=None, visible=True, figsize=(15, 10), verbose=3):
@@ -1057,7 +1060,7 @@ class pca():
             plt.show()
             plt.draw()
         # Return
-        return(fig, ax)
+        return (fig, ax)
 
     # Top scoring components
     def norm(self, X, n_components=None, pcexclude=[1]):
@@ -1108,7 +1111,7 @@ class pca():
         # Transform data
         out = np.repeat(np.mean(X, axis=1).reshape(-1, 1), X.shape[1], axis=1) + np.dot(score.values[:, ndims], coeff[:, ndims].T)
         # Return
-        return(out)
+        return out
 
     # Import example
     def import_example(self, data='titanic', verbose=3):
@@ -1304,7 +1307,7 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, param=None, verbose=3):
         Pcomb.append(stats.combine_pvalues(y_proba[i, :], method='fisher'))
 
     Pcomb = np.array(Pcomb)
-    outliers = pd.DataFrame(data={'y_proba':Pcomb[:, 1], 'y_score': Pcomb[:, 0], 'y_bool': Pcomb[:, 1] <= alpha})
+    outliers = pd.DataFrame(data={'y_proba': Pcomb[:, 1], 'y_score': Pcomb[:, 0], 'y_bool': Pcomb[:, 1] <= alpha})
     # Return
     return outliers, y_bools, param
 
@@ -1343,7 +1346,7 @@ def _explainedvar(X, method='pca', n_components=None, onehot=False, random_state
     #     percentExplVar = model.explained_variance_ratio_.cumsum()
 
     # Return
-    return(model, PC, loadings, percentExplVar)
+    return (model, PC, loadings, percentExplVar)
 
 
 # %% Store results
@@ -1411,6 +1414,9 @@ def import_example(data='titanic', verbose=3):
 # %%
 def _get_explained_variance(X, components):
     """Get the explained variance.
+
+    Description
+    -----------
     Get the explained variance from the principal components of the
     data. This follows the method outlined in [1] section 3.4 (Adjusted Total
     Variance). For an alternate approach (not implemented here), see [2].
@@ -1459,6 +1465,6 @@ def _get_explained_variance(X, components):
     # and the adjusted components
     Y = np.tensordot(X, proj_corrected_vecs.T, axes=(1, 0))
     YYT = np.tensordot(Y.T, Y, axes=(1, 0))
-    explained_variance = np.diag(YYT)/(n_samples-1)
+    explained_variance = np.diag(YYT) / (n_samples - 1)
 
     return explained_variance
