@@ -3,6 +3,30 @@ import pandas as pd
 import numpy as np
 
 # %%
+import numpy as np
+from sklearn.datasets import load_iris
+
+# Load dataset
+X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
+
+# Load pca
+from pca import pca
+model = pca(n_components=0.95)
+model = pca(n_components=3)
+results = model.fit_transform(X, verbose=2)
+
+
+model.scatter()
+model.scatter(gradient='#ffffff')
+model.scatter(gradient='#ffffff', cmap='tab20')
+model.scatter(gradient='#ffffff', cmap='tab20', y=np.ones_like(model.results['PC'].index.values))
+
+model.scatter(gradient='#5dfa02')
+model.scatter(gradient='#5dfa02', cmap='tab20')
+model.scatter(gradient='#5dfa02', cmap='tab20', y=np.ones_like(model.results['PC'].index.values))
+
+
+# %%
 # import pca
 # print(pca.__version__)
 
