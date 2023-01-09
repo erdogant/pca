@@ -492,6 +492,7 @@ class pca():
     # Scatter plot
     def scatter3d(self,
                   y=None,
+                  c=None,
                   label=True,
                   PC=[0, 1, 2],
                   SPE=False,
@@ -512,6 +513,8 @@ class pca():
         ----------
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
+        c: list/array of RGB colors for each sample.
+            Color of samples in RGB colors.
         label : Bool, default: True
             True Show the labels.
             False: Do not show the labels
@@ -553,6 +556,7 @@ class pca():
         """
         if self.results['PC'].shape[1]>=3:
             fig, ax = self.scatter(y=y,
+                                   c=c,
                                    d3=True,
                                    label=label,
                                    PC=PC, SPE=SPE,
@@ -576,6 +580,7 @@ class pca():
     def scatter(self,
                 y=None,
                 s=50,
+                c=None,
                 d3=False,
                 label=True,
                 PC=[0, 1],
@@ -599,6 +604,8 @@ class pca():
             Label for each sample. The labeling is used for coloring the samples.
         s: Int or list/array of sizes with same size as number of PCs -> .results['PC']
             Size(s) of the scatter-points.
+        c: list/array of RGB colors for each sample.
+            Color of samples in RGB colors.
         d3 : Bool, default: False
             3d plot is created when True.
         label : Bool, default: True
@@ -640,6 +647,7 @@ class pca():
         tuple containing (fig, ax)
 
         """
+        if c is None: c=[[0, 0, 0]]
         if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
         fontdict = {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}, **fontdict}
         # Setup figure
@@ -672,7 +680,9 @@ class pca():
         else:
             # Figure properties
             xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
-            getcolors, fontcolor = scatterd.set_colors(xyz, y, None, [[0, 0, 0]], cmap, gradient=gradient)
+            # getcolors, fontcolor = scatterd.set_colors(xyz, y, None, [[0, 0, 0]], cmap, gradient=gradient)
+            if len(c)==len(y): y = np.repeat(0, len(xyz))
+            getcolors, fontcolor = scatterd.set_colors(xyz, y, None, c, cmap, gradient=gradient)
 
         if hotellingt2 and ('y_bool' in self.results['outliers'].columns):
             Ioutlier1 = self.results['outliers']['y_bool'].values
@@ -745,6 +755,7 @@ class pca():
 
     def biplot(self,
                y=None,
+               c=None,
                n_feat=None,
                d3=False,
                label=True,
@@ -775,6 +786,8 @@ class pca():
         ----------
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
+        c: list/array of RGB colors for each sample.
+            Color of samples in RGB colors.
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         d3 : Bool, default: False
@@ -857,9 +870,9 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -893,6 +906,7 @@ class pca():
 
     def biplot3d(self,
                  y=None,
+                 c=None,
                  n_feat=None,
                  label=True,
                  PC=[0, 1, 2],
@@ -915,6 +929,8 @@ class pca():
         ----------
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
+        c: list/array of RGB colors for each sample.
+            Color of samples in RGB colors.
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         label : Bool, default: True
@@ -968,6 +984,7 @@ class pca():
 
         fig, ax = self.biplot(y=y,
                               n_feat=n_feat,
+                              c=c,
                               d3=True,
                               label=label,
                               PC=PC,
