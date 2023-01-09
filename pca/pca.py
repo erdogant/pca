@@ -698,9 +698,6 @@ class pca():
         else:
             for yk in uiy:
                 Iloc_sampl = (yk==y)
-                # Iloc_sampl = np.logical_and(Iloc_sampl, Inormal)
-                # Set color back to the mapped samples
-                # if yk=='mapped': Iloc_sampl[y=='mapped']=True
 
                 if d3:
                     ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=s + 10, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
