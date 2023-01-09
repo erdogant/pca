@@ -504,6 +504,7 @@ class pca():
                   legend=True,
                   figsize=(15, 10),
                   visible=True,
+                  fig=None,
                   verbose=3):
         """Scatter 3d plot.
 
@@ -564,6 +565,7 @@ class pca():
                                    legend=legend,
                                    figsize=figsize,
                                    visible=visible,
+                                   fig=fig,
                                    verbose=verbose)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
@@ -587,6 +589,7 @@ class pca():
                 legend=True,
                 figsize=(20, 15),
                 visible=True,
+                fig=None,
                 verbose=3):
         """Scatter 2d plot.
 
@@ -640,11 +643,15 @@ class pca():
         if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
         fontdict = {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}, **fontdict}
         # Setup figure
-        fig = plt.figure(figsize=figsize)
-        if d3:
-            ax = fig.add_subplot(projection='3d')
+        if fig is None:
+            fig = plt.figure(figsize=figsize)
+            if d3:
+                ax = fig.add_subplot(projection='3d')
+            else:
+                ax = fig.add_subplot()
         else:
-            ax = fig.add_subplot()
+            ax = fig.axes[0]
+
         # fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
         fig.set_visible(visible)
 
@@ -756,6 +763,7 @@ class pca():
                legend=True,
                figsize=(15, 10),
                visible=True,
+               fig=None,
                verbose=3):
         """Create the Biplot.
 
@@ -808,6 +816,8 @@ class pca():
             (width, height) in inches.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
+        fig : Object, Default: None
+            Figure Object.
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
@@ -822,15 +832,8 @@ class pca():
             * https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697
 
         """
-        if self.results['PC'].shape[1]<2: raise ValueError('[pca] >[Error] Requires 2 PCs to make 2d plot.')
-        if d3 and len(PC)<3: raise ValueError('[pca] >[Error] in case of biplot3d or d3=True, at least 3 PCs are required.')
-        if np.max(PC)>=self.results['PC'].shape[1]: raise ValueError('[pca] >[Error] PC%.0d does not exist!' %(np.max(PC) + 1))
-        if verbose>=3 and d3:
-            print('[pca] >Plot PC%.0d vs PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1, PC[2] + 1))
-        elif verbose>=3:
-            print('[pca] >Plot PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1))
-        if cmap is False: cmap=None
-        fontdict = {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}, **fontdict}
+        # Input checks
+        fontdict, cmap = _biplot_input_checks(self.results, PC, cmap, fontdict, d3, verbose)
 
         # Pre-processing
         y, topfeat, n_feat = self._fig_preprocessing(y, n_feat, d3)
@@ -857,9 +860,9 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -888,7 +891,7 @@ class pca():
 
         # Plot the adjusted text labels to prevent overlap
         if len(texts)>0: adjust_text(texts)
-        if visible: plt.show()
+        # if visible: plt.show()
         return (fig, ax)
 
     def biplot3d(self,
@@ -907,6 +910,7 @@ class pca():
                  legend=True,
                  figsize=(15, 10),
                  visible=True,
+                 fig=None,
                  verbose=3):
         """Make biplot in 3d.
 
@@ -950,6 +954,8 @@ class pca():
             (width, height) in inches.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
+        fig : Object, Default: None
+            Figure Object.
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
@@ -979,12 +985,13 @@ class pca():
                               legend=legend,
                               figsize=figsize,
                               visible=visible,
+                              fig=fig,
                               verbose=verbose)
 
         return (fig, ax)
 
     # Show explained variance plot
-    def plot(self, n_components=None, xsteps=None, title=None, visible=True, figsize=(15, 10), verbose=3):
+    def plot(self, n_components=None, xsteps=None, title=None, visible=True, figsize=(15, 10), fig=None, verbose=3):
         """Scree-plot together with explained variance.
 
         Parameters
@@ -1005,6 +1012,8 @@ class pca():
             False: Figure is created on the background.
         figsize : (int, int)
             (width, height) in inches.
+        fig : Object, Default: None
+            Figure Object.
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
@@ -1029,7 +1038,11 @@ class pca():
         xtick_idx = np.arange(1, len(explvar) + 1)
 
         # Make figure
-        fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
+        if fig is None:
+            fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
+        else:
+            ax = fig.axes[0]
+        # Set visibility and plot
         fig.set_visible(visible)
         plt.plot(xtick_idx, explvarCum, 'o-', color='k', linewidth=1, label='Cumulative explained variance')
 
@@ -1468,3 +1481,20 @@ def _get_explained_variance(X, components):
     explained_variance = np.diag(YYT) / (n_samples - 1)
 
     return explained_variance
+
+
+def _biplot_input_checks(results, PC, cmap, fontdict, d3, verbose):
+    # Check PCs
+    if results['PC'].shape[1]<2: raise ValueError('[pca] >[Error] Requires 2 PCs to make 2d plot.')
+    if d3 and len(PC)<3: raise ValueError('[pca] >[Error] in case of biplot3d or d3=True, at least 3 PCs are required.')
+    if np.max(PC)>=results['PC'].shape[1]: raise ValueError('[pca] >[Error] PC%.0d does not exist!' %(np.max(PC) + 1))
+    if verbose>=3 and d3:
+        print('[pca] >Plot PC%.0d vs PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1, PC[2] + 1))
+    elif verbose>=3:
+        print('[pca] >Plot PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1))
+    if cmap is False: cmap=None
+
+    # Set font dictionary
+    fontdict = {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}, **fontdict}
+    # Return
+    return fontdict, cmap
