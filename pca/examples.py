@@ -3,6 +3,17 @@ import pandas as pd
 import numpy as np
 
 # %%
+from sklearn.datasets import make_friedman1
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+# model = pca(method='sparse_pca')
+model = pca(method='trunc_svd')
+model.fit_transform(X)
+fig, ax = model.biplot(fontdict={'size':10, 'weight':'normal'}, title=None, SPE=False, hotellingt2=True, n_feat=10, visible=False)
+fig.axes[0].set_title('test')
+fig, ax = model.biplot(fontdict={'size':16, 'weight':'bold'}, SPE=True, n_feat=3, fig=fig, visible=True)
+
+# %%
 import numpy as np
 from sklearn.datasets import load_iris
 
