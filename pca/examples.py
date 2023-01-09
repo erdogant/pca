@@ -3,15 +3,54 @@ import pandas as pd
 import numpy as np
 
 # %%
+# https://github.com/erdogant/pca/issues/40
+
+from sklearn.datasets import load_iris
+import pandas as pd
+from pca import pca
+import matplotlib as mpl
+import colourmap
+
+y=load_iris().target
+
+# Initialize
+model = pca(n_components=3, normalize=True)
+# Dataset
+X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=y)
+# Fit transform
+out = model.fit_transform(X)
+
+c = colourmap.fromlist(load_iris().target, cmap='Set2')[0]
+c[0] = [0,0,0]
+y1 = np.repeat(0, len(y))
+
+# plot manually specified colors
+model.biplot(c=c, legend=False, label=False)
+# Also use cmap colors in case all class labels are the same
+model.biplot(y=y1, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+
+# Color on classlabel (Unchanged)
+model.biplot()
+# Use cmap colors for classlabels (unchanged)
+model.biplot(y=load_iris().target, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+# Do not show points when cmap=None (unchanged)
+model.biplot(y=load_iris().target, cmap=None)
+# Plot all points as unique entity (unchanged)
+model.biplot(y=None, legend=False, label=False)
+
+# %%
 from sklearn.datasets import make_friedman1
 X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
 
-# model = pca(method='sparse_pca')
-model = pca(method='trunc_svd')
+# Init
+model = pca()
+# Fit
 model.fit_transform(X)
+# Make plot with some parameters
 fig, ax = model.biplot(fontdict={'size':10, 'weight':'normal'}, title=None, SPE=False, hotellingt2=True, n_feat=10, visible=False)
-fig.axes[0].set_title('test')
-fig, ax = model.biplot(fontdict={'size':16, 'weight':'bold'}, SPE=True, n_feat=3, fig=fig, visible=True)
+# Use the existing fig and create new edits such as different fontsize and title and SPE=True
+fig, ax = model.biplot(fontdict={'size':16, 'weight':'bold'}, SPE=True, n_feat=3, fig=fig, visible=True, title='updated fig.')
+
 
 # %%
 import numpy as np
