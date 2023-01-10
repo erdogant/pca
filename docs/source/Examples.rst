@@ -361,6 +361,95 @@ Normalize your data using the principal components. As an example, suppose there
 	ax = pca.biplot(model, col_labels=col_labels, row_labels=y)
 
 
+Colors in plots
+#########################
+
+The default colors that are used in the plots depend on how much information is provided at start.
+There are many options to change the colors as you like. Here I will demonstrate some of the possibilities.
+
+First, we will load the data and import the libraries.
+
+.. code:: python
+
+	# Import iris dataset and other required libraries
+	from sklearn.datasets import load_iris
+	import pandas as pd
+	import matplotlib as mpl
+	import colourmap
+
+	# Import pca
+	from pca import pca
+	
+	# Class labels
+	y = load_iris().target
+
+	# Initialize pca
+	model = pca(n_components=3, normalize=True)
+	# Dataset
+	X = pd.DataFrame(index=y, data=load_iris().data, columns=load_iris().feature_names)
+	# Fit transform
+	out = model.fit_transform(X)
+
+
+.. code:: python
+
+	# The default setting is to color on classlabels (y). These are provided as the index in the dataframe.
+	model.biplot()
+
+	# Use custom cmap for classlabels (as an example I explicitely provide three colors).
+	model.biplot(cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+
+
+
+.. |figE3| image:: ../figs/color_default.png
+.. |figE4| image:: ../figs/color_cmap.png
+
+.. table:: Left: Default plot using the provided classlabels. Right: Color on custom cmap.
+   :align: center
+
+   +----------+----------+
+   | |figE3|  | |figE4|  |
+   +----------+----------+
+
+
+
+.. code:: python
+
+	# Set custom classlabels. Coloring is based on the input colormap (cmap).
+	y[10:15]=4
+	model.biplot(y=y, cmap='Set2')
+
+	# Set custom classlabels and also use custom colors.
+	c = colourmap.fromlist(y, cmap='Set2')[0]
+	c[10:15] = [0,0,0]
+	model.biplot(y=y, c=c)
+
+
+.. |figE5| image:: ../figs/color_cmap_y.png
+.. |figE6| image:: ../figs/color_using_custom_colors.png
+
+.. table:: Left: Mark some points on y and use cmap. Right: Specify the colors manually.
+   :align: center
+
+   +----------+----------+
+   | |figE5|  | |figE6|  |
+   +----------+----------+
+
+
+.. code:: python
+	
+	# Remove scatterpoints by setting cmap=None
+	model.biplot(cmap=None)
+
+
+.. |figE7| image:: ../figs/color_no_scatter.png
+
+.. table:: Remove scatterpoints from plot.
+   :align: center
+
+   +----------+
+   | |figE7|  |
+   +----------+
 
 
 .. raw:: html
