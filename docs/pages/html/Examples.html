@@ -17,7 +17,6 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -33,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> pca
           </a>
               <div class="version">
-                1.8.4
+                1.8.6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -98,6 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#normalizing-out-pcs">Normalizing out PCs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#colors-in-plots">Colors in plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebook.html">Notebook</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
@@ -445,6 +445,93 @@ To demonstrate how to do this, I will use the Titanic dataset. We need to pip in
 <span class="n">ax</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">col_labels</span><span class="o">=</span><span class="n">col_labels</span><span class="p">,</span> <span class="n">row_labels</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="colors-in-plots">
+<h1>Colors in plots<a class="headerlink" href="#colors-in-plots" title="Permalink to this heading"></a></h1>
+<p>The default colors that are used in the plots depend on how much information is provided at start.
+There are many parameters to change the colors in the plots. Here I will demonstrate some of the possibilities.</p>
+<p>First, we will load the data and import the libraries.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import iris dataset and other required libraries</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_iris</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">colourmap</span>
+
+<span class="c1"># Import pca</span>
+<span class="kn">from</span> <span class="nn">pca</span> <span class="kn">import</span> <span class="n">pca</span>
+
+<span class="c1"># Class labels</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span><span class="o">.</span><span class="n">target</span>
+
+<span class="c1"># Initialize pca</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Dataset</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">load_iris</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">load_iris</span><span class="p">()</span><span class="o">.</span><span class="n">feature_names</span><span class="p">)</span>
+<span class="c1"># Fit transform</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Lets start with the default plot using hte classlabels (y), and change it using a custom cmap.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># The default setting is to color on classlabels (y). These are provided as the index in the dataframe.</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">()</span>
+
+<span class="c1"># Use custom cmap for classlabels (as an example I explicitely provide three colors).</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<table class="docutils align-center" id="id4">
+<caption><span class="caption-text">Left: Default plot using the provided classlabels. Right: Color on custom cmap.</span><a class="headerlink" href="#id4" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="figE3" src="_images/color_default.png" /></p></td>
+<td><p><img alt="figE4" src="_images/color_cmap.png" /></p></td>
+</tr>
+</tbody>
+</table>
+<p>If you want to highlight some samples in the graph, you easily change the classlabels.
+The colors are automatically created using the specified colormap. However, this can cause that
+the points of interest can still be difficult to find. Therefore it is also possible to set the
+input colors for each sample manually.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set custom classlabels. Coloring is based on the input colormap (cmap).</span>
+<span class="n">y</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span><span class="o">=</span><span class="mi">4</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Set2&#39;</span><span class="p">)</span>
+
+<span class="c1"># Set custom classlabels and also use custom colors.</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">colourmap</span><span class="o">.</span><span class="n">fromlist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Set2&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">c</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils align-center" id="id5">
+<caption><span class="caption-text">Left: Mark some points on y and use cmap. Right: Specify the colors manually.</span><a class="headerlink" href="#id5" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="figE5" src="_images/color_cmap_y.png" /></p></td>
+<td><p><img alt="figE6" src="_images/color_using_custom_colors.png" /></p></td>
+</tr>
+</tbody>
+</table>
+<p>The highlight the loadings, all scatterpoints can be removed by setting the cmap to None.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remove scatterpoints by setting cmap=None</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils align-center" id="id6">
+<caption><span class="caption-text">Remove scatterpoints from plot.</span><a class="headerlink" href="#id6" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="figE7" src="_images/color_no_scatter.png" /></p></td>
+</tr>
+</tbody>
+</table>
 <hr>
 <center>
         <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CEADP27U&placement=erdogantgithubio" id="_carbonads_js"></script>

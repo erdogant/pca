@@ -365,7 +365,7 @@ Colors in plots
 #########################
 
 The default colors that are used in the plots depend on how much information is provided at start.
-There are many options to change the colors as you like. Here I will demonstrate some of the possibilities.
+There are many parameters to change the colors in the plots. Here I will demonstrate some of the possibilities.
 
 First, we will load the data and import the libraries.
 
@@ -391,6 +391,9 @@ First, we will load the data and import the libraries.
 	out = model.fit_transform(X)
 
 
+Lets start with the default plot using hte classlabels (y), and change it using a custom cmap.
+
+
 .. code:: python
 
 	# The default setting is to color on classlabels (y). These are provided as the index in the dataframe.
@@ -411,6 +414,11 @@ First, we will load the data and import the libraries.
    | |figE3|  | |figE4|  |
    +----------+----------+
 
+
+If you want to highlight some samples in the graph, you easily change the classlabels.
+The colors are automatically created using the specified colormap. However, this can cause that
+the points of interest can still be difficult to find. Therefore it is also possible to set the
+input colors for each sample manually.
 
 
 .. code:: python
@@ -435,6 +443,8 @@ First, we will load the data and import the libraries.
    | |figE5|  | |figE6|  |
    +----------+----------+
 
+
+The highlight the loadings, all scatterpoints can be removed by setting the cmap to None.
 
 .. code:: python
 	

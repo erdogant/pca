@@ -6,7 +6,7 @@
 
 -------------------------------------
 
-|python| |pypi| |docs| |LOC| |downloads_month| |downloads_total| |license| |forks| |open issues| |project status| |medium| |colab| |donate|
+|python| |pypi| |docs| |LOC| |downloads_month| |downloads_total| |license| |forks| |open issues| |project status| |repo-size| |DOI| |medium| |colab| |donate|
 
 
 **PCA** is a python package to perform *Principal Component Analysis* and to create insightful *plots*.
@@ -101,66 +101,60 @@ Indices and tables
 
 .. |python| image:: https://img.shields.io/pypi/pyversions/pca.svg
     :alt: |Python
-    :scale: 100%
     :target: https://erdogant.github.io/pca/
 
 .. |pypi| image:: https://img.shields.io/pypi/v/pca.svg
     :alt: |Python Version
-    :scale: 100%
     :target: https://pypi.org/project/pca/
 
 .. |docs| image:: https://img.shields.io/badge/Sphinx-Docs-blue.svg
     :alt: Sphinx documentation
-    :scale: 100%
     :target: https://erdogant.github.io/pca/
 
 .. |LOC| image:: https://sloc.xyz/github/erdogant/pca/?category=code
     :alt: lines of code
-    :scale: 100%
     :target: https://github.com/erdogant/pca
 
 .. |downloads_month| image:: https://static.pepy.tech/personalized-badge/pca?period=month&units=international_system&left_color=grey&right_color=brightgreen&left_text=PyPI%20downloads/month
     :alt: Downloads per month
-    :scale: 100%
     :target: https://pepy.tech/project/pca
 
 .. |downloads_total| image:: https://static.pepy.tech/personalized-badge/pca?period=total&units=international_system&left_color=grey&right_color=brightgreen&left_text=Downloads
     :alt: Downloads in total
-    :scale: 100%
     :target: https://pepy.tech/project/pca
 
 .. |license| image:: https://img.shields.io/badge/license-MIT-green.svg
     :alt: License
-    :scale: 100%
     :target: https://github.com/erdogant/pca/blob/master/LICENSE
 
 .. |forks| image:: https://img.shields.io/github/forks/erdogant/pca.svg
     :alt: Github Forks
-    :scale: 100%
     :target: https://github.com/erdogant/pca/network
 
 .. |open issues| image:: https://img.shields.io/github/issues/erdogant/pca.svg
     :alt: Open Issues
-    :scale: 100%
     :target: https://github.com/erdogant/pca/issues
 
 .. |project status| image:: http://www.repostatus.org/badges/latest/active.svg
     :alt: Project Status
-    :scale: 100%
     :target: http://www.repostatus.org/#active
 
 .. |medium| image:: https://img.shields.io/badge/Medium-Blog-green.svg
     :alt: Medium Blog
-    :scale: 100%
     :target: https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
 
 .. |donate| image:: https://img.shields.io/badge/Support%20this%20project-grey.svg?logo=github%20sponsors
     :alt: donate
-    :scale: 100%
     :target: https://erdogant.github.io/pca/pages/html/Documentation.html#
 
 .. |colab| image:: https://colab.research.google.com/assets/colab-badge.svg
     :alt: Colab example
-    :scale: 100%
     :target: https://erdogant.github.io/pca/pages/html/Documentation.html#colab-notebook
 
+.. |DOI| image:: https://zenodo.org/badge/233232884.svg
+    :alt: Cite
+    :target: https://zenodo.org/badge/latestdoi/233232884
+
+.. |repo-size| image:: https://img.shields.io/github/repo-size/erdogant/pca
+    :alt: repo-size
+    :target: https://img.shields.io/github/repo-size/erdogant/pca
