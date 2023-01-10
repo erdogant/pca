@@ -16,9 +16,12 @@ y=load_iris().target
 # Initialize
 model = pca(n_components=3, normalize=True)
 # Dataset
-X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=y)
+X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names)
 # Fit transform
 out = model.fit_transform(X)
+
+# Plot all points as unique entity (unchanged)
+model.biplot(y=None, legend=False, label=False)
 
 c = colourmap.fromlist(load_iris().target, cmap='Set2')[0]
 c[0] = [0,0,0]
@@ -32,7 +35,7 @@ model.biplot(y=y1, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 # Color on classlabel (Unchanged)
 model.biplot()
 # Use cmap colors for classlabels (unchanged)
-model.biplot(y=load_iris().target, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+model.biplot(y=y, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 # Do not show points when cmap=None (unchanged)
 model.biplot(y=load_iris().target, cmap=None)
 # Plot all points as unique entity (unchanged)
