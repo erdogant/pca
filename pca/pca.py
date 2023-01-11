@@ -499,7 +499,7 @@ class pca():
                   hotellingt2=False,
                   alpha_transparency=None,
                   gradient=None,
-                  fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center'},
+                  fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'black'},
                   cmap='Set1',
                   title=None,
                   legend=True,
@@ -532,7 +532,7 @@ class pca():
             '#FFFFFF'
         fontdict : dict.
             dictionary containing properties for the arrow font-text
-            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}
+            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'black'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
@@ -588,7 +588,7 @@ class pca():
                 hotellingt2=False,
                 alpha_transparency=None,
                 gradient=None,
-                fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center'},
+                fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'black'},
                 cmap='Set1',
                 title=None,
                 legend=True,
@@ -625,7 +625,7 @@ class pca():
             '#FFFFFF'
         fontdict : dict.
             dictionary containing properties for the arrow font-text
-            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}
+            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'black'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
@@ -693,7 +693,6 @@ class pca():
                 if g_ellipse is not None: ax.add_artist(g_ellipse)
 
         # Make scatter plot of all not-outliers
-        # Inormal = ~np.logical_or(Ioutlier1, Ioutlier2)
         uiy = np.unique(y)
 
         if (len(uiy)==len(y)) and (len(uiy)>=1000) and (label is not None):
@@ -764,7 +763,7 @@ class pca():
                alpha_transparency=None,
                gradient=None,
                color_arrow='r',
-               fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center'},
+               fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'},
                cmap='Set1',
                title=None,
                legend=True,
@@ -810,8 +809,9 @@ class pca():
             color for the arrow.
             'r' (default)
         fontdict : dict.
-            dictionary containing properties for the arrow font-text
-            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}
+            dictionary containing properties for the arrow font-text.
+            Note that the [c]olor: 'color_arrow' inherits the color used in color_arrow.
+            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
@@ -842,7 +842,7 @@ class pca():
 
         """
         # Input checks
-        fontdict, cmap = _biplot_input_checks(self.results, PC, cmap, fontdict, d3, verbose)
+        fontdict, cmap = _biplot_input_checks(self.results, PC, cmap, fontdict, d3, color_arrow, verbose)
 
         # Pre-processing
         y, topfeat, n_feat = self._fig_preprocessing(y, n_feat, d3)
@@ -914,7 +914,7 @@ class pca():
                  alpha_transparency=1,
                  gradient=None,
                  color_arrow='r',
-                 fontdict={'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'},
+                 fontdict={'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'},
                  cmap='Set1',
                  title=None,
                  legend=True,
@@ -952,7 +952,8 @@ class pca():
             'r' (default)
         fontdict : dict.
             dictionary containing properties for the arrow font-text
-            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}
+            Note that the [c]olor: 'color_arrow' inherits the color used in color_arrow.
+            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
@@ -1496,7 +1497,7 @@ def _get_explained_variance(X, components):
     return explained_variance
 
 
-def _biplot_input_checks(results, PC, cmap, fontdict, d3, verbose):
+def _biplot_input_checks(results, PC, cmap, fontdict, d3, color_arrow, verbose):
     # Check PCs
     if results['PC'].shape[1]<2: raise ValueError('[pca] >[Error] Requires 2 PCs to make 2d plot.')
     if d3 and len(PC)<3: raise ValueError('[pca] >[Error] in case of biplot3d or d3=True, at least 3 PCs are required.')
@@ -1507,11 +1508,15 @@ def _biplot_input_checks(results, PC, cmap, fontdict, d3, verbose):
         print('[pca] >Plot PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1))
     if cmap is False: cmap=None
     # Set defaults in fontdict
-    fontdict =_set_fontdict(fontdict)
+    fontdict =_set_fontdict(fontdict, color_arrow)
     # Set font dictionary
     # Return
     return fontdict, cmap
 
 
-def _set_fontdict(fontdict):
-    return {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}, **fontdict}
+def _set_fontdict(fontdict, color_arrow=None):
+    color_arrow = 'black' if (color_arrow is None) else color_arrow
+    fontdict = {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': color_arrow}, **fontdict}
+    if fontdict.get('c')=='color_arrow' and (color_arrow is not None):
+        fontdict['c'] = color_arrow
+    return fontdict
