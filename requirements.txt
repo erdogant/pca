@@ -6,5 +6,5 @@ colourmap>="1.1.10"
 wget
 pandas
 tqdm
-scatterd>="1.2.3"
+scatterd>="1.2.5"
 adjustText

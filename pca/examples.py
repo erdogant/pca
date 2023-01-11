@@ -5,32 +5,42 @@ import numpy as np
 # %%
 # https://github.com/erdogant/pca/issues/40
 
+# Import iris dataset and other required libraries
 from sklearn.datasets import load_iris
 import pandas as pd
-from pca import pca
 import matplotlib as mpl
 import colourmap
+from pca import pca
 
-y=load_iris().target
+# Class labels
+y = load_iris().target
 
-# Initialize
+# Initialize pca
 model = pca(n_components=3, normalize=True)
 # Dataset
-X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names)
+X = pd.DataFrame(index=y, data=load_iris().data, columns=load_iris().feature_names)
 # Fit transform
 out = model.fit_transform(X)
 
-# Plot all points as unique entity (unchanged)
-model.biplot(y=None, legend=False, label=False)
+# The default setting is to color on classlabels (y). These are provided as the index in the dataframe.
+model.biplot()
 
-c = colourmap.fromlist(load_iris().target, cmap='Set2')[0]
-c[0] = [0,0,0]
-y1 = np.repeat(0, len(y))
+# Use custom cmap for classlabels (as an example I explicitely provide three colors).
+model.biplot(cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 
-# plot manually specified colors
-model.biplot(c=c, legend=False, label=False)
-# Also use cmap colors in case all class labels are the same
-model.biplot(y=y1, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+# Set custom classlabels. Coloring is based on the input colormap (cmap).
+y[10:15]=4
+model.biplot(y=y, cmap='Set2')
+
+# Set custom classlabels and also use custom colors.
+c = colourmap.fromlist(y, cmap='Set2')[0]
+c[10:15] = [0,0,0]
+model.biplot(y=y, c=c)
+
+
+# Remove scatterpoints by setting cmap=None
+model.biplot(cmap=None)
+
 
 # Color on classlabel (Unchanged)
 model.biplot()
@@ -39,7 +49,7 @@ model.biplot(y=y, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 # Do not show points when cmap=None (unchanged)
 model.biplot(y=load_iris().target, cmap=None)
 # Plot all points as unique entity (unchanged)
-model.biplot(y=None, legend=False, label=False)
+model.biplot(y=y, legend=False, label=False, gradient='#ffffff')
 
 # %%
 from sklearn.datasets import make_friedman1

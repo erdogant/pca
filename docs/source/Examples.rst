@@ -451,15 +451,19 @@ The highlight the loadings, all scatterpoints can be removed by setting the cmap
 	# Remove scatterpoints by setting cmap=None
 	model.biplot(cmap=None)
 
+	# Gradient with white ending using the cmap setting.
+	model.biplot(y=y, gradient='#ffffff', cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+
 
 .. |figE7| image:: ../figs/color_no_scatter.png
+.. |figE8| image:: ../figs/color_gradient.png
 
-.. table:: Remove scatterpoints from plot.
+.. table:: Left: Remove scatterpoints from plot. Right: Gradient with the used cmap.
    :align: center
 
-   +----------+
-   | |figE7|  |
-   +----------+
+   +----------+----------+
+   | |figE7|  | |figE8|  |
+   +----------+----------+
 
 
 .. raw:: html

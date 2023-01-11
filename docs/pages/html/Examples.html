@@ -520,15 +520,20 @@ input colors for each sample manually.</p>
 <p>The highlight the loadings, all scatterpoints can be removed by setting the cmap to None.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remove scatterpoints by setting cmap=None</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># Gradient with white ending using the cmap setting.</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">]))</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id6">
-<caption><span class="caption-text">Remove scatterpoints from plot.</span><a class="headerlink" href="#id6" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Left: Remove scatterpoints from plot. Right: Gradient with the used cmap.</span><a class="headerlink" href="#id6" title="Permalink to this table"></a></caption>
 <colgroup>
-<col style="width: 100%" />
+<col style="width: 50%" />
+<col style="width: 50%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figE7" src="_images/color_no_scatter.png" /></p></td>
+<td><p><img alt="figE8" src="_images/color_gradient.png" /></p></td>
 </tr>
 </tbody>
 </table>
