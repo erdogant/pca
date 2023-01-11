@@ -466,6 +466,36 @@ The highlight the loadings, all scatterpoints can be removed by setting the cmap
    +----------+----------+
 
 
+It is also possible to input a fig as parameter to the plot.
+This will allow to make iterative changes.
+
+.. code:: python
+	
+	from sklearn.datasets import make_friedman1
+	X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+	# Init
+	model = pca()
+	# Fit
+	model.fit_transform(X)
+
+	# Make plot with blue arrows and text
+	fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':10, 'weight':'normal'}, color_arrow='blue', title=None, hotellingt2=True, n_feat=10, visible=True)
+
+	# Use the existing fig and create new edits such red arrows for the first three loadings. Also change the font sizes.
+	fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':16, 'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
+
+
+.. |figE9| image:: ../figs/fig_iterative_changes.png
+
+.. table:: Fig as input to make iterative changes.
+   :align: center
+
+   +----------+
+   | |figE9|  |
+   +----------+
+
+
 .. raw:: html
 
 	<hr>

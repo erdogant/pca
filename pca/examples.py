@@ -11,10 +11,12 @@ X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
 model = pca()
 # Fit
 model.fit_transform(X)
-# Make plot with some parameters
-fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':10, 'weight':'normal'}, color_arrow='red', title=None, SPE=False, hotellingt2=True, n_feat=10, visible=True)
-# Use the existing fig and create new edits such as different fontsize and title and SPE=True
-fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':16, 'weight':'bold'}, color_arrow='blue', SPE=False, n_feat=3, fig=fig, visible=True, title='updated fig.')
+
+# Make plot with blue arrows and text
+fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':10, 'weight':'normal'}, color_arrow='blue', title=None, hotellingt2=True, n_feat=10, visible=True)
+
+# Use the existing fig and create new edits such red arrows for the first three loadings. Also change the font sizes.
+fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':16, 'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
 
 
 # %%
