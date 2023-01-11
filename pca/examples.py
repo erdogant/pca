@@ -2,6 +2,24 @@ from pca import pca
 import pandas as pd
 import numpy as np
 
+
+# %%
+from sklearn.datasets import make_friedman1
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+# Init
+model = pca()
+# Fit
+model.fit_transform(X)
+# Make plot with some parameters
+fig, ax = model.biplot(fontdict={'size':10, 'weight':'normal'}, color_arrow='black', title=None, SPE=False, hotellingt2=True, n_feat=10, visible=True)
+# Use the existing fig and create new edits such as different fontsize and title and SPE=True
+fig, ax = model.biplot(fontdict={'size':16, 'weight':'bold'}, color_arrow='blue', SPE=False, n_feat=3, fig=fig, visible=True, title='updated fig.')
+
+# import matplotlib.pyplot as plt
+# fig, ax = plt.subplots(2,2)
+
+
 # %%
 # https://github.com/erdogant/pca/issues/40
 
@@ -50,19 +68,6 @@ model.biplot(y=y, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 model.biplot(y=load_iris().target, cmap=None)
 # Plot all points as unique entity (unchanged)
 model.biplot(y=y, gradient='#ffffff', cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
-
-# %%
-from sklearn.datasets import make_friedman1
-X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
-
-# Init
-model = pca()
-# Fit
-model.fit_transform(X)
-# Make plot with some parameters
-fig, ax = model.biplot(fontdict={'size':10, 'weight':'normal'}, title=None, SPE=False, hotellingt2=True, n_feat=10, visible=False)
-# Use the existing fig and create new edits such as different fontsize and title and SPE=True
-fig, ax = model.biplot(fontdict={'size':16, 'weight':'bold'}, SPE=True, n_feat=3, fig=fig, visible=True, title='updated fig.')
 
 
 # %%
