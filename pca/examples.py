@@ -12,12 +12,9 @@ model = pca()
 # Fit
 model.fit_transform(X)
 # Make plot with some parameters
-fig, ax = model.biplot(fontdict={'size':10, 'weight':'normal'}, color_arrow='black', title=None, SPE=False, hotellingt2=True, n_feat=10, visible=True)
+fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':10, 'weight':'normal'}, color_arrow='red', title=None, SPE=False, hotellingt2=True, n_feat=10, visible=True)
 # Use the existing fig and create new edits such as different fontsize and title and SPE=True
-fig, ax = model.biplot(fontdict={'size':16, 'weight':'bold'}, color_arrow='blue', SPE=False, n_feat=3, fig=fig, visible=True, title='updated fig.')
-
-# import matplotlib.pyplot as plt
-# fig, ax = plt.subplots(2,2)
+fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':16, 'weight':'bold'}, color_arrow='blue', SPE=False, n_feat=3, fig=fig, visible=True, title='updated fig.')
 
 
 # %%
