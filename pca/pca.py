@@ -680,8 +680,6 @@ class pca():
         else:
             # Figure properties
             xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
-            # getcolors, fontcolor = scatterd.set_colors(xyz, y, None, [[0, 0, 0]], cmap, gradient=gradient)
-            # if len(c)!=len(y): y = np.repeat(0, len(xyz))
             getcolors, fontcolor = scatterd.set_colors(xyz, y, None, c, cmap, gradient=gradient)
 
         if hotellingt2 and ('y_bool' in self.results['outliers'].columns):

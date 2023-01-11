@@ -49,7 +49,7 @@ model.biplot(y=y, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 # Do not show points when cmap=None (unchanged)
 model.biplot(y=load_iris().target, cmap=None)
 # Plot all points as unique entity (unchanged)
-model.biplot(y=y, legend=False, label=False, gradient='#ffffff')
+model.biplot(y=y, gradient='#ffffff', cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 
 # %%
 from sklearn.datasets import make_friedman1
