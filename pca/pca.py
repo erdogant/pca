@@ -649,7 +649,8 @@ class pca():
         """
         if c is None: c=[[0, 0, 0]]
         if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
-        fontdict = {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}, **fontdict}
+        fontdict = _set_fontdict(fontdict)
+
         # Setup figure
         if fig is None:
             fig = plt.figure(figsize=figsize)
@@ -1505,8 +1506,12 @@ def _biplot_input_checks(results, PC, cmap, fontdict, d3, verbose):
     elif verbose>=3:
         print('[pca] >Plot PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1))
     if cmap is False: cmap=None
-
+    # Set defaults in fontdict
+    fontdict =_set_fontdict(fontdict)
     # Set font dictionary
-    fontdict = {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}, **fontdict}
     # Return
     return fontdict, cmap
+
+
+def _set_fontdict(fontdict):
+    return {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center'}, **fontdict}
