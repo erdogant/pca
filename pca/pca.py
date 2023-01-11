@@ -493,6 +493,7 @@ class pca():
     def scatter3d(self,
                   y=None,
                   c=None,
+                  s=50,
                   label=True,
                   PC=[0, 1, 2],
                   SPE=False,
@@ -515,6 +516,11 @@ class pca():
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
             Color of samples in RGB colors.
+            [0,0,0]: If a single color is given, all samples get that color.
+        s: Int or list/array (default: 50)
+            Size(s) of the scatter-points.
+            [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
+            50: all points get this size.
         label : Bool, default: True
             True Show the labels.
             False: Do not show the labels
@@ -557,6 +563,7 @@ class pca():
         if self.results['PC'].shape[1]>=3:
             fig, ax = self.scatter(y=y,
                                    c=c,
+                                   s=s,
                                    d3=True,
                                    label=label,
                                    PC=PC, SPE=SPE,
@@ -579,8 +586,8 @@ class pca():
     # Scatter plot
     def scatter(self,
                 y=None,
-                s=50,
                 c=None,
+                s=50,
                 d3=False,
                 label=True,
                 PC=[0, 1],
@@ -602,10 +609,13 @@ class pca():
         ----------
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
-        s: Int or list/array of sizes with same size as number of PCs -> .results['PC']
-            Size(s) of the scatter-points.
         c: list/array of RGB colors for each sample.
             Color of samples in RGB colors.
+            [0,0,0]: If a single color is given, all samples get that color.
+        s: Int or list/array (default: 50)
+            Size(s) of the scatter-points.
+            [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
+            50: all points get this size.
         d3 : Bool, default: False
             3d plot is created when True.
         label : Bool, default: True
@@ -754,6 +764,7 @@ class pca():
     def biplot(self,
                y=None,
                c=None,
+               s=50,
                n_feat=None,
                d3=False,
                label=True,
@@ -786,6 +797,11 @@ class pca():
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
             Color of samples in RGB colors.
+            [0,0,0]: If a single color is given, all samples get that color.
+        s: Int or list/array (default: 50)
+            Size(s) of the scatter-points.
+            [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
+            50: all points get this size.
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         d3 : Bool, default: False
@@ -869,9 +885,9 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c, s=s)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c, s=s)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -906,6 +922,7 @@ class pca():
     def biplot3d(self,
                  y=None,
                  c=None,
+                 s=50,
                  n_feat=None,
                  label=True,
                  PC=[0, 1, 2],
@@ -930,6 +947,11 @@ class pca():
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
             Color of samples in RGB colors.
+            [0,0,0]: If a single color is given, all samples get that color.
+        s: Int or list/array (default: 50)
+            Size(s) of the scatter-points.
+            [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
+            50: all points get this size.
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         label : Bool, default: True
@@ -985,6 +1007,7 @@ class pca():
         fig, ax = self.biplot(y=y,
                               n_feat=n_feat,
                               c=c,
+                              s=s,
                               d3=True,
                               label=label,
                               PC=PC,
