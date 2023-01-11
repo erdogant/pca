@@ -19,7 +19,7 @@ setuptools.setup(
      version=new_version,
      author="Erdogan Taskesen",
      author_email="erdogant@gmail.com",
-     description="pca is a python package that performs the principal component analysis and makes insightful plots.",
+     description="pca: A Python Package for Principal Component Analysis.",
      long_description=long_description,
      long_description_content_type="text/markdown",
      url="https://erdogant.github.io/pca",
