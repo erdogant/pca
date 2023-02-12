@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import os
 import wget
 from adjustText import adjust_text
+import statsmodels.stats.multitest as multitest
 
 
 # %% Association learning across all variables
@@ -37,6 +38,19 @@ class pca():
         'trunc_svd' : truncated SVD (aka LSA).
     alpha : float, default: 0.05
         Alpha to set the threshold to determine the outliers based on on the Hoteling T2 test.
+    multipletests : str, default: 'fdr_bh'
+        Multiple testing method to correct for the Hoteling T2 test:
+            * None : No multiple testing
+            * 'bonferroni' : one-step correction
+            * 'sidak' : one-step correction
+            * 'holm-sidak' : step down method using Sidak adjustments
+            * 'holm' : step-down method using Bonferroni adjustments
+            * 'simes-hochberg' : step-up method  (independent)
+            * 'hommel' : closed method based on Simes tests (non-negative)
+            * 'fdr_bh' : Benjamini/Hochberg  (non-negative)
+            * 'fdr_by' : Benjamini/Yekutieli (negative)
+            * 'fdr_tsbh' : two stage fdr correction (non-negative)
+            * 'fdr_tsbky' : two stage fdr correction (non-negative
     n_std : int, default: 2
         Number of standard deviations to determine the outliers using SPE/DmodX method.
     onehot : [Bool] optional, (default: False)
@@ -61,7 +75,7 @@ class pca():
 
     """
 
-    def __init__(self, n_components=0.95, n_feat=25, method='pca', alpha=0.05, n_std=2, onehot=False, normalize=False, detect_outliers=['ht2', 'spe'], random_state=None, verbose=3):
+    def __init__(self, n_components=0.95, n_feat=25, method='pca', alpha=0.05, multipletests='fdr_bh', n_std=2, onehot=False, normalize=False, detect_outliers=['ht2', 'spe'], random_state=None, verbose=3):
         """Initialize pca with user-defined parameters."""
         if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
         if onehot:
@@ -76,6 +90,7 @@ class pca():
         self.random_state = random_state
         self.n_feat = n_feat
         self.alpha = alpha
+        self.multipletests = multipletests
         self.n_std = n_std
         self.detect_outliers = detect_outliers
         self.verbose = verbose
@@ -306,7 +321,7 @@ class pca():
         if np.any(np.isin(self.detect_outliers, 'ht2')):
             # Detection of outliers using hotelling T2 test.
             if (paramT2 is not None) and (verbose>=3): print('[pca] >compute hotellingsT2 with precomputed parameter.')
-            outliersHT2, _, paramT2 = hotellingsT2(PC, alpha=self.alpha, df=1, n_components=self.n_components, param=paramT2, verbose=verbose)
+            outliersHT2, _, paramT2 = hotellingsT2(PC, alpha=self.alpha, df=1, n_components=self.n_components, multipletests=self.multipletests, param=paramT2, verbose=verbose)
         if np.any(np.isin(self.detect_outliers, 'spe')):
             # Detection of outliers using elipse method.
             if (paramSPE is not None) and (verbose>=3): print('[pca] >compute SPE with precomputed parameter.')
@@ -1294,7 +1309,7 @@ def spe_dmodx(X, n_std=2, param=None, calpha=0.3, color='green', showfig=False, 
 
 
 # %% Outlier detection
-def hotellingsT2(X, alpha=0.05, df=1, n_components=5, param=None, verbose=3):
+def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', param=None, verbose=3):
     """Test for outlier using hotelling T2 test.
 
     Description
@@ -1314,6 +1329,19 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, param=None, verbose=3):
         Degrees of freedom.
     n_components : int, (default: 5)
         Number of PC components to be used to compute the Pvalue.
+    multipletests : str, default: 'fdr_bh'
+        Multiple testing method. Options are:
+            * None : No multiple testing
+            * 'bonferroni' : one-step correction
+            * 'sidak' : one-step correction
+            * 'holm-sidak' : step down method using Sidak adjustments
+            * 'holm' : step-down method using Bonferroni adjustments
+            * 'simes-hochberg' : step-up method  (independent)
+            * 'hommel' : closed method based on Simes tests (non-negative)
+            * 'fdr_bh' : Benjamini/Hochberg  (non-negative)
+            * 'fdr_by' : Benjamini/Yekutieli (negative)
+            * 'fdr_tsbh' : two stage fdr correction (non-negative)
+            * 'fdr_tsbky' : two stage fdr correction (non-negative)
     param : 2-element tuple (default: None)
         Pre-computed mean and variance in the past run. None to compute from scratch with X.
     Verbose: int (default : 3)
@@ -1357,9 +1385,50 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, param=None, verbose=3):
         Pcomb.append(stats.combine_pvalues(y_proba[i, :], method='fisher'))
 
     Pcomb = np.array(Pcomb)
-    outliers = pd.DataFrame(data={'y_proba': Pcomb[:, 1], 'y_score': Pcomb[:, 0], 'y_bool': Pcomb[:, 1] <= alpha})
+    # Multiple test correction
+    Pcorr = multitest_correction(Pcomb[:, 1], verbose=verbose)
+    # Set dataframe
+    outliers = pd.DataFrame(data={'y_proba': Pcorr, 'p_raw': Pcomb[:, 1], 'y_score': Pcomb[:, 0], 'y_bool': Pcorr <= alpha})
     # Return
     return outliers, y_bools, param
+
+
+# %% Do multiple test correction
+def multitest_correction(Praw, multipletests='fdr_bh', verbose=3):
+    """Multiple test correction for input pvalues.
+
+    Parameters
+    ----------
+    Praw : list of float
+        Pvalues.
+    method : str, default: 'fdr_bh'
+        Multiple testing method. Options are:
+            * None : No multiple testing
+            * 'bonferroni' : one-step correction
+            * 'sidak' : one-step correction
+            * 'holm-sidak' : step down method using Sidak adjustments
+            * 'holm' : step-down method using Bonferroni adjustments
+            * 'simes-hochberg' : step-up method  (independent)
+            * 'hommel' : closed method based on Simes tests (non-negative)
+            * 'fdr_bh' : Benjamini/Hochberg  (non-negative)
+            * 'fdr_by' : Benjamini/Yekutieli (negative)
+            * 'fdr_tsbh' : two stage fdr correction (non-negative)
+            * 'fdr_tsbky' : two stage fdr correction (non-negative)
+
+    Returns
+    -------
+    list of float.
+        Corrected pvalues.
+
+    """
+    if multipletests is not None:
+        if verbose>=3: print("[pca] >Multiple test correction applied for Hotelling T2 test: [%s]" %(multipletests))
+        Padj = multitest.multipletests(Praw, method=multipletests)[1]
+    else:
+        Padj=Praw
+
+    Padj = np.clip(Padj, 0, 1)
+    return Padj
 
 
 # %% Explained variance

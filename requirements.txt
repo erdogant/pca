@@ -8,3 +8,4 @@ pandas
 tqdm
 scatterd>="1.2.5"
 adjustText
+statsmodels
