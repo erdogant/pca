@@ -509,6 +509,7 @@ class pca():
                   y=None,
                   c=None,
                   s=50,
+                  jitter=None,
                   label=True,
                   PC=[0, 1, 2],
                   SPE=False,
@@ -536,6 +537,8 @@ class pca():
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
             50: all points get this size.
+        jitter : float, default: None
+            Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         label : Bool, default: True
             True Show the labels.
             False: Do not show the labels
@@ -579,6 +582,7 @@ class pca():
             fig, ax = self.scatter(y=y,
                                    c=c,
                                    s=s,
+                                   jitter=jitter,
                                    d3=True,
                                    label=label,
                                    PC=PC, SPE=SPE,
@@ -603,6 +607,7 @@ class pca():
                 y=None,
                 c=None,
                 s=50,
+                jitter=None,
                 d3=False,
                 label=True,
                 PC=[0, 1],
@@ -631,6 +636,8 @@ class pca():
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
             50: all points get this size.
+        jitter : float, default: None
+            Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         d3 : Bool, default: False
             3d plot is created when True.
         label : Bool, default: True
@@ -698,6 +705,12 @@ class pca():
 
         # Get coordinates
         xs, ys, zs, ax = _get_coordinates(self.results['PC'], PC, fig, ax, d3)
+
+        # Add jitter
+        if jitter is not None:
+            xs = xs + np.random.normal(0, jitter, size=len(xs))
+            if ys is not None: ys = ys + np.random.normal(0, jitter, size=len(ys))
+            if zs is not None: zs = zs + np.random.normal(0, jitter, size=len(zs))
 
         # Get the colors
         if cmap is None:
@@ -780,6 +793,7 @@ class pca():
                y=None,
                c=None,
                s=50,
+               jitter=None,
                n_feat=None,
                d3=False,
                label=True,
@@ -817,6 +831,8 @@ class pca():
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
             50: all points get this size.
+        jitter : float, default: None
+            Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         d3 : Bool, default: False
@@ -900,9 +916,9 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c, s=s)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c, s=s, jitter=jitter)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c, s=s)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c, s=s, jitter=jitter)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -938,6 +954,7 @@ class pca():
                  y=None,
                  c=None,
                  s=50,
+                 jitter=None,
                  n_feat=None,
                  label=True,
                  PC=[0, 1, 2],
@@ -967,6 +984,8 @@ class pca():
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
             50: all points get this size.
+        jitter : float, default: None
+            Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         label : Bool, default: True
@@ -1023,6 +1042,7 @@ class pca():
                               n_feat=n_feat,
                               c=c,
                               s=s,
+                              jitter=jitter,
                               d3=True,
                               label=label,
                               PC=PC,
