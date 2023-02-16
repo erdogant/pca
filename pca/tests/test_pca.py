@@ -19,7 +19,7 @@ class TestPCA(unittest.TestCase):
         # Fit transform
         out = model.fit_transform(X)
         assert X[out['outliers']['y_bool'],:].shape[0]==5
-        assert out['outliers'].shape[1]==5
+        assert out['outliers'].shape[1]==6
         
         ######## TEST FOR HT2 #########
         model = pca(alpha=0.05, detect_outliers=['ht2'])
