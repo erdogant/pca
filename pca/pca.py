@@ -51,7 +51,7 @@ class pca():
             * 'fdr_by' : Benjamini/Yekutieli (negative)
             * 'fdr_tsbh' : two stage fdr correction (non-negative)
             * 'fdr_tsbky' : two stage fdr correction (non-negative
-    n_std : int, default: 2
+    n_std : int, default: 3
         Number of standard deviations to determine the outliers using SPE/DmodX method.
     onehot : [Bool] optional, (default: False)
         Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers.
@@ -75,7 +75,7 @@ class pca():
 
     """
 
-    def __init__(self, n_components=0.95, n_feat=25, method='pca', alpha=0.05, multipletests='fdr_bh', n_std=2, onehot=False, normalize=False, detect_outliers=['ht2', 'spe'], random_state=None, verbose=3):
+    def __init__(self, n_components=0.95, n_feat=25, method='pca', alpha=0.05, multipletests='fdr_bh', n_std=3, onehot=False, normalize=False, detect_outliers=['ht2', 'spe'], random_state=None, verbose=3):
         """Initialize pca with user-defined parameters."""
         if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
         if onehot:
@@ -289,15 +289,15 @@ class pca():
             if hasattr(self, 'results'): del self.results
 
     # Outlier detection
-    def compute_outliers(self, PC, n_std=2, verbose=3):
+    def compute_outliers(self, PC, n_std=3, verbose=3):
         """Compute outliers.
 
         Parameters
         ----------
         PC : Array-like
             Principal Components.
-        n_std : int, (default: 2)
-            Standard deviation. The default is 2.
+        n_std : int, (default: 3)
+            Standard deviation. The default is 3.
         Verbose : int (default : 3)
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
 
@@ -1245,7 +1245,7 @@ def _eigsorted(cov, n_std):
     return vals[order], vecs[:, order]
 
 
-def spe_dmodx(X, n_std=2, param=None, calpha=0.3, color='green', showfig=False, verbose=3):
+def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', showfig=False, verbose=3):
     """Compute SPE/distance to model (DmodX).
 
     Description
@@ -1257,7 +1257,7 @@ def spe_dmodx(X, n_std=2, param=None, calpha=0.3, color='green', showfig=False, 
     ----------
     X : Array-like
         Input data, in this case the Principal components.
-    n_std : int, (default: 2)
+    n_std : int, (default: 3)
         Standard deviation. The default is 2.
     param : 2-element tuple (default: None)
         Pre-computed g_ell_center and cov in the past run. None to compute from scratch with X.
