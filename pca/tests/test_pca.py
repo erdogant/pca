@@ -9,6 +9,42 @@ import unittest
 
 class TestPCA(unittest.TestCase):
 
+    def test_medium_blog(self):
+        from sklearn.datasets import load_wine
+        import pandas as pd
+        # Load dataset
+        data = load_wine()
+        # Make dataframe
+        df = pd.DataFrame(index=data.target, data=data.data, columns=data.feature_names)
+        # Initialize pca to also detected outliers.
+        model = pca(normalize=True, detect_outliers=['ht2', 'spe'], n_std=2, multipletests=None)
+        # Fit and transform
+        results = model.fit_transform(df)
+        assert np.sum(results['outliers']['y_proba']<=0.05)==9
+
+        # Plot Hotellings T2
+        model.biplot(SPE=False, hotellingt2=True, title='Outliers marked using Hotellings T2 method.')
+        # Make a plot in 3 dimensions
+        model.biplot3d(SPE=False, hotellingt2=True, title='Outliers marked using Hotellings T2 method.')
+
+        # Get the outliers using SPE/DmodX method.
+        df.loc[results['outliers']['y_bool'], :]
+        # Plot SPE/DmodX method
+        model.biplot(SPE=True, hotellingt2=False, title='Outliers marked using SPE/dmodX method.')
+        # Make a plot in 3 dimensions
+        model.biplot(SPE=True, hotellingt2=True, title='Outliers marked using SPE/dmodX method and Hotelling T2.')
+        # Get the outliers using SPE/DmodX method.
+        df.loc[results['outliers']['y_bool_spe'], :]
+        Ioverlap = np.logical_and(results['outliers']['y_bool'], results['outliers']['y_bool_spe'])
+        df.loc[Ioverlap, :]
+
+        # Initialize
+        model = pca()
+        # Load Titanic data set
+        df = model.import_example(data='titanic')
+        # Remove columns
+        df_clean = df.drop(labels=['PassengerId', 'Name', 'Cabin', 'Fare', 'Age', 'Ticket'], axis=1)
+
     def test_for_outliers_and_transparency(self):
 
         X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
