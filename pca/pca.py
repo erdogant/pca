@@ -523,6 +523,7 @@ class pca():
                   figsize=(15, 10),
                   visible=True,
                   fig=None,
+                  ax=None,
                   verbose=3):
         """Scatter 3d plot.
 
@@ -596,6 +597,7 @@ class pca():
                                    figsize=figsize,
                                    visible=visible,
                                    fig=fig,
+                                   ax=ax,
                                    verbose=verbose)
         else:
             print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
@@ -622,6 +624,7 @@ class pca():
                 figsize=(20, 15),
                 visible=True,
                 fig=None,
+                ax=None,
                 verbose=3):
         """Scatter 2d plot.
 
@@ -684,17 +687,20 @@ class pca():
         fontdict = _set_fontdict(fontdict)
 
         # Setup figure
-        if fig is None:
+        if fig is None and ax is None:
+            # Create entire new figure.
             fig = plt.figure(figsize=figsize)
             if d3:
                 ax = fig.add_subplot(projection='3d')
             else:
                 ax = fig.add_subplot()
-        else:
+        elif fig is not None and ax is None:
+            # Extract axes from fig.
             ax = fig.axes[0]
 
         # fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
-        fig.set_visible(visible)
+        if fig is not None:
+            fig.set_visible(visible)
 
         # Mark the outliers for plotting purposes.
         Ioutlier1 = np.repeat(False, self.results['PC'].shape[0])
@@ -810,6 +816,7 @@ class pca():
                figsize=(15, 10),
                visible=True,
                fig=None,
+               ax=None,
                verbose=3):
         """Create the Biplot.
 
@@ -872,8 +879,10 @@ class pca():
             (width, height) in inches.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
-        fig : Object, Default: None
-            Figure Object.
+        fig : Figure, optional (default: None)
+            Matplotlib figure.
+        ax : Axes, optional (default: None)
+            Matplotlib Axes object
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
@@ -916,9 +925,9 @@ class pca():
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c, s=s, jitter=jitter)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, c=c, s=s, jitter=jitter)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -970,6 +979,7 @@ class pca():
                  figsize=(15, 10),
                  visible=True,
                  fig=None,
+                 ax=None,
                  verbose=3):
         """Make biplot in 3d.
 
@@ -1023,8 +1033,10 @@ class pca():
             (width, height) in inches.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
-        fig : Object, Default: None
-            Figure Object.
+        fig : Figure, optional (default: None)
+            Matplotlib figure.
+        ax : Axes, optional (default: None)
+            Matplotlib Axes object
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
@@ -1058,12 +1070,13 @@ class pca():
                               figsize=figsize,
                               visible=visible,
                               fig=fig,
+                              ax=ax,
                               verbose=verbose)
 
         return (fig, ax)
 
     # Show explained variance plot
-    def plot(self, n_components=None, xsteps=None, title=None, visible=True, figsize=(15, 10), fig=None, verbose=3):
+    def plot(self, n_components=None, xsteps=None, title=None, visible=True, figsize=(15, 10), fig=None, ax=None, verbose=3):
         """Scree-plot together with explained variance.
 
         Parameters
@@ -1084,8 +1097,10 @@ class pca():
             False: Figure is created on the background.
         figsize : (int, int)
             (width, height) in inches.
-        fig : Object, Default: None
-            Figure Object.
+        fig : Figure, optional (default: None)
+            Matplotlib figure.
+        ax : Axes, optional (default: None)
+            Matplotlib Axes object
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
@@ -1110,12 +1125,15 @@ class pca():
         xtick_idx = np.arange(1, len(explvar) + 1)
 
         # Make figure
-        if fig is None:
+        if fig is None and ax is None:
+            # Create entire new figure.
             fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
-        else:
+        elif fig is not None and ax is None:
             ax = fig.axes[0]
+
         # Set visibility and plot
-        fig.set_visible(visible)
+        if fig is not None:
+            fig.set_visible(visible)
         plt.plot(xtick_idx, explvarCum, 'o-', color='k', linewidth=1, label='Cumulative explained variance')
 
         # Set xticks if less then 100 datapoints
@@ -1406,7 +1424,7 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', pa
 
     Pcomb = np.array(Pcomb)
     # Multiple test correction
-    Pcorr = multitest_correction(Pcomb[:, 1], verbose=verbose)
+    Pcorr = multitest_correction(Pcomb[:, 1], multipletests=multipletests, verbose=verbose)
     # Set dataframe
     outliers = pd.DataFrame(data={'y_proba': Pcorr, 'p_raw': Pcomb[:, 1], 'y_score': Pcomb[:, 0], 'y_bool': Pcorr <= alpha})
     # Return
