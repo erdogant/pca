@@ -1,3 +1,5 @@
+.. include:: add_top.add
+
 Algorithm
 #################
 
@@ -280,11 +282,5 @@ We see that most of the variance for the 1st PC is derived from the variable **f
 * [2] http://strata.uga.edu/8370/lecturenotes/principalComponents.html
 
 
-.. raw:: html
 
-   <hr>
-   <center>
-     <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CEADP27U&placement=erdogantgithubio" id="_carbonads_js"></script>
-   </center>
-   <hr>
-
+.. include:: add_bottom.add

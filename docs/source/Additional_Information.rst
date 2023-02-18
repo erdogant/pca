@@ -3,8 +3,7 @@
 Additional Information
 #######################
 
-PCA_lecture
-***************
+**PCA_lecture**
 
 :pdfembed:`src:_static/pdf/PCA_lecture.pdf, height:600, width:700, align:middle`
 

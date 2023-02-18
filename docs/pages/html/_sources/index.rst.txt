@@ -1,3 +1,9 @@
+PCA documentation!
+==================
+
+|python| |pypi| |docs| |stars| |LOC| |downloads_month| |downloads_total| |license| |forks| |open issues| |project status| |medium| |colab| |DOI| |repo-size| |donate|
+
+.. include:: add_top.add
 
 
 .. _logo:
@@ -5,8 +11,6 @@
 .. figure:: ../figs/logo.png
 
 -------------------------------------
-
-|python| |pypi| |docs| |LOC| |downloads_month| |downloads_total| |license| |forks| |open issues| |project status| |repo-size| |DOI| |medium| |colab| |donate|
 
 
 **PCA** is a python package to perform *Principal Component Analysis* and to create insightful *plots*.
@@ -20,8 +24,23 @@ Summary of Functionalities:
   * Scatter plot with the loadings.
   * Outlier detection using Hotelling T2 and/or SPE/Dmodx.
 
+-------------------------------------
+
 .. tip::
 	`Read more details and the usage in the Medium Blog: What are PCA loadings and Biplots? <https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559>`_
+
+
+-----------------------------------
+
+.. note::
+	**Your ❤️ is important to keep maintaining this package.** You can `support <https://erdogant.github.io/pca/pages/html/Documentation.html>`_ in various ways, have a look at the `sponser page <https://erdogant.github.io/pca/pages/html/Documentation.html>`_.
+	Report bugs, issues and feature extensions at `github <https://github.com/erdogant/pca/>`_ page.
+
+	.. code-block:: console
+
+	   pip install pca
+
+-----------------------------------
 
 
 Contents
@@ -54,15 +73,11 @@ Contents
 
   Outlier detection
 
-
-
 .. toctree::
   :maxdepth: 1
   :caption: Plots
 
   Plots
-
-
 
 .. toctree::
   :maxdepth: 1
@@ -89,16 +104,6 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-
-.. raw:: html
-
-	<hr>
-	<center>
-		<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CEADP27U&placement=erdogantgithubio" id="_carbonads_js"></script>
-	</center>
-	<hr>
-
-
 .. |python| image:: https://img.shields.io/pypi/pyversions/pca.svg
     :alt: |Python
     :target: https://erdogant.github.io/pca/
@@ -110,6 +115,10 @@ Indices and tables
 .. |docs| image:: https://img.shields.io/badge/Sphinx-Docs-blue.svg
     :alt: Sphinx documentation
     :target: https://erdogant.github.io/pca/
+
+.. |stars| image:: https://img.shields.io/github/stars/erdogant/pca
+    :alt: Stars
+    :target: https://img.shields.io/github/stars/erdogant/pca
 
 .. |LOC| image:: https://sloc.xyz/github/erdogant/pca/?category=code
     :alt: lines of code
@@ -141,7 +150,7 @@ Indices and tables
 
 .. |medium| image:: https://img.shields.io/badge/Medium-Blog-green.svg
     :alt: Medium Blog
-    :target: https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
+    :target: https://erdogant.github.io/pca/pages/html/Documentation.html#medium-blog
 
 .. |donate| image:: https://img.shields.io/badge/Support%20this%20project-grey.svg?logo=github%20sponsors
     :alt: donate
@@ -158,3 +167,6 @@ Indices and tables
 .. |repo-size| image:: https://img.shields.io/github/repo-size/erdogant/pca
     :alt: repo-size
     :target: https://img.shields.io/github/repo-size/erdogant/pca
+
+.. include:: add_bottom.add
+

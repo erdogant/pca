@@ -1,3 +1,5 @@
+.. include:: add_top.add
+
 Hotelling T2
 ###########################################
 To detect outliers across the multidimensional space of PCA, the **hotellings T2** test is implemented. 
@@ -202,10 +204,4 @@ For demonstration purposes I use the PCs from the results but any other dataset 
 	outliers_spe = pca.spe_dmodx(results['PC'].values, n_std=2)
 
 
-.. raw:: html
-
-	<hr>
-	<center>
-		<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CEADP27U&placement=erdogantgithubio" id="_carbonads_js"></script>
-	</center>
-	<hr>
+.. include:: add_bottom.add

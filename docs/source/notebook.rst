@@ -3,8 +3,7 @@
 Notebook
 #######################
 
-pca_examples
-*****************
+**pca_examples**
 
 .. raw:: html
 
