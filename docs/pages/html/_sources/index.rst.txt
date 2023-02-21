@@ -3,7 +3,9 @@ PCA documentation!
 
 |python| |pypi| |docs| |stars| |LOC| |downloads_month| |downloads_total| |license| |forks| |open issues| |project status| |medium| |colab| |DOI| |repo-size| |donate|
 
-.. include:: add_top.add
+
+.. tip::
+	`Read more details and the usage in the Medium Blog: What are PCA loadings and Biplots? <https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559>`_
 
 
 .. _logo:
@@ -23,11 +25,6 @@ Summary of Functionalities:
   * Extract the best performing features.
   * Scatter plot with the loadings.
   * Outlier detection using Hotelling T2 and/or SPE/Dmodx.
-
--------------------------------------
-
-.. tip::
-	`Read more details and the usage in the Medium Blog: What are PCA loadings and Biplots? <https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559>`_
 
 
 -----------------------------------

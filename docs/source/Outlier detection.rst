@@ -1,5 +1,3 @@
-.. include:: add_top.add
-
 Hotelling T2
 ###########################################
 To detect outliers across the multidimensional space of PCA, the **hotellings T2** test is implemented. 

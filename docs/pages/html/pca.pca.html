@@ -17,6 +17,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -98,7 +99,27 @@
 <li class="toctree-l1"><a class="reference internal" href="Documentation.html#citing">Citing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Additional_Information.html">Additional Information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Coding%20quality.html">Coding quality</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API References</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.hotellingsT2"><code class="docutils literal notranslate"><span class="pre">hotellingsT2()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.import_example"><code class="docutils literal notranslate"><span class="pre">import_example()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.multitest_correction"><code class="docutils literal notranslate"><span class="pre">multitest_correction()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.pca"><code class="docutils literal notranslate"><span class="pre">pca</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.biplot"><code class="docutils literal notranslate"><span class="pre">pca.biplot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.biplot3d"><code class="docutils literal notranslate"><span class="pre">pca.biplot3d()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.compute_outliers"><code class="docutils literal notranslate"><span class="pre">pca.compute_outliers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.compute_topfeat"><code class="docutils literal notranslate"><span class="pre">pca.compute_topfeat()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.fit_transform"><code class="docutils literal notranslate"><span class="pre">pca.fit_transform()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.import_example"><code class="docutils literal notranslate"><span class="pre">pca.import_example()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.norm"><code class="docutils literal notranslate"><span class="pre">pca.norm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.plot"><code class="docutils literal notranslate"><span class="pre">pca.plot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.scatter"><code class="docutils literal notranslate"><span class="pre">pca.scatter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.scatter3d"><code class="docutils literal notranslate"><span class="pre">pca.scatter3d()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.transform"><code class="docutils literal notranslate"><span class="pre">pca.transform()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.spe_dmodx"><code class="docutils literal notranslate"><span class="pre">spe_dmodx()</span></code></a></li>
+</ul>
+</li>
 </ul>
 
     <a href= "genindex.html">Index</a>
@@ -127,61 +148,86 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <hr>
-<center>
-        <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
-        <!-- Show an image ad -->
-        <!-- <div data-ea-publisher="erdogantgithubio" data-ea-type="image"></div> -->
-        <div data-ea-publisher="erdogantgithubio" data-ea-type="text"></div>
-</center>
-<hr><section id="module-pca.pca">
+  <section id="module-pca.pca">
 <span id="api-references"></span><h1>API References<a class="headerlink" href="#module-pca.pca" title="Permalink to this heading"></a></h1>
 <p>pca: A Python Package for Principal Component Analysis.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pca.pca.hotellingsT2">
 <span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">hotellingsT2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multipletests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fdr_bh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.hotellingsT2" title="Permalink to this definition"></a></dt>
 <dd><p>Test for outlier using hotelling T2 test.</p>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading"></a></h2>
 <p>Test for outliers using chi-square tests for each of the n_components.
 The resulting P-value matrix is then combined using fishers method per sample.
 The results can be used to priortize outliers as those samples that are an outlier
 across multiple dimensions will be more significant then others.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>numpy-array.</em>) – Principal Components.</p></li>
-<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>(</em><em>default: 0.05</em><em>)</em>) – Alpha level threshold to determine outliers.</p></li>
-<li><p><strong>df</strong> (<em>int</em><em>, </em><em>(</em><em>default: 1</em><em>)</em>) – Degrees of freedom.</p></li>
-<li><p><strong>n_components</strong> (<em>int</em><em>, </em><em>(</em><em>default: 5</em><em>)</em>) – Number of PC components to be used to compute the Pvalue.</p></li>
-<li><p><strong>multipletests</strong> (<em>str</em><em>, </em><em>default: 'fdr_bh'</em>) – <dl class="simple">
-<dt>Multiple testing method. Options are:</dt><dd><ul>
+<dt class="field-odd">param X</dt>
+<dd class="field-odd"><p>Principal Components.</p>
+</dd>
+<dt class="field-even">type X</dt>
+<dd class="field-even"><p>numpy-array.</p>
+</dd>
+<dt class="field-odd">param alpha</dt>
+<dd class="field-odd"><p>Alpha level threshold to determine outliers.</p>
+</dd>
+<dt class="field-even">type alpha</dt>
+<dd class="field-even"><p>float, (default: 0.05)</p>
+</dd>
+<dt class="field-odd">param df</dt>
+<dd class="field-odd"><p>Degrees of freedom.</p>
+</dd>
+<dt class="field-even">type df</dt>
+<dd class="field-even"><p>int, (default: 1)</p>
+</dd>
+<dt class="field-odd">param n_components</dt>
+<dd class="field-odd"><p>Number of PC components to be used to compute the Pvalue.</p>
+</dd>
+<dt class="field-even">type n_components</dt>
+<dd class="field-even"><p>int, (default: 5)</p>
+</dd>
+<dt class="field-odd">param multipletests</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Multiple testing method. Options are:</dt><dd><ul class="simple">
 <li><p>None : No multiple testing</p></li>
-<li><p>’bonferroni’ : one-step correction</p></li>
-<li><p>’sidak’ : one-step correction</p></li>
-<li><p>’holm-sidak’ : step down method using Sidak adjustments</p></li>
-<li><p>’holm’ : step-down method using Bonferroni adjustments</p></li>
-<li><p>’simes-hochberg’ : step-up method  (independent)</p></li>
-<li><p>’hommel’ : closed method based on Simes tests (non-negative)</p></li>
-<li><p>’fdr_bh’ : Benjamini/Hochberg  (non-negative)</p></li>
-<li><p>’fdr_by’ : Benjamini/Yekutieli (negative)</p></li>
-<li><p>’fdr_tsbh’ : two stage fdr correction (non-negative)</p></li>
-<li><p>’fdr_tsbky’ : two stage fdr correction (non-negative)</p></li>
+<li><p>‘bonferroni’ : one-step correction</p></li>
+<li><p>‘sidak’ : one-step correction</p></li>
+<li><p>‘holm-sidak’ : step down method using Sidak adjustments</p></li>
+<li><p>‘holm’ : step-down method using Bonferroni adjustments</p></li>
+<li><p>‘simes-hochberg’ : step-up method  (independent)</p></li>
+<li><p>‘hommel’ : closed method based on Simes tests (non-negative)</p></li>
+<li><p>‘fdr_bh’ : Benjamini/Hochberg  (non-negative)</p></li>
+<li><p>‘fdr_by’ : Benjamini/Yekutieli (negative)</p></li>
+<li><p>‘fdr_tsbh’ : two stage fdr correction (non-negative)</p></li>
+<li><p>‘fdr_tsbky’ : two stage fdr correction (non-negative)</p></li>
 </ul>
 </dd>
 </dl>
-</p></li>
-<li><p><strong>param</strong> (<em>2-element tuple</em><em> (</em><em>default: None</em><em>)</em>) – Pre-computed mean and variance in the past run. None to compute from scratch with X.</p></li>
-<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
-</ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
+<dt class="field-even">type multipletests</dt>
+<dd class="field-even"><p>str, default: ‘fdr_bh’</p>
+</dd>
+<dt class="field-odd">param param</dt>
+<dd class="field-odd"><p>Pre-computed mean and variance in the past run. None to compute from scratch with X.</p>
+</dd>
+<dt class="field-even">type param</dt>
+<dd class="field-even"><p>2-element tuple (default: None)</p>
+</dd>
+<dt class="field-odd">param Verbose</dt>
+<dd class="field-odd"><p>Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p>
+</dd>
+<dt class="field-even">type Verbose</dt>
+<dd class="field-even"><p>int (default : 3)</p>
+</dd>
+<dt class="field-odd">returns</dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>outliers</strong> (<em>pd.DataFrame</em>) – dataframe containing probability, test-statistics and boolean value.</p></li>
 <li><p><strong>y_bools</strong> (<em>array-like</em>) – boolean value when significant per PC.</p></li>
 <li><p><strong>param</strong> (<em>2-element tuple</em>) – computed mean and variance from X.</p></li>
 </ul>
-</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
@@ -211,7 +257,7 @@ across multiple dimensions will be more significant then others.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Praw</strong> (<em>list of float</em>) – Pvalues.</p></li>
+<li><p><strong>Praw</strong> (<em>list</em><em> of </em><em>float</em>) – Pvalues.</p></li>
 <li><p><strong>method</strong> (<em>str</em><em>, </em><em>default: 'fdr_bh'</em>) – <dl class="simple">
 <dt>Multiple testing method. Options are:</dt><dd><ul>
 <li><p>None : No multiple testing</p></li>
@@ -247,7 +293,7 @@ across multiple dimensions will be more significant then others.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_components</strong> (<em>[</em><em>0..1</em><em>] or </em><em>[</em><em>1..number of samples-1</em><em>]</em><em>, </em><em>(</em><em>default: 0.95</em><em>)</em>) – Number of PCs to be returned. When n_components is set &gt;0, the specified number of PCs is returned.
+<li><p><strong>n_components</strong> (<em>[</em><em>0..1</em><em>] or </em><em>[</em><em>1..number</em><em> of </em><em>samples-1</em><em>]</em><em>, </em><em>(</em><em>default: 0.95</em><em>)</em>) – Number of PCs to be returned. When n_components is set &gt;0, the specified number of PCs is returned.
 When n_components is set between [0..1], the number of PCs is returned that covers at least this percentage of variance.
 n_components=None : Return all PCs
 n_components=0.95 : Return the number of PCs that cover at least 95% of variance.
@@ -296,52 +342,160 @@ Note this is different then a sparse matrix. In case of a sparse matrix, use met
 <dt class="sig sig-object py" id="pca.pca.pca.biplot">
 <span class="sig-name descname"><span class="pre">biplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hotellingt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_transparency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_arrow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontdict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'c':</span> <span class="pre">'color_arrow',</span> <span class="pre">'ha':</span> <span class="pre">'center',</span> <span class="pre">'size':</span> <span class="pre">12,</span> <span class="pre">'va':</span> <span class="pre">'center',</span> <span class="pre">'weight':</span> <span class="pre">'normal'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Set1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(15,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.biplot" title="Permalink to this definition"></a></dt>
 <dd><p>Create the Biplot.</p>
+<section id="id1">
+<h2>Description<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <p>Plots the Principal components with the samples, and the best performing features.
 Per PC, The feature with absolute highest loading is gathered. This can result into features that are seen over multiple PCs, and some features may never be detected.
 For vizualization purposes we will keep only the unique feature-names and plot them with red arrows and green labels.
 The feature-names that were never discovered (described as weak) are colored yellow.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>default: None</em>) – Label for each sample. The labeling is used for coloring the samples.</p></li>
-<li><p><strong>c</strong> (<em>list/array of RGB colors for each sample.</em>) – Color of samples in RGB colors.
-[0,0,0]: If a single color is given, all samples get that color.</p></li>
-<li><p><strong>s</strong> (<em>Int</em><em> or </em><em>list/array</em><em> (</em><em>default: 50</em><em>)</em>) – Size(s) of the scatter-points.
+<dt class="field-odd">param y</dt>
+<dd class="field-odd"><p>Label for each sample. The labeling is used for coloring the samples.</p>
+</dd>
+<dt class="field-even">type y</dt>
+<dd class="field-even"><p>array-like, default: None</p>
+</dd>
+<dt class="field-odd">param c</dt>
+<dd class="field-odd"><p>Color of samples in RGB colors.
+[0,0,0]: If a single color is given, all samples get that color.</p>
+</dd>
+<dt class="field-even">type c</dt>
+<dd class="field-even"><p>list/array of RGB colors for each sample.</p>
+</dd>
+<dt class="field-odd">param s</dt>
+<dd class="field-odd"><p>Size(s) of the scatter-points.
 [20, 10, 50, …]: In case of list: should be same size as the number of PCs -&gt; .results[‘PC’]
-50: all points get this size.</p></li>
-<li><p><strong>jitter</strong> (<em>float</em><em>, </em><em>default: None</em>) – Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.</p></li>
-<li><p><strong>n_feat</strong> (<em>int</em><em>, </em><em>default: 10</em>) – Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.</p></li>
-<li><p><strong>d3</strong> (<em>Bool</em><em>, </em><em>default: False</em>) – 3d plot is created when True.</p></li>
-<li><p><strong>label</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – True Show the labels.
+50: all points get this size.</p>
+</dd>
+<dt class="field-even">type s</dt>
+<dd class="field-even"><p>Int or list/array (default: 50)</p>
+</dd>
+<dt class="field-odd">param jitter</dt>
+<dd class="field-odd"><p>Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.</p>
+</dd>
+<dt class="field-even">type jitter</dt>
+<dd class="field-even"><p>float, default: None</p>
+</dd>
+<dt class="field-odd">param n_feat</dt>
+<dd class="field-odd"><p>Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.</p>
+</dd>
+<dt class="field-even">type n_feat</dt>
+<dd class="field-even"><p>int, default: 10</p>
+</dd>
+<dt class="field-odd">param d3</dt>
+<dd class="field-odd"><p>3d plot is created when True.</p>
+</dd>
+<dt class="field-even">type d3</dt>
+<dd class="field-even"><p>Bool, default: False</p>
+</dd>
+<dt class="field-odd">param label</dt>
+<dd class="field-odd"><p>True Show the labels.
 False: Do not show the labels
-None: Ignore all labels (this will significanly speed up the scatterplot)</p></li>
-<li><p><strong>PC</strong> (<em>list</em><em>, </em><em>default :</em><em> [</em><em>0</em><em>, </em><em>1</em><em>]</em>) – Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.</p></li>
-<li><p><strong>SPE</strong> (<em>Bool</em><em>, </em><em>default: False</em>) – Show the outliers based on SPE/DmodX method.</p></li>
-<li><p><strong>hotellingt2</strong> (<em>Bool</em><em>, </em><em>default: False</em>) – Show the outliers based on the hotelling T2 test.</p></li>
-<li><p><strong>alpha_transparency</strong> (<em>Float</em><em>, </em><em>default: None</em>) – The alpha blending value, between 0 (transparent) and 1 (opaque).</p></li>
-<li><p><strong>gradient</strong> (<em>String</em><em>, </em><em>(</em><em>default: None</em><em>)</em>) – Hex (ending) color for the gradient of the scatterplot colors.
-‘#FFFFFF’</p></li>
-<li><p><strong>color_arrow</strong> (<em>String</em><em>, </em><em>(</em><em>default: 'r'</em><em>)</em>) – color for the arrow.
-‘r’ (default)</p></li>
-<li><p><strong>fontdict</strong> (<em>dict.</em>) – dictionary containing properties for the arrow font-text.
+None: Ignore all labels (this will significanly speed up the scatterplot)</p>
+</dd>
+<dt class="field-even">type label</dt>
+<dd class="field-even"><p>Bool, default: True</p>
+</dd>
+<dt class="field-odd">param PC</dt>
+<dd class="field-odd"><p>Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.</p>
+</dd>
+<dt class="field-even">type PC</dt>
+<dd class="field-even"><p>list, default : [0, 1]</p>
+</dd>
+<dt class="field-odd">param SPE</dt>
+<dd class="field-odd"><p>Show the outliers based on SPE/DmodX method.</p>
+</dd>
+<dt class="field-even">type SPE</dt>
+<dd class="field-even"><p>Bool, default: False</p>
+</dd>
+<dt class="field-odd">param hotellingt2</dt>
+<dd class="field-odd"><p>Show the outliers based on the hotelling T2 test.</p>
+</dd>
+<dt class="field-even">type hotellingt2</dt>
+<dd class="field-even"><p>Bool, default: False</p>
+</dd>
+<dt class="field-odd">param alpha_transparency</dt>
+<dd class="field-odd"><p>The alpha blending value, between 0 (transparent) and 1 (opaque).</p>
+</dd>
+<dt class="field-even">type alpha_transparency</dt>
+<dd class="field-even"><p>Float, default: None</p>
+</dd>
+<dt class="field-odd">param gradient</dt>
+<dd class="field-odd"><p>Hex (ending) color for the gradient of the scatterplot colors.
+‘#FFFFFF’</p>
+</dd>
+<dt class="field-even">type gradient</dt>
+<dd class="field-even"><p>String, (default: None)</p>
+</dd>
+<dt class="field-odd">param color_arrow</dt>
+<dd class="field-odd"><p>color for the arrow.
+‘r’ (default)</p>
+</dd>
+<dt class="field-even">type color_arrow</dt>
+<dd class="field-even"><p>String, (default: ‘r’)</p>
+</dd>
+<dt class="field-odd">param fontdict</dt>
+<dd class="field-odd"><p>dictionary containing properties for the arrow font-text.
 Note that the [c]olor: ‘color_arrow’ inherits the color used in color_arrow.
-{‘weight’: ‘normal’, ‘size’: 10, ‘ha’: ‘center’, ‘va’: ‘center’, ‘c’: ‘color_arrow’}</p></li>
-<li><p><strong>cmap</strong> (<em>String</em><em>, </em><em>optional</em><em>, </em><em>default: 'Set1'</em>) – Colormap. If set to None, no points are shown.</p></li>
-<li><p><strong>title</strong> (<em>str</em><em>, </em><em>default: None</em>) – Title of the figure.
+{‘weight’: ‘normal’, ‘size’: 10, ‘ha’: ‘center’, ‘va’: ‘center’, ‘c’: ‘color_arrow’}</p>
+</dd>
+<dt class="field-even">type fontdict</dt>
+<dd class="field-even"><p>dict.</p>
+</dd>
+<dt class="field-odd">param cmap</dt>
+<dd class="field-odd"><p>Colormap. If set to None, no points are shown.</p>
+</dd>
+<dt class="field-even">type cmap</dt>
+<dd class="field-even"><p>String, optional, default: ‘Set1’</p>
+</dd>
+<dt class="field-odd">param title</dt>
+<dd class="field-odd"><p>Title of the figure.
 None: Automatically create title text based on results.
 ‘’ : Remove all title text.
-‘title text’ : Add custom title text.</p></li>
-<li><p><strong>legend</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Show the legend based on the unique y-labels.</p></li>
-<li><p><strong>figsize</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>default:</em><em> (</em><em>15</em><em>, </em><em>10</em><em>)</em>) – (width, height) in inches.</p></li>
-<li><p><strong>visible</strong> (<em>Bool</em><em>, </em><em>default: True</em>) – Visible status of the Figure. When False, figure is created on the background.</p></li>
-<li><p><strong>fig</strong> (<em>Figure</em><em>, </em><em>optional</em><em> (</em><em>default: None</em><em>)</em>) – Matplotlib figure.</p></li>
-<li><p><strong>ax</strong> (<em>Axes</em><em>, </em><em>optional</em><em> (</em><em>default: None</em><em>)</em>) – Matplotlib Axes object</p></li>
-<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – The higher the number, the more information is printed.
-Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
-</ul>
+‘title text’ : Add custom title text.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple containing (fig, ax)</p>
+<dt class="field-even">type title</dt>
+<dd class="field-even"><p>str, default: None</p>
+</dd>
+<dt class="field-odd">param legend</dt>
+<dd class="field-odd"><p>Show the legend based on the unique y-labels.</p>
+</dd>
+<dt class="field-even">type legend</dt>
+<dd class="field-even"><p>Bool, default: True</p>
+</dd>
+<dt class="field-odd">param figsize</dt>
+<dd class="field-odd"><p>(width, height) in inches.</p>
+</dd>
+<dt class="field-even">type figsize</dt>
+<dd class="field-even"><p>(int, int), optional, default: (15, 10)</p>
+</dd>
+<dt class="field-odd">param visible</dt>
+<dd class="field-odd"><p>Visible status of the Figure. When False, figure is created on the background.</p>
+</dd>
+<dt class="field-even">type visible</dt>
+<dd class="field-even"><p>Bool, default: True</p>
+</dd>
+<dt class="field-odd">param fig</dt>
+<dd class="field-odd"><p>Matplotlib figure.</p>
+</dd>
+<dt class="field-even">type fig</dt>
+<dd class="field-even"><p>Figure, optional (default: None)</p>
+</dd>
+<dt class="field-odd">param ax</dt>
+<dd class="field-odd"><p>Matplotlib Axes object</p>
+</dd>
+<dt class="field-even">type ax</dt>
+<dd class="field-even"><p>Axes, optional (default: None)</p>
+</dd>
+<dt class="field-odd">param Verbose</dt>
+<dd class="field-odd"><p>The higher the number, the more information is printed.
+Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p>
+</dd>
+<dt class="field-even">type Verbose</dt>
+<dd class="field-even"><p>int (default : 3)</p>
+</dd>
+<dt class="field-odd">rtype</dt>
+<dd class="field-odd"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
 <p class="rubric">References</p>
@@ -349,6 +503,7 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 <li><p><a class="reference external" href="https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559">https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559</a></p></li>
 <li><p><a class="reference external" href="https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697">https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697</a></p></li>
 </ul>
+</section>
 </dd></dl>
 
 <dl class="py method">
@@ -359,7 +514,7 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>default: None</em>) – Label for each sample. The labeling is used for coloring the samples.</p></li>
-<li><p><strong>c</strong> (<em>list/array of RGB colors for each sample.</em>) – Color of samples in RGB colors.
+<li><p><strong>c</strong> (<em>list/array</em><em> of </em><em>RGB colors for each sample.</em>) – Color of samples in RGB colors.
 [0,0,0]: If a single color is given, all samples get that color.</p></li>
 <li><p><strong>s</strong> (<em>Int</em><em> or </em><em>list/array</em><em> (</em><em>default: 50</em><em>)</em>) – Size(s) of the scatter-points.
 [20, 10, 50, …]: In case of list: should be same size as the number of PCs -&gt; .results[‘PC’]
@@ -426,22 +581,31 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 <dt class="sig sig-object py" id="pca.pca.pca.compute_topfeat">
 <span class="sig-name descname"><span class="pre">compute_topfeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loadings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.compute_topfeat" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the top-scoring features.</p>
+<section id="id2">
+<h2>Description<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
 <p>Per Principal Component, the feature with absolute maximum loading is stored.
 This can result into the detection of PCs that contain the same features. The feature that were never detected are stored as “weak”.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>loadings</strong> (<em>array-like</em>) – The array containing the loading information of the Principal Components.</p></li>
-<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
-</ul>
+<dt class="field-odd">param loadings</dt>
+<dd class="field-odd"><p>The array containing the loading information of the Principal Components.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>topfeat</strong> – Best performing features per PC.</p>
+<dt class="field-even">type loadings</dt>
+<dd class="field-even"><p>array-like</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pd.DataFrame</p>
+<dt class="field-odd">param Verbose</dt>
+<dd class="field-odd"><p>Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p>
+</dd>
+<dt class="field-even">type Verbose</dt>
+<dd class="field-even"><p>int (default : 3)</p>
+</dd>
+<dt class="field-odd">returns</dt>
+<dd class="field-odd"><p><strong>topfeat</strong> – Best performing features per PC.</p>
+</dd>
+<dt class="field-even">rtype</dt>
+<dd class="field-even"><p>pd.DataFrame</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
@@ -451,9 +615,9 @@ This can result into the detection of PCs that contain the same features. The fe
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like : Can be of type Numpy</em><em> or </em><em>DataFrame</em>) – [NxM] array with columns as features and rows as samples.</p></li>
-<li><p><strong>row_labels</strong> (<em>[</em><em>list of integers</em><em> or </em><em>strings</em><em>] </em><em>optional</em>) – Used for colors.</p></li>
-<li><p><strong>col_labels</strong> (<em>[</em><em>list of string</em><em>] </em><em>optional</em>) – Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.</p></li>
+<li><p><strong>X</strong> (<em>array-like : Can be</em><em> of </em><em>type Numpy</em><em> or </em><em>DataFrame</em>) – [NxM] array with columns as features and rows as samples.</p></li>
+<li><p><strong>row_labels</strong> (<em>[</em><em>list</em><em> of </em><em>integers</em><em> or </em><em>strings</em><em>] </em><em>optional</em>) – Used for colors.</p></li>
+<li><p><strong>col_labels</strong> (<em>[</em><em>list</em><em> of </em><em>string</em><em>] </em><em>optional</em>) – Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.</p></li>
 <li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Set verbose during initialization.</p></li>
 </ul>
 </dd>
@@ -525,23 +689,37 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 <dt class="sig sig-object py" id="pca.pca.pca.norm">
 <span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcexclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.norm" title="Permalink to this definition"></a></dt>
 <dd><p>Normalize out PCs.</p>
+<section id="id3">
+<h2>Description<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h2>
 <p>Normalize your data using the variance seen in hte Principal Components. This allows to remove (technical)
 variation in the data by normalizing out e.g., the 1st or 2nd etc component. This function transforms the
 original data using the PCs that you want to normalize out. As an example, if you aim to remove the variation
 seen in the 1st PC, the returned dataset will contain only the variance seen from the 2nd PC and more.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>numpy array</em>) – Data set.</p></li>
-<li><p><strong>n_components</strong> (<em>int</em><em> [</em><em>0..1</em><em>]</em><em>, </em><em>optional</em>) – Number of PCs that are returned for the plot.
-None: All PCs.</p></li>
-<li><p><strong>pcexclude</strong> (<em>list of int</em><em>, </em><em>optional</em>) – The PCs to exclude. The default is [1].</p></li>
-</ul>
+<dt class="field-odd">param X</dt>
+<dd class="field-odd"><p>Data set.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Normalized numpy array.</p>
+<dt class="field-even">type X</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+<dt class="field-odd">param n_components</dt>
+<dd class="field-odd"><p>Number of PCs that are returned for the plot.
+None: All PCs.</p>
+</dd>
+<dt class="field-even">type n_components</dt>
+<dd class="field-even"><p>int [0..1], optional</p>
+</dd>
+<dt class="field-odd">param pcexclude</dt>
+<dd class="field-odd"><p>The PCs to exclude. The default is [1].</p>
+</dd>
+<dt class="field-even">type pcexclude</dt>
+<dd class="field-even"><p>list of int, optional</p>
+</dd>
+<dt class="field-odd">rtype</dt>
+<dd class="field-odd"><p>Normalized numpy array.</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
@@ -582,7 +760,7 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>default: None</em>) – Label for each sample. The labeling is used for coloring the samples.</p></li>
-<li><p><strong>c</strong> (<em>list/array of RGB colors for each sample.</em>) – Color of samples in RGB colors.
+<li><p><strong>c</strong> (<em>list/array</em><em> of </em><em>RGB colors for each sample.</em>) – Color of samples in RGB colors.
 [0,0,0]: If a single color is given, all samples get that color.</p></li>
 <li><p><strong>s</strong> (<em>Int</em><em> or </em><em>list/array</em><em> (</em><em>default: 50</em><em>)</em>) – Size(s) of the scatter-points.
 [20, 10, 50, …]: In case of list: should be same size as the number of PCs -&gt; .results[‘PC’]
@@ -625,7 +803,7 @@ None: Automatically create title text based on results.
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>default: None</em>) – Label for each sample. The labeling is used for coloring the samples.</p></li>
-<li><p><strong>c</strong> (<em>list/array of RGB colors for each sample.</em>) – Color of samples in RGB colors.
+<li><p><strong>c</strong> (<em>list/array</em><em> of </em><em>RGB colors for each sample.</em>) – Color of samples in RGB colors.
 [0,0,0]: If a single color is given, all samples get that color.</p></li>
 <li><p><strong>s</strong> (<em>Int</em><em> or </em><em>list/array</em><em> (</em><em>default: 50</em><em>)</em>) – Size(s) of the scatter-points.
 [20, 10, 50, …]: In case of list: should be same size as the number of PCs -&gt; .results[‘PC’]
@@ -666,11 +844,11 @@ None: Automatically create title text based on results.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like : Can be of type Numpy</em><em> or </em><em>DataFrame</em>) – [NxM] array with columns as features and rows as samples.</p></li>
+<li><p><strong>X</strong> (<em>array-like : Can be</em><em> of </em><em>type Numpy</em><em> or </em><em>DataFrame</em>) – [NxM] array with columns as features and rows as samples.</p></li>
 <li><p><strong>update_outlier_params</strong> (<em>bool</em><em> (</em><em>default: True</em><em>)</em>) – True : Update the parameters for outlier detection so that the model learns from the new unseen input. This will cause that some initial outliers may not be an outlier anymore after a certain point.
 False: Do not update outlier parameters and outliers that were initially detected, will always stay an outlier.</p></li>
-<li><p><strong>row_labels</strong> (<em>[</em><em>list of integers</em><em> or </em><em>strings</em><em>] </em><em>optional</em>) – Used for colors.</p></li>
-<li><p><strong>col_labels</strong> (<em>[</em><em>list of string</em><em>] </em><em>optional</em>) – Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.</p></li>
+<li><p><strong>row_labels</strong> (<em>[</em><em>list</em><em> of </em><em>integers</em><em> or </em><em>strings</em><em>] </em><em>optional</em>) – Used for colors.</p></li>
+<li><p><strong>col_labels</strong> (<em>[</em><em>list</em><em> of </em><em>string</em><em>] </em><em>optional</em>) – Numpy or list of strings: Name of the features that represent the data features and loadings. This should match the number of columns in the data. Use this option when using a numpy-array. For a pandas-dataframe, the column names are used but are overruled when using this parameter.</p></li>
 <li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Set verbose during initialization.</p></li>
 </ul>
 </dd>
@@ -719,28 +897,56 @@ False: Do not update outlier parameters and outliers that were initially detecte
 <dt class="sig sig-object py" id="pca.pca.spe_dmodx">
 <span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">spe_dmodx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'green'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showfig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.spe_dmodx" title="Permalink to this definition"></a></dt>
 <dd><p>Compute SPE/distance to model (DmodX).</p>
+<section id="id4">
+<h2>Description<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h2>
 <p>Outlier can be detected using SPE/DmodX (distance to model) based on the mean and covariance of the first 2 dimensions of X.
 On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are complementary to each other.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>Array-like</em>) – Input data, in this case the Principal components.</p></li>
-<li><p><strong>n_std</strong> (<em>int</em><em>, </em><em>(</em><em>default: 3</em><em>)</em>) – Standard deviation. The default is 2.</p></li>
-<li><p><strong>param</strong> (<em>2-element tuple</em><em> (</em><em>default: None</em><em>)</em>) – Pre-computed g_ell_center and cov in the past run. None to compute from scratch with X.</p></li>
-<li><p><strong>calpha</strong> (<em>float</em><em>, </em><em>(</em><em>default: 0.3</em><em>)</em>) – transperancy color.</p></li>
-<li><p><strong>color</strong> (<em>String</em><em>, </em><em>(</em><em>default: 'green'</em><em>)</em>) – Color of the ellipse.</p></li>
-<li><p><strong>showfig</strong> (<em>bool</em><em>, </em><em>(</em><em>default: False</em><em>)</em>) – Scatter the points with the ellipse and mark the outliers.</p></li>
-</ul>
+<dt class="field-odd">param X</dt>
+<dd class="field-odd"><p>Input data, in this case the Principal components.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
+<dt class="field-even">type X</dt>
+<dd class="field-even"><p>Array-like</p>
+</dd>
+<dt class="field-odd">param n_std</dt>
+<dd class="field-odd"><p>Standard deviation. The default is 2.</p>
+</dd>
+<dt class="field-even">type n_std</dt>
+<dd class="field-even"><p>int, (default: 3)</p>
+</dd>
+<dt class="field-odd">param param</dt>
+<dd class="field-odd"><p>Pre-computed g_ell_center and cov in the past run. None to compute from scratch with X.</p>
+</dd>
+<dt class="field-even">type param</dt>
+<dd class="field-even"><p>2-element tuple (default: None)</p>
+</dd>
+<dt class="field-odd">param calpha</dt>
+<dd class="field-odd"><p>transperancy color.</p>
+</dd>
+<dt class="field-even">type calpha</dt>
+<dd class="field-even"><p>float, (default: 0.3)</p>
+</dd>
+<dt class="field-odd">param color</dt>
+<dd class="field-odd"><p>Color of the ellipse.</p>
+</dd>
+<dt class="field-even">type color</dt>
+<dd class="field-even"><p>String, (default: ‘green’)</p>
+</dd>
+<dt class="field-odd">param showfig</dt>
+<dd class="field-odd"><p>Scatter the points with the ellipse and mark the outliers.</p>
+</dd>
+<dt class="field-even">type showfig</dt>
+<dd class="field-even"><p>bool, (default: False)</p>
+</dd>
+<dt class="field-odd">returns</dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>outliers</strong> (<em>pd.DataFrame()</em>) – column with boolean outliers and euclidean distance of each sample to the center of the ellipse.</p></li>
 <li><p><strong>ax</strong> (<em>object</em>) – Figure axis.</p></li>
 <li><p><strong>param</strong> (<em>2-element tuple</em>) – computed g_ell_center and cov from X.</p></li>
 </ul>
-</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <hr>
