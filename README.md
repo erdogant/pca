@@ -225,5 +225,3 @@ Please cite in your publications if this is useful for your research (see citati
 
 ### Contribute
 * All kinds of contributions are welcome!
-* If you wish to buy me a <a href="https://www.buymeacoffee.com/erdogant">Coffee</a> for this work, it is very appreciated :)
-
