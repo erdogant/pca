@@ -38,9 +38,6 @@ Other functionalities of PCA are:
 
 ---
 
-### **⭐️ Star this repo if you like it ⭐️**
-
-
 ## Support
 
 Your ❤️ is important to keep maintaining this package. You can [support](https://erdogant.github.io/pca/pages/html/Documentation.html) in various ways, have a look at the [sponser page](https://erdogant.github.io/pca/pages/html/Documentation.html). Report bugs, issues and feature extensions at [github page](https://github.com/erdogant/pca).
@@ -49,7 +46,11 @@ Your ❤️ is important to keep maintaining this package. You can [support](htt
 
 ---
 
-## Read the Medium blog for more detailed information.
+**⭐️ Star this repo if you like it ⭐️**
+
+---
+
+## Read the Medium blog for more details.
 
 <p align="left">
   <a href="https://https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559">
