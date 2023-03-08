@@ -53,7 +53,7 @@ Your ❤️ is important to keep maintaining this package. You can [support](htt
 ## Read the Medium blog for more details.
 
 <p align="left">
-  <a href="https://https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559">
+  <a href="https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559">
   <img src="https://github.com/erdogant/pca/blob/master/docs/figs/medium_blog1.png?raw=true" width="150" />
   </a>
 </p>
