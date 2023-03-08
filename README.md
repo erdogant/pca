@@ -36,71 +36,100 @@ Other functionalities of PCA are:
   * Scatter plot with the **loadings**
   * Outlier detection using **Hotelling T2 and/or SPE/Dmodx**
 
-# 
-**⭐️ Star this repo if you like it ⭐️**
-#
+---
 
-#### Install pca from PyPI
+### **⭐️ Star this repo if you like it ⭐️**
+
+
+## Support
+
+Your ❤️ is important to keep maintaining this package. You can [support](https://erdogant.github.io/pca/pages/html/Documentation.html) in various ways, have a look at the [sponser page](https://erdogant.github.io/pca/pages/html/Documentation.html). Report bugs, issues and feature extensions at [github page](https://github.com/erdogant/pca).
+
+<a href='https://www.buymeacoffee.com/erdogant' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
+---
+
+## Read the Medium blog for more detailed information.
+
+<p align="left">
+  <a href="https://https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559">
+  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/medium_blog1.png?raw=true" width="150" />
+  </a>
+</p>
+
+
+---
+
+## [Documentation pages](https://erdogant.github.io/pca/)
+
+On the [documentation pages](https://erdogant.github.io/pca/) you can find detailed information about the working of the ``pca`` with many examples. 
+
+---
+
+## Installation
 
 ```bash
 pip install pca
 ```
 
-#### Import pca package
+##### Import pca package
 
 ```python
 from pca import pca
 ```
-# 
-
-
-### [Documentation pages](https://erdogant.github.io/pca/)
-
-On the [documentation pages](https://erdogant.github.io/pca/) you can find detailed information about the working of the ``pca`` with many examples. 
 
 # 
 
-### Examples
+<table style="width:100%">
+  <tr>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Examples.html">Quick start</a></th>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#biplot">Make biplot</a></th>
+  </tr>
+  <tr>
+    <td>
+      <p align="left">
+        <a href="https://erdogant.github.io/pca/pages/html/Examples.html">
+          <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter.png?raw=true" width="400" />
+        </a>
+      </p>    
+    </td>
+    <td>
+      <p align="left">
+        <a href="https://erdogant.github.io/pca/pages/html/Plots.html#biplot">
+          <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot.png?raw=true" width="350" />
+        </a>
+      </p>
+    </td>
+  </tr>
+</table>
 
-* [Example: Quick start](https://erdogant.github.io/pca/pages/html/Examples.html#)
-
-<p align="left">
-  <a href="https://erdogant.github.io/pca/pages/html/Examples.html#">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter.png" width="400" />
-  </a>
-</p>
-
-# 
-
-* [Example: Make biplot](https://erdogant.github.io/pca/pages/html/Plots.html#biplot)
-
-<p align="left">
-  <a href="https://erdogant.github.io/pca/pages/html/Plots.html#biplot">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot.png" width="350" />
-  </a>
-</p>
-
-
-# 
-
-* [Example: Plot Explained variance](https://erdogant.github.io/pca/pages/html/Plots.html#explained-variance-plot)
-
-<p align="left">
-  <a href="https://erdogant.github.io/pca/pages/html/Plots.html#explained-variance-plot">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_plot.png" width="350" />
-  </a>
-</p>
 
 
 # 
 
-* [Example: 3D plots](https://erdogant.github.io/pca/pages/html/Plots.html#d-plots)
+<table style="width:100%">
+  <tr>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#explained-variance-plot">Plot Explained variance</a></th>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#d-plots">3D plots</a></th>
+  </tr>
+  <tr>
+    <td>
+      <p align="left">
+        <a href="https://erdogant.github.io/pca/pages/html/Plots.html#explained-variance-plot">
+        <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_plot.png" width="350" />
+        </a>
+      </p>
+    </td>
+    <td>
+      <p align="left">
+        <a href="https://erdogant.github.io/pca/pages/html/Plots.html#d-plots">
+        <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter3d.png" width="350" />
+        </a>
+      </p>
+    </td>
+  </tr>
+</table>
 
-<p align="left">
-  <a href="https://erdogant.github.io/pca/pages/html/Plots.html#d-plots">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter3d.png" width="350" />
-  </a>
-</p>
 
 
 # 
