@@ -18,7 +18,7 @@
 [![Open Issues](https://img.shields.io/github/issues/erdogant/pca.svg)](https://github.com/erdogant/pca/issues)
 [![Project Status](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![DOI](https://zenodo.org/badge/233232884.svg)](https://zenodo.org/badge/latestdoi/233232884)
-[![Medium](https://img.shields.io/badge/Medium-Blog-green)](https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559)
+[![Medium](https://img.shields.io/badge/Medium-Blog-black)](https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559)
 [![Colab](https://colab.research.google.com/assets/colab-badge.svg?logo=github%20sponsors)](https://erdogant.github.io/pca/pages/html/Documentation.html#colab-notebook)
 ![GitHub repo size](https://img.shields.io/github/repo-size/erdogant/pca)
 [![Donate](https://img.shields.io/badge/Support%20this%20project-grey.svg?logo=github%20sponsors)](https://erdogant.github.io/pca/pages/html/Documentation.html#)
