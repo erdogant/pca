@@ -1223,7 +1223,9 @@ class pca():
         Parameters
         ----------
         data : str, optional
-            Name of the dataset 'sprinkler' or 'titanic' or 'student'.
+                * 'sprinkler'
+                * 'titanic'
+                * 'student'
         Verbose : int (default : 3)
             The higher the number, the more information is printed.
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
@@ -1534,7 +1536,9 @@ def import_example(data='titanic', verbose=3):
     Parameters
     ----------
     data : str, optional
-        Name of the dataset 'sprinkler' or 'titanic' or 'student'.
+            * 'sprinkler'
+            * 'titanic'
+            * 'student'
     verbose : int, optional
         Print message to screen. The default is 3.
 
@@ -1542,6 +1546,10 @@ def import_example(data='titanic', verbose=3):
     -------
     pd.DataFrame()
         Dataset containing mixed features.
+    
+    References
+    ----------
+        * P. Cortez and A. Silva. Using Data Mining to Predict Secondary School Student Performance, ISBN 978-9077381-39-7, https://archive.ics.uci.edu/ml/datasets/student+performance
 
     """
     if data=='sprinkler':
