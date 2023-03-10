@@ -1,6 +1,93 @@
 from pca import pca
 import pandas as pd
 import numpy as np
+import matplotlib as mpl
+# %%
+
+
+# Import library
+from pca import pca
+
+# Initialize
+model = pca()
+
+# Load Titanic data set
+df = model.import_example(data='student')
+
+#     school sex  age address famsize Pstatus  ...  Walc  health absences  G1  G2  G3
+# 0       GP   F   18       U     GT3       A  ...     1       3        4   0  11  11
+# 1       GP   F   17       U     GT3       T  ...     1       3        2   9  11  11
+# 2       GP   F   15       U     LE3       T  ...     3       3        6  12  13  12
+# 3       GP   F   15       U     GT3       T  ...     1       5        0  14  14  14
+# 4       GP   F   16       U     GT3       T  ...     2       5        0  11  13  13
+# ..     ...  ..  ...     ...     ...     ...  ...   ...     ...      ...  ..  ..  ..
+# 644     MS   F   19       R     GT3       T  ...     2       5        4  10  11  10
+# 645     MS   F   18       U     LE3       T  ...     1       1        4  15  15  16
+# 646     MS   F   18       U     GT3       T  ...     1       5        6  11  12   9
+# 647     MS   M   17       U     LE3       T  ...     4       2        6  10  10  10
+# 648     MS   M   18       R     LE3       T  ...     4       5        4  10  11  11
+
+# [649 rows x 33 columns]
+
+# Initialize
+from df2onehot import df2onehot
+
+df_hot = df2onehot(df)['onehot']
+
+print(df_hot)
+
+
+#      school_GP  school_MS  sex_F  sex_M  ...  G3_6.0  G3_7.0  G3_8.0  G3_9.0
+# 0         True      False   True  False  ...   False   False   False   False
+# 1         True      False   True  False  ...   False   False   False   False
+# 2         True      False   True  False  ...   False   False   False   False
+# 3         True      False   True  False  ...   False   False   False   False
+# 4         True      False   True  False  ...   False   False   False   False
+# ..         ...        ...    ...    ...  ...     ...     ...     ...     ...
+# 644      False       True   True  False  ...   False   False   False   False
+# 645      False       True   True  False  ...   False   False   False   False
+# 646      False       True   True  False  ...   False   False   False    True
+# 647      False       True  False   True  ...   False   False   False   False
+# 648      False       True  False   True  ...   False   False   False   False
+
+# [649 rows x 177 columns]
+
+model = pca(normalize=True,
+            detect_outliers=['ht2', 'spe'],
+            alpha=0.05,
+            n_std=3,
+            multipletests='fdr_bh')
+
+results = model.fit_transform(df_hot)
+
+overlapping_outliers = np.logical_and(results['outliers']['y_bool'], results['outliers']['y_bool_spe'])
+df.loc[overlapping_outliers]
+
+#     school sex  age address famsize Pstatus  ...  Walc  health absences G1 G2 G3
+# 279     GP   M   22       U     GT3       T  ...     5       1       12  7  8  5
+# 284     GP   M   18       U     GT3       T  ...     5       5        4  7  8  6
+# 523     MS   M   18       U     LE3       T  ...     5       5        2  5  6  6
+# 605     MS   F   19       U     GT3       T  ...     3       2        0  5  0  0
+# 610     MS   F   19       R     GT3       A  ...     4       1        0  8  0  0
+
+# [5 rows x 33 columns]
+
+
+# Make biplot
+model.biplot(SPE=True,
+             hotellingt2=True,
+             jitter=0.1,
+             n_feat=10,
+             legend=True,
+             label=False,
+             y=df['sex'],
+             title='Student Performance',
+             figsize=(20, 12),
+             color_arrow='k',
+             fontdict={'size':16, 'c':'k'},
+              cmap='bwr_r',
+             gradient='#FFFFFF',
+             )
 
 
 # %%
