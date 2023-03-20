@@ -38,14 +38,6 @@ Other functionalities of PCA are:
 
 ---
 
-## Support
-
-Your ❤️ is important to keep maintaining this package. You can [support](https://erdogant.github.io/pca/pages/html/Documentation.html) in various ways, have a look at the [sponser page](https://erdogant.github.io/pca/pages/html/Documentation.html). Report bugs, issues and feature extensions at [github page](https://github.com/erdogant/pca).
-
-<a href='https://www.buymeacoffee.com/erdogant' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
-
----
-
 **⭐️ Star this repo if you like it ⭐️**
 
 ---
@@ -223,5 +215,10 @@ Please cite in your publications if this is useful for your research (see citati
 ### Maintainers
 * Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
 
-### Contribute
-* All kinds of contributions are welcome!
+---
+
+## Support
+
+Your ❤️ is important to keep maintaining this package. You can [support](https://erdogant.github.io/pca/pages/html/Documentation.html) in various ways, have a look at the [sponser page](https://erdogant.github.io/pca/pages/html/Documentation.html). Report bugs, issues and feature extensions at [github page](https://github.com/erdogant/pca).
+
+<a href='https://www.buymeacoffee.com/erdogant' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
