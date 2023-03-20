@@ -19,7 +19,7 @@ import statsmodels.stats.multitest as multitest
 
 
 # %% Association learning across all variables
-class pca():
+class pca:
     """pca module.
 
     Parameters
