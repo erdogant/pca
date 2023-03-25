@@ -229,13 +229,13 @@ Control color/marker/size per sample
 			       visible=True)
 
 
-.. |figP8| image:: ../figs/custom_example_2.png
+.. |figP9| image:: ../figs/custom_example_2.png
 
 .. table:: Biplot with customized properties per sample.
    :align: center
 
    +----------+
-   | |figP8|  |
+   | |figP9|  |
    +----------+
 
 
