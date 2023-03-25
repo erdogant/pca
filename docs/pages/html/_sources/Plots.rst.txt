@@ -101,7 +101,6 @@ Biplot
    | |figP6|  |
    +----------+
 
-\
 
 Biplot (only arrows)
 ########################
@@ -139,6 +138,48 @@ Alpha Transparency
 	fig, ax = model.scatter(alpha_transparency=1)
 
 
+Markers
+##############################
+
+.. code:: python
+
+	import numpy as np
+	from sklearn.datasets import make_friedman1
+	from pca import pca
+
+	# Make data set
+	X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+	# All available markers
+	markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
+	# Generate random integers
+	random_integers = np.random.randint(0, len(markers), size=X.shape[0])
+	# Draw markers
+	marker = markers[random_integers]
+
+	# Init
+	model = pca(verbose=3)
+	# Fit
+	model.fit_transform(X)
+	# Make plot with markers
+	fig, ax = model.biplot(c=[0, 0, 0], 
+			       marker=marker,
+			       label=False,
+			       title='Demonstration of specifying markers per sample.',
+			       n_feat=5,
+			       legend=False)
+
+.. |figP7| image:: ../figs/marker_example_1.png
+
+.. table:: Biplots with markers
+   :align: center
+
+   +----------+
+   | |figP7|  |
+   +----------+
+
+
+
 3D plots
 ###############
 
@@ -164,5 +205,63 @@ The visible status for can be turned on and off.
 	fig
 
 
+
+Control color/marker/size per sample
+####################################
+
+.. code:: python
+
+	# Import library
+	import numpy as np
+	import matplotlib.pyplot as plt
+	import matplotlib.colors as mcolors
+	from sklearn.datasets import make_friedman1
+	from pca import pca
+
+	# Make data set
+	X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+	# All available markers
+	markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
+	# Create colors
+	colors = plt.cm.get_cmap('tab20c', len(markers))
+	# Generate random integers
+	random_integers = np.random.randint(0, len(markers), size=X.shape[0])
+	# Draw markers
+	marker = markers[random_integers]
+	# Set colors
+	color = colors.colors[random_integers, :]
+	# Set Size
+	size = np.random.randint(50, 150, size=X.shape[0])
+	# Set alpha
+	alpha = np.random.rand(1, X.shape[0])[0][random_integers]
+
+	# Init
+	model = pca(verbose=3)
+	# Fit
+	model.fit_transform(X)
+	# Make plot with blue arrows and text
+	fig, ax = model.biplot(c=color,
+			       s=size,
+			       marker=marker,
+			       alpha_transparency=alpha,
+			       label=False,
+			       fontdict={'size':10, 'weight':'normal'},
+			       color_arrow='blue',
+			       title='Demonstration of specifying colors, markers, alpha, and size per sample.',
+			       hotellingt2=True,
+			       n_feat=5,
+			       legend=False, 
+			       visible=True)
+
+
+.. |figP8| image:: ../figs/custom_example_2.png
+
+.. table:: Biplot with customized properties per sample.
+   :align: center
+
+   +----------+
+   | |figP8|  |
+   +----------+
 
 .. include:: add_bottom.add
