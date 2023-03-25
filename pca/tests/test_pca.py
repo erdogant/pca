@@ -5,9 +5,60 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import GridSearchCV
 import itertools as it
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import unittest
+from sklearn.datasets import make_friedman1
 
 class TestPCA(unittest.TestCase):
+
+    def test_specifying(self):
+        # Make data set
+        X, _ = make_friedman1(n_samples=50, n_features=10, random_state=0)
+
+        # All available markers
+        markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
+        # Create colors
+        colors = plt.cm.get_cmap('tab20c', len(markers))
+        # Generate random integers
+        random_integers = np.random.randint(0, len(markers), size=X.shape[0])
+        # Draw markers
+        marker = markers[random_integers]
+        # Set colors
+        color = colors.colors[random_integers, :]
+        # Set Size
+        size = np.random.randint(10, 250, size=X.shape[0])
+        # Set alpha
+        alpha = np.random.rand(1, X.shape[0])[0][random_integers]
+        
+        param_grid = {
+        	'marker': [None, marker, '.'],
+        	'color':[None, color, [0,0,0]],
+        	'size' : [None, size, 50],
+            'alpha' : [None, alpha, 1]
+        	}
+        
+        allNames = param_grid.keys()
+        combinations = it.product(*(param_grid[Name] for Name in allNames))
+        combinations=list(combinations)
+
+        # Init
+        model = pca(verbose=0)
+        # Fit
+        model.fit_transform(X)
+        # Make plot with blue arrows and text
+        for combination in combinations:
+            fig, ax = model.biplot(c=combination[1],
+                                   s=combination[2],
+                                   marker=combination[0],
+                                   alpha_transparency=combination[3],
+                                   label=False,
+                                   fontdict={'size':10, 'weight':'normal'},
+                                   color_arrow='blue',
+                                   title='Demonstration of specifying colors, markers, alpha, and size per sample.',
+                                   hotellingt2=True,
+                                   n_feat=5,
+                                   legend=False, 
+                                   visible=False)
 
     def test_medium_blog(self):
         from sklearn.datasets import load_wine
