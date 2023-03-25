@@ -1,6 +1,8 @@
 """pca: A Python Package for Principal Component Analysis."""
 
 # %% Libraries
+import requests
+from urllib.parse import urlparse
 from tqdm import tqdm
 import scatterd as scatterd
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD  # MiniBatchSparsePCA
@@ -14,7 +16,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-import wget
 from adjustText import adjust_text
 import statsmodels.stats.multitest as multitest
 
@@ -742,6 +743,12 @@ class pca:
         alpha_transparency = np.array(alpha_transparency)
         if len(alpha_transparency)!=len(xs): raise Exception('alpha_transparency length (k=%d) should match the number of samples (n=%d).' %(len(alpha_transparency), len(xs)))
 
+        # Set Size
+        if s is None: s=50
+        if isinstance(s, (float, int)): s = np.repeat(s, len(xs))
+        s = np.array(s)
+        if len(s)!=len(xs): raise Exception('Size (s) length (k=%d) should match the number of samples (n=%d).' %(len(s), len(xs)))
+
         # Add jitter
         if jitter is not None:
             xs = xs + np.random.normal(0, jitter, size=len(xs))
@@ -1274,18 +1281,19 @@ class pca:
         return out
 
     # Import example
-    def import_example(self, data='titanic', verbose=3):
+    def import_example(self, data='titanic', url=None, sep=','):
         """Import example dataset from github source.
+
+        Description
+        -----------
+        Import one of the few datasets from github source or specify your own download url link.
 
         Parameters
         ----------
-        data : str, optional
-                * 'sprinkler'
-                * 'titanic'
-                * 'student'
-        Verbose : int (default : 3)
-            The higher the number, the more information is printed.
-            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+        data : str
+            Name of datasets: 'sprinkler', 'titanic', 'student', 'fifa', 'cancer', 'waterpump', 'retail'
+        url : str
+            url link to to dataset.
 
         Returns
         -------
@@ -1293,7 +1301,7 @@ class pca:
             Dataset containing mixed features.
 
         """
-        return import_example(data=data, verbose=verbose)
+        return import_example(data=data, url=url, sep=sep)
 
 
 # %%
@@ -1587,48 +1595,65 @@ def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_label
 
 
 # %% Import example dataset from github.
-def import_example(data='titanic', verbose=3):
+def import_example(data='titanic', url=None, sep=',', verbose=3):
     """Import example dataset from github source.
+
+    Description
+    -----------
+    Import one of the few datasets from github source or specify your own download url link.
 
     Parameters
     ----------
-    data : str, optional
-            * 'sprinkler'
-            * 'titanic'
-            * 'student'
-    verbose : int, optional
-        Print message to screen. The default is 3.
+    data : str
+        Name of datasets: 'sprinkler', 'titanic', 'student', 'fifa', 'cancer', 'waterpump', 'retail'
+    url : str
+        url link to to dataset.
+	verbose : int, (default: 20)
+		Print progress to screen. The default is 3.
+		60: None, 40: Error, 30: Warn, 20: Info, 10: Debug
 
     Returns
     -------
     pd.DataFrame()
         Dataset containing mixed features.
-    
-    References
-    ----------
-        * P. Cortez and A. Silva. Using Data Mining to Predict Secondary School Student Performance, ISBN 978-9077381-39-7, https://archive.ics.uci.edu/ml/datasets/student+performance
 
     """
-    if data=='sprinkler':
-        url='https://erdogant.github.io/datasets/sprinkler.zip'
-    elif data=='titanic':
-        url='https://erdogant.github.io/datasets/titanic_train.zip'
-    elif data=='student':
-        url='https://erdogant.github.io/datasets/student_train.zip'
+    if url is None:
+        if data=='sprinkler':
+            url='https://erdogant.github.io/datasets/sprinkler.zip'
+        elif data=='titanic':
+            url='https://erdogant.github.io/datasets/titanic_train.zip'
+        elif data=='student':
+            url='https://erdogant.github.io/datasets/student_train.zip'
+        elif data=='cancer':
+            url='https://erdogant.github.io/datasets/cancer_dataset.zip'
+        elif data=='fifa':
+            url='https://erdogant.github.io/datasets/FIFA_2018.zip'
+        elif data=='waterpump':
+            url='https://erdogant.github.io/datasets/waterpump/waterpump_test.zip'
+        elif data=='retail':
+            url='https://erdogant.github.io/datasets/marketing_data_online_retail_small.zip'
+    else:
+        data = wget.filename_from_url(url)
+
+    if url is None:
+        if verbose>=3: print('Nothing to download.')
+        return None
 
     curpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
-    PATH_TO_DATA = os.path.join(curpath, wget.filename_from_url(url))
+    filename = os.path.basename(urlparse(url).path)
+    PATH_TO_DATA = os.path.join(curpath, filename)
     if not os.path.isdir(curpath):
-        os.mkdir(curpath)
+        os.makedirs(curpath, exist_ok=True)
 
     # Check file exists.
     if not os.path.isfile(PATH_TO_DATA):
-        if verbose>=3: print('[pca] >Downloading example dataset from github source..')
-        wget.download(url, curpath)
+        if verbose>=3: print('Downloading [%s] dataset from github source..' %(data))
+        wget.download(url, PATH_TO_DATA)
 
     # Import local dataset
-    if verbose>=3: print('[pca] >Import dataset [%s]' %(data))
-    df = pd.read_csv(PATH_TO_DATA)
+    if verbose>=3: print('Import dataset [%s]' %(data))
+    df = pd.read_csv(PATH_TO_DATA, sep=sep)
     # Return
     return df
 
@@ -1715,3 +1740,32 @@ def _set_fontdict(fontdict, color_arrow=None):
     if fontdict.get('c')=='color_arrow' and (color_arrow is not None):
         fontdict['c'] = color_arrow
     return fontdict
+
+
+# %% Retrieve files files.
+class wget:
+    """Retrieve file from url."""
+
+    def filename_from_url(url):
+        """Return filename."""
+        return os.path.basename(url)
+
+    def download(url, writepath):
+        """Download.
+
+        Parameters
+        ----------
+        url : str.
+            Internet source.
+        writepath : str.
+            Directory to write the file.
+
+        Returns
+        -------
+        None.
+
+        """
+        r = requests.get(url, stream=True)
+        with open(writepath, "wb") as fd:
+            for chunk in r.iter_content(chunk_size=1024):
+                fd.write(chunk)
