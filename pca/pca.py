@@ -1,6 +1,7 @@
 """pca: A Python Package for Principal Component Analysis."""
 
 # %% Libraries
+from tqdm import tqdm
 import scatterd as scatterd
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD  # MiniBatchSparsePCA
 from sklearn.preprocessing import StandardScaler
@@ -509,12 +510,13 @@ class pca:
                   y=None,
                   c=None,
                   s=50,
+                  marker='.',
                   jitter=None,
                   label=True,
                   PC=[0, 1, 2],
                   SPE=False,
                   hotellingt2=False,
-                  alpha_transparency=None,
+                  alpha_transparency=1,
                   gradient=None,
                   fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'black'},
                   cmap='Set1',
@@ -524,7 +526,7 @@ class pca:
                   visible=True,
                   fig=None,
                   ax=None,
-                  verbose=3):
+                  verbose=None):
         """Scatter 3d plot.
 
         Parameters
@@ -538,6 +540,10 @@ class pca:
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
             50: all points get this size.
+        marker: list/array of strings (default: '.').
+            Marker for the samples.
+            '.' : All data points get this marker
+            ['.', '*', 's', ..]: Specify per sample the marker type.
         jitter : float, default: None
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         label : Bool, default: True
@@ -550,8 +556,10 @@ class pca:
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
-        alpha_transparency : Float, default: None
-            The alpha blending value, between 0 (transparent) and 1 (opaque).
+        alpha_transparency: float or array-like of floats (default: 1).
+            The alpha blending value ranges between 0 (transparent) and 1 (opaque).
+            1: All data points get this alpha
+            [1, 0.8, 0.2, ...]: Specify per sample the alpha
         gradient : String, (default: None)
             Hex (ending) color for the gradient of the scatterplot colors.
             '#FFFFFF'
@@ -579,10 +587,12 @@ class pca:
         tuple containing (fig, ax)
 
         """
+        if verbose is None: verbose = self.verbose
         if self.results['PC'].shape[1]>=3:
             fig, ax = self.scatter(y=y,
                                    c=c,
                                    s=s,
+                                   marker=marker,
                                    jitter=jitter,
                                    d3=True,
                                    label=label,
@@ -609,13 +619,14 @@ class pca:
                 y=None,
                 c=None,
                 s=50,
+                marker='.',
                 jitter=None,
                 d3=False,
                 label=True,
                 PC=[0, 1],
                 SPE=False,
                 hotellingt2=False,
-                alpha_transparency=None,
+                alpha_transparency=1,
                 gradient=None,
                 fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'black'},
                 cmap='Set1',
@@ -639,6 +650,10 @@ class pca:
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
             50: all points get this size.
+        marker: list/array of strings (default: '.').
+            Marker for the samples.
+            '.' : All data points get this marker
+            ['.', '*', 's', ..]: Specify per sample the marker type.
         jitter : float, default: None
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         d3 : Bool, default: False
@@ -653,8 +668,10 @@ class pca:
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
-        alpha_transparency : Float, default: None
-            The alpha blending value, between 0 (transparent) and 1 (opaque).
+        alpha_transparency: float or array-like of floats (default: 1).
+            The alpha blending value ranges between 0 (transparent) and 1 (opaque).
+            1: All data points get this alpha
+            [1, 0.8, 0.2, ...]: Specify per sample the alpha
         gradient : String, (default: None)
             Hex color to make a lineair gradient for the scatterplot.
             '#FFFFFF'
@@ -682,6 +699,7 @@ class pca:
         tuple containing (fig, ax)
 
         """
+        if verbose is None: verbose = self.verbose
         if c is None: c=[[0, 0, 0]]
         if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
         fontdict = _set_fontdict(fontdict)
@@ -712,6 +730,18 @@ class pca:
         # Get coordinates
         xs, ys, zs, ax = _get_coordinates(self.results['PC'], PC, fig, ax, d3)
 
+        # Set the markers
+        if marker is None: marker='.'
+        if isinstance(marker, str): marker = np.repeat(marker, len(xs))
+        marker = np.array(marker)
+        if len(marker)!=len(xs): raise Exception('Marker length (k=%d) should match the number of samples (n=%d).' %(len(marker), len(xs)))
+
+        # Set Alpha
+        if alpha_transparency is None: alpha_transparency=1
+        if isinstance(alpha_transparency, (float, int)): alpha_transparency = np.repeat(alpha_transparency, len(xs))
+        alpha_transparency = np.array(alpha_transparency)
+        if len(alpha_transparency)!=len(xs): raise Exception('alpha_transparency length (k=%d) should match the number of samples (n=%d).' %(len(alpha_transparency), len(xs)))
+
         # Add jitter
         if jitter is not None:
             xs = xs + np.random.normal(0, jitter, size=len(xs))
@@ -737,27 +767,35 @@ class pca:
                 if g_ellipse is not None: ax.add_artist(g_ellipse)
 
         # Make scatter plot of all not-outliers
-        uiy = np.unique(y)
-
-        if (len(uiy)==len(y)) and (len(uiy)>=1000) and (label is not None):
-            if verbose>=2: print('[pca] >Set parameter "label=None" to ignore the labels and significanly speed up the scatter plot.')
+        # uiy = np.unique(y)
+        # if (len(uiy)==len(y)) and (len(uiy)>=1000) and (label is not None) and np.unique(marker)==1:
+        #     if verbose>=2: print('[pca] >Set parameter "label=None" to ignore the labels and significanly speed up the scatter plot.')
         # Add the labels
-        if (label is None):
+        # if (label is None):
+        #     if d3:
+        #         ax.scatter(xs, ys, zs, s=s, alpha=alpha_transparency, color=getcolors, label=None, marker=marker[0])
+        #     else:
+        #         ax.scatter(xs, ys, s=s, alpha=alpha_transparency, color=getcolors, label=None, marker=marker[0])
+        # else:
+        for Iloc_sampl, _ in tqdm(enumerate(y), desc="[pca] >Plotting", position=0, leave=False, disable=(verbose==0)):
             if d3:
-                ax.scatter(xs, ys, zs, s=s, alpha=alpha_transparency, color=getcolors, label=None)
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=alpha_transparency[Iloc_sampl], color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
+                if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(y[Iloc_sampl]), color=[0, 0, 0], fontdict=fontdict)
             else:
-                ax.scatter(xs, ys, s=s, alpha=alpha_transparency, color=getcolors, label=None)
-        else:
-            for yk in uiy:
-                Iloc_sampl = (yk==y)
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=alpha_transparency[Iloc_sampl], color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
+                if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), str(y[Iloc_sampl]), color=[0, 0, 0], fontdict=fontdict)
+                # if label: ax.annotate(yk, np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]))
 
-                if d3:
-                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=s + 10, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
-                    if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict=fontdict)
-                else:
-                    ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=s + 10, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :])
-                    if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict=fontdict)
-                    # if label: ax.annotate(yk, np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]))
+            # for yk in uiy:
+            #     Iloc_sampl = (yk==y)
+
+            #     if d3:
+            #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=s + 10, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
+            #         if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict=fontdict)
+            #     else:
+            #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=s + 10, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
+            #         if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict=fontdict)
+            #         # if label: ax.annotate(yk, np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]))
 
         # Plot outliers for hotelling T2 test.
         if SPE and ('y_bool_spe' in self.results['outliers'].columns):
@@ -799,6 +837,7 @@ class pca:
                y=None,
                c=None,
                s=50,
+               marker='.',
                jitter=None,
                n_feat=None,
                d3=False,
@@ -806,7 +845,7 @@ class pca:
                PC=[0, 1],
                SPE=False,
                hotellingt2=False,
-               alpha_transparency=None,
+               alpha_transparency=1,
                gradient=None,
                color_arrow='r',
                fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'},
@@ -817,7 +856,7 @@ class pca:
                visible=True,
                fig=None,
                ax=None,
-               verbose=3):
+               verbose=None):
         """Create the Biplot.
 
         Description
@@ -838,6 +877,10 @@ class pca:
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
             50: all points get this size.
+        marker: list/array of strings (default: '.').
+            Marker for the samples.
+            '.' : All data points get this marker
+            ['.', '*', 's', ..]: Specify per sample the marker type.
         jitter : float, default: None
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         n_feat : int, default: 10
@@ -854,8 +897,10 @@ class pca:
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
-        alpha_transparency : Float, default: None
-            The alpha blending value, between 0 (transparent) and 1 (opaque).
+        alpha_transparency: float or array-like of floats (default: 1).
+            The alpha blending value ranges between 0 (transparent) and 1 (opaque).
+            1: All data points get this alpha
+            [1, 0.8, 0.2, ...]: Specify per sample the alpha
         gradient : String, (default: None)
             Hex (ending) color for the gradient of the scatterplot colors.
             '#FFFFFF'
@@ -897,6 +942,7 @@ class pca:
             * https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697
 
         """
+        if verbose is None: verbose = self.verbose
         # Input checks
         fontdict, cmap = _biplot_input_checks(self.results, PC, cmap, fontdict, d3, color_arrow, verbose)
 
@@ -925,9 +971,9 @@ class pca:
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter)
+            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, verbose=verbose)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter)
+            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, verbose=verbose)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -963,6 +1009,7 @@ class pca:
                  y=None,
                  c=None,
                  s=50,
+                 marker='.',
                  jitter=None,
                  n_feat=None,
                  label=True,
@@ -980,7 +1027,7 @@ class pca:
                  visible=True,
                  fig=None,
                  ax=None,
-                 verbose=3):
+                 verbose=None):
         """Make biplot in 3d.
 
         Parameters
@@ -994,6 +1041,10 @@ class pca:
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
             50: all points get this size.
+        marker: list/array of strings (default: '.').
+            Marker for the samples.
+            '.' : All data points get this marker
+            ['.', '*', 's', ..]: Specify per sample the marker type.
         jitter : float, default: None
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         n_feat : int, default: 10
@@ -1008,8 +1059,10 @@ class pca:
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
-        alpha_transparency : Float, default: None
-            The alpha blending value, between 0 (transparent) and 1 (opaque).
+        alpha_transparency: float or array-like of floats (default: 1).
+            The alpha blending value ranges between 0 (transparent) and 1 (opaque).
+            1: All data points get this alpha
+            [1, 0.8, 0.2, ...]: Specify per sample the alpha
         gradient : String, (default: None)
             Hex (ending) color for the gradient of the scatterplot colors.
             '#FFFFFF'
@@ -1046,6 +1099,7 @@ class pca:
         tuple containing (fig, ax)
 
         """
+        if verbose is None: verbose = self.verbose
         if self.results['PC'].shape[1]<3:
             print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
             return None, None
@@ -1054,6 +1108,7 @@ class pca:
                               n_feat=n_feat,
                               c=c,
                               s=s,
+                              marker=marker,
                               jitter=jitter,
                               d3=True,
                               label=label,
@@ -1076,7 +1131,7 @@ class pca:
         return (fig, ax)
 
     # Show explained variance plot
-    def plot(self, n_components=None, xsteps=None, title=None, visible=True, figsize=(15, 10), fig=None, ax=None, verbose=3):
+    def plot(self, n_components=None, xsteps=None, title=None, visible=True, figsize=(15, 10), fig=None, ax=None, verbose=None):
         """Scree-plot together with explained variance.
 
         Parameters
@@ -1110,6 +1165,8 @@ class pca:
         tuple containing (fig, ax)
 
         """
+        if verbose is None: verbose = self.verbose
+
         if self.method=='sparse_pca':
             print('[pca] >sparse pca does not support variance ratio and therefores scree plots are not supported. <return>')
             return None, None
