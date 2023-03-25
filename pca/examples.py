@@ -72,7 +72,7 @@ model.fit_transform(X)
 # Make plot with blue arrows and text
 fig, ax = model.biplot(c=color,
                        s=size,
-                       marker=None,
+                       marker=marker,
                        alpha_transparency=alpha,
                        label=False,
                        fontdict={'size':10, 'weight':'normal'},
