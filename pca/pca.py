@@ -786,10 +786,10 @@ class pca:
         # else:
         for Iloc_sampl, _ in tqdm(enumerate(y), desc="[pca] >Plotting", position=0, leave=False, disable=(verbose==0)):
             if d3:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=alpha_transparency[Iloc_sampl], color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=float(alpha_transparency[Iloc_sampl]), color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
                 if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(y[Iloc_sampl]), color=[0, 0, 0], fontdict=fontdict)
             else:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=alpha_transparency[Iloc_sampl], color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
+                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=float(alpha_transparency[Iloc_sampl]), color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
                 if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), str(y[Iloc_sampl]), color=[0, 0, 0], fontdict=fontdict)
                 # if label: ax.annotate(yk, np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]))
 
