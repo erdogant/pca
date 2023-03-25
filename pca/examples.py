@@ -10,6 +10,34 @@ df = pca.import_example('sprinkler')
 df = pca.import_example('titanic')
 df = pca.import_example('student')
 
+# %% change marker
+# Import library
+import numpy as np
+from sklearn.datasets import make_friedman1
+from pca import pca
+
+# Make data set
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+# All available markers
+markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
+# Generate random integers
+random_integers = np.random.randint(0, len(markers), size=X.shape[0])
+# Draw markers
+marker = markers[random_integers]
+
+# Init
+model = pca(verbose=3)
+# Fit
+model.fit_transform(X)
+# Make plot with blue arrows and text
+fig, ax = model.biplot(c=[0, 0, 0], 
+                       marker=marker,
+                       label=False,
+                       title='Demonstration of specifying colors, markers, alpha, and size per sample.',
+                       n_feat=5,
+                       legend=False)
+
 
 # %% Demonstration of specifying colors, markers, alpha, and size per sample
 # Import library
