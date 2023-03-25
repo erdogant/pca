@@ -13,7 +13,7 @@ else:
 with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
-     install_requires=['statsmodels', 'wget','matplotlib','numpy','scikit-learn','scipy','colourmap>=1.1.10','pandas','tqdm','scatterd>=1.2.5', 'adjustText'],
+     install_requires=['requests', 'statsmodels', 'matplotlib','numpy','scikit-learn','scipy','colourmap>=1.1.10','pandas','tqdm','scatterd>=1.2.5', 'adjustText'],
      python_requires='>=3',
      name='pca',
      version=new_version,
