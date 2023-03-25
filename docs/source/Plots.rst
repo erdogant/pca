@@ -169,40 +169,14 @@ Markers
 			       n_feat=5,
 			       legend=False)
 
-.. |figP7| image:: ../figs/marker_example_1.png
+.. |figP8| image:: ../figs/marker_example_1.png
 
 .. table:: Biplots with markers
    :align: center
 
    +----------+
-   | |figP7|  |
+   | |figP8|  |
    +----------+
-
-
-
-3D plots
-###############
-
-All plots can also be created in 3D by setting the ``d3=True`` parameter.
-
-.. code:: python
-
-	model.biplot3d()
-
-
-Toggle visible status
-##############################
-
-The visible status for can be turned on and off.
-
-.. code:: python
-
-	# Make plot but not visible.
-	fig, ax = model.biplot(visible=False)
-
-	# Set the figure again to True and show the figure.
-	fig.set_visible(True)
-	fig
 
 
 
@@ -263,5 +237,32 @@ Control color/marker/size per sample
    +----------+
    | |figP8|  |
    +----------+
+
+
+3D plots
+###############
+
+All plots can also be created in 3D by setting the ``d3=True`` parameter.
+
+.. code:: python
+
+	model.biplot3d()
+
+
+Toggle visible status
+##############################
+
+The visible status for can be turned on and off.
+
+.. code:: python
+
+	# Make plot but not visible.
+	fig, ax = model.biplot(visible=False)
+
+	# Set the figure again to True and show the figure.
+	fig.set_visible(True)
+	fig
+
+
 
 .. include:: add_bottom.add

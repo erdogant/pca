@@ -79,9 +79,9 @@
 <li class="toctree-l1"><a class="reference internal" href="#explained-variance-plot">Explained variance plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#alpha-transparency">Alpha Transparency</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#markers">Markers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#d-plots">3D plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#toggle-visible-status">Toggle visible status</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
@@ -189,7 +189,7 @@
 <tbody>
 <tr class="row-odd"><td><p><img alt="figP1" src="_images/wine_scatter.png" /></p></td>
 </tr>
-<tr class="row-even"><td><p><img alt="figP7" src="_images/marker_example_1.png" /></p></td>
+<tr class="row-even"><td><p><img alt="figP7" src="_images/wine_scatter_density.png" /></p></td>
 </tr>
 <tr class="row-odd"><td><p><img alt="figP2" src="_images/wine_scatter_spe.png" /></p></td>
 </tr>
@@ -278,29 +278,10 @@
 <col style="width: 100%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><img alt="figP7" src="_images/marker_example_1.png" /></p></td>
+<tr class="row-odd"><td><p><img alt="figP8" src="_images/custom_example_2.png" /></p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="d-plots">
-<h1>3D plots<a class="headerlink" href="#d-plots" title="Permalink to this heading"></a></h1>
-<p>All plots can also be created in 3D by setting the <code class="docutils literal notranslate"><span class="pre">d3=True</span></code> parameter.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
-<section id="toggle-visible-status">
-<h1>Toggle visible status<a class="headerlink" href="#toggle-visible-status" title="Permalink to this heading"></a></h1>
-<p>The visible status for can be turned on and off.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make plot but not visible.</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="c1"># Set the figure again to True and show the figure.</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">fig</span>
-</pre></div>
-</div>
 </section>
 <section id="control-color-marker-size-per-sample">
 <h1>Control color/marker/size per sample<a class="headerlink" href="#control-color-marker-size-per-sample" title="Permalink to this heading"></a></h1>
@@ -358,6 +339,25 @@
 </tr>
 </tbody>
 </table>
+</section>
+<section id="d-plots">
+<h1>3D plots<a class="headerlink" href="#d-plots" title="Permalink to this heading"></a></h1>
+<p>All plots can also be created in 3D by setting the <code class="docutils literal notranslate"><span class="pre">d3=True</span></code> parameter.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="toggle-visible-status">
+<h1>Toggle visible status<a class="headerlink" href="#toggle-visible-status" title="Permalink to this heading"></a></h1>
+<p>The visible status for can be turned on and off.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make plot but not visible.</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Set the figure again to True and show the figure.</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
 <hr>
 <center>
         <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
