@@ -2,6 +2,60 @@ from pca import pca
 import pandas as pd
 import numpy as np
 import matplotlib as mpl
+
+# %% Test examples
+import pca
+# Import example
+df = pca.import_example('sprinkler')
+df = pca.import_example('titanic')
+df = pca.import_example('student')
+
+
+# %% Demonstration of specifying colors, markers, alpha, and size per sample
+# Import library
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+from sklearn.datasets import make_friedman1
+from pca import pca
+
+# Make data set
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+# All available markers
+markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
+# Create colors
+colors = plt.cm.get_cmap('tab20c', len(markers))
+# Generate random integers
+random_integers = np.random.randint(0, len(markers), size=X.shape[0])
+# Draw markers
+marker = markers[random_integers]
+# Set colors
+color = colors.colors[random_integers, :]
+# Set Size
+size = np.random.randint(50, 150, size=X.shape[0])
+# Set alpha
+alpha = np.random.rand(1, X.shape[0])[0][random_integers]
+
+# Init
+model = pca(verbose=3)
+# Fit
+model.fit_transform(X)
+# Make plot with blue arrows and text
+fig, ax = model.biplot(c=color,
+                       s=size,
+                       marker=None,
+                       alpha_transparency=alpha,
+                       label=False,
+                       fontdict={'size':10, 'weight':'normal'},
+                       color_arrow='blue',
+                       title='Demonstration of specifying colors, markers, alpha, and size per sample.',
+                       hotellingt2=True,
+                       n_feat=5,
+                       legend=False, 
+                       visible=True)
+
+
 # %%
 
 
@@ -91,6 +145,8 @@ model.biplot(SPE=True,
 
 
 # %%
+# Import library
+from pca import pca
 from sklearn.datasets import make_friedman1
 X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
 
