@@ -701,6 +701,9 @@ class pca:
 
         """
         if verbose is None: verbose = self.verbose
+        if not hasattr(self, 'results'):
+            if verbose>=2: print('[pca]> No results to plot. Hint: model.fit(X) <return>.')
+            return None
         if c is None: c=[[0, 0, 0]]
         if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
         fontdict = _set_fontdict(fontdict)
@@ -950,6 +953,10 @@ class pca:
 
         """
         if verbose is None: verbose = self.verbose
+        if not hasattr(self, 'results'):
+            if verbose>=2: print('[pca]> No results to plot. Hint: model.fit(X) <return>.')
+            return None
+
         # Input checks
         fontdict, cmap = _biplot_input_checks(self.results, PC, cmap, fontdict, d3, color_arrow, verbose)
 
