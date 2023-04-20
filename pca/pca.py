@@ -519,7 +519,8 @@ class pca:
                   s=50,
                   marker='.',
                   jitter=None,
-                  label=True,
+                  label=None,  # deprecated
+                  textlabel=None,
                   PC=[0, 1, 2],
                   SPE=False,
                   hotellingt2=False,
@@ -553,10 +554,10 @@ class pca:
             ['.', '*', 's', ..]: Specify per sample the marker type.
         jitter : float, default: None
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
-        label : Bool, default: True
+        textlabel : Bool, default: None
             True Show the labels.
             False: Do not show the labels
-            None: Ignore all labels (this will significanly speed up the scatterplot)
+            None: This will automatically use the best setting with respect to speed.
         PC : list, default : [0, 1, 2]
             Plot the first three Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
         SPE : Bool, default: False
@@ -595,30 +596,32 @@ class pca:
 
         """
         if verbose is None: verbose = self.verbose
-        if self.results['PC'].shape[1]>=3:
-            fig, ax = self.scatter(y=y,
-                                   c=c,
-                                   s=s,
-                                   marker=marker,
-                                   jitter=jitter,
-                                   d3=True,
-                                   label=label,
-                                   PC=PC, SPE=SPE,
-                                   hotellingt2=hotellingt2,
-                                   alpha_transparency=alpha_transparency,
-                                   gradient=gradient,
-                                   fontdict=fontdict,
-                                   cmap=cmap,
-                                   title=title,
-                                   legend=legend,
-                                   figsize=figsize,
-                                   visible=visible,
-                                   fig=fig,
-                                   ax=ax,
-                                   verbose=verbose)
-        else:
-            print('[pca] >Error: There are not enough PCs to make a 3d-plot.')
-            fig, ax = None, None
+        _show_deprecated_warning(label, verbose)
+        if not hasattr(self, 'results') or self.results['PC'].shape[1]<3:
+            fig = fig if not None else None
+            ax = ax if not None else None
+            return fig, ax
+
+        fig, ax = self.scatter(y=y,
+                               c=c,
+                               s=s,
+                               marker=marker,
+                               jitter=jitter,
+                               d3=True,
+                               textlabel=textlabel,
+                               PC=PC, SPE=SPE,
+                               hotellingt2=hotellingt2,
+                               alpha_transparency=alpha_transparency,
+                               gradient=gradient,
+                               fontdict=fontdict,
+                               cmap=cmap,
+                               title=title,
+                               legend=legend,
+                               figsize=figsize,
+                               visible=visible,
+                               fig=fig,
+                               ax=ax,
+                               verbose=verbose)
         return fig, ax
 
     # Scatter plot
@@ -629,7 +632,8 @@ class pca:
                 marker='.',
                 jitter=None,
                 d3=False,
-                label=True,
+                label=None,  # deprecated
+                textlabel=True,
                 PC=[0, 1],
                 SPE=False,
                 hotellingt2=False,
@@ -665,11 +669,10 @@ class pca:
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         d3 : Bool, default: False
             3d plot is created when True.
-        label : Bool, default: True
+        textlabel : Bool, default: None
             True Show the labels.
             False: Do not show the labels
-            None: Ignore all labels (this will significanly speed up the scatterplot)
-        PC : list, default : [0, 1]
+            None: This will automatically use the best setting with respect to speed.
             Plot the first two Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
@@ -707,9 +710,13 @@ class pca:
 
         """
         if verbose is None: verbose = self.verbose
+        _show_deprecated_warning(label, verbose)
         if not hasattr(self, 'results'):
             if verbose>=2: print('[pca]> No results to plot. Hint: model.fit(X) <return>.')
-            return None
+            fig = fig if not None else None
+            ax = ax if not None else None
+            return fig, ax
+
         if c is None: c=[[0, 0, 0]]
         if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
         fontdict = _set_fontdict(fontdict)
@@ -857,7 +864,8 @@ class pca:
                jitter=None,
                n_feat=None,
                d3=False,
-               label=True,
+               label=None,  # deprecated
+               textlabel=None,
                PC=[0, 1],
                SPE=False,
                hotellingt2=False,
@@ -887,8 +895,11 @@ class pca:
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
-            Color of samples in RGB colors.
-            [0,0,0]: If a single color is given, all samples get that color.
+            The marker colors. Possible values:
+                * A scalar or sequence of n numbers to be mapped to colors using cmap and norm.
+                * A 2D array in which the rows are RGB or RGBA.
+                * A sequence of colors of length n.
+                * A single color format string.
         s: Int or list/array (default: 50)
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
@@ -903,10 +914,10 @@ class pca:
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         d3 : Bool, default: False
             3d plot is created when True.
-        label : Bool, default: True
+        textlabel : Bool, default: None
             True Show the labels.
             False: Do not show the labels
-            None: Ignore all labels (this will significanly speed up the scatterplot)
+            None: This will automatically use the best setting with respect to speed.
         PC : list, default : [0, 1]
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         SPE : Bool, default: False
@@ -959,9 +970,12 @@ class pca:
 
         """
         if verbose is None: verbose = self.verbose
+        _show_deprecated_warning(label, verbose)
         if not hasattr(self, 'results'):
-            if verbose>=2: print('[pca]> No results to plot. Hint: model.fit(X) <return>.')
-            return None
+            if verbose>=2: print('[pca]> Warning: No results to plot. Hint: model.fit(X) <return>.')
+            fig = fig if not None else None
+            ax = ax if not None else None
+            return fig, ax
 
         # Input checks
         fontdict, cmap = _biplot_input_checks(self.results, PC, cmap, fontdict, d3, color_arrow, verbose)
@@ -991,9 +1005,9 @@ class pca:
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, verbose=verbose)
+            fig, ax = self.scatter3d(y=y, label=textlabel, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, verbose=verbose)
         else:
-            fig, ax = self.scatter(y=y, label=label, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, verbose=verbose)
+            fig, ax = self.scatter(y=y, label=textlabel, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, verbose=verbose)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -1023,7 +1037,7 @@ class pca:
         # Plot the adjusted text labels to prevent overlap
         if len(texts)>0: adjust_text(texts)
         # if visible: plt.show()
-        return (fig, ax)
+        return fig, ax
 
     def biplot3d(self,
                  y=None,
@@ -1032,7 +1046,8 @@ class pca:
                  marker='.',
                  jitter=None,
                  n_feat=None,
-                 label=True,
+                 label=None,  # deprecated
+                 textlabel=None,
                  PC=[0, 1, 2],
                  SPE=False,
                  hotellingt2=False,
@@ -1069,10 +1084,10 @@ class pca:
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
-        label : Bool, default: True
+        textlabel : Bool, default: None
             True Show the labels.
             False: Do not show the labels
-            None: Ignore all labels (this will significanly speed up the scatterplot)
+            None: This will automatically use the best setting with respect to speed.
         PC : list, default : [0, 1, 2]
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         SPE : Bool, default: False
@@ -1120,9 +1135,12 @@ class pca:
 
         """
         if verbose is None: verbose = self.verbose
-        if self.results['PC'].shape[1]<3:
-            print('[pca] >Requires 3 PCs to make 3d plot. Try to use biplot() instead.')
-            return None, None
+        _show_deprecated_warning(label, verbose)
+        if not hasattr(self, 'results') or self.results['PC'].shape[1]<3:
+            if verbose >= 2: print('[pca] >Warning: Requires results with 3 PCs to make 3d plot.')
+            fig = fig if not None else None
+            ax = ax if not None else None
+            return fig, ax
 
         fig, ax = self.biplot(y=y,
                               n_feat=n_feat,
@@ -1131,7 +1149,7 @@ class pca:
                               marker=marker,
                               jitter=jitter,
                               d3=True,
-                              label=label,
+                              label=textlabel,
                               PC=PC,
                               SPE=SPE,
                               hotellingt2=hotellingt2,
@@ -1148,7 +1166,7 @@ class pca:
                               ax=ax,
                               verbose=verbose)
 
-        return (fig, ax)
+        return fig, ax
 
     # Show explained variance plot
     def plot(self, n_components=None, xsteps=None, title=None, visible=True, figsize=(15, 10), fig=None, ax=None, verbose=None):
