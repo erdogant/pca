@@ -419,27 +419,33 @@ class pca:
 
         if (not self.onehot) and (not self.normalize) and isinstance(X, pd.DataFrame) and (str(X.values.dtype)=='bool'):
             if verbose>=2: print('[pca] >Warning: Sparse or one-hot boolean input data is detected, it is highly recommended to set onehot=True or alternatively, normalize=True')
-
-        # if sp.issparse(X):
-            # if verbose>=1: print('[PCA] Error: A sparse matrix was passed, but dense data is required for method=barnes_hut. Use X.toarray() to convert to a dense numpy array if the array is small enough for it to fit in memory.')
-        if isinstance(X, pd.DataFrame):
-            if verbose>=3: print('[pca] >Processing dataframe..')
+        
+        # Set col labels
+        if isinstance(X, pd.DataFrame) and col_labels is None:
+            if verbose>=3: print('[pca] >Extracting column labels from dataframe.')
             col_labels = X.columns.values
-            row_labels = X.index.values
-            X = X.values
-        if sp.issparse(X) and self.normalize:
-            if verbose>=3: print('[pca] >Can not normalize a sparse matrix. Normalize is set to [False]')
-            self.normalize=False
         if col_labels is None or len(col_labels)==0 or len(col_labels)!=X.shape[1]:
             if verbose>=3: print('[pca] >Column labels are auto-completed.')
             col_labels = np.arange(1, X.shape[1] + 1).astype(str)
+        # if isinstance(col_labels, list):
+        col_labels=np.array(col_labels)
+
+        # Set row labels
+        if isinstance(X, pd.DataFrame) and row_labels is None:
+            if verbose>=3: print('[pca] >Extracting row labels from dataframe.')
+            row_labels = X.index.values
         if row_labels is None or len(row_labels)!=X.shape[0]:
             row_labels=np.ones(X.shape[0])
             if verbose>=3: print('[pca] >Row labels are auto-completed.')
-        if isinstance(row_labels, list):
-            row_labels=np.array(row_labels)
-        if isinstance(col_labels, list):
-            col_labels=np.array(col_labels)
+        # if isinstance(row_labels, list):
+        row_labels=np.array(row_labels)
+
+        if isinstance(X, pd.DataFrame):
+            X = X.values
+
+        if sp.issparse(X) and self.normalize:
+            if verbose>=3: print('[pca] >Warning: Can not normalize a sparse matrix. Normalize is set to [False]')
+            self.normalize=False
         if (sp.issparse(X) is False) and (self.n_components > X.shape[1]):
             # raise Exception('[pca] >Number of components can not be more then number of features.')
             if verbose>=2: print('[pca] >Warning: >Number of components can not be more then number of features. n_components is set to %d' %(X.shape[1] - 1))
@@ -470,7 +476,7 @@ class pca:
             # ax2.set_title('Zero-mean with unit variance normalized')
             # ax2.grid(True)
 
-        return (X, row_labels, col_labels, scaler)
+        return X, row_labels, col_labels, scaler
 
     # Figure pre processing
     def _fig_preprocessing(self, y, n_feat, d3):
