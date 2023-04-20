@@ -540,8 +540,11 @@ class pca:
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
-            Color of samples in RGB colors.
-            [0,0,0]: If a single color is given, all samples get that color.
+            The marker colors. Possible values:
+                * A scalar or sequence of n numbers to be mapped to colors using cmap and norm.
+                * A 2D array in which the rows are RGB or RGBA.
+                * A sequence of colors of length n.
+                * A single color format string.
         s: Int or list/array (default: 50)
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
@@ -654,8 +657,11 @@ class pca:
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
-            Color of samples in RGB colors.
-            [0,0,0]: If a single color is given, all samples get that color.
+            The marker colors. Possible values:
+                * A scalar or sequence of n numbers to be mapped to colors using cmap and norm.
+                * A 2D array in which the rows are RGB or RGBA.
+                * A sequence of colors of length n.
+                * A single color format string.
         s: Int or list/array (default: 50)
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
@@ -1069,8 +1075,11 @@ class pca:
         y : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
-            Color of samples in RGB colors.
-            [0,0,0]: If a single color is given, all samples get that color.
+            The marker colors. Possible values:
+                * A scalar or sequence of n numbers to be mapped to colors using cmap and norm.
+                * A 2D array in which the rows are RGB or RGBA.
+                * A sequence of colors of length n.
+                * A single color format string.
         s: Int or list/array (default: 50)
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
