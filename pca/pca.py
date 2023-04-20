@@ -345,8 +345,6 @@ class pca:
     def compute_topfeat(self, loadings=None, verbose=3):
         """Compute the top-scoring features.
 
-        Description
-        -----------
         Per Principal Component, the feature with absolute maximum loading is stored.
         This can result into the detection of PCs that contain the same features. The feature that were never detected are stored as "weak".
 
@@ -529,7 +527,7 @@ class pca:
                   fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'black'},
                   cmap='Set1',
                   title=None,
-                  legend=True,
+                  legend=None,
                   figsize=(15, 10),
                   visible=True,
                   fig=None,
@@ -557,9 +555,9 @@ class pca:
         textlabel : Bool, default: None
             True Show the labels.
             False: Do not show the labels
-            None: This will automatically use the best setting with respect to speed.
+            None: This will automatically use the best setting with respect to performance.
         PC : list, default : [0, 1, 2]
-            Plot the first three Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
+            Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
@@ -581,8 +579,9 @@ class pca:
             None: Automatically create title text based on results.
             '' : Remove all title text.
             'title text' : Add custom title text.
-        legend : Bool, default: True
-            Show the legend based on the unique y-labels.
+        legend : Bool, default: None
+            True: Show the legend based on the unique labels.
+            None: Set automatically based on performance.
         figsize : (int, int), optional, default: (15, 10)
             (width, height) in inches.
         visible : Bool, default: True
@@ -642,7 +641,7 @@ class pca:
                 fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'black'},
                 cmap='Set1',
                 title=None,
-                legend=True,
+                legend=None,
                 figsize=(20, 15),
                 visible=True,
                 fig=None,
@@ -672,7 +671,7 @@ class pca:
         textlabel : Bool, default: None
             True Show the labels.
             False: Do not show the labels
-            None: This will automatically use the best setting with respect to speed.
+            None: This will automatically use the best setting with respect to performance.
             Plot the first two Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
@@ -695,8 +694,9 @@ class pca:
             None: Automatically create title text based on results.
             '' : Remove all title text.
             'title text' : Add custom title text.
-        legend : Bool, default: True
-            Show the legend based on the unique y-labels.
+        legend : Bool, default: None
+            True: Show the legend based on the unique labels.
+            None: Set automatically based on performance.
         figsize : (int, int), optional, default: (15, 10)
             (width, height) in inches.
         visible : Bool, default: True
@@ -875,7 +875,7 @@ class pca:
                fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'},
                cmap='Set1',
                title=None,
-               legend=True,
+               legend=None,
                figsize=(15, 10),
                visible=True,
                fig=None,
@@ -883,8 +883,6 @@ class pca:
                verbose=None):
         """Create the Biplot.
 
-        Description
-        -----------
         Plots the Principal components with the samples, and the best performing features.
         Per PC, The feature with absolute highest loading is gathered. This can result into features that are seen over multiple PCs, and some features may never be detected.
         For vizualization purposes we will keep only the unique feature-names and plot them with red arrows and green labels.
@@ -917,7 +915,7 @@ class pca:
         textlabel : Bool, default: None
             True Show the labels.
             False: Do not show the labels
-            None: This will automatically use the best setting with respect to speed.
+            None: This will automatically use the best setting with respect to performance.
         PC : list, default : [0, 1]
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         SPE : Bool, default: False
@@ -945,8 +943,9 @@ class pca:
             None: Automatically create title text based on results.
             '' : Remove all title text.
             'title text' : Add custom title text.
-        legend : Bool, default: True
-            Show the legend based on the unique y-labels.
+        legend : Bool, default: None
+            True: Show the legend based on the unique labels.
+            None: Set automatically based on performance.
         figsize : (int, int), optional, default: (15, 10)
             (width, height) in inches.
         visible : Bool, default: True
@@ -1057,7 +1056,7 @@ class pca:
                  fontdict={'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'},
                  cmap='Set1',
                  title=None,
-                 legend=True,
+                 legend=None,
                  figsize=(15, 10),
                  visible=True,
                  fig=None,
@@ -1087,7 +1086,7 @@ class pca:
         textlabel : Bool, default: None
             True Show the labels.
             False: Do not show the labels
-            None: This will automatically use the best setting with respect to speed.
+            None: This will automatically use the best setting with respect to performance.
         PC : list, default : [0, 1, 2]
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         SPE : Bool, default: False
@@ -1105,7 +1104,7 @@ class pca:
             color for the arrow.
             'r' (default)
         fontdict : dict.
-            dictionary containing properties for the arrow font-text
+            dictionary containing properties for the arrow font-text.
             Note that the [c]olor: 'color_arrow' inherits the color used in color_arrow.
             {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'}
         cmap : String, optional, default: 'Set1'
@@ -1115,8 +1114,9 @@ class pca:
             None: Automatically create title text based on results.
             '' : Remove all title text.
             'title text' : Add custom title text.
-        legend : Bool, default: True
-            Show the legend based on the unique y-labels.
+        legend : Bool, default: None
+            True: Show the legend based on the unique labels.
+            None: Set automatically based on performance.
         figsize : (int, int), optional, default: (15, 10)
             (width, height) in inches.
         visible : Bool, default: True
@@ -1264,8 +1264,6 @@ class pca:
     def norm(self, X, n_components=None, pcexclude=[1]):
         """Normalize out PCs.
 
-        Description
-        -----------
         Normalize your data using the variance seen in hte Principal Components. This allows to remove (technical)
         variation in the data by normalizing out e.g., the 1st or 2nd etc component. This function transforms the
         original data using the PCs that you want to normalize out. As an example, if you aim to remove the variation
@@ -1315,8 +1313,6 @@ class pca:
     def import_example(self, data='titanic', url=None, sep=','):
         """Import example dataset from github source.
 
-        Description
-        -----------
         Import one of the few datasets from github source or specify your own download url link.
 
         Parameters
@@ -1364,8 +1360,6 @@ def _eigsorted(cov, n_std):
 def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', showfig=False, verbose=3):
     """Compute SPE/distance to model (DmodX).
 
-    Description
-    -----------
     Outlier can be detected using SPE/DmodX (distance to model) based on the mean and covariance of the first 2 dimensions of X.
     On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are complementary to each other.
 
@@ -1448,8 +1442,6 @@ def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', showfig=False, 
 def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', param=None, verbose=3):
     """Test for outlier using hotelling T2 test.
 
-    Description
-    -----------
     Test for outliers using chi-square tests for each of the n_components.
     The resulting P-value matrix is then combined using fishers method per sample.
     The results can be used to priortize outliers as those samples that are an outlier
@@ -1629,8 +1621,6 @@ def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_label
 def import_example(data='titanic', url=None, sep=',', verbose=3):
     """Import example dataset from github source.
 
-    Description
-    -----------
     Import one of the few datasets from github source or specify your own download url link.
 
     Parameters
@@ -1693,8 +1683,6 @@ def import_example(data='titanic', url=None, sep=',', verbose=3):
 def _get_explained_variance(X, components):
     """Get the explained variance.
 
-    Description
-    -----------
     Get the explained variance from the principal components of the
     data. This follows the method outlined in [1] section 3.4 (Adjusted Total
     Variance). For an alternate approach (not implemented here), see [2].
