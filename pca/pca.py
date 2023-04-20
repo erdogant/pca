@@ -1797,3 +1797,8 @@ class wget:
         with open(writepath, "wb") as fd:
             for chunk in r.iter_content(chunk_size=1024):
                 fd.write(chunk)
+
+
+def _show_deprecated_warning(label, verbose):
+    if label is not None:
+        if verbose>=2: print('[pca]> Warning: De parameter <label> is deprecated and will not be supported in future version. Use <textlabel> instead.')
