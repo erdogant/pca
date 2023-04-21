@@ -3,6 +3,135 @@ import pandas as pd
 import numpy as np
 import matplotlib as mpl
 
+# %%
+df = pd.read_pickle('WIM-data PCA bug')
+df = df.iloc[0:1000, :]
+X = df.drop(['SUBCATEGORIE','UTCPASSAGEDATUM','STROOKVOLGNUMMER','TWEESTROKEN'],axis=1)
+y = df['SUBCATEGORIE']
+model = pca(normalize=True, n_components=0.95)
+results = model.fit_transform(X, col_labels=X.columns, row_labels=y)
+# results = model.fit_transform(X)
+model.scatter3d()
+model.biplot3d()
+
+
+model.scatter()
+model.scatter(fontsize=20, c=None)
+model.scatter(fontsize=20, cmap=None)
+model.scatter(edgecolor='#FFFFFF')
+model.scatter(edgecolor='#FFFFFF', gradient='#FFFFFF')
+model.scatter(density=True)
+model.scatter(density=True, c=None)
+model.scatter(density=True, c=None, legend=False)
+model.scatter(density=True, c=None, fontsize=0)
+model.scatter(density=True, s=10, edgecolor=None, fontsize=0, alpha=0.2)
+
+model.scatter(fontsize=20)
+model.biplot()
+model.scatter(c=[0,0,0], legend=True)
+model.scatter(alpha=None)
+model.scatter(alpha=0.8)
+model.scatter(alpha=0.8, density=True)
+model.scatter(s=250, alpha=0.8, gradient='#FFFFFF', edgecolor=None)
+
+model.biplot()
+model.biplot(cmap=None, n_feat=5)
+model.biplot3d()
+model.biplot3d(cmap=None, n_feat=8)
+
+# %%
+from sklearn.datasets import make_friedman1
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+model = pca()
+model.fit_transform(X)
+# model.plot(title=None)
+# model.biplot(fontdict={'weight':'bold'}, title=None)
+model.biplot3d()
+model.scatter3d()
+
+
+# %% Demonstration of specifying colors, markers, alpha, and size per sample
+# Import library
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+from sklearn.datasets import make_friedman1
+from pca import pca
+
+# Make data set
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+# All available markers
+markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
+# Create colors
+colors = plt.cm.get_cmap('tab20c', len(markers))
+# Generate random integers
+random_integers = np.random.randint(0, len(markers), size=X.shape[0])
+# Draw markers
+marker = markers[random_integers]
+# Set colors
+color = colors.colors[random_integers, 0:3]
+# Set Size
+size = np.random.randint(50, 1000, size=X.shape[0])
+# Set alpha
+alpha = np.random.rand(1, X.shape[0])[0][random_integers]
+
+# Init
+model = pca(verbose=3)
+# Fit
+model.fit_transform(X)
+# Make plot with blue arrows and text
+fig, ax = model.biplot(c=color,
+                        s=size,
+                        marker=marker,
+                        alpha=alpha,
+                        color_arrow='k',
+                        title='Demonstration of specifying colors, markers, alpha, and size per sample.',
+                        hotellingt2=True,
+                        n_feat=5,
+                       visible=True)
+
+
+# %%
+from df2onehot import df2onehot
+from pca import pca
+
+model = pca()
+df = model.import_example(data='student')
+df_hot = df2onehot(df)['onehot']
+# print(df_hot)
+
+# Initialize
+model = pca(normalize=True,detect_outliers=['ht2', 'spe'])
+
+# Fit
+model.fit_transform(df_hot)
+
+# model.scatter(legend=False)
+# model.biplot(legend=False)
+
+model.biplot(SPE=True,
+              hotellingt2=True,
+              marker=df['sex'],
+              # jitter=0.1,
+              n_feat=10,
+              legend=True,
+              labels=df['sex'],
+              title='Student Performance',
+              figsize=(20, 12),
+              color_arrow='k',
+              fontsize=16,
+              fontcolor='k',
+              cmap='bwr_r',
+              # gradient='#FFFFFF',
+              density=False,
+              )
+
+
+
+
+
 # %% Test examples
 import pca
 # Import example
@@ -31,57 +160,13 @@ model = pca(verbose=3)
 # Fit
 model.fit_transform(X)
 # Make plot with blue arrows and text
-fig, ax = model.biplot(c=[0, 0, 0], 
+fig, ax = model.biplot(c=[0, 0, 0],
                        marker=marker,
-                       label=False,
                        title='Demonstration of specifying colors, markers, alpha, and size per sample.',
                        n_feat=5,
-                       legend=False)
+                       legend=None)
 
 
-# %% Demonstration of specifying colors, markers, alpha, and size per sample
-# Import library
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-from sklearn.datasets import make_friedman1
-from pca import pca
-
-# Make data set
-X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
-
-# All available markers
-markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
-# Create colors
-colors = plt.cm.get_cmap('tab20c', len(markers))
-# Generate random integers
-random_integers = np.random.randint(0, len(markers), size=X.shape[0])
-# Draw markers
-marker = markers[random_integers]
-# Set colors
-color = colors.colors[random_integers, :]
-# Set Size
-size = np.random.randint(50, 150, size=X.shape[0])
-# Set alpha
-alpha = np.random.rand(1, X.shape[0])[0][random_integers]
-
-# Init
-model = pca(verbose=3)
-# Fit
-model.fit_transform(X)
-# Make plot with blue arrows and text
-fig, ax = model.biplot(c=color,
-                       s=size,
-                       marker=marker,
-                       alpha_transparency=alpha,
-                       label=False,
-                       fontdict={'size':10, 'weight':'normal'},
-                       color_arrow='blue',
-                       title='Demonstration of specifying colors, markers, alpha, and size per sample.',
-                       hotellingt2=True,
-                       n_feat=5,
-                       legend=False, 
-                       visible=True)
 
 
 # %%
@@ -160,14 +245,12 @@ model.biplot(SPE=True,
              hotellingt2=True,
              jitter=0.1,
              n_feat=10,
-             legend=True,
-             label=False,
-             y=df['sex'],
+             legend=False,
+             labels=df['sex'],
              title='Student Performance',
              figsize=(20, 12),
              color_arrow='k',
-             fontdict={'size':16, 'c':'k'},
-              cmap='bwr_r',
+             cmap='bwr_r',
              gradient='#FFFFFF',
              )
 
@@ -184,10 +267,10 @@ model = pca()
 model.fit_transform(X)
 
 # Make plot with blue arrows and text
-fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':10, 'weight':'normal'}, color_arrow='blue', title=None, hotellingt2=True, n_feat=10, visible=True)
+fig, ax = model.biplot(c=[0,0,0], fontsize=20, color_arrow='blue', title=None, hotellingt2=True, n_feat=10, visible=True)
 
 # Use the existing fig and create new edits such red arrows for the first three loadings. Also change the font sizes.
-fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':16, 'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
+fig, ax = model.biplot(c=[0,0,0], fontsize=20, fontdict={'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
 
 
 # %%
@@ -218,12 +301,12 @@ model.biplot(cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 
 # Set custom classlabels. Coloring is based on the input colormap (cmap).
 y[10:15]=4
-model.biplot(y=y, cmap='Set2')
+model.biplot(labels=y, cmap='Set2')
 
 # Set custom classlabels and also use custom colors.
 c = colourmap.fromlist(y, cmap='Set2')[0]
 c[10:15] = [0,0,0]
-model.biplot(y=y, c=c)
+model.biplot(labels=y, c=c)
 
 
 # Remove scatterpoints by setting cmap=None
@@ -233,11 +316,11 @@ model.biplot(cmap=None)
 # Color on classlabel (Unchanged)
 model.biplot()
 # Use cmap colors for classlabels (unchanged)
-model.biplot(y=y, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+model.biplot(labels=y, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 # Do not show points when cmap=None (unchanged)
-model.biplot(y=load_iris().target, cmap=None)
+model.biplot(labels=load_iris().target, cmap=None)
 # Plot all points as unique entity (unchanged)
-model.biplot(y=y, gradient='#ffffff', cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+model.biplot(labels=y, gradient='#ffffff', cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 
 
 # %%
@@ -257,11 +340,11 @@ results = model.fit_transform(X, verbose=2)
 model.scatter()
 model.scatter(gradient='#ffffff')
 model.scatter(gradient='#ffffff', cmap='tab20')
-model.scatter(gradient='#ffffff', cmap='tab20', y=np.ones_like(model.results['PC'].index.values))
+model.scatter(gradient='#ffffff', cmap='tab20', labels=np.ones_like(model.results['PC'].index.values))
 
 model.scatter(gradient='#5dfa02')
 model.scatter(gradient='#5dfa02', cmap='tab20')
-model.scatter(gradient='#5dfa02', cmap='tab20', y=np.ones_like(model.results['PC'].index.values))
+model.scatter(gradient='#5dfa02', cmap='tab20', labels=np.ones_like(model.results['PC'].index.values))
 
 
 # %%
@@ -275,17 +358,7 @@ model.scatter(gradient='#5dfa02', cmap='tab20', y=np.ones_like(model.results['PC
 # texts = [plt.text(x[i], y[i], 'Text%s' %i) for i in range(len(x))]
 # adjust_text(texts)
 
-# %%
-from sklearn.datasets import make_friedman1
-X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
 
-# model = pca(method='sparse_pca')
-model = pca(method='trunc_svd')
-model.fit_transform(X)
-model.plot(title=None)
-model.biplot(fontdict={'size':16, 'weight':'bold'}, title=None)
-model.biplot3d()
-model.scatter()
 
 # %% Detect outliers in new unseen data.
 # Import libraries
@@ -384,15 +457,15 @@ X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index
 model = pca(n_components=3, normalize=True)
 
 out = model.fit_transform(X)
-# fig, ax = model.biplot(label=True, legend=False, PC=[1,0])
+# fig, ax = model.biplot(legend=False, PC=[1,0])
 print(out['topfeat'])
 
-fig, ax = model.biplot(cmap='Set1', label=True, legend=True, fontdict={'size':16})
-fig, ax = model.biplot(cmap='Set1', label=True, legend=False)
-fig, ax = model.biplot(cmap='Set1', label=False, legend=False)
-fig, ax = model.biplot(cmap=None, label=False, legend=False)
-fig, ax = model.biplot(cmap=None, label=False, legend=True)
-fig, ax = model.biplot(cmap=None, label=False, legend=True)
+fig, ax = model.biplot(cmap='Set1', legend=True)
+fig, ax = model.biplot(cmap='Set1', legend=False)
+fig, ax = model.biplot(cmap='Set1', legend=False)
+fig, ax = model.biplot(cmap=None, legend=False)
+fig, ax = model.biplot(cmap=None, legend=True)
+fig, ax = model.biplot(cmap=None, legend=True)
 
 # %%
 import numpy as np
@@ -416,11 +489,11 @@ results = model.fit_transform(X)
 # model.plot()
 
 model.scatter(gradient='#ffffff', cmap='Set1')
-model.scatter(cmap='Set1', legend=True, label=True, gradient='#ffffff')
-model.scatter(cmap='Set1', legend=True, label=True, gradient=None)
+model.scatter(cmap='Set1', legend=True, gradient='#ffffff')
+model.scatter(cmap='Set1', legend=True, gradient=None)
 
-model.scatter3d(cmap='Set1', legend=True, label=True, gradient='#ffffff')
-model.scatter3d(cmap='Set1', legend=True, label=True, gradient=None)
+model.scatter3d(cmap='Set1', legend=True, gradient='#ffffff')
+model.scatter3d(cmap='Set1', legend=True, gradient=None)
 
 model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True, gradient='#ffffff')
 model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True, gradient=None)
@@ -435,15 +508,15 @@ X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index
 model = pca(n_components=3, normalize=True)
 
 out = model.fit_transform(X)
-# fig, ax = model.biplot(label=True, legend=False, PC=[1,0])
+# fig, ax = model.biplot(legend=False, PC=[1,0])
 print(out['topfeat'])
 
-fig, ax = model.biplot(cmap='Set1', label=True, legend=True)
-fig, ax = model.biplot(cmap='Set1', label=True, legend=False)
-fig, ax = model.biplot(cmap='Set1', label=False, legend=False)
-fig, ax = model.biplot(cmap=None, label=False, legend=False)
-fig, ax = model.biplot(cmap=None, label=False, legend=True)
-fig, ax = model.biplot(cmap=None, label=False, legend=True)
+fig, ax = model.biplot(cmap='Set1', legend=True)
+fig, ax = model.biplot(cmap='Set1', legend=False)
+fig, ax = model.biplot(cmap='Set1', legend=False)
+fig, ax = model.biplot(cmap=None, legend=False)
+fig, ax = model.biplot(cmap=None, legend=True)
+fig, ax = model.biplot(cmap=None, legend=True)
 
 
 # %%
@@ -493,18 +566,18 @@ model.plot()
 # Biplot with the loadings
 ax = model.biplot(legend=False)
 # Biplot with the loadings
-ax = model.biplot(n_feat=3, legend=False, label=False)
+ax = model.biplot(n_feat=3, legend=False, )
 # Cleaning the biplot by removing the scatter, and looking only at the top 3 features.
-ax = model.biplot(n_feat=3, legend=False, label=False, cmap=None)
+ax = model.biplot(n_feat=3, legend=False, cmap=None)
 # Make plot with 3 dimensions
-model.biplot3d(n_feat=3, legend=False, label=False, cmap=None)
+model.biplot3d(n_feat=3, legend=False, cmap=None)
 
-ax = model.biplot(n_feat=3, legend=False, label=False, cmap=None, PC=[1,2])
-ax = model.biplot(n_feat=3, legend=False, label=False, cmap=None, PC=[2,3])
+ax = model.biplot(n_feat=3, legend=False, cmap=None, PC=[1,2])
+ax = model.biplot(n_feat=3, legend=False, cmap=None, PC=[2,3])
 
 
-ax = model.biplot(n_feat=10, legend=False, cmap=None, label=False)
-ax = model.biplot(n_feat=10, legend=False, PC=[0, 1], label=None)
+ax = model.biplot(n_feat=10, legend=False, cmap=None, )
+ax = model.biplot(n_feat=10, legend=False, PC=[0, 1], )
 ax = model.biplot(n_feat=10, legend=False, PC=[1, 0])
 ax = model.biplot(n_feat=10, legend=False, PC=[0, 1, 2], d3=True)
 ax = model.biplot(n_feat=10, legend=False, PC=[2, 1, 0], d3=True)
@@ -514,7 +587,7 @@ ax = model.biplot(n_feat=10, legend=False, PC=[0, 2])
 ax = model.biplot(n_feat=10, legend=False, PC=[2, 1])
 ax = model.biplot3d(n_feat=10, legend=False)
 
-# model.scatter(y=X.index.values==0)
+# model.scatter(labels=X.index.values==0)
 
 # %%
 from pca import pca
@@ -531,7 +604,7 @@ row_labels = np.arange(0, X.shape[0]).astype(str)
 # Fit transform
 out = model.fit_transform(X, row_labels=row_labels)
 # Make plot
-model.biplot(legend=False, PC=[0, 1], label=None)
+model.biplot(legend=False, PC=[0, 1], )
 
 # %%
 # Example with DataFrame
@@ -596,9 +669,9 @@ X = pd.DataFrame(data=X, columns=np.arange(0, X.shape[1]).astype(str))
 # Fit transform
 out = model.fit_transform(X)
 # Make plot
-fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=True)
-fig, ax = model.biplot(cmap='Set2', label=True, legend=False, visible=True)
-fig, ax = model.biplot(cmap=None, label=False, legend=False, visible=False)
+fig, ax = model.biplot(cmap=None, legend=False, visible=True)
+fig, ax = model.biplot(cmap='Set2', legend=False, visible=True)
+fig, ax = model.biplot(cmap=None, legend=False, visible=False)
 
 
 # %%
@@ -638,7 +711,7 @@ model.scatter3d(legend=True, SPE=False, hotellingt2=True)
 model.scatter3d(legend=True, SPE=False, hotellingt2=False)
 
 
-ax = model.biplot(n_feat=4, legend=False, label=False)
+ax = model.biplot(n_feat=4, legend=False, )
 
 import pca
 outliers_hot = pca.hotellingsT2(out['PC'].values, alpha=0.05)
@@ -678,7 +751,7 @@ out = model.fit_transform(X)
 PCnew = model.transform(X_unseen)
 
 # Plot PC space
-model.scatter(alpha_transparency=0.5)
+model.scatter(alpha=0.5)
 # Plot the new "unseen" samples on top of the existing space
 plt.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x')
 
@@ -712,11 +785,11 @@ plt.scatter(PCnew.iloc[:, 0], PCnew.iloc[:, 1], marker='x')
 
 # # Make plot
 # ax = model.biplot(n_feat=4, legend=False)
-# ax = model.biplot(n_feat=4, legend=False, label=False)
+# ax = model.biplot(n_feat=4, legend=False, )
 
 # ax = model.biplot3d(n_feat=1, legend=False)
 # ax = model.biplot3d(n_feat=2, legend=False)
-# ax = model.biplot3d(n_feat=4, legend=False, label=False)
+# ax = model.biplot3d(n_feat=4, legend=False, )
 
 # %%
 from sklearn.datasets import load_iris
@@ -873,10 +946,10 @@ model2.scatter()
 model2.biplot3d(n_feat=10)
 
 # Set custom transparency levels
-model2.biplot3d(n_feat=10, alpha_transparency=0.5)
-model2.biplot(n_feat=10, alpha_transparency=0.5)
-model2.scatter3d(alpha_transparency=0.5)
-model2.scatter(alpha_transparency=0.5)
+model2.biplot3d(n_feat=10, alpha=0.5)
+model2.biplot(n_feat=10, alpha=0.5)
+model2.scatter3d(alpha=0.5)
+model2.scatter(alpha=0.5)
 
 
 model = pca(normalize=False, method='pca')

@@ -4,7 +4,7 @@
 import requests
 from urllib.parse import urlparse
 from tqdm import tqdm
-import scatterd as scatterd
+from scatterd import scatterd
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD  # MiniBatchSparsePCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import euclidean_distances
@@ -416,7 +416,7 @@ class pca:
         self.n_feat = np.min([self.n_feat, X.shape[1]])
 
         if (not self.onehot) and (not self.normalize) and isinstance(X, pd.DataFrame) and (str(X.values.dtype)=='bool'):
-            if verbose>=2: print('[pca] >Warning: Sparse or one-hot boolean input data is detected, it is highly recommended to set onehot=True or alternatively, normalize=True')
+            if verbose>=2: print('[pca] >[WARNING]: Sparse or one-hot boolean input data is detected, it is highly recommended to set onehot=True or alternatively, normalize=True')
         
         # Set col labels
         if isinstance(X, pd.DataFrame) and col_labels is None:
@@ -442,11 +442,11 @@ class pca:
             X = X.values
 
         if sp.issparse(X) and self.normalize:
-            if verbose>=3: print('[pca] >Warning: Can not normalize a sparse matrix. Normalize is set to [False]')
+            if verbose>=3: print('[pca] >[WARNING]: Can not normalize a sparse matrix. Normalize is set to [False]')
             self.normalize=False
         if (sp.issparse(X) is False) and (self.n_components > X.shape[1]):
             # raise Exception('[pca] >Number of components can not be more then number of features.')
-            if verbose>=2: print('[pca] >Warning: >Number of components can not be more then number of features. n_components is set to %d' %(X.shape[1] - 1))
+            if verbose>=2: print('[pca] >[WARNING]: >Number of components can not be more then number of features. n_components is set to %d' %(X.shape[1] - 1))
             self.n_components = X.shape[1] - 1
 
         # normalize data
@@ -477,7 +477,7 @@ class pca:
         return X, row_labels, col_labels, scaler
 
     # Figure pre processing
-    def _fig_preprocessing(self, y, n_feat, d3):
+    def _fig_preprocessing(self, labels, n_feat, d3):
         if hasattr(self, 'PC'): raise Exception('[pca] >Error: Principal components are not derived yet. Tip: run fit_transform() first.')
         if self.results['PC'].shape[1]<1: raise Exception('[pca] >Requires at least 1 PC to make plot.')
 
@@ -493,11 +493,14 @@ class pca:
         else:
             n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 2)
 
-        if (y is not None):
-            if len(y)!=self.results['PC'].shape[0]: raise Exception('[pca] >Error: Input variable [y] should have some length as the number input samples: [%d].' %(self.results['PC'].shape[0]))
-            y = y.astype(str)
+        if (labels is not None):
+            if len(labels)!=self.results['PC'].shape[0]: raise Exception('[pca] >Error: Input variable [labels] should have some length as the number input samples: [%d].' %(self.results['PC'].shape[0]))
+            labels = labels.astype(str)
         else:
-            y = self.results['PC'].index.values.astype(str)
+            labels = self.results['PC'].index.values.astype(str)
+
+        # if all labels appear to be not uniuqe. Do not plot because it takes to much time.
+        if len(np.unique(labels))==self.results['PC'].shape[0]: labels=None
 
         if self.method=='sparse_pca':
             print('[pca] >sparse pca does not supported variance ratio and therefore, biplots will not be supported. <return>')
@@ -508,27 +511,30 @@ class pca:
         if (self.results['explained_var'] is None) or len(self.results['explained_var'])<=1:
             raise Exception('[pca] >Error: No PCs are found with explained variance.')
 
-        return y, topfeat, n_feat
+        return labels, topfeat, n_feat
 
     # Scatter plot
     def scatter3d(self,
-                  y=None,
-                  c=None,
-                  s=50,
-                  marker='.',
+                  labels=None,
+                  y=None,  # deprecated
+                  c=[0,0.1,0.4],
+                  s=150,
+                  marker='o',
+                  edgecolor='#000000',
                   jitter=None,
                   label=None,  # deprecated
-                  textlabel=None,
                   PC=[0, 1, 2],
                   SPE=False,
                   hotellingt2=False,
-                  alpha_transparency=1,
+                  alpha=0.8,
                   gradient=None,
-                  fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'black'},
-                  cmap='Set1',
+                  fontcolor=[0,0,0],
+                  fontsize=18,
+                  fontdict={'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'black'},
+                  cmap='tab20c',
                   title=None,
                   legend=None,
-                  figsize=(15, 10),
+                  figsize=(25, 15),
                   visible=True,
                   fig=None,
                   ax=None,
@@ -537,7 +543,7 @@ class pca:
 
         Parameters
         ----------
-        y : array-like, default: None
+        labels : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
             The marker colors. Possible values:
@@ -555,17 +561,13 @@ class pca:
             ['.', '*', 's', ..]: Specify per sample the marker type.
         jitter : float, default: None
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
-        textlabel : Bool, default: None
-            True Show the labels.
-            False: Do not show the labels
-            None: This will automatically use the best setting with respect to performance.
         PC : list, default : [0, 1, 2]
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
-        alpha_transparency: float or array-like of floats (default: 1).
+        alpha: float or array-like of floats (default: 1).
             The alpha blending value ranges between 0 (transparent) and 1 (opaque).
             1: All data points get this alpha
             [1, 0.8, 0.2, ...]: Specify per sample the alpha
@@ -574,7 +576,7 @@ class pca:
             '#FFFFFF'
         fontdict : dict.
             dictionary containing properties for the arrow font-text
-            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'black'}
+            {'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'black'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
@@ -585,7 +587,7 @@ class pca:
         legend : Bool, default: None
             True: Show the legend based on the unique labels.
             None: Set automatically based on performance.
-        figsize : (int, int), optional, default: (15, 10)
+        figsize : (int, int), optional, default: (25, 15)
             (width, height) in inches.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
@@ -598,23 +600,24 @@ class pca:
 
         """
         if verbose is None: verbose = self.verbose
-        _show_deprecated_warning(label, verbose)
+        _show_deprecated_warning(label, y, verbose)
         if not hasattr(self, 'results') or self.results['PC'].shape[1]<3:
             fig = fig if not None else None
             ax = ax if not None else None
             return fig, ax
 
-        fig, ax = self.scatter(y=y,
+        fig, ax = self.scatter(labels=labels,
                                c=c,
                                s=s,
                                marker=marker,
                                jitter=jitter,
+                               edgecolor=edgecolor,
                                d3=True,
-                               textlabel=textlabel,
                                PC=PC, SPE=SPE,
                                hotellingt2=hotellingt2,
-                               alpha_transparency=alpha_transparency,
+                               alpha=alpha,
                                gradient=gradient,
+                               fontcolor=fontcolor,
                                fontdict=fontdict,
                                cmap=cmap,
                                title=title,
@@ -628,24 +631,29 @@ class pca:
 
     # Scatter plot
     def scatter(self,
-                y=None,
-                c=None,
-                s=50,
-                marker='.',
+                labels=None,
+                y=None,  # deprecated
+                c=[0,0.1,0.4],
+                s=150,
+                marker='o',
+                edgecolor='#000000',
                 jitter=None,
                 d3=False,
                 label=None,  # deprecated
-                textlabel=True,
                 PC=[0, 1],
                 SPE=False,
                 hotellingt2=False,
-                alpha_transparency=1,
+                alpha=0.8,
                 gradient=None,
-                fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'black'},
-                cmap='Set1',
+                density=False,
+                fontcolor=[0,0,0],
+                fontsize=18,
+                fontdict={'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'black'},
+                cmap='tab20c',
                 title=None,
                 legend=None,
-                figsize=(20, 15),
+                figsize=(25, 15),
+                dpi=100,
                 visible=True,
                 fig=None,
                 ax=None,
@@ -654,7 +662,7 @@ class pca:
 
         Parameters
         ----------
-        y : array-like, default: None
+        labels : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
             The marker colors. Possible values:
@@ -666,33 +674,35 @@ class pca:
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
             50: all points get this size.
-        marker: list/array of strings (default: '.').
+        marker: list/array of strings (default: 'o').
             Marker for the samples.
-            '.' : All data points get this marker
-            ['.', '*', 's', ..]: Specify per sample the marker type.
+                * 'x' : All data points get this marker
+                * ('.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X') : Specify per sample the marker type.
         jitter : float, default: None
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         d3 : Bool, default: False
             3d plot is created when True.
-        textlabel : Bool, default: None
-            True Show the labels.
-            False: Do not show the labels
-            None: This will automatically use the best setting with respect to performance.
-            Plot the first two Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
-        alpha_transparency: float or array-like of floats (default: 1).
+        alpha: float or array-like of floats (default: 1).
             The alpha blending value ranges between 0 (transparent) and 1 (opaque).
             1: All data points get this alpha
             [1, 0.8, 0.2, ...]: Specify per sample the alpha
         gradient : String, (default: None)
             Hex color to make a lineair gradient for the scatterplot.
             '#FFFFFF'
+        density : Bool (default: False)
+            Include the kernel density in the scatter plot.
+        fontsize : String, optional
+            The fontsize of the y labels that are plotted in the graph. The default is 16.
+        fontcolor: list/array of RGB colors with same size as X (default : None)
+            None : Use same colorscheme as for c
+            '#000000' : If the input is a single color, all fonts will get this color.
         fontdict : dict.
             dictionary containing properties for the arrow font-text
-            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'black'}
+            {'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'black'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
@@ -703,7 +713,7 @@ class pca:
         legend : Bool, default: None
             True: Show the legend based on the unique labels.
             None: Set automatically based on performance.
-        figsize : (int, int), optional, default: (15, 10)
+        figsize : (int, int), optional, default: (25, 15)
             (width, height) in inches.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
@@ -716,76 +726,63 @@ class pca:
 
         """
         if verbose is None: verbose = self.verbose
-        _show_deprecated_warning(label, verbose)
+        _show_deprecated_warning(label, y, verbose)
         if not hasattr(self, 'results'):
             if verbose>=2: print('[pca]> No results to plot. Hint: model.fit(X) <return>.')
             fig = fig if not None else None
             ax = ax if not None else None
             return fig, ax
+        # if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
 
-        if c is None: c=[[0, 0, 0]]
-        if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
-        fontdict = _set_fontdict(fontdict)
+        # if color is None
+        if c is None: s=0
+        if cmap is None: s=0
+        if alpha is None: alpha=0.8
+
+        fontdict = _set_fontdict(fontdict, fontsize=fontsize)
 
         # Setup figure
-        if fig is None and ax is None:
-            # Create entire new figure.
-            fig = plt.figure(figsize=figsize)
-            if d3:
-                ax = fig.add_subplot(projection='3d')
-            else:
-                ax = fig.add_subplot()
-        elif fig is not None and ax is None:
-            # Extract axes from fig.
-            ax = fig.axes[0]
+        fig, ax = _setup_figure(fig, ax, d3, visible, figsize, dpi)
 
-        # fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
-        if fig is not None:
-            fig.set_visible(visible)
-
-        # Mark the outliers for plotting purposes.
-        Ioutlier1 = np.repeat(False, self.results['PC'].shape[0])
-        Ioutlier2 = np.repeat(False, self.results['PC'].shape[0])
-
-        if y is None:
-            y, _, _ = self._fig_preprocessing(y, None, d3)
+        if labels is None:
+            labels, _, _ = self._fig_preprocessing(labels, None, d3)
 
         # Get coordinates
         xs, ys, zs, ax = _get_coordinates(self.results['PC'], PC, fig, ax, d3)
 
         # Set the markers
-        if marker is None: marker='.'
-        if isinstance(marker, str): marker = np.repeat(marker, len(xs))
-        marker = np.array(marker)
-        if len(marker)!=len(xs): raise Exception('Marker length (k=%d) should match the number of samples (n=%d).' %(len(marker), len(xs)))
+        # if isinstance(marker, str): marker = np.repeat(marker, len(xs))
+        # marker = np.array(marker)
+        # if len(marker)!=len(xs): raise Exception('Marker length (k=%d) should match the number of samples (n=%d).' %(len(marker), len(xs)))
 
-        # Set Alpha
-        if alpha_transparency is None: alpha_transparency=1
-        if isinstance(alpha_transparency, (float, int)): alpha_transparency = np.repeat(alpha_transparency, len(xs))
-        alpha_transparency = np.array(alpha_transparency)
-        if len(alpha_transparency)!=len(xs): raise Exception('alpha_transparency length (k=%d) should match the number of samples (n=%d).' %(len(alpha_transparency), len(xs)))
+        # if isinstance(alpha, (float, int)): alpha = np.repeat(alpha, len(xs))
+        # alpha = np.array(alpha)
+        # if len(alpha)!=len(xs): raise Exception('alpha length (k=%d) should match the number of samples (n=%d).' %(len(alpha), len(xs)))
 
         # Set Size
-        if s is None: s=50
-        if isinstance(s, (float, int)): s = np.repeat(s, len(xs))
-        s = np.array(s)
-        if len(s)!=len(xs): raise Exception('Size (s) length (k=%d) should match the number of samples (n=%d).' %(len(s), len(xs)))
+        # if isinstance(s, (float, int)): s = np.repeat(s, len(xs))
+        # s = np.array(s)
+        # if len(s)!=len(xs): raise Exception('Size (s) length (k=%d) should match the number of samples (n=%d).' %(len(s), len(xs)))
 
         # Add jitter
-        if jitter is not None:
-            xs = xs + np.random.normal(0, jitter, size=len(xs))
-            if ys is not None: ys = ys + np.random.normal(0, jitter, size=len(ys))
-            if zs is not None: zs = zs + np.random.normal(0, jitter, size=len(zs))
+        # if jitter is not None:
+            # xs = xs + np.random.normal(0, jitter, size=len(xs))
+            # if ys is not None: ys = ys + np.random.normal(0, jitter, size=len(ys))
+            # if zs is not None: zs = zs + np.random.normal(0, jitter, size=len(zs))
 
         # Get the colors
-        if cmap is None:
+        # if cmap is None:
             # Hide the scatterpoints by making them all white.
-            getcolors = np.repeat([1., 1., 1.], len(y), axis=0).reshape(-1, 3)
-        else:
+            # c = np.repeat([1., 1., 1.], len(y), axis=0).reshape(-1, 3)
+            # c = [1, 1, 1]
+        # else:
             # Figure properties
-            xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
-            getcolors, fontcolor = scatterd.set_colors(xyz, y, None, c, cmap, gradient=gradient)
+            # xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
+            # getcolors, fontcolor = scatterd.set_colors(xyz, y, None, c, cmap, gradient=gradient)
 
+        # Plot the elipse, then the scatterpoints.
+        Ioutlier1 = np.repeat(False, self.results['PC'].shape[0])
+        Ioutlier2 = np.repeat(False, self.results['PC'].shape[0])
         if hotellingt2 and ('y_bool' in self.results['outliers'].columns):
             Ioutlier1 = self.results['outliers']['y_bool'].values
         if SPE and ('y_bool_spe' in self.results['outliers'].columns):
@@ -802,27 +799,48 @@ class pca:
         # Add the labels
         # if (label is None):
         #     if d3:
-        #         ax.scatter(xs, ys, zs, s=s, alpha=alpha_transparency, color=getcolors, label=None, marker=marker[0])
+        #         ax.scatter(xs, ys, zs, s=s, alpha=alpha, color=getcolors, label=None, marker=marker[0])
         #     else:
-        #         ax.scatter(xs, ys, s=s, alpha=alpha_transparency, color=getcolors, label=None, marker=marker[0])
+        #         ax.scatter(xs, ys, s=s, alpha=alpha, color=getcolors, label=None, marker=marker[0])
         # else:
-        for Iloc_sampl, _ in tqdm(enumerate(y), desc="[pca] >Plotting", position=0, leave=False, disable=(verbose==0)):
-            if d3:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=float(alpha_transparency[Iloc_sampl]), color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
-                if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(y[Iloc_sampl]), color=[0, 0, 0], fontdict=fontdict)
-            else:
-                ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=float(alpha_transparency[Iloc_sampl]), color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
-                if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), str(y[Iloc_sampl]), color=[0, 0, 0], fontdict=fontdict)
+        fig, ax = scatterd(x=xs,
+                            y=ys,
+                            z=zs,
+                            s=s,
+                            c=c,
+                            labels=labels,
+                            edgecolor=edgecolor,
+                            alpha=alpha,
+                            marker=marker,
+                            jitter=jitter,
+                            density=density,
+                            gradient=gradient,
+                            cmap=cmap,
+                            legend=False,
+                            fontcolor=fontcolor,
+                            fontsize=fontdict['fontsize'],
+                            fontweight=fontdict['weight'],
+                            dpi=dpi,
+                            figsize=figsize,
+                            ax=None if d3 else ax)
+
+        # for Iloc_sampl, _ in tqdm(enumerate(y), desc="[pca] >Plotting", position=0, leave=False, disable=(verbose==0)):
+        #     if d3:
+        #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=float(alpha[Iloc_sampl]), color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
+        #         if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(y[Iloc_sampl]), color=[0, 0, 0], fontdict=fontdict)
+        #     else:
+        #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=float(alpha[Iloc_sampl]), color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
+        #         if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), str(y[Iloc_sampl]), color=[0, 0, 0], fontdict=fontdict)
                 # if label: ax.annotate(yk, np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]))
 
             # for yk in uiy:
             #     Iloc_sampl = (yk==y)
 
             #     if d3:
-            #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=s + 10, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
+            #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=s + 10, label=yk, alpha=alpha, color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
             #         if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict=fontdict)
             #     else:
-            #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=s + 10, label=yk, alpha=alpha_transparency, color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
+            #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=s + 10, label=yk, alpha=alpha, color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
             #         if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict=fontdict)
             #         # if label: ax.annotate(yk, np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]))
 
@@ -830,9 +848,9 @@ class pca:
         if SPE and ('y_bool_spe' in self.results['outliers'].columns):
             label_spe = str(sum(Ioutlier2)) + ' outliers (SPE/DmodX)'
             if d3:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[0.5, 0.5, 0.5], s=50, label=label_spe, alpha=alpha_transparency)
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[0.5, 0.5, 0.5], s=150, label=label_spe, alpha=alpha)
             else:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=50, label=label_spe, alpha=alpha_transparency)
+                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=150, label=label_spe, alpha=alpha)
                 # Plot the ellipse
                 # g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
                 # if g_ellipse is not None: ax.add_artist(g_ellipse)
@@ -841,9 +859,9 @@ class pca:
         if hotellingt2 and ('y_bool' in self.results['outliers'].columns):
             label_t2 = str(sum(Ioutlier1)) + ' outliers (hotelling t2)'
             if d3:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[0, 0, 0], s=50, label=label_t2, alpha=alpha_transparency)
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[0, 0, 0], s=150, label=label_t2, alpha=alpha)
             else:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=50, label=label_t2, alpha=alpha_transparency)
+                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=150, label=label_t2, alpha=alpha)
 
         # Set y
         ax.set_xlabel('PC' + str(PC[0] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
@@ -854,35 +872,50 @@ class pca:
         if d3 and (len(self.results['model'].explained_variance_ratio_)>=3):
             ax.set_zlabel('PC' + str(PC[2] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[2]] * 100)[0:4] + '% expl.var)')
 
+        # Set title
         if title is None:
             title = str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance'
+
+        # Determine the legend status if set to None
+        if legend is None:
+            if len(np.unique(labels))>20:
+                if verbose>=3: print('[pca] >Auto disable legend because number of unique labels >20')
+                legend=False
+            else:
+                legend=True
+
         ax.set_title(title)
         if legend: ax.legend()
         ax.grid(True)
+
         # Return
         return (fig, ax)
 
     def biplot(self,
-               y=None,
-               c=None,
-               s=50,
-               marker='.',
+               labels=None,
+               y=None,  # deprecated
+               c=[0,0.1,0.4],
+               s=150,
+               marker='o',
+               edgecolor='#000000',
                jitter=None,
                n_feat=None,
                d3=False,
                label=None,  # deprecated
-               textlabel=None,
                PC=[0, 1],
                SPE=False,
                hotellingt2=False,
-               alpha_transparency=1,
+               alpha=0.8,
                gradient=None,
-               color_arrow='r',
-               fontdict={'weight': 'normal', 'size': 12, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'},
-               cmap='Set1',
+               density=False,
+               color_arrow='#000000',
+               fontcolor=[0,0,0],
+               fontsize=18,
+               fontdict={'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'color_arrow'},
+               cmap='tab20c',
                title=None,
                legend=None,
-               figsize=(15, 10),
+               figsize=(25, 15),
                visible=True,
                fig=None,
                ax=None,
@@ -896,7 +929,7 @@ class pca:
 
         Parameters
         ----------
-        y : array-like, default: None
+        labels : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
             The marker colors. Possible values:
@@ -918,30 +951,34 @@ class pca:
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
         d3 : Bool, default: False
             3d plot is created when True.
-        textlabel : Bool, default: None
-            True Show the labels.
-            False: Do not show the labels
-            None: This will automatically use the best setting with respect to performance.
         PC : list, default : [0, 1]
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
-        alpha_transparency: float or array-like of floats (default: 1).
+        alpha: float or array-like of floats (default: 1).
             The alpha blending value ranges between 0 (transparent) and 1 (opaque).
             1: All data points get this alpha
             [1, 0.8, 0.2, ...]: Specify per sample the alpha
         gradient : String, (default: None)
             Hex (ending) color for the gradient of the scatterplot colors.
             '#FFFFFF'
-        color_arrow : String, (default: 'r')
+        density : Bool (default: False)
+            Include the kernel density in the scatter plot.
+        color_arrow : String, (default: '#000000')
             color for the arrow.
-            'r' (default)
+            * '#000000'
+            * 'r'
+        fontsize : String, optional
+            The fontsize of the y labels that are plotted in the graph. The default is 16.
+        fontcolor: list/array of RGB colors with same size as X (default : None)
+            None : Use same colorscheme as for c
+            '#000000' : If the input is a single color, all fonts will get this color.
         fontdict : dict.
             dictionary containing properties for the arrow font-text.
             Note that the [c]olor: 'color_arrow' inherits the color used in color_arrow.
-            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'}
+            {'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'color_arrow'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
@@ -952,7 +989,7 @@ class pca:
         legend : Bool, default: None
             True: Show the legend based on the unique labels.
             None: Set automatically based on performance.
-        figsize : (int, int), optional, default: (15, 10)
+        figsize : (int, int), optional, default: (25, 15)
             (width, height) in inches.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
@@ -975,18 +1012,18 @@ class pca:
 
         """
         if verbose is None: verbose = self.verbose
-        _show_deprecated_warning(label, verbose)
+        _show_deprecated_warning(label, y, verbose)
         if not hasattr(self, 'results'):
-            if verbose>=2: print('[pca]> Warning: No results to plot. Hint: model.fit(X) <return>.')
+            if verbose>=2: print('[pca]> [WARNING]: No results to plot. Hint: model.fit(X) <return>.')
             fig = fig if not None else None
             ax = ax if not None else None
             return fig, ax
 
         # Input checks
-        fontdict, cmap = _biplot_input_checks(self.results, PC, cmap, fontdict, d3, color_arrow, verbose)
+        fontdict, cmap = _biplot_input_checks(self.results, PC, cmap, fontdict, d3, color_arrow, fontsize, verbose)
 
         # Pre-processing
-        y, topfeat, n_feat = self._fig_preprocessing(y, n_feat, d3)
+        labels, topfeat, n_feat = self._fig_preprocessing(labels, n_feat, d3)
         topfeat = pd.concat([topfeat.iloc[PC, :], topfeat.loc[~topfeat.index.isin(PC), :]])
         topfeat.reset_index(inplace=True)
 
@@ -1006,19 +1043,19 @@ class pca:
         # Include additional parameters if 3d-plot is desired.
         if d3:
             if self.results['PC'].shape[1]<3:
-                if verbose>=2: print('[pca] >Warning: requires 3 PCs to make 3d plot <return>.')
+                if verbose>=2: print('[pca] >[WARNING] requires 3 PCs to make 3d plot <return>.')
                 return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
             # zs = self.results['PC'].iloc[:,2].values
-            fig, ax = self.scatter3d(y=y, label=textlabel, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, verbose=verbose)
+            fig, ax = self.scatter3d(labels=labels, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, edgecolor=edgecolor, verbose=verbose)
         else:
-            fig, ax = self.scatter(y=y, label=textlabel, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha_transparency=alpha_transparency, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, verbose=verbose)
+            fig, ax = self.scatter(labels=labels, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, edgecolor=edgecolor, density=density, verbose=verbose)
 
         # For vizualization purposes we will keep only the unique feature-names
         topfeat = topfeat.drop_duplicates(subset=['feature'])
         if topfeat.shape[0]<n_feat:
             n_feat = topfeat.shape[0]
-            if verbose>=2: print('[pca] >Warning: n_feat can not be reached because of the limitation of n_components (=%d). n_feat is reduced to %d.' %(self.n_components, n_feat))
+            if verbose>=2: print('[pca] >[WARNING]: n_feat can not be reached because of the limitation of n_components (=%d). n_feat is reduced to %d.' %(self.n_components, n_feat))
 
         # Plot arrows and text
         texts = []
@@ -1045,25 +1082,28 @@ class pca:
         return fig, ax
 
     def biplot3d(self,
-                 y=None,
-                 c=None,
-                 s=50,
-                 marker='.',
+                 labels=None,
+                 y=None,  # deprecated
+                 c=[0,0.1,0.4],
+                 s=150,
+                 marker='o',
+                 edgecolor='#000000',
                  jitter=None,
                  n_feat=None,
                  label=None,  # deprecated
-                 textlabel=None,
                  PC=[0, 1, 2],
                  SPE=False,
                  hotellingt2=False,
-                 alpha_transparency=1,
+                 alpha=0.8,
                  gradient=None,
-                 color_arrow='r',
-                 fontdict={'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'},
-                 cmap='Set1',
+                 color_arrow='#000000',
+                 fontcolor=[0,0,0],
+                 fontsize=18,
+                 fontdict={'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'color_arrow'},
+                 cmap='tab20c',
                  title=None,
                  legend=None,
-                 figsize=(15, 10),
+                 figsize=(25, 15),
                  visible=True,
                  fig=None,
                  ax=None,
@@ -1072,7 +1112,7 @@ class pca:
 
         Parameters
         ----------
-        y : array-like, default: None
+        labels : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
             The marker colors. Possible values:
@@ -1092,30 +1132,32 @@ class pca:
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
-        textlabel : Bool, default: None
-            True Show the labels.
-            False: Do not show the labels
-            None: This will automatically use the best setting with respect to performance.
         PC : list, default : [0, 1, 2]
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
-        alpha_transparency: float or array-like of floats (default: 1).
+        alpha: float or array-like of floats (default: 1).
             The alpha blending value ranges between 0 (transparent) and 1 (opaque).
             1: All data points get this alpha
             [1, 0.8, 0.2, ...]: Specify per sample the alpha
         gradient : String, (default: None)
             Hex (ending) color for the gradient of the scatterplot colors.
             '#FFFFFF'
-        color_arrow : String, (default: 'r')
+        color_arrow : String, (default: '#000000')
             color for the arrow.
-            'r' (default)
+            * '#000000'
+            * 'r'
+        fontsize : String, optional
+            The fontsize of the y labels that are plotted in the graph. The default is 16.
+        fontcolor: list/array of RGB colors with same size as X (default : None)
+            None : Use same colorscheme as for c
+            '#000000' : If the input is a single color, all fonts will get this color.
         fontdict : dict.
             dictionary containing properties for the arrow font-text.
             Note that the [c]olor: 'color_arrow' inherits the color used in color_arrow.
-            {'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': 'color_arrow'}
+            {'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'color_arrow'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
@@ -1126,7 +1168,7 @@ class pca:
         legend : Bool, default: None
             True: Show the legend based on the unique labels.
             None: Set automatically based on performance.
-        figsize : (int, int), optional, default: (15, 10)
+        figsize : (int, int), optional, default: (25, 15)
             (width, height) in inches.
         visible : Bool, default: True
             Visible status of the Figure. When False, figure is created on the background.
@@ -1144,27 +1186,28 @@ class pca:
 
         """
         if verbose is None: verbose = self.verbose
-        _show_deprecated_warning(label, verbose)
+        _show_deprecated_warning(label, y, verbose)
         if not hasattr(self, 'results') or self.results['PC'].shape[1]<3:
-            if verbose >= 2: print('[pca] >Warning: Requires results with 3 PCs to make 3d plot.')
+            if verbose >= 2: print('[pca] >[WARNING]: Requires results with 3 PCs to make 3d plot.')
             fig = fig if not None else None
             ax = ax if not None else None
             return fig, ax
 
-        fig, ax = self.biplot(y=y,
+        fig, ax = self.biplot(labels=labels,
                               n_feat=n_feat,
                               c=c,
                               s=s,
+                              edgecolor=edgecolor,
                               marker=marker,
                               jitter=jitter,
                               d3=True,
-                              label=textlabel,
                               PC=PC,
                               SPE=SPE,
                               hotellingt2=hotellingt2,
-                              alpha_transparency=alpha_transparency,
+                              alpha=alpha,
                               gradient=gradient,
                               color_arrow=color_arrow,
+                              fontcolor=fontcolor,
                               fontdict=fontdict,
                               cmap=cmap,
                               title=title,
@@ -1197,7 +1240,7 @@ class pca:
             Visible status of the Figure
             True : Figure is shown.
             False: Figure is created on the background.
-        figsize : (int, int)
+        figsize : (int, int): (default: 25, 15)
             (width, height) in inches.
         fig : Figure, optional (default: None)
             Matplotlib figure.
@@ -1219,7 +1262,7 @@ class pca:
             return None, None
         if n_components is not None:
             if n_components>len(self.results['explained_var']):
-                if verbose>=2: print('[pca] >Warning: Input "n_components=%s" is > then number of PCs (=%s)' %(n_components, len(self.results['explained_var'])))
+                if verbose>=2: print('[pca] >[WARNING]: Input "n_components=%s" is > then number of PCs (=%s)' %(n_components, len(self.results['explained_var'])))
             n_components = np.minimum(len(self.results['explained_var']), n_components)
             explvarCum = self.results['explained_var'][0:n_components]
             explvar = self.results['variance_ratio'][0:n_components]
@@ -1745,7 +1788,7 @@ def _get_explained_variance(X, components):
     return explained_variance
 
 
-def _biplot_input_checks(results, PC, cmap, fontdict, d3, color_arrow, verbose):
+def _biplot_input_checks(results, PC, cmap, fontdict, d3, color_arrow, fontsize, verbose):
     # Check PCs
     if results['PC'].shape[1]<2: raise ValueError('[pca] >[Error] Requires 2 PCs to make 2d plot.')
     if d3 and len(PC)<3: raise ValueError('[pca] >[Error] in case of biplot3d or d3=True, at least 3 PCs are required.')
@@ -1756,15 +1799,15 @@ def _biplot_input_checks(results, PC, cmap, fontdict, d3, color_arrow, verbose):
         print('[pca] >Plot PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1))
     if cmap is False: cmap=None
     # Set defaults in fontdict
-    fontdict =_set_fontdict(fontdict, color_arrow)
+    fontdict =_set_fontdict(fontdict, color_arrow=color_arrow, fontsize=fontsize)
     # Set font dictionary
     # Return
     return fontdict, cmap
 
 
-def _set_fontdict(fontdict, color_arrow=None):
+def _set_fontdict(fontdict, color_arrow=None, fontsize=18):
     color_arrow = 'black' if (color_arrow is None) else color_arrow
-    fontdict = {**{'weight': 'normal', 'size': 10, 'ha': 'center', 'va': 'center', 'c': color_arrow}, **fontdict}
+    fontdict = {**{'weight': 'normal', 'fontsize': fontsize, 'ha': 'center', 'va': 'center', 'c': color_arrow}, **fontdict}
     if fontdict.get('c')=='color_arrow' and (color_arrow is not None):
         fontdict['c'] = color_arrow
     return fontdict
@@ -1799,6 +1842,27 @@ class wget:
                 fd.write(chunk)
 
 
-def _show_deprecated_warning(label, verbose):
+def _setup_figure(fig, ax, d3, visible, figsize, dpi):
+    if fig is None and ax is None:
+        # Create new figure.
+        fig = plt.figure(figsize=figsize, dpi=dpi)
+        # Add d3 projection
+        if d3:
+            ax = fig.add_subplot(projection='3d')
+        else:
+            ax = fig.add_subplot()
+    elif fig is not None and ax is None:
+        # Extract axes from fig.
+        ax = fig.axes[0]
+
+    if fig is not None:
+        fig.set_visible(visible)
+
+    return fig, ax
+
+
+def _show_deprecated_warning(label, y, verbose):
     if label is not None:
-        if verbose>=2: print('[pca]> Warning: De parameter <label> is deprecated and will not be supported in future version. Use <textlabel> instead.')
+        if verbose>=2: print('[pca]> [WARNING]: De parameter <label> is deprecated and will not be supported in future version.')
+    if y is not None:
+        if verbose>=2: print('[pca]> [WARNING]: De parameter <y> is deprecated and will not be supported in future version. Use <labels> instead.')

@@ -31,10 +31,10 @@ class TestPCA(unittest.TestCase):
         alpha = np.random.rand(1, X.shape[0])[0][random_integers]
         
         param_grid = {
-        	'marker': [None, marker, '.'],
+        	'marker': [marker, 'o'],
         	'color':[None, color, [0,0,0]],
-        	'size' : [None, size, 50],
-            'alpha' : [None, alpha, 1]
+        	'size' : [size, 50],
+            'alpha' : [alpha, 1]
         	}
         
         allNames = param_grid.keys()
@@ -50,9 +50,8 @@ class TestPCA(unittest.TestCase):
             fig, ax = model.biplot(c=combination[1],
                                    s=combination[2],
                                    marker=combination[0],
-                                   alpha_transparency=combination[3],
-                                   label=False,
-                                   fontdict={'size':10, 'weight':'normal'},
+                                   alpha=combination[3],
+                                   fontdict={'weight':'normal'},
                                    color_arrow='blue',
                                    title='Demonstration of specifying colors, markers, alpha, and size per sample.',
                                    hotellingt2=True,
@@ -81,9 +80,9 @@ class TestPCA(unittest.TestCase):
         # Get the outliers using SPE/DmodX method.
         df.loc[results['outliers']['y_bool'], :]
         # Plot SPE/DmodX method
-        model.biplot(SPE=True, hotellingt2=False, title='Outliers marked using SPE/dmodX method.')
+        model.biplot(SPE=True, hotellingt2=False, title='Outliers marked using SPE/dmodX method.', marker=data.target)
         # Make a plot in 3 dimensions
-        model.biplot(SPE=True, hotellingt2=True, title='Outliers marked using SPE/dmodX method and Hotelling T2.')
+        model.biplot(SPE=True, hotellingt2=True, title='Outliers marked using SPE/dmodX method and Hotelling T2.', marker=data.target)
         # Get the outliers using SPE/DmodX method.
         df.loc[results['outliers']['y_bool_spe'], :]
         Ioverlap = np.logical_and(results['outliers']['y_bool'], results['outliers']['y_bool_spe'])
@@ -127,18 +126,18 @@ class TestPCA(unittest.TestCase):
         assert out['outliers'].empty
         
         ######## TEST FOR TRANSPARENCY WITH MATPLOTLIB VERSION #########
-        assert model.scatter(alpha_transparency=0.1)
-        assert model.scatter3d(alpha_transparency=0.1)
-        assert model.biplot(alpha_transparency=0.1)
-        assert model.biplot3d(alpha_transparency=0.1)
-        assert model.scatter(alpha_transparency=None)
-        assert model.scatter3d(alpha_transparency=None)
-        assert model.biplot(alpha_transparency=None)
-        assert model.biplot3d(alpha_transparency=None)
-        assert model.scatter(alpha_transparency=0.5)
-        assert model.scatter3d(alpha_transparency=0.5)
-        assert model.biplot(alpha_transparency=0.5)
-        assert model.biplot3d(alpha_transparency=0.5)
+        assert model.scatter(alpha=0.1)
+        assert model.scatter3d(alpha=0.1)
+        assert model.biplot(alpha=0.1)
+        assert model.biplot3d(alpha=0.1)
+        assert model.scatter(alpha=None)
+        assert model.scatter3d(alpha=None)
+        assert model.biplot(alpha=None)
+        assert model.biplot3d(alpha=None)
+        assert model.scatter(alpha=0.5)
+        assert model.scatter3d(alpha=0.5)
+        assert model.biplot(alpha=0.5)
+        assert model.biplot3d(alpha=0.5)
 
     def test_plot_combinations(self):
 

@@ -2,10 +2,10 @@ matplotlib
 numpy
 scikit-learn
 scipy
-colourmap>="1.1.10"
 pandas
 tqdm
-scatterd>="1.2.5"
-adjustText
+colourmap>="1.1.11"
+scatterd>="1.2.6"
+adjusttext
 statsmodels
 requests

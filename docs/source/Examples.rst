@@ -277,10 +277,10 @@ To demonstrate how to do this, I will use the Titanic dataset. We need to pip in
 	model2.biplot3d(n_feat=10)
 
 	# Set custom transparency levels
-	model2.biplot3d(n_feat=10, alpha_transparency=0.5)
-	model2.biplot(n_feat=10, alpha_transparency=0.5)
-	model2.scatter3d(alpha_transparency=0.5)
-	model2.scatter(alpha_transparency=0.5)
+	model2.biplot3d(n_feat=10, alpha=0.5)
+	model2.biplot(n_feat=10, alpha=0.5)
+	model2.scatter3d(alpha=0.5)
+	model2.scatter(alpha=0.5)
 
 	# Initialize
 	model3 = pca(normalize=False, onehot=True)
@@ -425,12 +425,12 @@ input colors for each sample manually.
 
 	# Set custom classlabels. Coloring is based on the input colormap (cmap).
 	y[10:15]=4
-	model.biplot(y=y, cmap='Set2')
+	model.biplot(labels=labels, cmap='Set2')
 
 	# Set custom classlabels and also use custom colors.
-	c = colourmap.fromlist(y, cmap='Set2')[0]
+	c = colourmap.fromlist(labels, cmap='Set2')[0]
 	c[10:15] = [0,0,0]
-	model.biplot(y=y, c=c)
+	model.biplot(labels=labels, c=c)
 
 
 .. |figE5| image:: ../figs/color_cmap_y.png
@@ -452,7 +452,7 @@ The highlight the loadings, all scatterpoints can be removed by setting the cmap
 	model.biplot(cmap=None)
 
 	# Gradient with white ending using the cmap setting.
-	model.biplot(y=y, gradient='#ffffff', cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+	model.biplot(labels=labels, gradient='#ffffff', cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 
 
 .. |figE7| image:: ../figs/color_no_scatter.png

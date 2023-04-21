@@ -108,7 +108,7 @@ Biplot (only arrows)
 .. code:: python
 
 	# Make plot with parameters: set cmap to None and label and legend to False. Only directions will be plotted.
-	model.biplot(cmap=None, label=False, legend=False)
+	model.biplot(cmap=None, legend=False)
 
 
 .. image:: ../figs/biplot_only_directions.png
@@ -135,7 +135,7 @@ Alpha Transparency
 
 .. code:: python
 
-	fig, ax = model.scatter(alpha_transparency=1)
+	fig, ax = model.scatter(alpha=1)
 
 
 Markers
@@ -164,7 +164,6 @@ Markers
 	# Make plot with markers
 	fig, ax = model.biplot(c=[0, 0, 0], 
 			       marker=marker,
-			       label=False,
 			       title='Demonstration of specifying markers per sample.',
 			       n_feat=5,
 			       legend=False)
@@ -206,7 +205,7 @@ Control color/marker/size per sample
 	# Set colors
 	color = colors.colors[random_integers, :]
 	# Set Size
-	size = np.random.randint(50, 150, size=X.shape[0])
+	size = np.random.randint(50, 1000, size=X.shape[0])
 	# Set alpha
 	alpha = np.random.rand(1, X.shape[0])[0][random_integers]
 
@@ -218,9 +217,9 @@ Control color/marker/size per sample
 	fig, ax = model.biplot(c=color,
 			       s=size,
 			       marker=marker,
-			       alpha_transparency=alpha,
-			       label=False,
-			       fontdict={'size':10, 'weight':'normal'},
+			       alpha=alpha,
+			       fontdict={'weight':'normal'},
+			       fontsize=20,
 			       color_arrow='blue',
 			       title='Demonstration of specifying colors, markers, alpha, and size per sample.',
 			       hotellingt2=True,
