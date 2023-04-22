@@ -1548,7 +1548,7 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, a
             texts.append(ax.text(xarrow, yarrow, label, color=txtcolor, fontdict=arrowdict, zorder=10))
 
     # Plot the adjusted text labels to prevent overlap
-    if len(texts)>0: adjust_text(texts)
+    if len(texts)>0 and not d3: adjust_text(texts)
 
     # Return
     return fig, ax
