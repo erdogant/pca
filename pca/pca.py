@@ -739,46 +739,15 @@ class pca:
         if cmap is None: s=0
         if alpha is None: alpha=0.8
 
+        # Set font dict
         fontdict = _set_fontdict(fontdict, fontsize=fontsize)
-
         # Setup figure
         fig, ax = _setup_figure(fig, ax, d3, visible, figsize, dpi)
-
+        # Set the labels
         if labels is None:
             labels, _, _ = self._fig_preprocessing(labels, None, d3)
-
         # Get coordinates
         xs, ys, zs, ax = _get_coordinates(self.results['PC'], PC, fig, ax, d3)
-
-        # Set the markers
-        # if isinstance(marker, str): marker = np.repeat(marker, len(xs))
-        # marker = np.array(marker)
-        # if len(marker)!=len(xs): raise Exception('Marker length (k=%d) should match the number of samples (n=%d).' %(len(marker), len(xs)))
-
-        # if isinstance(alpha, (float, int)): alpha = np.repeat(alpha, len(xs))
-        # alpha = np.array(alpha)
-        # if len(alpha)!=len(xs): raise Exception('alpha length (k=%d) should match the number of samples (n=%d).' %(len(alpha), len(xs)))
-
-        # Set Size
-        # if isinstance(s, (float, int)): s = np.repeat(s, len(xs))
-        # s = np.array(s)
-        # if len(s)!=len(xs): raise Exception('Size (s) length (k=%d) should match the number of samples (n=%d).' %(len(s), len(xs)))
-
-        # Add jitter
-        # if jitter is not None:
-            # xs = xs + np.random.normal(0, jitter, size=len(xs))
-            # if ys is not None: ys = ys + np.random.normal(0, jitter, size=len(ys))
-            # if zs is not None: zs = zs + np.random.normal(0, jitter, size=len(zs))
-
-        # Get the colors
-        # if cmap is None:
-            # Hide the scatterpoints by making them all white.
-            # c = np.repeat([1., 1., 1.], len(y), axis=0).reshape(-1, 3)
-            # c = [1, 1, 1]
-        # else:
-            # Figure properties
-            # xyz, _ = scatterd._preprocessing(xs, ys, zs, y)
-            # getcolors, fontcolor = scatterd.set_colors(xyz, y, None, c, cmap, gradient=gradient)
 
         # Plot the elipse, then the scatterpoints.
         Ioutlier1 = np.repeat(False, self.results['PC'].shape[0])
@@ -792,57 +761,26 @@ class pca:
                 g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
                 if g_ellipse is not None: ax.add_artist(g_ellipse)
 
-        # Make scatter plot of all not-outliers
-        # uiy = np.unique(y)
-        # if (len(uiy)==len(y)) and (len(uiy)>=1000) and (label is not None) and np.unique(marker)==1:
-        #     if verbose>=2: print('[pca] >Set parameter "label=None" to ignore the labels and significanly speed up the scatter plot.')
-        # Add the labels
-        # if (label is None):
-        #     if d3:
-        #         ax.scatter(xs, ys, zs, s=s, alpha=alpha, color=getcolors, label=None, marker=marker[0])
-        #     else:
-        #         ax.scatter(xs, ys, s=s, alpha=alpha, color=getcolors, label=None, marker=marker[0])
-        # else:
         fig, ax = scatterd(x=xs,
-                            y=ys,
-                            z=zs,
-                            s=s,
-                            c=c,
-                            labels=labels,
-                            edgecolor=edgecolor,
-                            alpha=alpha,
-                            marker=marker,
-                            jitter=jitter,
-                            density=density,
-                            gradient=gradient,
-                            cmap=cmap,
-                            legend=False,
-                            fontcolor=fontcolor,
-                            fontsize=fontdict['fontsize'],
-                            fontweight=fontdict['weight'],
-                            dpi=dpi,
-                            figsize=figsize,
-                            ax=None if d3 else ax)
-
-        # for Iloc_sampl, _ in tqdm(enumerate(y), desc="[pca] >Plotting", position=0, leave=False, disable=(verbose==0)):
-        #     if d3:
-        #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=float(alpha[Iloc_sampl]), color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
-        #         if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(y[Iloc_sampl]), color=[0, 0, 0], fontdict=fontdict)
-        #     else:
-        #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=np.maximum(s[Iloc_sampl], 0), label=y[Iloc_sampl], alpha=float(alpha[Iloc_sampl]), color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
-        #         if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), str(y[Iloc_sampl]), color=[0, 0, 0], fontdict=fontdict)
-                # if label: ax.annotate(yk, np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]))
-
-            # for yk in uiy:
-            #     Iloc_sampl = (yk==y)
-
-            #     if d3:
-            #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], zs[Iloc_sampl], s=s + 10, label=yk, alpha=alpha, color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
-            #         if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), np.mean(zs[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict=fontdict)
-            #     else:
-            #         ax.scatter(xs[Iloc_sampl], ys[Iloc_sampl], s=s + 10, label=yk, alpha=alpha, color=getcolors[Iloc_sampl, :], marker=marker[Iloc_sampl])
-            #         if label: ax.text(np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]), str(yk), color=[0, 0, 0], fontdict=fontdict)
-            #         # if label: ax.annotate(yk, np.mean(xs[Iloc_sampl]), np.mean(ys[Iloc_sampl]))
+                           y=ys,
+                           z=zs,
+                           s=s,
+                           c=c,
+                           labels=labels,
+                           edgecolor=edgecolor,
+                           alpha=alpha,
+                           marker=marker,
+                           jitter=jitter,
+                           density=density,
+                           gradient=gradient,
+                           cmap=cmap,
+                           legend=False,
+                           fontcolor=fontcolor,
+                           fontsize=fontdict['fontsize'],
+                           fontweight=fontdict['weight'],
+                           dpi=dpi,
+                           figsize=figsize,
+                           ax=None if d3 else ax)
 
         # Plot outliers for hotelling T2 test.
         if SPE and ('y_bool_spe' in self.results['outliers'].columns):
@@ -1014,10 +952,13 @@ class pca:
         if verbose is None: verbose = self.verbose
         _show_deprecated_warning(label, y, verbose)
         if not hasattr(self, 'results'):
-            if verbose>=2: print('[pca]> [WARNING]: No results to plot. Hint: model.fit(X) <return>.')
+            if verbose>=2: print('[pca]> [WARNING]: No results to plot. Hint: model.fit(X) <return>')
             fig = fig if not None else None
             ax = ax if not None else None
             return fig, ax
+        if self.results['PC'].shape[1]<3 and d3:
+            if verbose>=2: print('[pca] >[WARNING] It requires 3 PCs to make 3d plot <return>')
+            return None, None
 
         # Input checks
         fontdict, cmap = _biplot_input_checks(self.results, PC, cmap, fontdict, d3, color_arrow, fontsize, verbose)
@@ -1042,11 +983,7 @@ class pca:
 
         # Include additional parameters if 3d-plot is desired.
         if d3:
-            if self.results['PC'].shape[1]<3:
-                if verbose>=2: print('[pca] >[WARNING] requires 3 PCs to make 3d plot <return>.')
-                return None, None
             mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
-            # zs = self.results['PC'].iloc[:,2].values
             fig, ax = self.scatter3d(labels=labels, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, edgecolor=edgecolor, verbose=verbose)
         else:
             fig, ax = self.scatter(labels=labels, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, edgecolor=edgecolor, density=density, verbose=verbose)
