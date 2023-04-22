@@ -796,73 +796,19 @@ class pca:
         _show_deprecated_warning(label, y, verbose)
         if not hasattr(self, 'results'):
             if verbose>=2: print('[pca]> [WARNING]: No results to plot. Hint: model.fit(X) <return>')
-            fig = fig if not None else None
-            ax = ax if not None else None
-            return fig, ax
-
-        if PC is None: PC=[0, 1]
-        d3 = True if len(PC)==3 else False
-
-        if self.results['PC'].shape[1]<3 and d3:
-            if verbose>=2: print('[pca] >[WARNING] It requires 3 PCs to make 3d plot <return>')
             return None, None
 
         # Input checks
-        fontdict, cmap = _biplot_input_checks(self.results, PC, cmap, fontdict, d3, color_arrow, fontsize, verbose)
-
+        arrowdict, cmap, PC, d3, s = _biplot_input_checks(self.results, PC, cmap, arrowdict, color_arrow, fontsize, fontweight, c, s, verbose)
         # Pre-processing
         labels, topfeat, n_feat = self._fig_preprocessing(labels, n_feat, d3)
-        topfeat = pd.concat([topfeat.iloc[PC, :], topfeat.loc[~topfeat.index.isin(PC), :]])
-        topfeat.reset_index(inplace=True)
-
-        # Collect coefficients
-        coeff = self.results['loadings'].iloc[PC, :]
-
-        # Use the PCs only for scaling purposes
-        mean_x = np.mean(self.results['PC'].iloc[:, PC[0]].values)
-        mean_y = np.mean(self.results['PC'].iloc[:, PC[1]].values)
-
-        # Plot and scale values for arrows and text by taking the absolute minimum range of the x-axis and y-axis.
-        # max_axis = np.min(np.abs(self.results['PC'].iloc[:,0:2]).max())
-        max_axis = np.max(np.abs(self.results['PC'].iloc[:, PC]).min(axis=1))
-        max_arrow = np.abs(coeff).max().max()
-        scale = (np.max([1, np.round(max_axis / max_arrow, 2)])) * 0.93
-
-        # Include additional parameters if 3d-plot is desired.
-        if d3:
-            mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
-            fig, ax = self.scatter3d(labels=labels, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, edgecolor=edgecolor, verbose=verbose)
-        else:
-            fig, ax = self.scatter(labels=labels, legend=legend, PC=PC, SPE=SPE, hotellingt2=hotellingt2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, edgecolor=edgecolor, density=density, verbose=verbose)
-
-        # For vizualization purposes we will keep only the unique feature-names
-        topfeat = topfeat.drop_duplicates(subset=['feature'])
-        if topfeat.shape[0]<n_feat:
-            n_feat = topfeat.shape[0]
-            if verbose>=2: print('[pca] >[WARNING]: n_feat can not be reached because of the limitation of n_components (=%d). n_feat is reduced to %d.' %(self.n_components, n_feat))
-
-        # Plot arrows and text
-        texts = []
-        for i in range(0, n_feat):
-            getfeat = topfeat['feature'].iloc[i]
-            label = getfeat + ' (' + ('%.3g' %topfeat['loading'].iloc[i]) + ')'
-            getcoef = coeff[getfeat].values
-            # Set first PC vs second PC direction. Note that these are not neccarily the best loading.
-            xarrow = getcoef[0] * scale  # First PC in the x-axis direction
-            yarrow = getcoef[1] * scale  # Second PC in the y-axis direction
-            txtcolor = 'y' if topfeat['type'].iloc[i] == 'weak' else 'g'
-
-            if d3:
-                zarrow = getcoef[2] * scale
-                ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=color_arrow, alpha=0.8, lw=2)
-                texts.append(ax.text(xarrow, yarrow, zarrow, label, color=txtcolor, ha='center', va='center'))
-            else:
-                ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, alpha=0.8, width=0.002, head_width=0.1, head_length=0.1 * 1.1, length_includes_head=True)
-                texts.append(ax.text(xarrow, yarrow, label, color=txtcolor, fontdict=fontdict))
-
-        # Plot the adjusted text labels to prevent overlap
-        if len(texts)>0: adjust_text(texts)
-        # if visible: plt.show()
+        # Scatterplot
+        fig, ax = self.scatter(labels=labels, legend=legend, PC=PC, SPE=SPE, HT2=HT2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, fontweight=fontweight, fontsize=fontsize, edgecolor=edgecolor, density=density, density_on_top=density_on_top, dpi=dpi, verbose=verbose)
+        # Add the loadings with arrow to the plot
+        fig, ax = _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, ax, verbose)
+        # Plot
+        if visible: plt.show()
+        # Return
         return fig, ax
 
     def scatter3d(self, PC=[0, 1, 2], **args):
@@ -1049,7 +995,7 @@ class pca:
 
 
 # %%
-def _get_coordinates(PCs, PC, fig, ax, d3):
+def _get_coordinates(PCs, PC):
     xs = PCs.iloc[:, PC[0]].values
     ys = np.zeros(len(xs))
     zs = None
@@ -1059,11 +1005,10 @@ def _get_coordinates(PCs, PC, fig, ax, d3):
         ys = PCs.iloc[:, PC[1]].values
 
     # Get Z-axis
-    if d3:
+    if len(PC)>=3:
         zs = PCs.iloc[:, PC[2]].values
-        ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
 
-    return xs, ys, zs, ax
+    return xs, ys, zs
 
 
 # %%
@@ -1453,29 +1398,36 @@ def _get_explained_variance(X, components):
     return explained_variance
 
 
-def _biplot_input_checks(results, PC, cmap, fontdict, d3, color_arrow, fontsize, verbose):
+def _biplot_input_checks(results, PC, cmap, arrowdict, color_arrow, fontsize, fontweight, c, s, verbose):
+    if c is None: s=0
+    if cmap is None: s=0
+    if PC is None: PC=[0, 1]
+    d3 = True if len(PC)>=3 else False
+
     # Check PCs
     if results['PC'].shape[1]<2: raise ValueError('[pca] >[Error] Requires 2 PCs to make 2d plot.')
-    if d3 and len(PC)<3: raise ValueError('[pca] >[Error] in case of biplot3d or d3=True, at least 3 PCs are required.')
     if np.max(PC)>=results['PC'].shape[1]: raise ValueError('[pca] >[Error] PC%.0d does not exist!' %(np.max(PC) + 1))
     if verbose>=3 and d3:
         print('[pca] >Plot PC%.0d vs PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1, PC[2] + 1))
     elif verbose>=3:
         print('[pca] >Plot PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1))
-    if cmap is False: cmap=None
-    # Set defaults in fontdict
-    fontdict =_set_fontdict(fontdict, color_arrow=color_arrow, fontsize=fontsize)
-    # Set font dictionary
+
+    # Set defaults in arrowdict
+    arrowdict =_set_arrowdict(arrowdict, color_arrow=color_arrow, fontsize=fontsize, fontweight=fontweight)
     # Return
-    return fontdict, cmap
+    return arrowdict, cmap, PC, d3, s
 
 
-def _set_fontdict(fontdict, color_arrow=None, fontsize=18):
+def _set_arrowdict(arrowdict, color_arrow=None, fontsize=18, fontweight='normal'):
     color_arrow = 'black' if (color_arrow is None) else color_arrow
-    fontdict = {**{'weight': 'normal', 'fontsize': fontsize, 'ha': 'center', 'va': 'center', 'c': color_arrow}, **fontdict}
-    if fontdict.get('c')=='color_arrow' and (color_arrow is not None):
-        fontdict['c'] = color_arrow
-    return fontdict
+    arrowdict = {**{'fontsize': fontsize, 'c': color_arrow, 'weight': fontweight, 'ha': 'center', 'va': 'center'}, **arrowdict}
+    if arrowdict.get('c') is None and (color_arrow is not None):
+        arrowdict['c'] = color_arrow
+    if arrowdict.get('fontsize') is None:
+        arrowdict['fontsize'] = fontsize
+    if arrowdict.get('weight') is None:
+        arrowdict['weight'] = fontweight
+    return arrowdict
 
 
 # %% Retrieve files files.
@@ -1511,9 +1463,11 @@ def _setup_figure(fig, ax, d3, visible, figsize, dpi):
     if fig is None and ax is None:
         # Create new figure.
         fig = plt.figure(figsize=figsize, dpi=dpi)
+
         # Add d3 projection
         if d3:
             ax = fig.add_subplot(projection='3d')
+            # ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
         else:
             ax = fig.add_subplot()
     elif fig is not None and ax is None:
@@ -1523,6 +1477,126 @@ def _setup_figure(fig, ax, d3, visible, figsize, dpi):
     if fig is not None:
         fig.set_visible(visible)
 
+    return fig, ax
+
+
+def _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, ax, verbose):
+    topfeat = pd.concat([topfeat.iloc[PC, :], topfeat.loc[~topfeat.index.isin(PC), :]])
+    topfeat.reset_index(inplace=True)
+    # Collect coefficients
+    coeff = self.results['loadings'].iloc[PC, :]
+
+    # Use the PCs only for scaling purposes
+    mean_x = np.median(self.results['PC'].iloc[:, PC[0]].values)
+    mean_y = np.median(self.results['PC'].iloc[:, PC[1]].values)
+
+    # Plot and scale values for arrows and text by taking the absolute minimum range of the x-axis and y-axis.
+    max_axis = np.max(np.abs(self.results['PC'].iloc[:, PC]).min(axis=1))
+    max_arrow = np.abs(coeff).max().max()
+    scale = (np.max([1, np.round(max_axis / max_arrow, 2)])) * 0.93
+
+    # For vizualization purposes we will keep only the unique feature-names
+    topfeat = topfeat.drop_duplicates(subset=['feature'])
+    if topfeat.shape[0]<n_feat:
+        n_feat = topfeat.shape[0]
+        if verbose>=2: print('[pca] >[WARNING]: n_feat can not be reached because of the limitation of n_components (=%d). n_feat is reduced to %d.' %(self.n_components, n_feat))
+
+    # Plot arrows and text
+    texts = []
+    for i in range(0, n_feat):
+        getfeat = topfeat['feature'].iloc[i]
+        label = getfeat + ' (' + ('%.3g' %topfeat['loading'].iloc[i]) + ')'
+        getcoef = coeff[getfeat].values
+        # Set first PC vs second PC direction. Note that these are not neccarily the best loading.
+        xarrow = getcoef[0] * scale  # First PC in the x-axis direction
+        yarrow = getcoef[1] * scale  # Second PC in the y-axis direction
+        txtcolor = 'y' if topfeat['type'].iloc[i] == 'weak' else 'g'
+
+        if d3:
+            mean_z = np.median(self.results['PC'].iloc[:, PC[2]].values)
+            zarrow = getcoef[2] * scale
+            ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=color_arrow, alpha=0.8, lw=2)
+            texts.append(ax.text(xarrow, yarrow, zarrow, label, color=txtcolor, ha='center', va='center'))
+        else:
+            ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, alpha=0.8, width=0.002, head_width=0.1, head_length=0.1 * 1.1, length_includes_head=True)
+            texts.append(ax.text(xarrow, yarrow, label, color=txtcolor, fontdict=arrowdict))
+
+    # Plot the adjusted text labels to prevent overlap
+    if len(texts)>0: adjust_text(texts)
+
+    # Return
+    return fig, ax
+
+
+def _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, fig, ax):
+    # Get the outliers
+    Ioutlier1 = np.repeat(False, self.results['PC'].shape[0])
+    Ioutlier2 = np.repeat(False, self.results['PC'].shape[0])
+    if SPE and ('y_bool_spe' in self.results['outliers'].columns):
+        Ioutlier2 = self.results['outliers']['y_bool_spe'].values
+        if not d3:
+            # Plot the ellipse
+            g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.1, verbose=0)[1]
+            if g_ellipse is not None:
+                ax.add_artist(g_ellipse)
+                # Set the order of the layer at 1. At this point it is over the density layer which looks nicer.
+                g_ellipse.set_zorder(1)
+    
+    # Plot outliers for hotelling T2 test.
+    if SPE and ('y_bool_spe' in self.results['outliers'].columns):
+        label_spe = str(sum(Ioutlier2)) + ' outliers (SPE/DmodX)'
+        if d3:
+            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[0.5, 0.5, 0.5], s=150, label=label_spe, alpha=alpha)
+        else:
+            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=150, label=label_spe, alpha=alpha)
+            # Plot the ellipse
+            # g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
+            # if g_ellipse is not None: ax.add_artist(g_ellipse)
+    
+    return fig, ax
+
+
+def _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, fig, ax):
+    # Plot outliers for hotelling T2 test.
+    if HT2 and ('y_bool' in self.results['outliers'].columns):
+        Ioutlier1 = self.results['outliers']['y_bool'].values
+
+    if HT2 and ('y_bool' in self.results['outliers'].columns):
+        label_t2 = str(sum(Ioutlier1)) + ' outliers (hotelling t2)'
+        if d3:
+            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[0, 0, 0], s=150, label=label_t2, alpha=alpha)
+        else:
+            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=150, label=label_t2, alpha=alpha)
+
+    return fig, ax
+
+
+def _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, verbose):
+    # Set labels
+    ax.set_xlabel('PC' + str(PC[0] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
+    if len(self.results['model'].explained_variance_ratio_)>=2:
+        ax.set_ylabel('PC' + str(PC[1] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[1]] * 100)[0:4] + '% expl.var)')
+    else:
+        ax.set_ylabel('PC2 (0% expl.var)')
+    if d3 and (len(self.results['model'].explained_variance_ratio_)>=3):
+        ax.set_zlabel('PC' + str(PC[2] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[2]] * 100)[0:4] + '% expl.var)')
+
+    # Set title
+    if title is None:
+        title = str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance'
+
+    # Determine the legend status if set to None
+    if legend is None:
+        if len(np.unique(labels))>20:
+            if verbose>=3: print('[pca] >Auto disable legend because number of unique labels >20')
+            legend=False
+        else:
+            legend=True
+    
+    ax.set_title(title)
+    if legend: ax.legend()
+    ax.grid(True)
+    # Return
     return fig, ax
 
 

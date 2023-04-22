@@ -54,7 +54,7 @@ class TestPCA(unittest.TestCase):
                                    fontdict={'weight':'normal'},
                                    color_arrow='blue',
                                    title='Demonstration of specifying colors, markers, alpha, and size per sample.',
-                                   hotellingt2=True,
+                                   HT2=True,
                                    n_feat=5,
                                    legend=False, 
                                    visible=False)
@@ -73,16 +73,16 @@ class TestPCA(unittest.TestCase):
         assert np.sum(results['outliers']['y_proba']<=0.05)==9
 
         # Plot Hotellings T2
-        model.biplot(SPE=False, hotellingt2=True, title='Outliers marked using Hotellings T2 method.')
+        model.biplot(SPE=False, HT2=True, title='Outliers marked using Hotellings T2 method.')
         # Make a plot in 3 dimensions
-        model.biplot3d(SPE=False, hotellingt2=True, title='Outliers marked using Hotellings T2 method.')
+        model.biplot3d(SPE=False, HT2=True, title='Outliers marked using Hotellings T2 method.')
 
         # Get the outliers using SPE/DmodX method.
         df.loc[results['outliers']['y_bool'], :]
         # Plot SPE/DmodX method
-        model.biplot(SPE=True, hotellingt2=False, title='Outliers marked using SPE/dmodX method.', marker=data.target)
+        model.biplot(SPE=True, HT2=False, title='Outliers marked using SPE/dmodX method.', marker=data.target)
         # Make a plot in 3 dimensions
-        model.biplot(SPE=True, hotellingt2=True, title='Outliers marked using SPE/dmodX method and Hotelling T2.', marker=data.target)
+        model.biplot(SPE=True, HT2=True, title='Outliers marked using SPE/dmodX method and Hotelling T2.', marker=data.target)
         # Get the outliers using SPE/DmodX method.
         df.loc[results['outliers']['y_bool_spe'], :]
         Ioverlap = np.logical_and(results['outliers']['y_bool'], results['outliers']['y_bool_spe'])
@@ -163,11 +163,11 @@ class TestPCA(unittest.TestCase):
          	model = pca(n_components=0.95)
          	model.fit_transform(X)
          	assert model.plot()
-         	assert model.biplot(y=y, SPE=True, hotellingt2=True, gradient=combination[3])
-         	assert model.biplot3d(y=y, SPE=True, hotellingt2=True, gradient=combination[3])
-         	assert model.biplot(y=y, SPE=True, hotellingt2=False, gradient=combination[3])
-         	assert model.biplot(y=y, SPE=False, hotellingt2=True, gradient=combination[3])
-         	assert model.biplot(y=y, SPE=False, hotellingt2=False, gradient=combination[3])
+         	assert model.biplot(y=y, SPE=True, HT2=True, gradient=combination[3])
+         	assert model.biplot3d(y=y, SPE=True, HT2=True, gradient=combination[3])
+         	assert model.biplot(y=y, SPE=True, HT2=False, gradient=combination[3])
+         	assert model.biplot(y=y, SPE=False, HT2=True, gradient=combination[3])
+         	assert model.biplot(y=y, SPE=False, HT2=False, gradient=combination[3])
          	assert model.results['PC'].shape[1]==model.n_components
 
 
