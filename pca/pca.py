@@ -80,6 +80,8 @@ class pca:
     def __init__(self, n_components=0.95, n_feat=25, method='pca', alpha=0.05, multipletests='fdr_bh', n_std=3, onehot=False, normalize=False, detect_outliers=['ht2', 'spe'], random_state=None, verbose=3):
         """Initialize pca with user-defined parameters."""
         if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
+        if detect_outliers is not None: detect_outliers=list(map(str.lower, detect_outliers))
+
         if onehot:
             if verbose>=3: print('[pca] >Method is set to: [sparse_pca] because onehot=True.')
             method = 'sparse_pca'
@@ -231,12 +233,12 @@ class pca:
         >>> fig, ax = model.scatter()
         >>> fig, ax = model.plot()
         >>> fig, ax = model.biplot()
-        >>> fig, ax = model.biplot(SPE=True, hotellingt2=True)
+        >>> fig, ax = model.biplot(SPE=True, HT2=True)
         >>>
         >>> 3D plots
         >>> fig, ax = model.scatter3d()
         >>> fig, ax = model.biplot3d()
-        >>> fig, ax = model.biplot3d(SPE=True, hotellingt2=True)
+        >>> fig, ax = model.biplot3d(SPE=True, HT2=True)
         >>>
         >>> # Normalize out PCs
         >>> X_norm = model.norm(X)
@@ -570,7 +572,7 @@ class pca:
             [0, 1, 2] : Define the PCs for 3D
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
-        hotellingt2 : Bool, default: False
+        HT2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
         alpha: float or array-like of floats (default: 1).
             The alpha blending value ranges between 0 (transparent) and 1 (opaque).

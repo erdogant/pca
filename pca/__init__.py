@@ -42,12 +42,12 @@ Examples
 >>> fig, ax = model.biplot()
 >>>
 >>> # Plot loadings with outliers
->>> fig, ax = model.biplot(SPE=True, hotellingt2=True)
+>>> fig, ax = model.biplot(SPE=True, HT2=True)
 >>>
 >>> 3D plots
 >>> fig, ax = model.scatter3d()
 >>> fig, ax = model.biplot3d()
->>> fig, ax = model.biplot3d(SPE=True, hotellingt2=True)
+>>> fig, ax = model.biplot3d(SPE=True, HT2=True)
 >>>
 >>> # Normalize out PCs
 >>> X_norm = model.norm(X)

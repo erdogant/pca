@@ -49,7 +49,7 @@ Scatter plot
 	model.scatter(SPE=True)
 
 	# Include the outlier detection
-	model.scatter(hotellingt2=True)
+	model.scatter(HT2=True)
 
 	# Look at different PCs: 1st PC=1  vs PC=3
 	model.scatter(PC=[0, 2])
@@ -86,7 +86,7 @@ Biplot
 	model.biplot()
 
 	# Here again, many other options can be turned on and off
-	model.biplot(SPE=True, hotellingt2=True)
+	model.biplot(SPE=True, HT2=True)
 
 
 .. |figP5| image:: ../figs/wine_biplot.png
@@ -222,7 +222,7 @@ Control color/marker/size per sample
 			       fontsize=20,
 			       color_arrow='blue',
 			       title='Demonstration of specifying colors, markers, alpha, and size per sample.',
-			       hotellingt2=True,
+			       HT2=True,
 			       n_feat=5,
 			       legend=False, 
 			       visible=True)
