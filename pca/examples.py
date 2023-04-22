@@ -4,12 +4,119 @@ import numpy as np
 import matplotlib as mpl
 
 # %%
+from df2onehot import df2onehot
+from pca import pca
+
+model = pca()
+df = model.import_example(data='titanic')
+
+# Create one-hot array
+df_hot = df2onehot(df,
+                   remove_mutual_exclusive=True,
+                   excl_background=['PassengerId', 'None'],
+                   y_min=10,
+                   verbose=4)['onehot']
+
+# Initialize
+model = pca(normalize=True, detect_outliers=['HT2', 'SPE'])
+
+# Fit
+model.fit_transform(df_hot)
+
+# model.scatter(legend=False)
+# model.biplot(legend=False)
+
+model.biplot(SPE=True,
+              HT2=True,
+              marker=df['Survived'],
+              s=df['Fare']*10,
+              n_feat=10,
+              labels=df['Sex'],
+              title='Biplot with with the pca library.',
+              color_arrow='k',
+              fontsize=28,
+              fontcolor=None,
+              arrowdict={'fontsize': 18},
+              cmap='bwr_r',
+              edgecolor='#FFFFFF',
+              gradient='#FFFFFF',
+              density=True,
+              density_on_top=False,
+              )
+
+
+# %% Demonstration of specifying colors, markers, alpha, and size per sample
+# Import library
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+from sklearn.datasets import make_friedman1
+from pca import pca
+
+# Make data set
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+# All available markers
+markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
+# Create colors
+cmap = plt.cm.get_cmap('tab20c', len(markers))
+# Generate random integers
+random_integers = np.random.randint(0, len(markers), size=X.shape[0])
+# Draw markers
+marker = markers[random_integers]
+# Set colors
+color = cmap.colors[random_integers, 0:3]
+# Set Size
+size = np.random.randint(50, 1000, size=X.shape[0])
+# Set alpha
+alpha = np.random.rand(1, X.shape[0])[0][random_integers]
+
+# Init
+model = pca(verbose=3)
+# Fit
+model.fit_transform(X)
+# Make plot with blue arrows and text
+fig, ax = model.biplot(
+                        SPE=True,
+                        HT2=True,
+                        c=color,
+                        s=size,
+                        marker=marker,
+                        alpha=alpha,
+                        color_arrow='k',
+                        title='Demonstration of specifying colors, markers, alpha, and size per sample.',
+                        n_feat=5,
+                        fontsize=20,
+                        fontweight='normal',
+                        arrowdict={'fontsize': 18},
+                        density=True,
+                        density_on_top=False,
+                        )
+
+
+# %%
+from sklearn.datasets import make_friedman1
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+model = pca()
+model.fit_transform(X)
+
+model.scatter(density=True)
+model.biplot(c=[0,0,0], density=True)
+
+model.scatter3d(fontsize=16, PC=[0,1,3])
+model.scatter3d(density=True)
+
+model.biplot3d(fontdict={'weight':'bold'}, c=None, n_feat=5)
+
+# %%
 df = pd.read_pickle('WIM-data PCA bug')
-df = df.iloc[0:1000, :]
+df = df.iloc[0:10000, :]
 X = df.drop(['SUBCATEGORIE','UTCPASSAGEDATUM','STROOKVOLGNUMMER','TWEESTROKEN'],axis=1)
 y = df['SUBCATEGORIE']
 model = pca(normalize=True, n_components=0.95)
 results = model.fit_transform(X, col_labels=X.columns, row_labels=y)
+
 # results = model.fit_transform(X)
 model.scatter3d()
 model.biplot3d()
@@ -39,94 +146,6 @@ model.biplot(cmap=None, n_feat=5)
 model.biplot3d()
 model.biplot3d(cmap=None, n_feat=8)
 
-# %%
-from sklearn.datasets import make_friedman1
-X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
-
-model = pca()
-model.fit_transform(X)
-# model.plot(title=None)
-# model.biplot(fontdict={'weight':'bold'}, title=None)
-model.biplot3d()
-model.scatter3d()
-
-
-# %% Demonstration of specifying colors, markers, alpha, and size per sample
-# Import library
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-from sklearn.datasets import make_friedman1
-from pca import pca
-
-# Make data set
-X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
-
-# All available markers
-markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
-# Create colors
-colors = plt.cm.get_cmap('tab20c', len(markers))
-# Generate random integers
-random_integers = np.random.randint(0, len(markers), size=X.shape[0])
-# Draw markers
-marker = markers[random_integers]
-# Set colors
-color = colors.colors[random_integers, 0:3]
-# Set Size
-size = np.random.randint(50, 1000, size=X.shape[0])
-# Set alpha
-alpha = np.random.rand(1, X.shape[0])[0][random_integers]
-
-# Init
-model = pca(verbose=3)
-# Fit
-model.fit_transform(X)
-# Make plot with blue arrows and text
-fig, ax = model.biplot(c=color,
-                        s=size,
-                        marker=marker,
-                        alpha=alpha,
-                        color_arrow='k',
-                        title='Demonstration of specifying colors, markers, alpha, and size per sample.',
-                        hotellingt2=True,
-                        n_feat=5,
-                       visible=True)
-
-
-# %%
-from df2onehot import df2onehot
-from pca import pca
-
-model = pca()
-df = model.import_example(data='student')
-df_hot = df2onehot(df)['onehot']
-# print(df_hot)
-
-# Initialize
-model = pca(normalize=True,detect_outliers=['ht2', 'spe'])
-
-# Fit
-model.fit_transform(df_hot)
-
-# model.scatter(legend=False)
-# model.biplot(legend=False)
-
-model.biplot(SPE=True,
-              hotellingt2=True,
-              marker=df['sex'],
-              # jitter=0.1,
-              n_feat=10,
-              legend=True,
-              labels=df['sex'],
-              title='Student Performance',
-              figsize=(20, 12),
-              color_arrow='k',
-              fontsize=16,
-              fontcolor='k',
-              cmap='bwr_r',
-              # gradient='#FFFFFF',
-              density=False,
-              )
 
 
 
@@ -220,7 +239,7 @@ print(df_hot)
 # [649 rows x 177 columns]
 
 model = pca(normalize=True,
-            detect_outliers=['ht2', 'spe'],
+            detect_outliers=['HT2', 'SPE'],
             alpha=0.05,
             n_std=3,
             multipletests='fdr_bh')
@@ -242,7 +261,7 @@ df.loc[overlapping_outliers]
 
 # Make biplot
 model.biplot(SPE=True,
-             hotellingt2=True,
+             HT2=True,
              jitter=0.1,
              n_feat=10,
              legend=False,
@@ -267,7 +286,7 @@ model = pca()
 model.fit_transform(X)
 
 # Make plot with blue arrows and text
-fig, ax = model.biplot(c=[0,0,0], fontsize=20, color_arrow='blue', title=None, hotellingt2=True, n_feat=10, visible=True)
+fig, ax = model.biplot(c=[0,0,0], fontsize=20, color_arrow='blue', title=None, HT2=True, n_feat=10, visible=True)
 
 # Use the existing fig and create new edits such red arrows for the first three loadings. Also change the font sizes.
 fig, ax = model.biplot(c=[0,0,0], fontsize=20, fontdict={'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
@@ -370,7 +389,7 @@ import numpy as np
 X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
 
 # Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.
-model = pca(alpha=0.05, detect_outliers=['ht2', 'spe'])
+model = pca(alpha=0.05, detect_outliers=['HT2', 'SPE'])
 
 # Fit transform
 model.fit_transform(X)
@@ -382,7 +401,7 @@ X_unseen = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
 PCnew = model.transform(X_unseen)
 
 # Plot image
-model.biplot(SPE=True, hotellingt2=True)
+model.biplot(SPE=True, HT2=True)
 
 # %% Detect unseen outliers
 # Import libraries
@@ -394,13 +413,13 @@ import numpy as np
 X = np.array(np.random.normal(0, 1, 500)).reshape(100, 5)
 
 # Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.
-model = pca(alpha=0.05, detect_outliers=['ht2', 'spe'])
+model = pca(alpha=0.05, detect_outliers=['HT2', 'SPE'])
 # model = pca(alpha=0.05, detect_outliers=None)
 
 # Fit transform
 model.fit_transform(X)
 
-model.scatter(SPE=True, hotellingt2=True)
+model.scatter(SPE=True, HT2=True)
 
 for i in range(0, 10):
     # Create 5 outliers
@@ -410,9 +429,9 @@ for i in range(0, 10):
     PCnew = model.transform(X_unseen, row_labels=np.repeat('mapped_' + str(i), X_unseen.shape[0]), update_outlier_params=True)
 
     # Scatterplot
-    model.scatter(SPE=True, hotellingt2=True)
+    model.scatter(SPE=True, HT2=True)
     # Biplot
-    # Model.biplot(SPE=True, hotellingt2=True)
+    # Model.biplot(SPE=True, HT2=True)
 
 
 # %%
@@ -495,10 +514,10 @@ model.scatter(cmap='Set1', legend=True, gradient=None)
 model.scatter3d(cmap='Set1', legend=True, gradient='#ffffff')
 model.scatter3d(cmap='Set1', legend=True, gradient=None)
 
-model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True, gradient='#ffffff')
-model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True, gradient=None)
-model.biplot3d(legend=True, SPE=True, hotellingt2=True, visible=True, gradient=None)
-model.biplot3d(legend=True, SPE=True, hotellingt2=True, visible=True, gradient='#ffffff')
+model.biplot(legend=True, SPE=True, HT2=True, visible=True, gradient='#ffffff')
+model.biplot(legend=True, SPE=True, HT2=True, visible=True, gradient=None)
+model.biplot3d(legend=True, SPE=True, HT2=True, visible=True, gradient=None)
+model.biplot3d(legend=True, SPE=True, HT2=True, visible=True, gradient='#ffffff')
 
 
 # %%
@@ -690,25 +709,25 @@ print(out['outliers'])
 
 model.biplot(legend=True, visible=True)
 
-model.biplot(legend=True, SPE=True, hotellingt2=True, visible=True)
-model.biplot(legend=True, SPE=True, hotellingt2=False)
-model.biplot(legend=True, SPE=False, hotellingt2=True)
-model.biplot(legend=True, SPE=False, hotellingt2=False)
+model.biplot(legend=True, SPE=True, HT2=True, visible=True)
+model.biplot(legend=True, SPE=True, HT2=False)
+model.biplot(legend=True, SPE=False, HT2=True)
+model.biplot(legend=True, SPE=False, HT2=False)
 
-model.biplot3d(legend=True, SPE=True, hotellingt2=True)
-model.biplot3d(legend=True, SPE=True, hotellingt2=False)
-model.biplot3d(legend=True, SPE=False, hotellingt2=True)
-model.biplot3d(legend=True, SPE=False, hotellingt2=False)
+model.biplot3d(legend=True, SPE=True, HT2=True)
+model.biplot3d(legend=True, SPE=True, HT2=False)
+model.biplot3d(legend=True, SPE=False, HT2=True)
+model.biplot3d(legend=True, SPE=False, HT2=False)
 
-model.scatter(legend=True, SPE=True, hotellingt2=True)
-model.scatter(legend=True, SPE=True, hotellingt2=False)
-model.scatter(legend=True, SPE=False, hotellingt2=True)
-model.scatter(legend=True, SPE=False, hotellingt2=False)
+model.scatter(legend=True, SPE=True, HT2=True)
+model.scatter(legend=True, SPE=True, HT2=False)
+model.scatter(legend=True, SPE=False, HT2=True)
+model.scatter(legend=True, SPE=False, HT2=False)
 
-model.scatter3d(legend=True, SPE=True, hotellingt2=True, visible=True)
-model.scatter3d(legend=True, SPE=True, hotellingt2=False)
-model.scatter3d(legend=True, SPE=False, hotellingt2=True)
-model.scatter3d(legend=True, SPE=False, hotellingt2=False)
+model.scatter3d(legend=True, SPE=True, HT2=True, visible=True)
+model.scatter3d(legend=True, SPE=True, HT2=False)
+model.scatter3d(legend=True, SPE=False, HT2=True)
+model.scatter3d(legend=True, SPE=False, HT2=False)
 
 
 ax = model.biplot(n_feat=4, legend=False, )
@@ -717,7 +736,7 @@ import pca
 outliers_hot = pca.hotellingsT2(out['PC'].values, alpha=0.05)
 outliers_spe = pca.spe_dmodx(out['PC'].values, n_std=2)
 
-model.biplot(SPE=True, hotellingt2=False)
+model.biplot(SPE=True, HT2=False)
 
 # Select the outliers
 Xoutliers = X[out['outliers']['y_bool'],:]
