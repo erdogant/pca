@@ -8,46 +8,24 @@ from sklearn.datasets import load_iris
 import pandas as pd
 
 # %%
-from df2onehot import df2onehot
 from pca import pca
+from sklearn.datasets import load_wine
+import pandas as pd
 
-model = pca()
-df = model.import_example(data='titanic')
+# Load dataset
+data = load_wine()
+X = data.data
+y = data.target
+labels = data.feature_names
+# Make dataframe
+df = pd.DataFrame(data=X, columns=labels, index=y)
 
-# Create one-hot array
-df_hot = df2onehot(df,
-                   remove_mutual_exclusive=True,
-                   excl_background=['PassengerId', 'None'],
-                   y_min=10,
-                   verbose=4)['onehot']
+model = pca(normalize=True, n_components=None)
+# Fit transform with dataframe
+results = model.fit_transform(df)
 
-# Initialize
-model = pca(normalize=True, detect_outliers=['HT2', 'SPE'])
-
-# Fit
-model.fit_transform(df_hot)
-
-# model.scatter(legend=False)
-# model.biplot(legend=False)
-
-model.biplot3d(SPE=True,
-              HT2=True,
-              marker=df['Survived'],
-              s=0,
-              n_feat=10,
-              labels=df['Sex'],
-              title='Biplot with with the pca library.',
-              color_arrow='k',
-              fontsize=28,
-              fontcolor=None,
-              arrowdict={'fontsize': 18},
-              cmap='bwr_r',
-              edgecolor='#FFFFFF',
-              gradient='#FFFFFF',
-              density=False,
-              density_on_top=False,
-              )
-
+# model.biplot(labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, fontsize=20)
+model.biplot3d(labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, arrowdict={'fontsize':20}, c=None)
 
 
 # %% Demonstration of specifying colors, markers, alpha, and size per sample
@@ -81,11 +59,11 @@ model = pca(verbose=3)
 # Fit
 model.fit_transform(X)
 # Make plot with blue arrows and text
-fig, ax = model.biplot3d(
+fig, ax = model.biplot(
                         SPE=True,
                         HT2=True,
                         c=color,
-                        s=size/10,
+                        s=size,
                         marker=marker,
                         alpha=0.4,
                         color_arrow='k',
@@ -97,6 +75,53 @@ fig, ax = model.biplot3d(
                         density=True,
                         density_on_top=False,
                         )
+
+
+# %%
+from df2onehot import df2onehot
+from pca import pca
+
+model = pca()
+df = model.import_example(data='titanic')
+
+# Create one-hot array
+df_hot = df2onehot(df,
+                   remove_mutual_exclusive=True,
+                   excl_background=['PassengerId', 'None'],
+                   y_min=10,
+                   verbose=4)['onehot']
+
+# Initialize
+model = pca(normalize=True, detect_outliers=['HT2', 'SPE'])
+
+# Fit
+model.fit_transform(df_hot)
+
+# model.scatter(legend=False)
+# model.biplot(legend=False)
+
+model.biplot(SPE=True,
+              HT2=True,
+              marker=df['Survived'],
+              s=0,
+              n_feat=2,
+              labels=df['Sex'],
+              title='Biplot with with the pca library.',
+              color_arrow='k',
+              fontsize=28,
+              fontcolor=None,
+              arrowdict={'fontsize': 18},
+              cmap='bwr_r',
+              edgecolor='#FFFFFF',
+              gradient='#FFFFFF',
+              density=False,
+              density_on_top=False,
+              visible=True,
+              )
+
+
+
+
 
 
 # %%

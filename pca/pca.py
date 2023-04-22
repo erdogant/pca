@@ -666,6 +666,7 @@ class pca:
                            fontweight=fontweight,
                            dpi=dpi,
                            figsize=figsize,
+                           visible=visible,
                            fig=fig,
                            ax=ax)
 
@@ -1425,6 +1426,7 @@ def _get_explained_variance(X, components):
 def _biplot_input_checks(results, PC, cmap, arrowdict, color_arrow, fontsize, fontweight, c, s, verbose):
     if c is None: s=0
     if cmap is None: s=0
+    if s==0: fontsize=0
     if PC is None: PC=[0, 1]
     d3 = True if len(PC)>=3 else False
 
