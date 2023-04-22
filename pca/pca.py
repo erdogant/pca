@@ -9,7 +9,6 @@ from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD  # MiniBatchSpars
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import euclidean_distances
 from scipy import stats
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.patches import Ellipse
 import scipy.sparse as sp
 import pandas as pd
@@ -438,7 +437,8 @@ class pca:
             row_labels=np.ones(X.shape[0]).astype(int)
             if verbose>=3: print('[pca] >Row labels are auto-completed.')
         # if isinstance(row_labels, list):
-        row_labels=np.array(row_labels)
+        # row_labels=np.array(row_labels)
+        row_labels = np.arange(0, X.shape[0]).astype(int)
 
         if isinstance(X, pd.DataFrame):
             X = X.values
@@ -522,16 +522,17 @@ class pca:
                 s=150,
                 marker='o',
                 edgecolor='#000000',
+                SPE=False,
+                HT2=False,
                 jitter=None,
                 PC=None,
-                SPE=False,
-                hotellingt2=False,
                 alpha=0.8,
                 gradient=None,
                 density=False,
+                density_on_top=False,
                 fontcolor=[0,0,0],
                 fontsize=18,
-                fontdict={'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'black'},
+                fontweight='normal',
                 cmap='tab20c',
                 title=None,
                 legend=None,
@@ -583,14 +584,14 @@ class pca:
             '#FFFFFF'
         density : Bool (default: False)
             Include the kernel density in the scatter plot.
+        density_on_top : bool, (default: False)
+            True : The density is the highest layer.
+            False : The density is the lowest layer.
         fontsize : String, optional
             The fontsize of the y labels that are plotted in the graph. The default is 16.
         fontcolor: list/array of RGB colors with same size as X (default : None)
             None : Use same colorscheme as for c
             '#000000' : If the input is a single color, all fonts will get this color.
-        fontdict : dict.
-            dictionary containing properties for the arrow font-text
-            {'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'black'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
@@ -617,9 +618,7 @@ class pca:
         _show_deprecated_warning(label, y, verbose)
         if not hasattr(self, 'results'):
             if verbose>=2: print('[pca]> No results to plot. Hint: model.fit(X) <return>.')
-            fig = fig if not None else None
-            ax = ax if not None else None
-            return fig, ax
+            return None, None
 
         # Set parameters based on intuition
         if c is None: s=0
@@ -628,27 +627,12 @@ class pca:
         if PC is None: PC=[0, 1]
         d3 = True if len(PC)==3 else False
 
-        # Set font dict
-        fontdict = _set_fontdict(fontdict, fontsize=fontsize)
-        # Setup figure
-        fig, ax = _setup_figure(fig, ax, d3, visible, figsize, dpi)
         # Set the labels
-        if labels is None:
-            labels, _, _ = self._fig_preprocessing(labels, None, d3)
+        if labels is None: labels, _, _ = self._fig_preprocessing(labels, None, d3)
         # Get coordinates
-        xs, ys, zs, ax = _get_coordinates(self.results['PC'], PC, fig, ax, d3)
-
-        # Plot the elipse, then the scatterpoints.
-        Ioutlier1 = np.repeat(False, self.results['PC'].shape[0])
-        Ioutlier2 = np.repeat(False, self.results['PC'].shape[0])
-        if hotellingt2 and ('y_bool' in self.results['outliers'].columns):
-            Ioutlier1 = self.results['outliers']['y_bool'].values
-        if SPE and ('y_bool_spe' in self.results['outliers'].columns):
-            Ioutlier2 = self.results['outliers']['y_bool_spe'].values
-            if not d3:
-                # Plot the ellipse
-                g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
-                if g_ellipse is not None: ax.add_artist(g_ellipse)
+        xs, ys, zs = _get_coordinates(self.results['PC'], PC)
+        # Setup figure
+        # fig, ax = _setup_figure(fig, ax, d3, visible, figsize, dpi)
 
         fig, ax = scatterd(x=xs,
                            y=ys,
@@ -661,60 +645,24 @@ class pca:
                            marker=marker,
                            jitter=jitter,
                            density=density,
+                           density_on_top=density_on_top,
                            gradient=gradient,
                            cmap=cmap,
-                           legend=False,
+                           legend=legend,
                            fontcolor=fontcolor,
-                           fontsize=fontdict['fontsize'],
-                           fontweight=fontdict['weight'],
+                           fontsize=fontsize,
+                           fontweight=fontweight,
                            dpi=dpi,
                            figsize=figsize,
-                           ax=None if d3 else ax)
+                           fig=fig,
+                           ax=ax)
 
-        # Plot outliers for hotelling T2 test.
-        if SPE and ('y_bool_spe' in self.results['outliers'].columns):
-            label_spe = str(sum(Ioutlier2)) + ' outliers (SPE/DmodX)'
-            if d3:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[0.5, 0.5, 0.5], s=150, label=label_spe, alpha=alpha)
-            else:
-                ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=150, label=label_spe, alpha=alpha)
-                # Plot the ellipse
-                # g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
-                # if g_ellipse is not None: ax.add_artist(g_ellipse)
-
-        # Plot outliers for hotelling T2 test.
-        if hotellingt2 and ('y_bool' in self.results['outliers'].columns):
-            label_t2 = str(sum(Ioutlier1)) + ' outliers (hotelling t2)'
-            if d3:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[0, 0, 0], s=150, label=label_t2, alpha=alpha)
-            else:
-                ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=150, label=label_t2, alpha=alpha)
-
-        # Set y
-        ax.set_xlabel('PC' + str(PC[0] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
-        if len(self.results['model'].explained_variance_ratio_)>=2:
-            ax.set_ylabel('PC' + str(PC[1] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[1]] * 100)[0:4] + '% expl.var)')
-        else:
-            ax.set_ylabel('PC2 (0% expl.var)')
-        if d3 and (len(self.results['model'].explained_variance_ratio_)>=3):
-            ax.set_zlabel('PC' + str(PC[2] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[2]] * 100)[0:4] + '% expl.var)')
-
-        # Set title
-        if title is None:
-            title = str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance'
-
-        # Determine the legend status if set to None
-        if legend is None:
-            if len(np.unique(labels))>20:
-                if verbose>=3: print('[pca] >Auto disable legend because number of unique labels >20')
-                legend=False
-            else:
-                legend=True
-
-        ax.set_title(title)
-        if legend: ax.legend()
-        ax.grid(True)
-
+        # Plot the SPE with Elipse
+        fig, ax = _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, fig, ax)
+        # Plot hotelling T2
+        fig, ax = _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, fig, ax)
+        # Add figure properties
+        fig, ax = _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, verbose)
         # Return
         return (fig, ax)
 
@@ -728,14 +676,16 @@ class pca:
                n_feat=None,
                PC=None,
                SPE=False,
-               hotellingt2=False,
+               HT2=False,
                alpha=0.8,
                gradient=None,
                density=False,
-               color_arrow='#000000',
+               density_on_top=False,
                fontcolor=[0,0,0],
                fontsize=18,
-               fontdict={'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'color_arrow'},
+               fontweight='normal',
+               color_arrow='#000000',
+               arrowdict={'fontsize': None, 'c': None, 'weight': None, 'ha': 'center', 'va': 'center'},
                cmap='tab20c',
                title=None,
                legend=None,
@@ -743,6 +693,7 @@ class pca:
                visible=True,
                fig=None,
                ax=None,
+               dpi=100,
                y=None,  # deprecated
                label=None,  # deprecated
                verbose=None):
@@ -782,7 +733,7 @@ class pca:
             [0, 1, 2] : Define the PCs for 3D
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
-        hotellingt2 : Bool, default: False
+        HT2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
         alpha: float or array-like of floats (default: 1).
             The alpha blending value ranges between 0 (transparent) and 1 (opaque).
@@ -793,19 +744,22 @@ class pca:
             '#FFFFFF'
         density : Bool (default: False)
             Include the kernel density in the scatter plot.
+        density_on_top : bool, (default: False)
+            True : The density is the highest layer.
+            False : The density is the lowest layer.
         color_arrow : String, (default: '#000000')
             color for the arrow.
             * '#000000'
             * 'r'
+        arrowdict : dict.
+            dictionary containing properties for the arrow font-text.
+            Note that the [c]olor: None inherits the color used in color_arrow.
+            {'fontsize': None, 'c': None, 'weight': None, 'ha': 'center', 'va': 'center'}
         fontsize : String, optional
             The fontsize of the y labels that are plotted in the graph. The default is 16.
         fontcolor: list/array of RGB colors with same size as X (default : None)
             None : Use same colorscheme as for c
             '#000000' : If the input is a single color, all fonts will get this color.
-        fontdict : dict.
-            dictionary containing properties for the arrow font-text.
-            Note that the [c]olor: 'color_arrow' inherits the color used in color_arrow.
-            {'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'color_arrow'}
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
