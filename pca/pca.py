@@ -492,9 +492,9 @@ class pca:
             n_feat = self.n_feat
 
         if d3:
-            n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 3)
+            n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 1)
         else:
-            n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 2)
+            n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 1)
 
         if (labels is not None):
             if len(labels)!=self.results['PC'].shape[0]: raise Exception('[pca] >Error: Input variable [labels] should have some length as the number input samples: [%d].' %(self.results['PC'].shape[0]))
