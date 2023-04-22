@@ -433,7 +433,7 @@ class pca:
             if verbose>=3: print('[pca] >Extracting row labels from dataframe.')
             row_labels = X.index.values
         if row_labels is None or len(row_labels)!=X.shape[0]:
-            row_labels=np.ones(X.shape[0])
+            row_labels=np.ones(X.shape[0]).astype(int)
             if verbose>=3: print('[pca] >Row labels are auto-completed.')
         # if isinstance(row_labels, list):
         row_labels=np.array(row_labels)
@@ -514,133 +514,14 @@ class pca:
         return labels, topfeat, n_feat
 
     # Scatter plot
-    def scatter3d(self,
-                  labels=None,
-                  y=None,  # deprecated
-                  c=[0,0.1,0.4],
-                  s=150,
-                  marker='o',
-                  edgecolor='#000000',
-                  jitter=None,
-                  label=None,  # deprecated
-                  PC=[0, 1, 2],
-                  SPE=False,
-                  hotellingt2=False,
-                  alpha=0.8,
-                  gradient=None,
-                  fontcolor=[0,0,0],
-                  fontsize=18,
-                  fontdict={'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'black'},
-                  cmap='tab20c',
-                  title=None,
-                  legend=None,
-                  figsize=(25, 15),
-                  visible=True,
-                  fig=None,
-                  ax=None,
-                  verbose=None):
-        """Scatter 3d plot.
-
-        Parameters
-        ----------
-        labels : array-like, default: None
-            Label for each sample. The labeling is used for coloring the samples.
-        c: list/array of RGB colors for each sample.
-            The marker colors. Possible values:
-                * A scalar or sequence of n numbers to be mapped to colors using cmap and norm.
-                * A 2D array in which the rows are RGB or RGBA.
-                * A sequence of colors of length n.
-                * A single color format string.
-        s: Int or list/array (default: 50)
-            Size(s) of the scatter-points.
-            [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
-            50: all points get this size.
-        marker: list/array of strings (default: '.').
-            Marker for the samples.
-            '.' : All data points get this marker
-            ['.', '*', 's', ..]: Specify per sample the marker type.
-        jitter : float, default: None
-            Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
-        PC : list, default : [0, 1, 2]
-            Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
-        SPE : Bool, default: False
-            Show the outliers based on SPE/DmodX method.
-        hotellingt2 : Bool, default: False
-            Show the outliers based on the hotelling T2 test.
-        alpha: float or array-like of floats (default: 1).
-            The alpha blending value ranges between 0 (transparent) and 1 (opaque).
-            1: All data points get this alpha
-            [1, 0.8, 0.2, ...]: Specify per sample the alpha
-        gradient : String, (default: None)
-            Hex (ending) color for the gradient of the scatterplot colors.
-            '#FFFFFF'
-        fontdict : dict.
-            dictionary containing properties for the arrow font-text
-            {'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'black'}
-        cmap : String, optional, default: 'Set1'
-            Colormap. If set to None, no points are shown.
-        title : str, default: None
-            Title of the figure.
-            None: Automatically create title text based on results.
-            '' : Remove all title text.
-            'title text' : Add custom title text.
-        legend : Bool, default: None
-            True: Show the legend based on the unique labels.
-            None: Set automatically based on performance.
-        figsize : (int, int), optional, default: (25, 15)
-            (width, height) in inches.
-        visible : Bool, default: True
-            Visible status of the Figure. When False, figure is created on the background.
-        Verbose : int (default : 3)
-            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
-
-        Returns
-        -------
-        tuple containing (fig, ax)
-
-        """
-        if verbose is None: verbose = self.verbose
-        _show_deprecated_warning(label, y, verbose)
-        if not hasattr(self, 'results') or self.results['PC'].shape[1]<3:
-            fig = fig if not None else None
-            ax = ax if not None else None
-            return fig, ax
-
-        fig, ax = self.scatter(labels=labels,
-                               c=c,
-                               s=s,
-                               marker=marker,
-                               jitter=jitter,
-                               edgecolor=edgecolor,
-                               d3=True,
-                               PC=PC, SPE=SPE,
-                               hotellingt2=hotellingt2,
-                               alpha=alpha,
-                               gradient=gradient,
-                               fontcolor=fontcolor,
-                               fontdict=fontdict,
-                               cmap=cmap,
-                               title=title,
-                               legend=legend,
-                               figsize=figsize,
-                               visible=visible,
-                               fig=fig,
-                               ax=ax,
-                               verbose=verbose)
-        return fig, ax
-
-    # Scatter plot
     def scatter(self,
                 labels=None,
-                y=None,  # deprecated
                 c=[0,0.1,0.4],
                 s=150,
                 marker='o',
                 edgecolor='#000000',
                 jitter=None,
-                d3=False,
-                label=None,  # deprecated
-                PC=[0, 1],
+                PC=None,
                 SPE=False,
                 hotellingt2=False,
                 alpha=0.8,
@@ -657,6 +538,8 @@ class pca:
                 visible=True,
                 fig=None,
                 ax=None,
+                y=None,  # deprecated
+                label=None,  # deprecated
                 verbose=3):
         """Scatter 2d plot.
 
@@ -680,8 +563,11 @@ class pca:
                 * ('.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X') : Specify per sample the marker type.
         jitter : float, default: None
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
-        d3 : Bool, default: False
-            3d plot is created when True.
+        PC : tupel, default: None
+            Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
+            None : Take automatically the first 2 components and 3 in case d3=True.
+            [0, 1] : Define the PC for 2D.
+            [0, 1, 2] : Define the PCs for 3D
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
@@ -732,12 +618,13 @@ class pca:
             fig = fig if not None else None
             ax = ax if not None else None
             return fig, ax
-        # if (gradient is not None) and ((not isinstance(gradient, str)) or (len(gradient)!=7)): raise Exception('[pca]> Error: gradient must be of type string with Hex color or None.')
 
-        # if color is None
+        # Set parameters based on intuition
         if c is None: s=0
         if cmap is None: s=0
         if alpha is None: alpha=0.8
+        if PC is None: PC=[0, 1]
+        d3 = True if len(PC)==3 else False
 
         # Set font dict
         fontdict = _set_fontdict(fontdict, fontsize=fontsize)
@@ -831,16 +718,13 @@ class pca:
 
     def biplot(self,
                labels=None,
-               y=None,  # deprecated
                c=[0,0.1,0.4],
                s=150,
                marker='o',
                edgecolor='#000000',
                jitter=None,
                n_feat=None,
-               d3=False,
-               label=None,  # deprecated
-               PC=[0, 1],
+               PC=None,
                SPE=False,
                hotellingt2=False,
                alpha=0.8,
@@ -857,6 +741,8 @@ class pca:
                visible=True,
                fig=None,
                ax=None,
+               y=None,  # deprecated
+               label=None,  # deprecated
                verbose=None):
         """Create the Biplot.
 
@@ -887,10 +773,11 @@ class pca:
             Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
-        d3 : Bool, default: False
-            3d plot is created when True.
-        PC : list, default : [0, 1]
+        PC : tupel, default: None
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
+            None : Take automatically the first 2 components and 3 in case d3=True.
+            [0, 1] : Define the PC for 2D.
+            [0, 1, 2] : Define the PCs for 3D
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
         hotellingt2 : Bool, default: False
@@ -956,6 +843,10 @@ class pca:
             fig = fig if not None else None
             ax = ax if not None else None
             return fig, ax
+
+        if PC is None: PC=[0, 1]
+        d3 = True if len(PC)==3 else False
+
         if self.results['PC'].shape[1]<3 and d3:
             if verbose>=2: print('[pca] >[WARNING] It requires 3 PCs to make 3d plot <return>')
             return None, None
@@ -1018,143 +909,24 @@ class pca:
         # if visible: plt.show()
         return fig, ax
 
-    def biplot3d(self,
-                 labels=None,
-                 y=None,  # deprecated
-                 c=[0,0.1,0.4],
-                 s=150,
-                 marker='o',
-                 edgecolor='#000000',
-                 jitter=None,
-                 n_feat=None,
-                 label=None,  # deprecated
-                 PC=[0, 1, 2],
-                 SPE=False,
-                 hotellingt2=False,
-                 alpha=0.8,
-                 gradient=None,
-                 color_arrow='#000000',
-                 fontcolor=[0,0,0],
-                 fontsize=18,
-                 fontdict={'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'color_arrow'},
-                 cmap='tab20c',
-                 title=None,
-                 legend=None,
-                 figsize=(25, 15),
-                 visible=True,
-                 fig=None,
-                 ax=None,
-                 verbose=None):
-        """Make biplot in 3d.
+    def scatter3d(self, PC=[0, 1, 2], **args):
+        """Scatter 3d plot.
 
         Parameters
         ----------
-        labels : array-like, default: None
-            Label for each sample. The labeling is used for coloring the samples.
-        c: list/array of RGB colors for each sample.
-            The marker colors. Possible values:
-                * A scalar or sequence of n numbers to be mapped to colors using cmap and norm.
-                * A 2D array in which the rows are RGB or RGBA.
-                * A sequence of colors of length n.
-                * A single color format string.
-        s: Int or list/array (default: 50)
-            Size(s) of the scatter-points.
-            [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
-            50: all points get this size.
-        marker: list/array of strings (default: '.').
-            Marker for the samples.
-            '.' : All data points get this marker
-            ['.', '*', 's', ..]: Specify per sample the marker type.
-        jitter : float, default: None
-            Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
-        n_feat : int, default: 10
-            Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
-        PC : list, default : [0, 1, 2]
-            Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
-        SPE : Bool, default: False
-            Show the outliers based on SPE/DmodX method.
-        hotellingt2 : Bool, default: False
-            Show the outliers based on the hotelling T2 test.
-        alpha: float or array-like of floats (default: 1).
-            The alpha blending value ranges between 0 (transparent) and 1 (opaque).
-            1: All data points get this alpha
-            [1, 0.8, 0.2, ...]: Specify per sample the alpha
-        gradient : String, (default: None)
-            Hex (ending) color for the gradient of the scatterplot colors.
-            '#FFFFFF'
-        color_arrow : String, (default: '#000000')
-            color for the arrow.
-            * '#000000'
-            * 'r'
-        fontsize : String, optional
-            The fontsize of the y labels that are plotted in the graph. The default is 16.
-        fontcolor: list/array of RGB colors with same size as X (default : None)
-            None : Use same colorscheme as for c
-            '#000000' : If the input is a single color, all fonts will get this color.
-        fontdict : dict.
-            dictionary containing properties for the arrow font-text.
-            Note that the [c]olor: 'color_arrow' inherits the color used in color_arrow.
-            {'weight': 'normal', 'ha': 'center', 'va': 'center', 'c': 'color_arrow'}
-        cmap : String, optional, default: 'Set1'
-            Colormap. If set to None, no points are shown.
-        title : str, default: None
-            Title of the figure.
-            None: Automatically create title text based on results.
-            '' : Remove all title text.
-            'title text' : Add custom title text.
-        legend : Bool, default: None
-            True: Show the legend based on the unique labels.
-            None: Set automatically based on performance.
-        figsize : (int, int), optional, default: (25, 15)
-            (width, height) in inches.
-        visible : Bool, default: True
-            Visible status of the Figure. When False, figure is created on the background.
-        fig : Figure, optional (default: None)
-            Matplotlib figure.
-        ax : Axes, optional (default: None)
-            Matplotlib Axes object
-        Verbose : int (default : 3)
-            The higher the number, the more information is printed.
-            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
-
-        Returns
-        -------
-        tuple containing (fig, ax)
-
+        Input parameters are described under <scatter>.
         """
-        if verbose is None: verbose = self.verbose
-        _show_deprecated_warning(label, y, verbose)
-        if not hasattr(self, 'results') or self.results['PC'].shape[1]<3:
-            if verbose >= 2: print('[pca] >[WARNING]: Requires results with 3 PCs to make 3d plot.')
-            fig = fig if not None else None
-            ax = ax if not None else None
-            return fig, ax
+        fig, ax = self.scatter(PC=PC, **args)
+        return fig, ax
 
-        fig, ax = self.biplot(labels=labels,
-                              n_feat=n_feat,
-                              c=c,
-                              s=s,
-                              edgecolor=edgecolor,
-                              marker=marker,
-                              jitter=jitter,
-                              d3=True,
-                              PC=PC,
-                              SPE=SPE,
-                              hotellingt2=hotellingt2,
-                              alpha=alpha,
-                              gradient=gradient,
-                              color_arrow=color_arrow,
-                              fontcolor=fontcolor,
-                              fontdict=fontdict,
-                              cmap=cmap,
-                              title=title,
-                              legend=legend,
-                              figsize=figsize,
-                              visible=visible,
-                              fig=fig,
-                              ax=ax,
-                              verbose=verbose)
+    def biplot3d(self, PC=[0, 1, 2], **args):
+        """Biplot 3d plot.
 
+        Parameters
+        ----------
+        Input parameters are described under <scatter>.
+        """
+        fig, ax = self.biplot(PC=PC, **args)
         return fig, ax
 
     # Show explained variance plot
