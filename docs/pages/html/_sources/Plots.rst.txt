@@ -49,7 +49,7 @@ Scatter plot
 	model.scatter(SPE=True)
 
 	# Include the outlier detection
-	model.scatter(hotellingt2=True)
+	model.scatter(HT2=True)
 
 	# Look at different PCs: 1st PC=1  vs PC=3
 	model.scatter(PC=[0, 2])
@@ -86,7 +86,7 @@ Biplot
 	model.biplot()
 
 	# Here again, many other options can be turned on and off
-	model.biplot(SPE=True, hotellingt2=True)
+	model.biplot(SPE=True, HT2=True)
 
 
 .. |figP5| image:: ../figs/wine_biplot.png
@@ -108,7 +108,7 @@ Biplot (only arrows)
 .. code:: python
 
 	# Make plot with parameters: set cmap to None and label and legend to False. Only directions will be plotted.
-	model.biplot(cmap=None, label=False, legend=False)
+	model.biplot(cmap=None, legend=False)
 
 
 .. image:: ../figs/biplot_only_directions.png
@@ -135,7 +135,7 @@ Alpha Transparency
 
 .. code:: python
 
-	fig, ax = model.scatter(alpha_transparency=1)
+	fig, ax = model.scatter(alpha=1)
 
 
 Markers
@@ -164,7 +164,6 @@ Markers
 	# Make plot with markers
 	fig, ax = model.biplot(c=[0, 0, 0], 
 			       marker=marker,
-			       label=False,
 			       title='Demonstration of specifying markers per sample.',
 			       n_feat=5,
 			       legend=False)
@@ -185,7 +184,6 @@ Control color/marker/size per sample
 
 .. code:: python
 
-	# Import library
 	import numpy as np
 	import matplotlib.pyplot as plt
 	import matplotlib.colors as mcolors
@@ -198,15 +196,15 @@ Control color/marker/size per sample
 	# All available markers
 	markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
 	# Create colors
-	colors = plt.cm.get_cmap('tab20c', len(markers))
+	cmap = plt.cm.get_cmap('tab20c', len(markers))
 	# Generate random integers
 	random_integers = np.random.randint(0, len(markers), size=X.shape[0])
 	# Draw markers
 	marker = markers[random_integers]
 	# Set colors
-	color = colors.colors[random_integers, :]
+	color = cmap.colors[random_integers, 0:3]
 	# Set Size
-	size = np.random.randint(50, 150, size=X.shape[0])
+	size = np.random.randint(50, 1000, size=X.shape[0])
 	# Set alpha
 	alpha = np.random.rand(1, X.shape[0])[0][random_integers]
 
@@ -215,18 +213,23 @@ Control color/marker/size per sample
 	# Fit
 	model.fit_transform(X)
 	# Make plot with blue arrows and text
-	fig, ax = model.biplot(c=color,
-			       s=size,
-			       marker=marker,
-			       alpha_transparency=alpha,
-			       label=False,
-			       fontdict={'size':10, 'weight':'normal'},
-			       color_arrow='blue',
-			       title='Demonstration of specifying colors, markers, alpha, and size per sample.',
-			       hotellingt2=True,
-			       n_feat=5,
-			       legend=False, 
-			       visible=True)
+	fig, ax = model.biplot(
+				SPE=True,
+				HT2=True,
+				c=color,
+				s=size,
+				marker=marker,
+				alpha=alpha,
+				color_arrow='k',
+				title='Demonstration of specifying colors, markers, alpha, and size per sample.',
+				n_feat=5,
+				fontsize=20,
+				fontweight='normal',
+				arrowdict={'fontsize': 18},
+				density=True,
+				density_on_top=False,
+				)
+
 
 
 .. |figP9| image:: ../figs/custom_example_2.png

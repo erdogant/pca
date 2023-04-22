@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quickstart &mdash; pca pca documentation</title>
@@ -13,9 +13,6 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -30,14 +27,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> pca
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pca
           </a>
               <div class="version">
                 1.9.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -130,8 +131,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Quickstart</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quickstart</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/Examples.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -155,7 +156,6 @@
 <span class="n">label</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span><span class="o">.</span><span class="n">feature_names</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span><span class="o">.</span><span class="n">target</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">load_iris</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
-
 
 <span class="c1"># Initialize to reduce the data up to the nubmer of componentes that explains 95% of the variance.</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
@@ -224,10 +224,6 @@
 </div>
 <table class="docutils align-center" id="id2">
 <caption><span class="caption-text">Color on alcohol</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figE1" src="_images/fig_scatter.png" /></p></td>
 <td><p><img alt="figE2" src="_images/fig_scatter3d.png" /></p></td>
@@ -315,10 +311,6 @@ We will create random variables with increasingly more variance. The first featu
 </div>
 <table class="docutils align-center" id="id3">
 <caption><span class="caption-text">Color on alcohol</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figA1" src="_images/biplot2d.png" /></p></td>
 <td><p><img alt="figA2" src="_images/biplot3d.png" /></p></td>
@@ -331,7 +323,7 @@ We will create random variables with increasingly more variance. The first featu
 <h1>Analyzing Discrete datasets<a class="headerlink" href="#analyzing-discrete-datasets" title="Permalink to this heading"></a></h1>
 <p>Analyzing datasets that have continuous and catagorical values can be challanging.
 To demonstrate how to do this, I will use the Titanic dataset. We need to pip install df2onehot first.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install df2onehot
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>df2onehot
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pca</span>
@@ -376,10 +368,10 @@ To demonstrate how to do this, I will use the Titanic dataset. We need to pip in
 <span class="n">model2</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">(</span><span class="n">n_feat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="c1"># Set custom transparency levels</span>
-<span class="n">model2</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">(</span><span class="n">n_feat</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">alpha_transparency</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">model2</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">n_feat</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">alpha_transparency</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">model2</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">alpha_transparency</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">model2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">alpha_transparency</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">model2</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">(</span><span class="n">n_feat</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">model2</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">n_feat</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">model2</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">model2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
 <span class="c1"># Initialize</span>
 <span class="n">model3</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">onehot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -484,10 +476,6 @@ There are many parameters to change the colors in the plots. Here I will demonst
 </div>
 <table class="docutils align-center" id="id4">
 <caption><span class="caption-text">Left: Default plot using the provided classlabels. Right: Color on custom cmap.</span><a class="headerlink" href="#id4" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figE3" src="_images/color_default.png" /></p></td>
 <td><p><img alt="figE4" src="_images/color_cmap.png" /></p></td>
@@ -500,20 +488,16 @@ the points of interest can still be difficult to find. Therefore it is also poss
 input colors for each sample manually.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set custom classlabels. Coloring is based on the input colormap (cmap).</span>
 <span class="n">y</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span><span class="o">=</span><span class="mi">4</span>
-<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Set2&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Set2&#39;</span><span class="p">)</span>
 
 <span class="c1"># Set custom classlabels and also use custom colors.</span>
-<span class="n">c</span> <span class="o">=</span> <span class="n">colourmap</span><span class="o">.</span><span class="n">fromlist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Set2&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">colourmap</span><span class="o">.</span><span class="n">fromlist</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Set2&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">c</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id5">
 <caption><span class="caption-text">Left: Mark some points on y and use cmap. Right: Specify the colors manually.</span><a class="headerlink" href="#id5" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figE5" src="_images/color_cmap_y.png" /></p></td>
 <td><p><img alt="figE6" src="_images/color_using_custom_colors.png" /></p></td>
@@ -525,15 +509,11 @@ input colors for each sample manually.</p>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="c1"># Gradient with white ending using the cmap setting.</span>
-<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">]))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">]))</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id6">
 <caption><span class="caption-text">Left: Remove scatterpoints from plot. Right: Gradient with the used cmap.</span><a class="headerlink" href="#id6" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figE7" src="_images/color_no_scatter.png" /></p></td>
 <td><p><img alt="figE8" src="_images/color_gradient.png" /></p></td>
@@ -551,17 +531,14 @@ This will allow to make iterative changes.</p>
 <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
 <span class="c1"># Make plot with blue arrows and text</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">:</span><span class="s1">&#39;normal&#39;</span><span class="p">},</span> <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hotellingt2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_feat</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">:</span><span class="s1">&#39;normal&#39;</span><span class="p">},</span> <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_feat</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Use the existing fig and create new edits such red arrows for the first three loadings. Also change the font sizes.</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="mi">16</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">:</span><span class="s1">&#39;bold&#39;</span><span class="p">},</span> <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">n_feat</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;updated fig.&#39;</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span><span class="mi">16</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">:</span><span class="s1">&#39;bold&#39;</span><span class="p">},</span> <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">n_feat</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;updated fig.&#39;</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id7">
 <caption><span class="caption-text">Fig as input to make iterative changes.</span><a class="headerlink" href="#id7" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figE9" src="_images/fig_iterative_changes.png" /></p></td>
 </tr>

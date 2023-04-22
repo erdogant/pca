@@ -194,10 +194,10 @@ Let's examine the **loadings** (arrows) a bit more to understand what is going o
 	color_label = (X_feat>=np.mean(X_feat)).flatten()
 
 	# Scatter based on discrete color
-	model.scatter(y=color_label, title='Color on flavanoids (Gray colored samples are > mean)')
+	model.scatter(labels=color_label, title='Color on flavanoids (Gray colored samples are > mean)')
 
 	# 3d scatter plot
-	model.scatter3d(y=color_label, title='Color on flavanoids (Gray colored samples are > mean)')
+	model.scatter3d(labels=color_label, title='Color on flavanoids (Gray colored samples are > mean)')
 
 
 .. |figA1| image:: ../figs/wine_flavanoids.png
@@ -221,10 +221,10 @@ Let's take another variable for demonstration purposes. The variable **alcohol**
 	color_label = (X_feat>=np.mean(X_feat)).flatten()
 
 	# Scatter based on discrete color
-	model.scatter(y=color_label, title='Color on alcohol (Gray colored samples are < mean)')
+	model.scatter(labels=color_label, title='Color on alcohol (Gray colored samples are < mean)')
 
 	# 3d scatter plot
-	model.scatter3d(y=color_label, title='Color on alcohol (Gray colored samples are < mean)')
+	model.scatter3d(labels=color_label, title='Color on alcohol (Gray colored samples are < mean)')
 
 
 .. |figA8| image:: ../figs/wine_alcohol.png

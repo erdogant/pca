@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Algorithm &mdash; pca pca documentation</title>
@@ -13,9 +13,6 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -30,14 +27,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> pca
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pca
           </a>
               <div class="version">
                 1.9.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -120,8 +121,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Algorithm</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Algorithm</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/Algorithm.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -145,9 +146,6 @@
 <p>The most straightforward manner for standardization is by computing the <em>Z-scores</em> or <em>Standardized scores</em>.
 Once the standardization is done, all the variables will be transformed to the same scale.</p>
 <table class="docutils align-left" style="width: 80">
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figA7" src="_images/z_score.svg" /></p></td>
 </tr>
@@ -180,10 +178,6 @@ Once the standardization is done, all the variables will be transformed to the s
 <p>An example of the differences of feature reduction using PCA with and without standardization.</p>
 <table class="docutils align-center" id="id1">
 <caption><span class="caption-text">Without standardization (left) and with standardization (right)</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figA3" src="_images/wine_no_standardization.png" /></p></td>
 <td><p><img alt="figA4" src="_images/wine_yes_standardization.png" /></p></td>
@@ -266,18 +260,14 @@ The first principal component (Y1) is given by a linear combination of the varia
 <span class="n">color_label</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_feat</span><span class="o">&gt;=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X_feat</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
 <span class="c1"># Scatter based on discrete color</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on flavanoids (Gray colored samples are &gt; mean)&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on flavanoids (Gray colored samples are &gt; mean)&#39;</span><span class="p">)</span>
 
 <span class="c1"># 3d scatter plot</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on flavanoids (Gray colored samples are &gt; mean)&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on flavanoids (Gray colored samples are &gt; mean)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id2">
 <caption><span class="caption-text">Color on flavanoids</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figA1" src="_images/wine_flavanoids.png" /></p></td>
 <td><p><img alt="figA2" src="_images/wine_flavanoids3d.png" /></p></td>
@@ -292,18 +282,14 @@ The first principal component (Y1) is given by a linear combination of the varia
 <span class="n">color_label</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_feat</span><span class="o">&gt;=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X_feat</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
 <span class="c1"># Scatter based on discrete color</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on alcohol (Gray colored samples are &lt; mean)&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on alcohol (Gray colored samples are &lt; mean)&#39;</span><span class="p">)</span>
 
 <span class="c1"># 3d scatter plot</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on alcohol (Gray colored samples are &lt; mean)&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on alcohol (Gray colored samples are &lt; mean)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id3">
 <caption><span class="caption-text">Color on alcohol</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figA8" src="_images/wine_alcohol.png" /></p></td>
 <td><p><img alt="figA9" src="_images/wine_alcohol3d.png" /></p></td>

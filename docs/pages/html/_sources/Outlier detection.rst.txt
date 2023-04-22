@@ -72,12 +72,12 @@ On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are comple
 
 .. code:: python
 
-	model.biplot(legend=True, SPE=True, hotellingt2=True)
-	model.biplot3d(legend=True, SPE=True, hotellingt2=True)
+	model.biplot(legend=True, SPE=True, HT2=True)
+	model.biplot3d(legend=True, SPE=True, HT2=True)
 
 	# Create only the scatter plots
-	model.scatter(legend=True, SPE=True, hotellingt2=True)
-	model.scatter3d(legend=True, SPE=True, hotellingt2=True)
+	model.scatter(legend=True, SPE=True, HT2=True)
+	model.scatter3d(legend=True, SPE=True, HT2=True)
     
 
 
@@ -134,7 +134,7 @@ Detection of *outliers* is performed in the **transform** function and does not 
 	PCnew = model.transform(X_unseen)
 
 	# Plot image
-	model.biplot(SPE=True, hotellingt2=True)
+	model.biplot(SPE=True, HT2=True)
 
 .. |figO3| image:: ../figs/outliers/biplot_outliers.png
 
@@ -173,9 +173,9 @@ The ``transform`` function will add the *new* samples to the readily fitted spac
 	    PCnew = model.transform(X_unseen, row_labels=np.repeat('mapped_' + str(i), X_unseen.shape[0]), update_outlier_params=True)
 
 	    # Scatterplot
-	    model.scatter(SPE=True, hotellingt2=True)
+	    model.scatter(SPE=True, HT2=True)
 	    # Biplot
-	    # Model.biplot(SPE=True, hotellingt2=True)
+	    # Model.biplot(SPE=True, HT2=True)
 
 
 In each iteration, the elips is growing towards the outliers. If you look carefully at the number of outliers, you may notice that the number of outliers is not increasing but even decreasing at a certain point. 

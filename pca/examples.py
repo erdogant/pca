@@ -3,6 +3,10 @@ import pandas as pd
 import numpy as np
 import matplotlib as mpl
 
+import numpy as np
+from sklearn.datasets import load_iris
+import pandas as pd
+
 # %%
 from df2onehot import df2onehot
 from pca import pca
@@ -26,10 +30,10 @@ model.fit_transform(df_hot)
 # model.scatter(legend=False)
 # model.biplot(legend=False)
 
-model.biplot(SPE=True,
+model.biplot3d(SPE=True,
               HT2=True,
               marker=df['Survived'],
-              s=df['Fare']*10,
+              s=0,
               n_feat=10,
               labels=df['Sex'],
               title='Biplot with with the pca library.',
@@ -40,9 +44,10 @@ model.biplot(SPE=True,
               cmap='bwr_r',
               edgecolor='#FFFFFF',
               gradient='#FFFFFF',
-              density=True,
+              density=False,
               density_on_top=False,
               )
+
 
 
 # %% Demonstration of specifying colors, markers, alpha, and size per sample
@@ -76,13 +81,13 @@ model = pca(verbose=3)
 # Fit
 model.fit_transform(X)
 # Make plot with blue arrows and text
-fig, ax = model.biplot(
+fig, ax = model.biplot3d(
                         SPE=True,
                         HT2=True,
                         c=color,
-                        s=size,
+                        s=size/10,
                         marker=marker,
-                        alpha=alpha,
+                        alpha=0.4,
                         color_arrow='k',
                         title='Demonstration of specifying colors, markers, alpha, and size per sample.',
                         n_feat=5,
@@ -92,6 +97,33 @@ fig, ax = model.biplot(
                         density=True,
                         density_on_top=False,
                         )
+
+
+# %%
+# Load pca
+from pca import pca
+
+# Load dataset
+label = load_iris().feature_names
+y = load_iris().target
+X = pd.DataFrame(data=load_iris().data, columns=label, index=y)
+
+# Initialize to reduce the data up to the nubmer of componentes that explains 95% of the variance.
+model = pca(n_components=0.95)
+
+# Fit transform
+results = model.fit_transform(X)
+
+model.biplot(HT2=True,
+             SPE=True,
+             cmap='bwr_r',
+             fontsize=18,
+             legend=2,
+             density=True,
+             title='Biplot with with the pca library.')
+
+model.scatter(labels=X['sepal width (cm)'].values, cmap='seismic')
+
 
 
 # %%
@@ -107,7 +139,7 @@ model.biplot(c=[0,0,0], density=True)
 model.scatter3d(fontsize=16, PC=[0,1,3])
 model.scatter3d(density=True)
 
-model.biplot3d(fontdict={'weight':'bold'}, c=None, n_feat=5)
+model.biplot3d(arrowdict={'weight':'bold'}, c=None, n_feat=5)
 
 # %%
 df = pd.read_pickle('WIM-data PCA bug')
@@ -289,7 +321,7 @@ model.fit_transform(X)
 fig, ax = model.biplot(c=[0,0,0], fontsize=20, color_arrow='blue', title=None, HT2=True, n_feat=10, visible=True)
 
 # Use the existing fig and create new edits such red arrows for the first three loadings. Also change the font sizes.
-fig, ax = model.biplot(c=[0,0,0], fontsize=20, fontdict={'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
+fig, ax = model.biplot(c=[0,0,0], fontsize=20, arrowdict={'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
 
 
 # %%

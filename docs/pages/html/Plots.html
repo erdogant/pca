@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Load dataset &mdash; pca pca documentation</title>
@@ -13,9 +13,6 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -30,14 +27,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> pca
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pca
           </a>
               <div class="version">
                 1.9.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -120,8 +121,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Load dataset</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Load dataset</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/Plots.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -175,7 +176,7 @@
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Include the outlier detection</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">hotellingt2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Look at different PCs: 1st PC=1  vs PC=3</span>
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">PC</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
@@ -183,9 +184,6 @@
 </div>
 <table class="docutils align-center" id="id1">
 <caption><span class="caption-text">Scatterplots</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figP1" src="_images/wine_scatter.png" /></p></td>
 </tr>
@@ -206,14 +204,11 @@
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">()</span>
 
 <span class="c1"># Here again, many other options can be turned on and off</span>
-<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hotellingt2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id2">
 <caption><span class="caption-text">Biplots</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figP5" src="_images/wine_biplot.png" /></p></td>
 </tr>
@@ -225,7 +220,7 @@
 <section id="biplot-only-arrows">
 <h1>Biplot (only arrows)<a class="headerlink" href="#biplot-only-arrows" title="Permalink to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make plot with parameters: set cmap to None and label and legend to False. Only directions will be plotted.</span>
-<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/biplot_only_directions.png"><img alt="_images/biplot_only_directions.png" class="align-center" src="_images/biplot_only_directions.png" style="width: 600px;" /></a>
@@ -239,7 +234,7 @@
 </section>
 <section id="alpha-transparency">
 <h1>Alpha Transparency<a class="headerlink" href="#alpha-transparency" title="Permalink to this heading"></a></h1>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">alpha_transparency</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -266,7 +261,6 @@
 <span class="c1"># Make plot with markers</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
                        <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span>
-                       <span class="n">label</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Demonstration of specifying markers per sample.&#39;</span><span class="p">,</span>
                        <span class="n">n_feat</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                        <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -274,9 +268,6 @@
 </div>
 <table class="docutils align-center" id="id3">
 <caption><span class="caption-text">Biplots with markers</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figP8" src="_images/marker_example_1.png" /></p></td>
 </tr>
@@ -285,8 +276,7 @@
 </section>
 <section id="control-color-marker-size-per-sample">
 <h1>Control color/marker/size per sample<a class="headerlink" href="#control-color-marker-size-per-sample" title="Permalink to this heading"></a></h1>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import library</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">mcolors</span>
 <span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_friedman1</span>
@@ -298,15 +288,15 @@
 <span class="c1"># All available markers</span>
 <span class="n">markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">])</span>
 <span class="c1"># Create colors</span>
-<span class="n">colors</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;tab20c&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">))</span>
+<span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;tab20c&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">))</span>
 <span class="c1"># Generate random integers</span>
 <span class="n">random_integers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="c1"># Draw markers</span>
 <span class="n">marker</span> <span class="o">=</span> <span class="n">markers</span><span class="p">[</span><span class="n">random_integers</span><span class="p">]</span>
 <span class="c1"># Set colors</span>
-<span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">random_integers</span><span class="p">,</span> <span class="p">:]</span>
+<span class="n">color</span> <span class="o">=</span> <span class="n">cmap</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">random_integers</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
 <span class="c1"># Set Size</span>
-<span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="c1"># Set alpha</span>
 <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="n">random_integers</span><span class="p">]</span>
 
@@ -315,25 +305,26 @@
 <span class="c1"># Fit</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="c1"># Make plot with blue arrows and text</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                       <span class="n">s</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
-                       <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span>
-                       <span class="n">alpha_transparency</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
-                       <span class="n">label</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                       <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">:</span><span class="s1">&#39;normal&#39;</span><span class="p">},</span>
-                       <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
-                       <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Demonstration of specifying colors, markers, alpha, and size per sample.&#39;</span><span class="p">,</span>
-                       <span class="n">hotellingt2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                       <span class="n">n_feat</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                       <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                       <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span>
+                        <span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                        <span class="n">s</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+                        <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span>
+                        <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+                        <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Demonstration of specifying colors, markers, alpha, and size per sample.&#39;</span><span class="p">,</span>
+                        <span class="n">n_feat</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                        <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">,</span>
+                        <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">},</span>
+                        <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">density_on_top</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id4">
 <caption><span class="caption-text">Biplot with customized properties per sample.</span><a class="headerlink" href="#id4" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figP9" src="_images/custom_example_2.png" /></p></td>
 </tr>

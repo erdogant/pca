@@ -17,7 +17,6 @@ A quick example how perform feature reduction using ``pca``.
 	y = load_iris().target
 	X = pd.DataFrame(data=load_iris().data, columns=label, index=y)
 
-
 	# Initialize to reduce the data up to the nubmer of componentes that explains 95% of the variance.
 	model = pca(n_components=0.95)
 
@@ -277,10 +276,10 @@ To demonstrate how to do this, I will use the Titanic dataset. We need to pip in
 	model2.biplot3d(n_feat=10)
 
 	# Set custom transparency levels
-	model2.biplot3d(n_feat=10, alpha_transparency=0.5)
-	model2.biplot(n_feat=10, alpha_transparency=0.5)
-	model2.scatter3d(alpha_transparency=0.5)
-	model2.scatter(alpha_transparency=0.5)
+	model2.biplot3d(n_feat=10, alpha=0.5)
+	model2.biplot(n_feat=10, alpha=0.5)
+	model2.scatter3d(alpha=0.5)
+	model2.scatter(alpha=0.5)
 
 	# Initialize
 	model3 = pca(normalize=False, onehot=True)
@@ -425,12 +424,12 @@ input colors for each sample manually.
 
 	# Set custom classlabels. Coloring is based on the input colormap (cmap).
 	y[10:15]=4
-	model.biplot(y=y, cmap='Set2')
+	model.biplot(labels=y, cmap='Set2')
 
 	# Set custom classlabels and also use custom colors.
-	c = colourmap.fromlist(y, cmap='Set2')[0]
+	c = colourmap.fromlist(labels, cmap='Set2')[0]
 	c[10:15] = [0,0,0]
-	model.biplot(y=y, c=c)
+	model.biplot(labels=y, c=c)
 
 
 .. |figE5| image:: ../figs/color_cmap_y.png
@@ -452,7 +451,7 @@ The highlight the loadings, all scatterpoints can be removed by setting the cmap
 	model.biplot(cmap=None)
 
 	# Gradient with white ending using the cmap setting.
-	model.biplot(y=y, gradient='#ffffff', cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+	model.biplot(labels=y, gradient='#ffffff', cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
 
 
 .. |figE7| image:: ../figs/color_no_scatter.png
@@ -480,10 +479,10 @@ This will allow to make iterative changes.
 	model.fit_transform(X)
 
 	# Make plot with blue arrows and text
-	fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':10, 'weight':'normal'}, color_arrow='blue', title=None, hotellingt2=True, n_feat=10, visible=True)
+	fig, ax = model.biplot(c=[0,0,0], s=25, arrowdict={'fontsize':10, 'weight':'normal'}, color_arrow='blue', title=None, HT2=True, n_feat=10, visible=True)
 
 	# Use the existing fig and create new edits such red arrows for the first three loadings. Also change the font sizes.
-	fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':16, 'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
+	fig, ax = model.biplot(c=[0,0,0], s=25, arrowdict={'fontsize':16, 'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
 
 
 .. |figE9| image:: ../figs/fig_iterative_changes.png

@@ -434,11 +434,12 @@ class pca:
             if verbose>=3: print('[pca] >Extracting row labels from dataframe.')
             row_labels = X.index.values
         if row_labels is None or len(row_labels)!=X.shape[0]:
-            row_labels=np.ones(X.shape[0]).astype(int)
+            # row_labels = np.ones(X.shape[0]).astype(int)
+            row_labels = np.arange(0, X.shape[0]).astype(int)
             if verbose>=3: print('[pca] >Row labels are auto-completed.')
         # if isinstance(row_labels, list):
-        # row_labels=np.array(row_labels)
-        row_labels = np.arange(0, X.shape[0]).astype(int)
+        row_labels=np.array(row_labels)
+        
 
         if isinstance(X, pd.DataFrame):
             X = X.values
@@ -573,8 +574,14 @@ class pca:
             [0, 1, 2] : Define the PCs for 3D
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
+                * None : Auto detect. If outliers are detected. it is set to True.
+                * True : Show outliers
+                * False : Do not show outliers
         HT2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
+                * None : Auto detect. If outliers are detected. it is set to True.
+                * True : Show outliers
+                * False : Do not show outliers
         alpha: float or array-like of floats (default: 1).
             The alpha blending value ranges between 0 (transparent) and 1 (opaque).
             1: All data points get this alpha
@@ -599,9 +606,14 @@ class pca:
             None: Automatically create title text based on results.
             '' : Remove all title text.
             'title text' : Add custom title text.
-        legend : Bool, default: None
-            True: Show the legend based on the unique labels.
-            None: Set automatically based on performance.
+        legend : int, default: None
+            None: Set automatically based on number of labels.
+            False : No legend.
+            True : Best position.
+            1 : 'upper right'
+            2 : 'upper left'
+            3 : 'lower left'
+            4 : 'lower right'
         figsize : (int, int), optional, default: (25, 15)
             (width, height) in inches.
         visible : Bool, default: True
@@ -658,11 +670,11 @@ class pca:
                            ax=ax)
 
         # Plot the SPE with Elipse
-        fig, ax = _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, fig, ax)
+        fig, ax = _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, s, fig, ax)
         # Plot hotelling T2
-        fig, ax = _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, fig, ax)
+        fig, ax = _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, s, fig, ax)
         # Add figure properties
-        fig, ax = _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, verbose)
+        fig, ax = _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, fontsize, verbose)
         # Return
         return (fig, ax)
 
@@ -675,8 +687,8 @@ class pca:
                jitter=None,
                n_feat=None,
                PC=None,
-               SPE=False,
-               HT2=False,
+               SPE=None,
+               HT2=None,
                alpha=0.8,
                gradient=None,
                density=False,
@@ -714,18 +726,18 @@ class pca:
                 * A 2D array in which the rows are RGB or RGBA.
                 * A sequence of colors of length n.
                 * A single color format string.
-        s: Int or list/array (default: 50)
+        s : Int or list/array (default: 50)
             Size(s) of the scatter-points.
             [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
             50: all points get this size.
-        marker: list/array of strings (default: '.').
+        marker: list/array of strings (default: 'o').
             Marker for the samples.
-            '.' : All data points get this marker
-            ['.', '*', 's', ..]: Specify per sample the marker type.
-        jitter : float, default: None
-            Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
+                * 'x' : All data points get this marker
+                * ('.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X') : Specify per sample the marker type.
         n_feat : int, default: 10
             Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
+        jitter : float, default: None
+            Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
         PC : tupel, default: None
             Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
             None : Take automatically the first 2 components and 3 in case d3=True.
@@ -733,8 +745,14 @@ class pca:
             [0, 1, 2] : Define the PCs for 3D
         SPE : Bool, default: False
             Show the outliers based on SPE/DmodX method.
+                * None : Auto detect. If outliers are detected. it is set to True.
+                * True : Show outliers
+                * False : Do not show outliers
         HT2 : Bool, default: False
             Show the outliers based on the hotelling T2 test.
+                * None : Auto detect. If outliers are detected. it is set to True.
+                * True : Show outliers
+                * False : Do not show outliers
         alpha: float or array-like of floats (default: 1).
             The alpha blending value ranges between 0 (transparent) and 1 (opaque).
             1: All data points get this alpha
@@ -767,9 +785,14 @@ class pca:
             None: Automatically create title text based on results.
             '' : Remove all title text.
             'title text' : Add custom title text.
-        legend : Bool, default: None
-            True: Show the legend based on the unique labels.
-            None: Set automatically based on performance.
+        legend : int, default: None
+            None: Set automatically based on number of labels.
+            False : No legend.
+            True : Best position.
+            1 : 'upper right'
+            2 : 'upper left'
+            3 : 'lower left'
+            4 : 'lower right'
         figsize : (int, int), optional, default: (25, 15)
             (width, height) in inches.
         visible : Bool, default: True
@@ -821,14 +844,15 @@ class pca:
         fig, ax = self.scatter(PC=PC, **args)
         return fig, ax
 
-    def biplot3d(self, PC=[0, 1, 2], **args):
+    def biplot3d(self, PC=[0, 1, 2], alpha=0.8, **args):
         """Biplot 3d plot.
 
         Parameters
         ----------
         Input parameters are described under <scatter>.
         """
-        fig, ax = self.biplot(PC=PC, **args)
+        if not isinstance(alpha, (int, float)): alpha=0.8
+        fig, ax = self.biplot(PC=PC, alpha=alpha, **args)
         return fig, ax
 
     # Show explained variance plot
@@ -1019,7 +1043,7 @@ def _eigsorted(cov, n_std):
     return vals[order], vecs[:, order]
 
 
-def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', showfig=False, verbose=3):
+def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', visible=False, verbose=3):
     """Compute SPE/distance to model (DmodX).
 
     Outlier can be detected using SPE/DmodX (distance to model) based on the mean and covariance of the first 2 dimensions of X.
@@ -1037,7 +1061,7 @@ def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', showfig=False, 
         transperancy color.
     color : String, (default: 'green')
         Color of the ellipse.
-    showfig : bool, (default: False)
+    visible : bool, (default: False)
         Scatter the points with the ellipse and mark the outliers.
 
     Returns
@@ -1085,12 +1109,12 @@ def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', showfig=False, 
         g_ellipse = Ellipse(xy=g_ell_center, width=width, height=height, angle=angle, color=color, alpha=calpha)
         y_score = list(map(lambda x: euclidean_distances([g_ell_center], x.reshape(1, -1))[0][0], X))
 
-        if showfig:
+        if visible:
             ax = plt.gca()
             ax.add_artist(g_ellipse)
             ax.scatter(X[~outliers, 0], X[~outliers, 1], c='black', linewidths=0.3, label='normal')
             ax.scatter(X[outliers, 0], X[outliers, 1], c='red', linewidths=0.3, label='outlier')
-            ax.legend()
+            ax.legend(loc=0)
     else:
         outliers = np.repeat(False, X.shape[1])
         y_score = np.repeat(None, X.shape[1])
@@ -1487,8 +1511,9 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, a
     coeff = self.results['loadings'].iloc[PC, :]
 
     # Use the PCs only for scaling purposes
-    mean_x = np.median(self.results['PC'].iloc[:, PC[0]].values)
-    mean_y = np.median(self.results['PC'].iloc[:, PC[1]].values)
+    mean_x = np.mean(self.results['PC'].iloc[:, PC[0]].values)
+    mean_y = np.mean(self.results['PC'].iloc[:, PC[1]].values)
+    if d3: mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
 
     # Plot and scale values for arrows and text by taking the absolute minimum range of the x-axis and y-axis.
     max_axis = np.max(np.abs(self.results['PC'].iloc[:, PC]).min(axis=1))
@@ -1513,7 +1538,6 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, a
         txtcolor = 'y' if topfeat['type'].iloc[i] == 'weak' else 'g'
 
         if d3:
-            mean_z = np.median(self.results['PC'].iloc[:, PC[2]].values)
             zarrow = getcoef[2] * scale
             ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=color_arrow, alpha=0.8, lw=2)
             texts.append(ax.text(xarrow, yarrow, zarrow, label, color=txtcolor, ha='center', va='center'))
@@ -1528,50 +1552,48 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, a
     return fig, ax
 
 
-def _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, fig, ax):
+def _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, s, fig, ax):
     # Get the outliers
-    Ioutlier1 = np.repeat(False, self.results['PC'].shape[0])
     Ioutlier2 = np.repeat(False, self.results['PC'].shape[0])
     if SPE and ('y_bool_spe' in self.results['outliers'].columns):
         Ioutlier2 = self.results['outliers']['y_bool_spe'].values
         if not d3:
             # Plot the ellipse
-            g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.1, verbose=0)[1]
+            g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.1, visible=False, verbose=0)[1]
             if g_ellipse is not None:
                 ax.add_artist(g_ellipse)
                 # Set the order of the layer at 1. At this point it is over the density layer which looks nicer.
                 g_ellipse.set_zorder(1)
-    
+
     # Plot outliers for hotelling T2 test.
+    if isinstance(s, (int, float)): s = 150 if s>0 else 0
     if SPE and ('y_bool_spe' in self.results['outliers'].columns):
-        label_spe = str(sum(Ioutlier2)) + ' outliers (SPE/DmodX)'
+        label_spe = str(sum(Ioutlier2)) + ' outlier(s) (SPE/DmodX)'
         if d3:
-            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[0.5, 0.5, 0.5], s=150, label=label_spe, alpha=alpha)
+            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[0.5, 0.5, 0.5], s=s, label=label_spe, alpha=alpha)
         else:
-            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=150, label=label_spe, alpha=alpha)
-            # Plot the ellipse
-            # g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.3, verbose=0)[1]
-            # if g_ellipse is not None: ax.add_artist(g_ellipse)
-    
+            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=s, label=label_spe, alpha=alpha)
+
     return fig, ax
 
 
-def _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, fig, ax):
+def _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, s, fig, ax):
+    if isinstance(s, (int, float)): s = 150 if s>0 else 0
     # Plot outliers for hotelling T2 test.
     if HT2 and ('y_bool' in self.results['outliers'].columns):
         Ioutlier1 = self.results['outliers']['y_bool'].values
 
     if HT2 and ('y_bool' in self.results['outliers'].columns):
-        label_t2 = str(sum(Ioutlier1)) + ' outliers (hotelling t2)'
+        label_t2 = str(sum(Ioutlier1)) + ' outlier(s) (hotelling t2)'
         if d3:
-            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[0, 0, 0], s=150, label=label_t2, alpha=alpha)
+            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[0, 0, 0], s=s, label=label_t2, alpha=alpha)
         else:
-            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=150, label=label_t2, alpha=alpha)
+            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=s, label=label_t2, alpha=alpha)
 
     return fig, ax
 
 
-def _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, verbose):
+def _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, fontsize, verbose):
     # Set labels
     ax.set_xlabel('PC' + str(PC[0] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
     if len(self.results['model'].explained_variance_ratio_)>=2:
@@ -1586,15 +1608,11 @@ def _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, verbose):
         title = str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance'
 
     # Determine the legend status if set to None
-    if legend is None:
-        if len(np.unique(labels))>20:
-            if verbose>=3: print('[pca] >Auto disable legend because number of unique labels >20')
-            legend=False
-        else:
-            legend=True
-    
+    if isinstance(legend, bool): legend = 0 if legend else -1
+    if legend is None: legend = -1 if len(np.unique(labels))>20 else 0
+    if legend>=0: ax.legend(loc=legend, fontsize=14)
+
     ax.set_title(title)
-    if legend: ax.legend()
     ax.grid(True)
     # Return
     return fig, ax

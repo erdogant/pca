@@ -184,7 +184,6 @@ Control color/marker/size per sample
 
 .. code:: python
 
-	# Import library
 	import numpy as np
 	import matplotlib.pyplot as plt
 	import matplotlib.colors as mcolors
@@ -197,13 +196,13 @@ Control color/marker/size per sample
 	# All available markers
 	markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
 	# Create colors
-	colors = plt.cm.get_cmap('tab20c', len(markers))
+	cmap = plt.cm.get_cmap('tab20c', len(markers))
 	# Generate random integers
 	random_integers = np.random.randint(0, len(markers), size=X.shape[0])
 	# Draw markers
 	marker = markers[random_integers]
 	# Set colors
-	color = colors.colors[random_integers, :]
+	color = cmap.colors[random_integers, 0:3]
 	# Set Size
 	size = np.random.randint(50, 1000, size=X.shape[0])
 	# Set alpha
@@ -214,18 +213,23 @@ Control color/marker/size per sample
 	# Fit
 	model.fit_transform(X)
 	# Make plot with blue arrows and text
-	fig, ax = model.biplot(c=color,
-			       s=size,
-			       marker=marker,
-			       alpha=alpha,
-			       fontdict={'weight':'normal'},
-			       fontsize=20,
-			       color_arrow='blue',
-			       title='Demonstration of specifying colors, markers, alpha, and size per sample.',
-			       HT2=True,
-			       n_feat=5,
-			       legend=False, 
-			       visible=True)
+	fig, ax = model.biplot(
+				SPE=True,
+				HT2=True,
+				c=color,
+				s=size,
+				marker=marker,
+				alpha=alpha,
+				color_arrow='k',
+				title='Demonstration of specifying colors, markers, alpha, and size per sample.',
+				n_feat=5,
+				fontsize=20,
+				fontweight='normal',
+				arrowdict={'fontsize': 18},
+				density=True,
+				density_on_top=False,
+				)
+
 
 
 .. |figP9| image:: ../figs/custom_example_2.png

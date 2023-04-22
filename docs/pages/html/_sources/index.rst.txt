@@ -10,7 +10,7 @@ PCA documentation!
 
 .. _logo:
 
-.. figure:: ../figs/logo.png
+.. figure:: ../figs/iris_density.png
 
 -------------------------------------
 
