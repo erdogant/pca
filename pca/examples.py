@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.datasets import load_iris
 import pandas as pd
 
+
 # %%
 from sklearn.datasets import make_friedman1
 X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
@@ -41,7 +42,7 @@ model = pca(normalize=True, n_components=None)
 results = model.fit_transform(df)
 
 # model.biplot(labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, fontsize=20)
-model.biplot3d(labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, arrowdict={'fontsize':20}, c=None)
+model.biplot3d(labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, arrowdict={'fontsize':10}, c=None)
 
 
 # %% Demonstration of specifying colors, markers, alpha, and size per sample
@@ -330,6 +331,7 @@ model.biplot(SPE=True,
              color_arrow='k',
              cmap='bwr_r',
              gradient='#FFFFFF',
+             density=True,
              )
 
 
@@ -460,7 +462,7 @@ X_unseen = np.array(np.random.uniform(5, 10, 25)).reshape(5, 5)
 PCnew = model.transform(X_unseen)
 
 # Plot image
-model.biplot(SPE=True, HT2=True)
+model.biplot(SPE=True, HT2=True, density=True)
 
 # %% Detect unseen outliers
 # Import libraries
