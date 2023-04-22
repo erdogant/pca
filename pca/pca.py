@@ -1448,7 +1448,7 @@ def _set_arrowdict(arrowdict, color_arrow=None, fontsize=18, fontweight='normal'
     if arrowdict.get('c') is None and (color_arrow is not None):
         arrowdict['c'] = color_arrow
     if arrowdict.get('fontsize') is None:
-        arrowdict['fontsize'] = fontsize
+        arrowdict['fontsize'] = 18 if fontsize==0 else fontsize
     if arrowdict.get('weight') is None:
         arrowdict['weight'] = fontweight
     return arrowdict
@@ -1540,7 +1540,7 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, a
         if d3:
             zarrow = getcoef[2] * scale
             ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=color_arrow, alpha=0.8, lw=2)
-            texts.append(ax.text(xarrow, yarrow, zarrow, label, color=txtcolor, ha='center', va='center'))
+            texts.append(ax.text(xarrow, yarrow, zarrow, label, color=txtcolor, ha='center', va='center', fontsize=arrowdict['fontsize']))
         else:
             ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, alpha=0.8, width=0.002, head_width=0.1, head_length=0.1 * 1.1, length_includes_head=True, zorder=10)
             texts.append(ax.text(xarrow, yarrow, label, color=txtcolor, fontdict=arrowdict, zorder=10))
@@ -1567,6 +1567,7 @@ def _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, s, fig, ax):
 
     # Plot outliers for hotelling T2 test.
     if isinstance(s, (int, float)): s = 150 if s>0 else 0
+    if not isinstance(s, (int, float)): s=150
     if SPE and ('y_bool_spe' in self.results['outliers'].columns):
         label_spe = str(sum(Ioutlier2)) + ' outlier(s) (SPE/DmodX)'
         if d3:
@@ -1578,7 +1579,9 @@ def _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, s, fig, ax):
 
 
 def _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, s, fig, ax):
+    # Plot outliers for hotelling T2 test.
     if isinstance(s, (int, float)): s = 150 if s>0 else 0
+    if not isinstance(s, (int, float)): s=150
     # Plot outliers for hotelling T2 test.
     if HT2 and ('y_bool' in self.results['outliers'].columns):
         Ioutlier1 = self.results['outliers']['y_bool'].values
@@ -1612,7 +1615,7 @@ def _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, fontsize,
     if legend is None: legend = -1 if len(np.unique(labels))>20 else 0
     if legend>=0: ax.legend(loc=legend, fontsize=14)
 
-    ax.set_title(title)
+    ax.set_title(title, fontsize=18)
     ax.grid(True)
     # Return
     return fig, ax
