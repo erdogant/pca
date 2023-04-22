@@ -480,7 +480,7 @@ This will allow to make iterative changes.
 	model.fit_transform(X)
 
 	# Make plot with blue arrows and text
-	fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':10, 'weight':'normal'}, color_arrow='blue', title=None, hotellingt2=True, n_feat=10, visible=True)
+	fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':10, 'weight':'normal'}, color_arrow='blue', title=None, HT2=True, n_feat=10, visible=True)
 
 	# Use the existing fig and create new edits such red arrows for the first three loadings. Also change the font sizes.
 	fig, ax = model.biplot(c=[0,0,0], s=25, fontdict={'size':16, 'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
