@@ -1426,7 +1426,7 @@ def _get_explained_variance(X, components):
 def _biplot_input_checks(results, PC, cmap, arrowdict, color_arrow, fontsize, fontweight, c, s, verbose):
     if c is None: s=0
     if cmap is None: s=0
-    if s==0: fontsize=0
+    if isinstance(s, (int, float)) and s==0: fontsize=0
     if PC is None: PC=[0, 1]
     d3 = True if len(PC)>=3 else False
 
@@ -1446,7 +1446,7 @@ def _biplot_input_checks(results, PC, cmap, arrowdict, color_arrow, fontsize, fo
 
 def _set_arrowdict(arrowdict, color_arrow=None, fontsize=18, fontweight='normal'):
     color_arrow = 'black' if (color_arrow is None) else color_arrow
-    arrowdict = {**{'fontsize': fontsize, 'c': color_arrow, 'weight': fontweight, 'ha': 'center', 'va': 'center'}, **arrowdict}
+    arrowdict = {**{'fontsize': 18 if fontsize==0 else fontsize, 'c': color_arrow, 'weight': fontweight, 'ha': 'center', 'va': 'center'}, **arrowdict}
     if arrowdict.get('c') is None and (color_arrow is not None):
         arrowdict['c'] = color_arrow
     if arrowdict.get('fontsize') is None:

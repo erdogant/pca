@@ -8,6 +8,22 @@ from sklearn.datasets import load_iris
 import pandas as pd
 
 # %%
+from sklearn.datasets import make_friedman1
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+
+model = pca()
+model.fit_transform(X)
+
+# model.scatter(density=True)
+# model.biplot(c=[0,0,0], density=True)
+
+# model.scatter3d(fontsize=16, PC=[0,1,3])
+# model.scatter3d(density=True)
+
+model.biplot3d(arrowdict={'weight':'bold'},  c=None, n_feat=5)
+
+
+# %%
 from pca import pca
 from sklearn.datasets import load_wine
 import pandas as pd
@@ -103,7 +119,7 @@ model.fit_transform(df_hot)
 model.biplot(SPE=True,
               HT2=True,
               marker=df['Survived'],
-              s=0,
+              s=df['Age']*20,
               n_feat=2,
               labels=df['Sex'],
               title='Biplot with with the pca library.',
@@ -114,7 +130,7 @@ model.biplot(SPE=True,
               cmap='bwr_r',
               edgecolor='#FFFFFF',
               gradient='#FFFFFF',
-              density=False,
+              density=True,
               density_on_top=False,
               visible=True,
               )
@@ -151,20 +167,6 @@ model.scatter(labels=X['sepal width (cm)'].values, cmap='seismic')
 
 
 
-# %%
-from sklearn.datasets import make_friedman1
-X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
-
-model = pca()
-model.fit_transform(X)
-
-model.scatter(density=True)
-model.biplot(c=[0,0,0], density=True)
-
-model.scatter3d(fontsize=16, PC=[0,1,3])
-model.scatter3d(density=True)
-
-model.biplot3d(arrowdict={'weight':'bold'}, c=None, n_feat=5)
 
 # %%
 df = pd.read_pickle('WIM-data PCA bug')
