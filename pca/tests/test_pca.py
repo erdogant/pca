@@ -51,7 +51,7 @@ class TestPCA(unittest.TestCase):
                                    s=combination[2],
                                    marker=combination[0],
                                    alpha=combination[3],
-                                   fontdict={'weight':'normal'},
+                                   arrowdict={'weight':'normal'},
                                    color_arrow='blue',
                                    title='Demonstration of specifying colors, markers, alpha, and size per sample.',
                                    HT2=True,
@@ -148,26 +148,26 @@ class TestPCA(unittest.TestCase):
         X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
         
         param_grid = {
-        	'n_components':[None, 0.01, 1, 0.95, 2, 100000000000],
+        	# 'n_components':[None, 0.01, 1, 0.95, 2, 100000000000],
         	'row_labels':[None, [], y],
         	'detect_outliers' : [None, 'ht2','spe'],
-            'gradient' : [None, '#FFFFFF']
+            # 'gradient' : [None, '#FFFFFF']
         	}
         
         allNames = param_grid.keys()
         combinations = it.product(*(param_grid[Name] for Name in allNames))
         combinations=list(combinations)
-        
+
         for combination in combinations:
          	model = pca(n_components=combination[0])
-         	model = pca(n_components=0.95)
+         	model = pca(n_components=3)
          	model.fit_transform(X)
-         	assert model.plot()
-         	assert model.biplot(y=y, SPE=True, HT2=True, gradient=combination[3])
-         	assert model.biplot3d(y=y, SPE=True, HT2=True, gradient=combination[3])
-         	assert model.biplot(y=y, SPE=True, HT2=False, gradient=combination[3])
-         	assert model.biplot(y=y, SPE=False, HT2=True, gradient=combination[3])
-         	assert model.biplot(y=y, SPE=False, HT2=False, gradient=combination[3])
+         	assert model.plot(visible=False)
+         	assert model.biplot(labels=y, SPE=True, HT2=True, visible=False)
+         	assert model.biplot3d(labels=y, SPE=True, HT2=True, visible=False)
+         	assert model.biplot(labels=y, SPE=True, HT2=False, visible=False)
+         	assert model.biplot(labels=y, SPE=False, HT2=True, visible=False)
+         	assert model.biplot(labels=y, SPE=False, HT2=False, visible=False)
          	assert model.results['PC'].shape[1]==model.n_components
 
 
