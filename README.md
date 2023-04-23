@@ -89,7 +89,7 @@ from pca import pca
     <td>
       <p align="left">
         <a href="https://erdogant.github.io/pca/pages/html/Plots.html#biplot">
-          <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_biplot.png?raw=true" width="350" />
+          <img src="https://github.com/erdogant/pca/blob/master/docs/figs/custom_example_2.png?raw=true" width="350" />
         </a>
       </p>
     </td>
@@ -116,7 +116,7 @@ from pca import pca
     <td>
       <p align="left">
         <a href="https://erdogant.github.io/pca/pages/html/Plots.html#d-plots">
-        <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter3d.png" width="350" />
+        <img src="https://github.com/erdogant/pca/blob/master/docs/figs/iris_3d_density.png" width="350" />
         </a>
       </p>
     </td>
