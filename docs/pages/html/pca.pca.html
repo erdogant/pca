@@ -33,7 +33,7 @@
             pca
           </a>
               <div class="version">
-                1.9.2
+                2.0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -208,13 +208,26 @@ across multiple dimensions will be more significant then others.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pca.pca.import_example">
-<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">import_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'titanic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.import_example" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">import_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'iris'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.import_example" title="Permalink to this definition"></a></dt>
 <dd><p>Import example dataset from github source.</p>
 <p>Import one of the few datasets from github source or specify your own download url link.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>str</em>) – Name of datasets: ‘sprinkler’, ‘titanic’, ‘student’, ‘fifa’, ‘cancer’, ‘waterpump’, ‘retail’</p></li>
+<li><p><strong>data</strong> (<em>str</em>) – <dl class="simple">
+<dt>Name of datasets</dt><dd><ul>
+<li><p>’iris’</p></li>
+<li><p>’sprinkler’</p></li>
+<li><p>’titanic’</p></li>
+<li><p>’student’</p></li>
+<li><p>’fifa’</p></li>
+<li><p>’cancer’</p></li>
+<li><p>’waterpump’</p></li>
+<li><p>’retail’</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
 <li><p><strong>url</strong> (<em>str</em>) – <p>url link to to dataset.
 verbose : int, (default: 20)</p>
 <blockquote>
@@ -428,7 +441,7 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.biplot3d">
-<span class="sig-name descname"><span class="pre">biplot3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.biplot3d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">biplot3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.biplot3d" title="Permalink to this definition"></a></dt>
 <dd><p>Biplot 3d plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -539,13 +552,26 @@ This can result into the detection of PCs that contain the same features. The fe
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.import_example">
-<span class="sig-name descname"><span class="pre">import_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'titanic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.import_example" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">import_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'iris'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.import_example" title="Permalink to this definition"></a></dt>
 <dd><p>Import example dataset from github source.</p>
 <p>Import one of the few datasets from github source or specify your own download url link.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>str</em>) – Name of datasets: ‘sprinkler’, ‘titanic’, ‘student’, ‘fifa’, ‘cancer’, ‘waterpump’, ‘retail’</p></li>
+<li><p><strong>data</strong> (<em>str</em>) – <dl class="simple">
+<dt>Name of datasets</dt><dd><ul>
+<li><p>’iris’</p></li>
+<li><p>’sprinkler’</p></li>
+<li><p>’titanic’</p></li>
+<li><p>’student’</p></li>
+<li><p>’fifa’</p></li>
+<li><p>’cancer’</p></li>
+<li><p>’waterpump’</p></li>
+<li><p>’retail’</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
 <li><p><strong>url</strong> (<em>str</em>) – url link to to dataset.</p></li>
 </ul>
 </dd>
