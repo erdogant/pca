@@ -9,7 +9,7 @@ from pca.pca import (
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '1.9.2'
+__version__ = '2.0.0'
 
 # module level doc-string
 __doc__ = """
@@ -23,31 +23,27 @@ pca: A Python Package for Principal Component Analysis.
 Examples
 --------
 >>> from pca import pca
->>> # Load example data
->>> from sklearn.datasets import load_iris
->>> X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
 >>>
 >>> Initialize
 >>> model = pca(n_components=3)
->>> # Fit using PCA
->>> results = model.fit_transform(X)
 >>>
->>> # Make plots
->>> fig, ax = model.scatter()
+>>> # Load example data
+>>> df = model.import_example(data='iris')
+>>>
+>>> # Fit using PCA
+>>> results = model.fit_transform(df)
 >>>
 >>> # Scree plot together with explained variance.
 >>> fig, ax = model.plot()
 >>>
 >>> # Plot loadings
 >>> fig, ax = model.biplot()
->>>
->>> # Plot loadings with outliers
->>> fig, ax = model.biplot(SPE=True, HT2=True)
+>>> fig, ax = model.biplot(density=True, SPE=True, HT2=True)
+>>> fig, ax = model.scatter()
 >>>
 >>> 3D plots
 >>> fig, ax = model.scatter3d()
->>> fig, ax = model.biplot3d()
->>> fig, ax = model.biplot3d(SPE=True, HT2=True)
+>>> fig, ax = model.biplot3d(density=True, SPE=True, HT2=True)
 >>>
 >>> # Normalize out PCs
 >>> X_norm = model.norm(X)
