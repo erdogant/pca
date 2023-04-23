@@ -41,7 +41,7 @@ model = pca(normalize=True, n_components=None)
 # Fit transform with dataframe
 results = model.fit_transform(df)
 
-# model.biplot(labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, fontsize=20, arrowdict={'fontsize':28, 'c':'g'})
+model.biplot(labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, fontsize=20, arrowdict={'fontsize':28, 'c':'g'}, density=True)
 model.biplot3d(legend=False, n_feat=3, fontcolor='r', arrowdict={'fontsize':22, 'c':'k'}, density=True)
 
 
@@ -145,29 +145,25 @@ model.biplot(SPE=True,
 # Load pca
 from pca import pca
 
-# Load dataset
-label = load_iris().feature_names
-y = load_iris().target
-X = pd.DataFrame(data=load_iris().data, columns=label, index=y)
+# Initialize pca
+model = pca()
 
-# Initialize to reduce the data up to the nubmer of componentes that explains 95% of the variance.
-model = pca(n_components=0.95)
+# Load example data set
+df = model.import_example(data='iris')
 
 # Fit transform
 results = model.fit_transform(X)
 
+# Make plot
 model.biplot(HT2=True,
              SPE=True,
+             s=np.random.randint(20, 500, size=df.shape[0]),
+             marker=y,
              cmap='bwr_r',
-             fontsize=18,
+             fontsize=22,
              legend=2,
              density=True,
              title='Biplot with with the pca library.')
-
-model.scatter(labels=X['sepal width (cm)'].values, cmap='seismic')
-
-
-
 
 # %%
 df = pd.read_pickle('WIM-data PCA bug')
