@@ -1542,10 +1542,10 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, a
         if d3:
             zarrow = getcoef[2] * scale
             ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=color_arrow, alpha=0.8, lw=2)
-            texts.append(ax.text(xarrow, yarrow, zarrow, label, color=txtcolor, ha='center', va='center', fontsize=arrowdict['fontsize']))
+            texts.append(ax.text(xarrow, yarrow, zarrow, label, color=arrowdict['c'], ha='center', va='center', fontsize=arrowdict['fontsize'], zorder=25))
         else:
             ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, alpha=0.8, width=0.002, head_width=0.1, head_length=0.1 * 1.1, length_includes_head=True, zorder=10)
-            texts.append(ax.text(xarrow, yarrow, label, color=txtcolor, fontdict=arrowdict, zorder=10))
+            texts.append(ax.text(xarrow, yarrow, label, fontdict=arrowdict, zorder=10))
 
     # Plot the adjusted text labels to prevent overlap
     if len(texts)>0 and not d3: adjust_text(texts)

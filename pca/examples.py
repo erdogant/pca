@@ -41,8 +41,8 @@ model = pca(normalize=True, n_components=None)
 # Fit transform with dataframe
 results = model.fit_transform(df)
 
-# model.biplot(labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, fontsize=20)
-model.biplot3d(labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, arrowdict={'fontsize':10}, c=None)
+# model.biplot(labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, fontsize=20, arrowdict={'fontsize':28, 'c':'g'})
+model.biplot3d(legend=False, n_feat=3, fontcolor='r', arrowdict={'fontsize':22, 'c':'k'}, density=True)
 
 
 # %% Demonstration of specifying colors, markers, alpha, and size per sample
