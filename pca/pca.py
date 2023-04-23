@@ -998,7 +998,7 @@ class pca:
         return out
 
     # Import example
-    def import_example(self, data='titanic', url=None, sep=','):
+    def import_example(self, data='iris', url=None, sep=','):
         """Import example dataset from github source.
 
         Import one of the few datasets from github source or specify your own download url link.
@@ -1006,7 +1006,15 @@ class pca:
         Parameters
         ----------
         data : str
-            Name of datasets: 'sprinkler', 'titanic', 'student', 'fifa', 'cancer', 'waterpump', 'retail'
+            Name of datasets
+                * 'iris'
+                * 'sprinkler'
+                * 'titanic'
+                * 'student'
+                * 'fifa'
+                * 'cancer'
+                * 'waterpump'
+                * 'retail'
         url : str
             url link to to dataset.
 
@@ -1305,7 +1313,7 @@ def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_label
 
 
 # %% Import example dataset from github.
-def import_example(data='titanic', url=None, sep=',', verbose=3):
+def import_example(data='iris', url=None, sep=',', verbose=3):
     """Import example dataset from github source.
 
     Import one of the few datasets from github source or specify your own download url link.
@@ -1313,7 +1321,15 @@ def import_example(data='titanic', url=None, sep=',', verbose=3):
     Parameters
     ----------
     data : str
-        Name of datasets: 'sprinkler', 'titanic', 'student', 'fifa', 'cancer', 'waterpump', 'retail'
+        Name of datasets
+            * 'iris'
+            * 'sprinkler'
+            * 'titanic'
+            * 'student'
+            * 'fifa'
+            * 'cancer'
+            * 'waterpump'
+            * 'retail'
     url : str
         url link to to dataset.
 	verbose : int, (default: 20)
@@ -1341,8 +1357,14 @@ def import_example(data='titanic', url=None, sep=',', verbose=3):
             url='https://erdogant.github.io/datasets/waterpump/waterpump_test.zip'
         elif data=='retail':
             url='https://erdogant.github.io/datasets/marketing_data_online_retail_small.zip'
-    else:
-        data = wget.filename_from_url(url)
+        elif data=='iris':
+            from sklearn.datasets import load_iris
+            label = load_iris().feature_names
+            y = load_iris().target
+            X = pd.DataFrame(data=load_iris().data, columns=label, index=y)
+            return X
+        else:
+            data = wget.filename_from_url(url)
 
     if url is None:
         if verbose>=3: print('Nothing to download.')
