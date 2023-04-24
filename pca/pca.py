@@ -845,7 +845,7 @@ class pca:
         fig, ax = self.scatter(PC=PC, **args)
         return fig, ax
 
-    def biplot3d(self, PC=[0, 1, 2], alpha=0.8, **args):
+    def biplot3d(self, PC=[0, 1, 2], alpha=0.8, figsize=(30, 25), **args):
         """Biplot 3d plot.
 
         Parameters
@@ -853,7 +853,7 @@ class pca:
         Input parameters are described under <scatter>.
         """
         if not isinstance(alpha, (int, float)): alpha=0.8
-        fig, ax = self.biplot(PC=PC, alpha=alpha, **args)
+        fig, ax = self.biplot(PC=PC, alpha=alpha, figsize=figsize, **args)
         return fig, ax
 
     # Show explained variance plot
