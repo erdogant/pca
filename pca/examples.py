@@ -2,6 +2,7 @@ from pca import pca
 import pandas as pd
 import numpy as np
 import matplotlib as mpl
+from scatterd import scatterd
 
 import numpy as np
 from sklearn.datasets import load_iris
@@ -15,13 +16,42 @@ X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
 model = pca()
 model.fit_transform(X)
 
+# Loading are automatically set based on weak/strong
+model.biplot(s=0)
+# Change strong and weak colors
+model.biplot(s=0, arrowdict={'color_strong': 'r', 'color_weak': 'g'})
+# Set alpha to constant value
+model.biplot(s=0, arrowdict={'alpha': 0.8})
+# Change arrow text color
+model.biplot(s=0, arrowdict={'color_text': 'k'})
+# Change arrow color, which automatically changes the label color too
+model.biplot(s=0, color_arrow='k')
+# Almost Remove arrows but keep the text
+model.biplot(s=0, color_arrow='k', arrowdict={'alpha': 0.9})
+# Set color text
+model.biplot(s=0, arrowdict={'color_text': 'k'})
+# Set color arrow and color text
+model.biplot(s=0, color_arrow='k', arrowdict={'color_text': 'g'})
+# Set color arrow and color text and alpha
+model.biplot(s=0, color_arrow='k', arrowdict={'color_text': 'g', 'alpha': 0.8})
+
+# Change the scale factor of the arrow
+model.biplot(arrowdict={'scale_factor': 2})
+model.biplot3d(arrowdict={'scale_factor': 3})
+
+model.biplot(s=0, arrowdict={'weight':'bold', 'fontsize': 24, 'color_text': 'r'}, color_arrow='k')
+model.biplot3d(density=True, fontsize=0, arrowdict={'weight':'bold', 'fontsize': 14})
+model.biplot3d(density=True, fontsize=0, s=0, arrowdict={'fontsize': 24})
+
+model.biplot(density=True, fontsize=0, arrowdict={'weight':'bold', 'fontsize': 14})
+
 # model.scatter(density=True)
-# model.biplot(c=[0,0,0], density=True)
 
 # model.scatter3d(fontsize=16, PC=[0,1,3])
 # model.scatter3d(density=True)
 
 model.biplot3d(arrowdict={'weight':'bold'},  c=None, n_feat=5)
+# model.biplot3d(arrowdict={'weight':'bold'},   n_feat=5)
 
 
 # %%
@@ -40,9 +70,9 @@ df = pd.DataFrame(data=X, columns=labels, index=y)
 model = pca(normalize=True, n_components=None)
 # Fit transform with dataframe
 results = model.fit_transform(df)
-
-model.biplot(labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, fontsize=20, arrowdict={'fontsize':28, 'c':'g'}, density=True)
-model.biplot3d(legend=False, n_feat=3, fontcolor='r', arrowdict={'fontsize':22, 'c':'k'}, density=True)
+# Plot
+model.biplot(fontsize=0, labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, arrowdict={'fontsize':28, 'c':'g'}, density=True)
+# model.biplot3d(legend=None, n_feat=3, fontcolor='r', arrowdict={'fontsize':22, 'c':'k'}, density=True, figsize=(35, 30))
 
 
 # %% Demonstration of specifying colors, markers, alpha, and size per sample
@@ -136,23 +166,18 @@ model.biplot(SPE=True,
               visible=True,
               )
 
-
-
-
-
-
 # %%
 # Load pca
 from pca import pca
 
 # Initialize pca
-model = pca()
+model = pca(n_components=3)
 
 # Load example data set
 df = model.import_example(data='iris')
 
 # Fit transform
-results = model.fit_transform(X)
+results = model.fit_transform(df)
 
 # Make plot
 model.biplot(HT2=True,
@@ -392,11 +417,11 @@ model.biplot(cmap=None)
 # Color on classlabel (Unchanged)
 model.biplot()
 # Use cmap colors for classlabels (unchanged)
-model.biplot(labels=y, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+model.biplot(labels=y, cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']), density=True)
 # Do not show points when cmap=None (unchanged)
-model.biplot(labels=load_iris().target, cmap=None)
+model.biplot(labels=load_iris().target, cmap=None, density=True)
 # Plot all points as unique entity (unchanged)
-model.biplot(labels=y, gradient='#ffffff', cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']))
+model.biplot(labels=y, gradient='#ffffff', cmap=mpl.colors.ListedColormap(['green', 'red', 'blue']), density=True)
 
 
 # %%
@@ -459,6 +484,7 @@ PCnew = model.transform(X_unseen)
 
 # Plot image
 model.biplot(SPE=True, HT2=True, density=True)
+model.biplot3d(SPE=True, HT2=True, density=True, arrowdict={'scale_factor': 1})
 
 # %% Detect unseen outliers
 # Import libraries
@@ -474,7 +500,7 @@ model = pca(alpha=0.05, detect_outliers=['HT2', 'SPE'])
 # model = pca(alpha=0.05, detect_outliers=None)
 
 # Fit transform
-model.fit_transform(X)
+model.fit_transform(X, row_labels=np.zeros(X.shape[0]))
 
 model.scatter(SPE=True, HT2=True)
 
@@ -486,9 +512,9 @@ for i in range(0, 10):
     PCnew = model.transform(X_unseen, row_labels=np.repeat('mapped_' + str(i), X_unseen.shape[0]), update_outlier_params=True)
 
     # Scatterplot
-    model.scatter(SPE=True, HT2=True)
+    # model.scatter(SPE=True, HT2=True)
     # Biplot
-    # Model.biplot(SPE=True, HT2=True)
+    model.biplot(SPE=True, HT2=True, density=True)
 
 
 # %%

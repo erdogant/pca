@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import os
 from adjustText import adjust_text
 import statsmodels.stats.multitest as multitest
+from typing import List, Union, Tuple
 
 
 # %% Association learning across all variables
@@ -697,8 +698,8 @@ class pca:
                fontcolor=[0,0,0],
                fontsize=18,
                fontweight='normal',
-               color_arrow='#000000',
-               arrowdict={'fontsize': None, 'c': None, 'weight': None, 'ha': 'center', 'va': 'center'},
+               color_arrow=None,
+               arrowdict={'fontsize': None, 'color_text': None, 'weight': None, 'alpha': None, 'color_strong': '#880808', 'color_weak': '#002a77', 'scale_factor': None},
                cmap='tab20c',
                title=None,
                legend=None,
@@ -766,19 +767,30 @@ class pca:
         density_on_top : bool, (default: False)
             True : The density is the highest layer.
             False : The density is the lowest layer.
-        color_arrow : String, (default: '#000000')
-            color for the arrow.
-            * '#000000'
-            * 'r'
-        arrowdict : dict.
-            dictionary containing properties for the arrow font-text.
-            Note that the [c]olor: None inherits the color used in color_arrow.
-            {'fontsize': None, 'c': None, 'weight': None, 'ha': 'center', 'va': 'center'}
-        fontsize : String, optional
-            The fontsize of the y labels that are plotted in the graph. The default is 16.
+        fontsize : String (default: 16)
+            The fontsize of the labels.
         fontcolor: list/array of RGB colors with same size as X (default : None)
             None : Use same colorscheme as for c
             '#000000' : If the input is a single color, all fonts will get this color.
+        fontweight : String, (default: 'normal')
+            The fontweight of the labels.
+                * 'normal'
+                * 'bold'
+        color_arrow : String, (default: None)
+            color for the arrow.
+                * None: Color arrows based on strength using 'color_strong' and 'color_weak'.
+                * '#000000'
+                * 'r'
+        arrowdict : dict.
+            Dictionary containing properties for the arrow font-text.
+            {'fontsize': None, 'color_text': None, 'weight': None, 'alpha': None, 'color_strong': '#880808', 'color_weak': '#002a77', 'ha': 'center', 'va': 'center'}
+                * fontsize: None automatically adjust based on the fontsize. Specify otherwise.
+                * 'color_text': None automatically adjust color based color_strong and color_weak. Specify hex color otherwise.
+                * 'weight': None automatically adjust based on fontweight. Specify otherwise: 'normal', 'bold'
+                * 'alpha': None automatically adjust based on loading value.
+                * 'color_strong': Hex color for strong loadings (color_arrow needs to be set to None).
+                * 'color_weak': Hex color for weak loadings (color_arrow needs to be set to None).
+                * 'scale_factor': The scale factor for the arrow length. None automatically sets changes between 2d and 3d plots.
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
@@ -829,7 +841,7 @@ class pca:
         # Scatterplot
         fig, ax = self.scatter(labels=labels, legend=legend, PC=PC, SPE=SPE, HT2=HT2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, fontweight=fontweight, fontsize=fontsize, edgecolor=edgecolor, density=density, density_on_top=density_on_top, dpi=dpi, verbose=verbose)
         # Add the loadings with arrow to the plot
-        fig, ax = _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, ax, verbose)
+        fig, ax = _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose)
         # Plot
         if visible: plt.show()
         # Return
@@ -1467,10 +1479,10 @@ def _biplot_input_checks(results, PC, cmap, arrowdict, color_arrow, fontsize, fo
 
 
 def _set_arrowdict(arrowdict, color_arrow=None, fontsize=18, fontweight='normal'):
-    color_arrow = 'black' if (color_arrow is None) else color_arrow
-    arrowdict = {**{'fontsize': 18 if fontsize==0 else fontsize, 'c': color_arrow, 'weight': fontweight, 'ha': 'center', 'va': 'center'}, **arrowdict}
-    if arrowdict.get('c') is None and (color_arrow is not None):
-        arrowdict['c'] = color_arrow
+    # color_arrow = None if (color_arrow is None) else color_arrow
+    arrowdict = {**{'color_arrow': color_arrow, 'color_text': None, 'fontsize': 18 if fontsize==0 else fontsize, 'weight': fontweight, 'alpha': None, 'ha': 'center', 'va': 'center', 'color_strong': '#880808', 'color_weak': '#002a77', 'scale_factor': None}, **arrowdict}
+    # if arrowdict.get('color_text') is None and (color_arrow is not None):
+        # arrowdict['color_text'] = color_arrow
     if arrowdict.get('fontsize') is None:
         arrowdict['fontsize'] = 18 if fontsize==0 else fontsize
     if arrowdict.get('weight') is None:
@@ -1528,7 +1540,7 @@ def _setup_figure(fig, ax, d3, visible, figsize, dpi):
     return fig, ax
 
 
-def _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, ax, verbose):
+def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
     topfeat = pd.concat([topfeat.iloc[PC, :], topfeat.loc[~topfeat.index.isin(PC), :]])
     topfeat.reset_index(inplace=True)
     # Collect coefficients
@@ -1542,7 +1554,12 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, a
     # Plot and scale values for arrows and text by taking the absolute minimum range of the x-axis and y-axis.
     max_axis = np.max(np.abs(self.results['PC'].iloc[:, PC]).min(axis=1))
     max_arrow = np.abs(coeff).max().max()
-    scale = (np.max([1, np.round(max_axis / max_arrow, 2)])) * 0.93
+    if arrowdict['scale_factor'] is None: 
+        scale_factor = 1.8 if d3 else 1.1
+    else:
+        scale_factor = arrowdict['scale_factor']
+    # Scale the arrows using the scale factor
+    scale = (np.max([1, np.round(max_axis / max_arrow, 2)])) * scale_factor
 
     # For vizualization purposes we will keep only the unique feature-names
     topfeat = topfeat.drop_duplicates(subset=['feature'])
@@ -1551,6 +1568,10 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, a
         if verbose>=2: print('[pca] >[WARNING]: n_feat can not be reached because of the limitation of n_components (=%d). n_feat is reduced to %d.' %(self.n_components, n_feat))
 
     # Plot arrows and text
+    arrow_line_color = arrowdict['color_arrow']
+    arrow_text_color = arrowdict['color_text']
+    arrow_alpha = arrowdict['alpha']
+    alpha_scaled = normalize_size(topfeat['loading'].abs().values.reshape(-1,1), minscale=0.35, maxscale=0.95, scaler='minmax')
     texts = []
     for i in range(0, n_feat):
         getfeat = topfeat['feature'].iloc[i]
@@ -1559,17 +1580,24 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, color_arrow, arrowdict, fig, a
         # Set first PC vs second PC direction. Note that these are not neccarily the best loading.
         xarrow = getcoef[0] * scale  # First PC in the x-axis direction
         yarrow = getcoef[1] * scale  # Second PC in the y-axis direction
-        txtcolor = 'y' if topfeat['type'].iloc[i] == 'weak' else 'g'
+        # Set the arrow and arrow-text colors
+        # Update arrow color if None
+        loading_color = arrowdict['color_weak'] if topfeat['type'].iloc[i] == 'weak' else arrowdict['color_strong']
+        # Update colors if None
+        if arrowdict['color_arrow'] is None: arrow_line_color = loading_color
+        if arrowdict['color_text'] is None: arrow_text_color = loading_color
+        if arrowdict['alpha'] is None: arrow_alpha =  alpha_scaled[i]
 
         if d3:
             zarrow = getcoef[2] * scale
-            ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=color_arrow, alpha=0.8, lw=2)
-            texts.append(ax.text(xarrow, yarrow, zarrow, label, color=arrowdict['c'], ha='center', va='center', fontsize=arrowdict['fontsize'], zorder=25))
+            ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=arrow_line_color, alpha=arrow_alpha, lw=2)
+            texts.append(ax.text(xarrow, yarrow, zarrow, label, fontsize=arrowdict['fontsize'], c=arrow_text_color, weight=arrowdict['weight'], ha=arrowdict['ha'], va=arrowdict['va'], zorder=25))
         else:
-            ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=color_arrow, alpha=0.8, width=0.002, head_width=0.1, head_length=0.1 * 1.1, length_includes_head=True, zorder=10)
-            texts.append(ax.text(xarrow, yarrow, label, fontdict=arrowdict, zorder=10))
+            head_width = 0.1
+            ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=arrow_line_color, alpha=arrow_alpha, width=0.002, head_width=head_width, head_length=head_width * 1.1, length_includes_head=True, zorder=10)
+            texts.append(ax.text(xarrow, yarrow, label, fontsize=arrowdict['fontsize'], c=arrow_text_color, weight=arrowdict['weight'], ha=arrowdict['ha'], va=arrowdict['va'], zorder=10))
 
-    # Plot the adjusted text labels to prevent overlap
+    # Plot the adjusted text labels to prevent overlap. Do not adjust text in 3d plots as it will mess up the locations.
     if len(texts)>0 and not d3: adjust_text(texts)
 
     # Return
@@ -1595,9 +1623,9 @@ def _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, s, fig, ax):
     if SPE and ('y_bool_spe' in self.results['outliers'].columns):
         label_spe = str(sum(Ioutlier2)) + ' outlier(s) (SPE/DmodX)'
         if d3:
-            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[0.5, 0.5, 0.5], s=s, label=label_spe, alpha=alpha)
+            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[0.5, 0.5, 0.5], s=s, label=label_spe, alpha=alpha, zorder=15)
         else:
-            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=s, label=label_spe, alpha=alpha)
+            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=s, label=label_spe, alpha=alpha, zorder=15)
 
     return fig, ax
 
@@ -1613,9 +1641,9 @@ def _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, s, fig, ax):
     if HT2 and ('y_bool' in self.results['outliers'].columns):
         label_t2 = str(sum(Ioutlier1)) + ' outlier(s) (hotelling t2)'
         if d3:
-            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[0, 0, 0], s=s, label=label_t2, alpha=alpha)
+            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[0, 0, 0], s=s, label=label_t2, alpha=alpha, zorder=15)
         else:
-            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=s, label=label_t2, alpha=alpha)
+            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=s, label=label_t2, alpha=alpha, zorder=15)
 
     return fig, ax
 
@@ -1643,6 +1671,54 @@ def _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, fontsize,
     ax.grid(True)
     # Return
     return fig, ax
+
+
+def normalize_size(getsizes, minscale: Union[int, float] = 0.5, maxscale: Union[int, float] = 4, scaler: str = 'zscore'):
+    """Normalize values between minimum and maximum value.
+
+    Parameters
+    ----------
+    getsizes : input array
+        Array of values that needs to be scaled.
+    minscale : Union[int, float], optional
+        Minimum value. The default is 0.5.
+    maxscale : Union[int, float], optional
+        Maximum value. The default is 4.
+    scaler : str, optional
+        Type of scaler. The default is 'zscore'.
+            * 'zscore'
+            * 'minmax'
+
+    Returns
+    -------
+    getsizes : array-like
+        scaled values between min-max.
+
+    """
+    # Instead of Min-Max scaling, that shrinks any distribution in the [0, 1] interval, scaling the variables to
+    # Z-scores is better. Min-Max Scaling is too sensitive to outlier observations and generates unseen problems,
+    
+    # Set sizes to 0 if not available
+    getsizes[np.isinf(getsizes)]=0
+    getsizes[np.isnan(getsizes)]=0
+
+    # out-of-scale datapoints.
+    if scaler == 'zscore' and len(np.unique(getsizes)) > 3:
+        getsizes = (getsizes.flatten() - np.mean(getsizes)) / np.std(getsizes)
+        getsizes = getsizes + (minscale - np.min(getsizes))
+    elif scaler == 'minmax':
+        try:
+            from sklearn.preprocessing import MinMaxScaler
+        except:
+            raise Exception('sklearn needs to be pip installed first. Try: pip install scikit-learn')
+        # scaling
+        getsizes = MinMaxScaler(feature_range=(minscale, maxscale)).fit_transform(getsizes).flatten()
+    else:
+        getsizes = getsizes.ravel()
+    # Max digits is 4
+    getsizes = np.array(list(map(lambda x: round(x, 4), getsizes)))
+
+    return getsizes
 
 
 def _show_deprecated_warning(label, y, verbose):
