@@ -42,20 +42,25 @@ Scatter plot
 	# Make scatterplot
 	model.scatter()
 
+	# Make scatterplot
+	model.scatter(density=True)
+
 	# Gradient over the samples. High dense areas will be more colourful.
-	model.scatter(gradient='#FFFFFF')
+	model.scatter(gradient='#FFFFFF', edgecolor=None)
 
 	# Include the outlier detection
-	model.scatter(SPE=True)
+	model.scatter(SPE=True, density=True)
 
 	# Include the outlier detection
-	model.scatter(HT2=True)
+	model.scatter(HT2=True, density=True)
 
 	# Look at different PCs: 1st PC=1  vs PC=3
 	model.scatter(PC=[0, 2])
 
 
 .. |figP1| image:: ../figs/wine_scatter.png
+.. |figP1d| image:: ../figs/wine_scatter_density.png
+.. |figP1g| image:: ../figs/wine_scatter_gradient.png
 .. |figP2| image:: ../figs/wine_scatter_spe.png
 .. |figP3| image:: ../figs/wine_scatter_hotel.png
 .. |figP4| image:: ../figs/wine_scatter_PC13.png
@@ -64,17 +69,15 @@ Scatter plot
 .. table:: Scatterplots
    :align: center
 
-   +----------+
-   | |figP1|  |
-   +----------+
-   | |figP7|  |
-   +----------+
-   | |figP2|  |
-   +----------+
-   | |figP3|  |
-   +----------+
-   | |figP4|  |
-   +----------+
+   +----------+----------+
+   |       |figP1|       |
+   +----------+----------+
+   | |figP1d| | |figP1g| |
+   +----------+----------+
+   | |figP2|  | |figP3|  |
+   +----------+----------+
+   | |figP4|  | |figP7|  |
+   +----------+----------+
 
 
 Biplot
@@ -86,7 +89,7 @@ Biplot
 	model.biplot()
 
 	# Here again, many other options can be turned on and off
-	model.biplot(SPE=True, HT2=True)
+	model.biplot(SPE=True, HT2=True, legend=1)
 
 
 .. |figP5| image:: ../figs/wine_biplot.png
@@ -250,6 +253,12 @@ All plots can also be created in 3D by setting the ``d3=True`` parameter.
 .. code:: python
 
 	model.biplot3d()
+
+
+.. image:: ../figs/wine_biplot3d.png
+   :width: 600
+   :align: center
+
 
 
 Toggle visible status

@@ -8,13 +8,38 @@ import numpy as np
 from sklearn.datasets import load_iris
 import pandas as pd
 
+# %%
+# Load pca
+from pca import pca
+
+# Initialize pca
+model = pca(n_components=3)
+
+# Load example data set
+df = model.import_example(data='iris')
+
+# Fit transform
+results = model.fit_transform(df)
+
+# Make plot
+model.biplot(HT2=True,
+             SPE=True,
+             s=np.random.randint(20, 500, size=df.shape[0]),
+             marker=df.index.values,
+             cmap='bwr_r',
+             fontsize=22,
+             legend=2,
+             density=True,
+             arrowdict={'color_strong': 'r', 'color_weak': 'g'},
+             title='Biplot with with the pca library.')
+
 
 # %%
-from sklearn.datasets import make_friedman1
-X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+# from sklearn.datasets import make_friedman1
+# X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
 
-model = pca()
-model.fit_transform(X)
+# model = pca()
+# model.fit_transform(X)
 
 # Loading are automatically set based on weak/strong
 model.biplot(s=0)
@@ -42,16 +67,8 @@ model.biplot3d(arrowdict={'scale_factor': 3})
 model.biplot(s=0, arrowdict={'weight':'bold', 'fontsize': 24, 'color_text': 'r'}, color_arrow='k')
 model.biplot3d(density=True, fontsize=0, arrowdict={'weight':'bold', 'fontsize': 14})
 model.biplot3d(density=True, fontsize=0, s=0, arrowdict={'fontsize': 24})
-
+model.biplot3d(density=True, fontsize=0, s=0, arrowdict={'fontsize': 24, 'scale_factor': 3})
 model.biplot(density=True, fontsize=0, arrowdict={'weight':'bold', 'fontsize': 14})
-
-# model.scatter(density=True)
-
-# model.scatter3d(fontsize=16, PC=[0,1,3])
-# model.scatter3d(density=True)
-
-model.biplot3d(arrowdict={'weight':'bold'},  c=None, n_feat=5)
-# model.biplot3d(arrowdict={'weight':'bold'},   n_feat=5)
 
 
 # %%

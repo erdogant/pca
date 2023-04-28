@@ -18,7 +18,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Quickstart" href="Examples.html" />
+    <link rel="next" title="Control Arrows" href="arrows.html" />
     <link rel="prev" title="Hotelling T2" href="Outlier%20detection.html" /> 
 </head>
 
@@ -83,6 +83,7 @@
 <li class="toctree-l1"><a class="reference internal" href="#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#d-plots">3D plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#toggle-visible-status">Toggle visible status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arrows.html">Control Arrows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
@@ -169,14 +170,17 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make scatterplot</span>
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">()</span>
 
+<span class="c1"># Make scatterplot</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
 <span class="c1"># Gradient over the samples. High dense areas will be more colourful.</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">gradient</span><span class="o">=</span><span class="s1">&#39;#FFFFFF&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">gradient</span><span class="o">=</span><span class="s1">&#39;#FFFFFF&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="c1"># Include the outlier detection</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Include the outlier detection</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Look at different PCs: 1st PC=1  vs PC=3</span>
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">PC</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
@@ -185,15 +189,16 @@
 <table class="docutils align-center" id="id1">
 <caption><span class="caption-text">Scatterplots</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
 <tbody>
-<tr class="row-odd"><td><p><img alt="figP1" src="_images/wine_scatter.png" /></p></td>
+<tr class="row-odd"><td colspan="2"><p><img alt="figP1" src="_images/wine_scatter.png" /></p></td>
 </tr>
-<tr class="row-even"><td><p><img alt="figP7" src="_images/wine_scatter_density.png" /></p></td>
+<tr class="row-even"><td><p><img alt="figP1d" src="_images/wine_scatter_density.png" /></p></td>
+<td><p><img alt="figP1g" src="_images/wine_scatter_gradient.png" /></p></td>
 </tr>
 <tr class="row-odd"><td><p><img alt="figP2" src="_images/wine_scatter_spe.png" /></p></td>
+<td><p><img alt="figP3" src="_images/wine_scatter_hotel.png" /></p></td>
 </tr>
-<tr class="row-even"><td><p><img alt="figP3" src="_images/wine_scatter_hotel.png" /></p></td>
-</tr>
-<tr class="row-odd"><td><p><img alt="figP4" src="_images/wine_scatter_PC13.png" /></p></td>
+<tr class="row-even"><td><p><img alt="figP4" src="_images/wine_scatter_PC13.png" /></p></td>
+<td><p><img alt="figP7" src="_images/wine_scatter_density.png" /></p></td>
 </tr>
 </tbody>
 </table>
@@ -204,7 +209,7 @@
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">()</span>
 
 <span class="c1"># Here again, many other options can be turned on and off</span>
-<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id2">
@@ -337,6 +342,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">()</span>
 </pre></div>
 </div>
+<a class="reference internal image-reference" href="_images/wine_biplot3d.png"><img alt="_images/wine_biplot3d.png" class="align-center" src="_images/wine_biplot3d.png" style="width: 600px;" /></a>
 </section>
 <section id="toggle-visible-status">
 <h1>Toggle visible status<a class="headerlink" href="#toggle-visible-status" title="Permalink to this heading"></a></h1>
@@ -363,7 +369,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="Outlier%20detection.html" class="btn btn-neutral float-left" title="Hotelling T2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="Examples.html" class="btn btn-neutral float-right" title="Quickstart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="arrows.html" class="btn btn-neutral float-right" title="Control Arrows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

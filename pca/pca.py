@@ -711,7 +711,7 @@ class pca:
                y=None,  # deprecated
                label=None,  # deprecated
                verbose=None):
-        """Create the Biplot.
+        """Create Biplot.
 
         Plots the Principal components with the samples, and the best performing features.
         Per PC, The feature with absolute highest loading is gathered. This can result into features that are seen over multiple PCs, and some features may never be detected.

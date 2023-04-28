@@ -75,6 +75,7 @@ Contents
   :caption: Plots
 
   Plots
+  arrows
 
 .. toctree::
   :maxdepth: 1
