@@ -33,6 +33,7 @@ model.biplot(HT2=True,
              arrowdict={'color_strong': 'r', 'color_weak': 'g'},
              title='Biplot with with the pca library.')
 
+# model.biplot(arrowdict={'color_strong': 'r', 'color_weak': 'g'})
 
 # %%
 # from sklearn.datasets import make_friedman1
