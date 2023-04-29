@@ -34,7 +34,7 @@
             pca
           </a>
               <div class="version">
-                2.0.0
+                2.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -148,47 +148,42 @@
 <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Loading are automatically set based on weak/strong</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Strenght of the loadings are shown in two colors (red=strong, blue=weak).</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/wine_arrow_1.png"><img alt="_images/wine_arrow_1.png" class="align-center" src="_images/wine_arrow_1.png" style="width: 600px;" /></a>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change strong and weak colors</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change colors</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color_strong&#39;</span><span class="p">:</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;color_weak&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/wine_arrow_2.png"><img alt="_images/wine_arrow_2.png" class="align-center" src="_images/wine_arrow_2.png" style="width: 600px;" /></a>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set alpha to constant value</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># The transparancy of the arrows are set on the loading value. You can also set it to a constant value.</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">})</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/wine_arrow_3.png"><img alt="_images/wine_arrow_3.png" class="align-center" src="_images/wine_arrow_3.png" style="width: 600px;" /></a>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change arrow text color</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change text color</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color_text&#39;</span><span class="p">:</span> <span class="s1">&#39;k&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/wine_arrow_4.png"><img alt="_images/wine_arrow_4.png" class="align-center" src="_images/wine_arrow_4.png" style="width: 600px;" /></a>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change arrow color, which automatically changes the label color too</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change arrow color.</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/wine_arrow_5.png"><img alt="_images/wine_arrow_5.png" class="align-center" src="_images/wine_arrow_5.png" style="width: 600px;" /></a>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set color text</span>
-<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color_text&#39;</span><span class="p">:</span> <span class="s1">&#39;k&#39;</span><span class="p">})</span>
-</pre></div>
-</div>
-<a class="reference internal image-reference" href="_images/wine_arrow_7.png"><img alt="_images/wine_arrow_7.png" class="align-center" src="_images/wine_arrow_7.png" style="width: 600px;" /></a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set color arrow and color text</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color_text&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/wine_arrow_8.png"><img alt="_images/wine_arrow_8.png" class="align-center" src="_images/wine_arrow_8.png" style="width: 600px;" /></a>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set color arrow and color text and alpha</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default settings</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/wine_arrow_9.png"><img alt="_images/wine_arrow_9.png" class="align-center" src="_images/wine_arrow_9.png" style="width: 600px;" /></a>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change the scale factor of the arrow</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change the scale factor of the arrow. The scale_factor of 3 seems a little bit too much here ;)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">(</span><span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>
 </pre></div>
 </div>

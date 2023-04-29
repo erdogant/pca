@@ -5,8 +5,10 @@ PCA documentation!
 
 
 .. tip::
-	`Read more details and the usage in the Medium Blog: What are PCA loadings and Biplots? <https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559>`_
+	`Read more about PCA loadings and Biplots. <https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559>`_
 
+.. tip::
+	`Read more about outlier detection. <https://towardsdatascience.com/outlier-detection-using-principal-component-analysis-and-hotellings-t2-and-spe-dmodx-methods-625b3c90897>`_
 
 .. _logo:
 

@@ -20,7 +20,7 @@ Control Arrows
 
 .. code:: python
 
-	# Loading are automatically set based on weak/strong
+	# Strenght of the loadings are shown in two colors (red=strong, blue=weak).
 	model.biplot(s=0)
 
 .. image:: ../figs/wine_arrow_1.png
@@ -31,7 +31,7 @@ Control Arrows
 
 .. code:: python
 
-	# Change strong and weak colors
+	# Change colors
 	model.biplot(s=0, arrowdict={'color_strong': 'r', 'color_weak': 'g'})
 
 .. image:: ../figs/wine_arrow_2.png
@@ -41,7 +41,7 @@ Control Arrows
 
 .. code:: python
 
-	# Set alpha to constant value
+	# The transparancy of the arrows are set on the loading value. You can also set it to a constant value.
 	model.biplot(s=0, arrowdict={'alpha': 0.8})
 
 .. image:: ../figs/wine_arrow_3.png
@@ -51,7 +51,7 @@ Control Arrows
 
 .. code:: python
 
-	# Change arrow text color
+	# Change text color
 	model.biplot(s=0, arrowdict={'color_text': 'k'})
 
 .. image:: ../figs/wine_arrow_4.png
@@ -61,23 +61,13 @@ Control Arrows
 
 .. code:: python
 
-	# Change arrow color, which automatically changes the label color too
+	# Change arrow color.
 	model.biplot(s=0, color_arrow='k')
 
 .. image:: ../figs/wine_arrow_5.png
    :width: 600
    :align: center
 
-
-
-.. code:: python
-
-	# Set color text
-	model.biplot(s=0, arrowdict={'color_text': 'k'})
-
-.. image:: ../figs/wine_arrow_7.png
-   :width: 600
-   :align: center
 
 
 .. code:: python
@@ -93,7 +83,7 @@ Control Arrows
 
 .. code:: python
 
-	# Set color arrow and color text and alpha
+	# Default settings
 	model.biplot()
 
 .. image:: ../figs/wine_arrow_9.png
@@ -103,7 +93,7 @@ Control Arrows
 
 .. code:: python
 
-	# Change the scale factor of the arrow
+	# Change the scale factor of the arrow. The scale_factor of 3 seems a little bit too much here ;)
 	model.biplot3d(arrowdict={'scale_factor': 3})
 
 
