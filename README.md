@@ -44,18 +44,14 @@ Other functionalities of PCA are:
 
 ## Read the Medium blog for more details.
 
-<p align="left">
-  <a href="https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/medium_blog1.png?raw=true" width="150" />
-  </a>
+#### [1. What are PCA loadings and how to effectively use Biplots?](https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559)
 
-  <a href="https://towardsdatascience.com/outlier-detection-using-principal-component-analysis-and-hotellings-t2-and-spe-dmodx-methods-625b3c90897">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/medium_blog2.png?raw=true" width="150" />
-  </a>
+#### [2. Outlier Detection Using Principal Component Analysis and Hotelling’s T2 and SPE/DmodX Methods](https://towardsdatascience.com/outlier-detection-using-principal-component-analysis-and-hotellings-t2-and-spe-dmodx-methods-625b3c90897)
 
-</p>
+#### [3. Quantitative comparisons between t-SNE, UMAP, PCA, and Other Mappings.](https://towardsdatascience.com/the-similarity-between-t-sne-umap-pca-and-other-mappings-c6453b80f303)
 
 
+#
 
 
 ---
