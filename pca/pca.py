@@ -76,8 +76,19 @@ class pca:
     * Documentation: https://erdogant.github.io/pca/
 
     """
+    def __init__(self,
+                 n_components=0.95,
+                 n_feat=25,
+                 method='pca',
+                 alpha=0.05,
+                 multipletests='fdr_bh',
+                 n_std=3,
+                 onehot=False,
+                 normalize=False,
+                 detect_outliers=['ht2', 'spe'],
+                 random_state=None,
+                 verbose=3):
 
-    def __init__(self, n_components=0.95, n_feat=25, method='pca', alpha=0.05, multipletests='fdr_bh', n_std=3, onehot=False, normalize=False, detect_outliers=['ht2', 'spe'], random_state=None, verbose=3):
         """Initialize pca with user-defined parameters."""
         if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
         if detect_outliers is not None: detect_outliers=list(map(str.lower, detect_outliers))
@@ -543,6 +554,7 @@ class pca:
                 visible=True,
                 fig=None,
                 ax=None,
+                grid=True,
                 y=None,  # deprecated
                 label=None,  # deprecated
                 verbose=3):
@@ -658,6 +670,7 @@ class pca:
                            marker=marker,
                            jitter=jitter,
                            density=density,
+                           opaque_type='per_class',
                            density_on_top=density_on_top,
                            gradient=gradient,
                            cmap=cmap,
@@ -665,6 +678,7 @@ class pca:
                            fontcolor=fontcolor,
                            fontsize=fontsize,
                            fontweight=fontweight,
+                           grid=grid,
                            dpi=dpi,
                            figsize=figsize,
                            visible=visible,
@@ -708,6 +722,7 @@ class pca:
                fig=None,
                ax=None,
                dpi=100,
+               grid=True,
                y=None,  # deprecated
                label=None,  # deprecated
                verbose=None):
@@ -839,7 +854,7 @@ class pca:
         # Pre-processing
         labels, topfeat, n_feat = self._fig_preprocessing(labels, n_feat, d3)
         # Scatterplot
-        fig, ax = self.scatter(labels=labels, legend=legend, PC=PC, SPE=SPE, HT2=HT2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, fontweight=fontweight, fontsize=fontsize, edgecolor=edgecolor, density=density, density_on_top=density_on_top, dpi=dpi, verbose=verbose)
+        fig, ax = self.scatter(labels=labels, legend=legend, PC=PC, SPE=SPE, HT2=HT2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, fontweight=fontweight, fontsize=fontsize, edgecolor=edgecolor, density=density, density_on_top=density_on_top, dpi=dpi, grid=grid, verbose=verbose)
         # Add the loadings with arrow to the plot
         fig, ax = _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose)
         # Plot
