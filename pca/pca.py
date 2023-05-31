@@ -1,9 +1,6 @@
 """pca: A Python Package for Principal Component Analysis."""
 
-# %% Libraries
 import datazets as dz
-from urllib.parse import urlparse
-from tqdm import tqdm
 from scatterd import scatterd
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD  # MiniBatchSparsePCA
 from sklearn.preprocessing import StandardScaler
@@ -14,10 +11,9 @@ import scipy.sparse as sp
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import os
 from adjustText import adjust_text
 import statsmodels.stats.multitest as multitest
-from typing import List, Union, Tuple
+from typing import Union
 
 
 # %% Association learning across all variables
@@ -76,6 +72,7 @@ class pca:
     * Documentation: https://erdogant.github.io/pca/
 
     """
+
     def __init__(self,
                  n_components=0.95,
                  n_feat=25,
@@ -88,7 +85,6 @@ class pca:
                  detect_outliers=['ht2', 'spe'],
                  random_state=None,
                  verbose=3):
-
         """Initialize pca with user-defined parameters."""
         if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
         if detect_outliers is not None: detect_outliers=list(map(str.lower, detect_outliers))
@@ -430,7 +426,7 @@ class pca:
 
         if (not self.onehot) and (not self.normalize) and isinstance(X, pd.DataFrame) and (str(X.values.dtype)=='bool'):
             if verbose>=2: print('[pca] >[WARNING]: Sparse or one-hot boolean input data is detected, it is highly recommended to set onehot=True or alternatively, normalize=True')
-        
+
         # Set col labels
         if isinstance(X, pd.DataFrame) and col_labels is None:
             if verbose>=3: print('[pca] >Extracting column labels from dataframe.')
@@ -451,7 +447,6 @@ class pca:
             if verbose>=3: print('[pca] >Row labels are auto-completed.')
         # if isinstance(row_labels, list):
         row_labels=np.array(row_labels)
-        
 
         if isinstance(X, pd.DataFrame):
             X = X.values
@@ -531,7 +526,7 @@ class pca:
     # Scatter plot
     def scatter(self,
                 labels=None,
-                c=[0,0.1,0.4],
+                c=[0, 0.1, 0.4],
                 s=150,
                 marker='o',
                 edgecolor='#000000',
@@ -543,7 +538,7 @@ class pca:
                 gradient=None,
                 density=False,
                 density_on_top=False,
-                fontcolor=[0,0,0],
+                fontcolor=[0, 0, 0],
                 fontsize=18,
                 fontweight='normal',
                 cmap='tab20c',
@@ -699,7 +694,7 @@ class pca:
 
     def biplot(self,
                labels=None,
-               c=[0,0.1,0.4],
+               c=[0, 0.1, 0.4],
                s=150,
                marker='o',
                edgecolor='#000000',
@@ -712,7 +707,7 @@ class pca:
                gradient=None,
                density=False,
                density_on_top=False,
-               fontcolor=[0,0,0],
+               fontcolor=[0, 0, 0],
                fontsize=18,
                fontweight='normal',
                color_arrow=None,
@@ -1418,7 +1413,7 @@ def _get_explained_variance(X, components):
         vec = components[i].copy()
         # subtract the previous projections
         for j in range(i):
-            vec -= np.dot(unit_vecs[j], vec)*unit_vecs[j]
+            vec -= np.dot(unit_vecs[j], vec) * unit_vecs[j]
 
         proj_corrected_vecs[i] = vec
 
@@ -1455,63 +1450,11 @@ def _biplot_input_checks(results, PC, cmap, arrowdict, color_arrow, fontsize, fo
 def _set_arrowdict(arrowdict, color_arrow=None, fontsize=18, fontweight='normal'):
     # color_arrow = None if (color_arrow is None) else color_arrow
     arrowdict = {**{'color_arrow': color_arrow, 'color_text': None, 'fontsize': 18 if fontsize==0 else fontsize, 'weight': fontweight, 'alpha': None, 'ha': 'center', 'va': 'center', 'color_strong': '#880808', 'color_weak': '#002a77', 'scale_factor': None}, **arrowdict}
-    # if arrowdict.get('color_text') is None and (color_arrow is not None):
-        # arrowdict['color_text'] = color_arrow
     if arrowdict.get('fontsize') is None:
         arrowdict['fontsize'] = 18 if fontsize==0 else fontsize
     if arrowdict.get('weight') is None:
         arrowdict['weight'] = fontweight
     return arrowdict
-
-
-# %% Retrieve files files.
-class wget:
-    """Retrieve file from url."""
-
-    def filename_from_url(url):
-        """Return filename."""
-        return os.path.basename(url)
-
-    def download(url, writepath):
-        """Download.
-
-        Parameters
-        ----------
-        url : str.
-            Internet source.
-        writepath : str.
-            Directory to write the file.
-
-        Returns
-        -------
-        None.
-
-        """
-        r = requests.get(url, stream=True)
-        with open(writepath, "wb") as fd:
-            for chunk in r.iter_content(chunk_size=1024):
-                fd.write(chunk)
-
-
-# def _setup_figure(fig, ax, d3, visible, figsize, dpi):
-#     if fig is None and ax is None:
-#         # Create new figure.
-#         fig = plt.figure(figsize=figsize, dpi=dpi)
-
-#         # Add d3 projection
-#         if d3:
-#             ax = fig.add_subplot(projection='3d')
-#             # ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
-#         else:
-#             ax = fig.add_subplot()
-#     elif fig is not None and ax is None:
-#         # Extract axes from fig.
-#         ax = fig.axes[0]
-
-#     # if fig is not None:
-#         # fig.set_visible(visible)
-
-#     return fig, ax
 
 
 def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
@@ -1528,7 +1471,7 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
     # Plot and scale values for arrows and text by taking the absolute minimum range of the x-axis and y-axis.
     max_axis = np.max(np.abs(self.results['PC'].iloc[:, PC]).min(axis=1))
     max_arrow = np.abs(coeff).max().max()
-    if arrowdict['scale_factor'] is None: 
+    if arrowdict['scale_factor'] is None:
         scale_factor = 1.8 if d3 else 1.1
     else:
         scale_factor = arrowdict['scale_factor']
@@ -1545,7 +1488,7 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
     arrow_line_color = arrowdict['color_arrow']
     arrow_text_color = arrowdict['color_text']
     arrow_alpha = arrowdict['alpha']
-    alpha_scaled = normalize_size(topfeat['loading'].abs().values.reshape(-1,1), minscale=0.35, maxscale=0.95, scaler='minmax')
+    alpha_scaled = normalize_size(topfeat['loading'].abs().values.reshape(-1, 1), minscale=0.35, maxscale=0.95, scaler='minmax')
     texts = []
     for i in range(0, n_feat):
         getfeat = topfeat['feature'].iloc[i]
@@ -1560,7 +1503,7 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
         # Update colors if None
         if arrowdict['color_arrow'] is None: arrow_line_color = loading_color
         if arrowdict['color_text'] is None: arrow_text_color = loading_color
-        if arrowdict['alpha'] is None: arrow_alpha =  alpha_scaled[i]
+        if arrowdict['alpha'] is None: arrow_alpha = alpha_scaled[i]
 
         if d3:
             zarrow = getcoef[2] * scale
@@ -1671,7 +1614,7 @@ def normalize_size(getsizes, minscale: Union[int, float] = 0.5, maxscale: Union[
     """
     # Instead of Min-Max scaling, that shrinks any distribution in the [0, 1] interval, scaling the variables to
     # Z-scores is better. Min-Max Scaling is too sensitive to outlier observations and generates unseen problems,
-    
+
     # Set sizes to 0 if not available
     getsizes[np.isinf(getsizes)]=0
     getsizes[np.isnan(getsizes)]=0
