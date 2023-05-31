@@ -947,7 +947,7 @@ class pca:
         # Set visibility and plot
         if fig is not None:
             fig.set_visible(visible)
-        plt.plot(xtick_idx, explvarCum, 'o-', color='k', linewidth=1, label='Cumulative explained variance')
+        plt.plot(xtick_idx, explvarCum, 'o-', color='k', linewidth=1, label='Cumulative explained variance', visible=visible)
 
         # Set xticks if less then 100 datapoints
         if len(explvar)<100:
@@ -972,9 +972,9 @@ class pca:
         if len(xtick_idx)<100:
             plt.bar(xtick_idx, explvar, color='#3182bd', alpha=0.8, label='Explained variance')
 
-        if visible:
-            plt.show()
-            plt.draw()
+        # if visible:
+        #     plt.draw()
+        #     plt.show()
         # Return
         return (fig, ax)
 
@@ -1054,7 +1054,7 @@ class pca:
             Dataset containing mixed features.
 
         """
-        return import_example(data=data, url=url, sep=sep)
+        return import_example(data=data, url=url, sep=sep, verbose=0)
 
 
 # %%
@@ -1494,25 +1494,25 @@ class wget:
                 fd.write(chunk)
 
 
-def _setup_figure(fig, ax, d3, visible, figsize, dpi):
-    if fig is None and ax is None:
-        # Create new figure.
-        fig = plt.figure(figsize=figsize, dpi=dpi)
+# def _setup_figure(fig, ax, d3, visible, figsize, dpi):
+#     if fig is None and ax is None:
+#         # Create new figure.
+#         fig = plt.figure(figsize=figsize, dpi=dpi)
 
-        # Add d3 projection
-        if d3:
-            ax = fig.add_subplot(projection='3d')
-            # ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
-        else:
-            ax = fig.add_subplot()
-    elif fig is not None and ax is None:
-        # Extract axes from fig.
-        ax = fig.axes[0]
+#         # Add d3 projection
+#         if d3:
+#             ax = fig.add_subplot(projection='3d')
+#             # ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
+#         else:
+#             ax = fig.add_subplot()
+#     elif fig is not None and ax is None:
+#         # Extract axes from fig.
+#         ax = fig.axes[0]
 
-    if fig is not None:
-        fig.set_visible(visible)
+#     # if fig is not None:
+#         # fig.set_visible(visible)
 
-    return fig, ax
+#     return fig, ax
 
 
 def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
