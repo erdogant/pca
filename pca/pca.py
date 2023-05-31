@@ -861,7 +861,7 @@ class pca:
         # Add the loadings with arrow to the plot
         fig, ax = _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose)
         # Plot
-        if visible: plt.show()
+        # if visible: plt.show()
         # Return
         return fig, ax
 
@@ -945,8 +945,7 @@ class pca:
             ax = fig.axes[0]
 
         # Set visibility and plot
-        if fig is not None:
-            fig.set_visible(visible)
+        if fig is not None: fig.set_visible(visible)
         plt.plot(xtick_idx, explvarCum, 'o-', color='k', linewidth=1, label='Cumulative explained variance', visible=visible)
 
         # Set xticks if less then 100 datapoints
