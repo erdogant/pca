@@ -1,7 +1,7 @@
 """pca: A Python Package for Principal Component Analysis."""
 
 # %% Libraries
-import requests
+import datazets as dz
 from urllib.parse import urlparse
 from tqdm import tqdm
 from scatterd import scatterd
@@ -1372,50 +1372,7 @@ def import_example(data='iris', url=None, sep=',', verbose=3):
         Dataset containing mixed features.
 
     """
-    if url is None:
-        if data=='sprinkler':
-            url='https://erdogant.github.io/datasets/sprinkler.zip'
-        elif data=='titanic':
-            url='https://erdogant.github.io/datasets/titanic_train.zip'
-        elif data=='student':
-            url='https://erdogant.github.io/datasets/student_train.zip'
-        elif data=='cancer':
-            url='https://erdogant.github.io/datasets/cancer_dataset.zip'
-        elif data=='fifa':
-            url='https://erdogant.github.io/datasets/FIFA_2018.zip'
-        elif data=='waterpump':
-            url='https://erdogant.github.io/datasets/waterpump/waterpump_test.zip'
-        elif data=='retail':
-            url='https://erdogant.github.io/datasets/marketing_data_online_retail_small.zip'
-        elif data=='iris':
-            from sklearn.datasets import load_iris
-            label = load_iris().feature_names
-            y = load_iris().target
-            X = pd.DataFrame(data=load_iris().data, columns=label, index=y)
-            return X
-        else:
-            data = wget.filename_from_url(url)
-
-    if url is None:
-        if verbose>=3: print('Nothing to download.')
-        return None
-
-    curpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
-    filename = os.path.basename(urlparse(url).path)
-    PATH_TO_DATA = os.path.join(curpath, filename)
-    if not os.path.isdir(curpath):
-        os.makedirs(curpath, exist_ok=True)
-
-    # Check file exists.
-    if not os.path.isfile(PATH_TO_DATA):
-        if verbose>=3: print('Downloading [%s] dataset from github source..' %(data))
-        wget.download(url, PATH_TO_DATA)
-
-    # Import local dataset
-    if verbose>=3: print('Import dataset [%s]' %(data))
-    df = pd.read_csv(PATH_TO_DATA, sep=sep)
-    # Return
-    return df
+    return dz.get(data, url=url, sep=sep, verbose=0)
 
 
 # %%
