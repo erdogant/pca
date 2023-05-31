@@ -644,6 +644,9 @@ class pca:
         if not hasattr(self, 'results'):
             if verbose>=2: print('[pca]> No results to plot. Hint: model.fit(X) <return>.')
             return None, None
+        if (PC is not None) and self.results['PC'].shape[1]<len(PC):
+            if verbose>=1: print('[pca]> 3D plot requires 3 PCs <return>.')
+            return None, None
 
         # Set parameters based on intuition
         if c is None: s=0
