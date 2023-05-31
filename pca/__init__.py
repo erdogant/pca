@@ -9,7 +9,7 @@ from pca.pca import (
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '2.0.2'
+__version__ = '2.0.3'
 
 # module level doc-string
 __doc__ = """
