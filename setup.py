@@ -19,7 +19,7 @@ setuptools.setup(
                        'numpy',
                        'scikit-learn',
                        'scipy',
-                       'colourmap>=1.1.14',
+                       'colourmap>=1.1.15',
                        'pandas',
                        'scatterd>=1.3.1',
                        'adjusttext',
