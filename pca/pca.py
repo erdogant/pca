@@ -1597,7 +1597,7 @@ def _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, fontsize,
     # Determine the legend status if set to None
     if isinstance(legend, bool): legend = 0 if legend else -1
     if legend is None: legend = -1 if len(np.unique(labels))>20 else 0
-    if legend>=0: ax.legend(loc=legend, fontsize=14)
+    if (legend>=0) and (labels is not None): ax.legend(loc=legend, fontsize=14)
 
     ax.set_title(title, fontsize=18)
     ax.grid(True)
