@@ -21,6 +21,36 @@ df = model.import_example(data='iris')
 # Fit transform
 results = model.fit_transform(df)
 
+model.biplot(s=1, fontsize=0)
+
+
+# %%
+from sklearn.datasets import load_wine
+import pandas as pd
+from pca import pca
+
+# pd.options.mode.copy_on_write = True
+
+data = load_wine()
+df = pd.DataFrame(index=data.target, data=data.data, columns=data.feature_names)
+model = pca(normalize=True, detect_outliers=['ht2', 'spe'], n_std=2)
+results = model.fit_transform(df)
+
+model.biplot(SPE=False, HT2=True, density=True)
+
+# %%
+# Load pca
+from pca import pca
+
+# Initialize pca
+model = pca(n_components=3)
+
+# Load example data set
+df = model.import_example(data='iris')
+
+# Fit transform
+results = model.fit_transform(df)
+
 # Make plot
 model.biplot(HT2=True,
              SPE=True,
@@ -389,7 +419,7 @@ model.fit_transform(X)
 fig, ax = model.biplot(c=[0,0,0], fontsize=20, color_arrow='blue', title=None, HT2=True, n_feat=10, visible=True)
 
 # Use the existing fig and create new edits such red arrows for the first three loadings. Also change the font sizes.
-fig, ax = model.biplot(c=[0,0,0], fontsize=20, arrowdict={'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
+fig, ax = model.biplot(c=[0,0,0], fontsize=0, arrowdict={'weight':'bold'}, color_arrow='red', n_feat=3, title='updated fig.', visible=True, fig=fig)
 
 
 # %%
