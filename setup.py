@@ -21,7 +21,7 @@ setuptools.setup(
                        'scipy',
                        'colourmap>=1.1.15',
                        'pandas',
-                       'scatterd>=1.3.1',
+                       'scatterd>=1.3.7',
                        'adjusttext',
                        ],
      python_requires='>=3',
