@@ -32,7 +32,7 @@ class pca:
     Parameters
     ----------
     n_components : [0..1] or [1..number of samples-1], (default: 0.95)
-        Number of PCs to be returned. When n_components is set >0, the specified number of PCs is returned.
+        Number of PCs to be returned. When n_components is set >=1, the specified number of PCs is returned.
         When n_components is set between [0..1], the number of PCs is returned that covers at least this percentage of variance.
         n_components=None : Return all PCs
         n_components=0.95 : Return the number of PCs that cover at least 95% of variance.
