@@ -26,7 +26,9 @@
 <!---[![Coffee](https://img.shields.io/badge/coffee-black-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)-->
 
 **pca** A Python Package for Principal Component Analysis. The core of PCA is build on sklearn functionality to find maximum compatibility when combining with other packages.
-But this package can do a lot more. Besides the regular pca, it can also perform **SparsePCA**, and **TruncatedSVD**. Depending on your input data, the best approach will be choosen.
+But this package can do a lot more. Besides the regular pca, it can also perform **SparsePCA**, and **TruncatedSVD**. Depending on your input data, the best approach will be chosen.
+**⭐️ Star this repo if you like it ⭐️**
+
 
 Other functionalities of PCA are:
 
@@ -36,11 +38,12 @@ Other functionalities of PCA are:
   * Scatter plot with the **loadings**
   * Outlier detection using **Hotelling T2 and/or SPE/Dmodx**
 
----
 
-**⭐️ Star this repo if you like it ⭐️**
+## Support
 
----
+Your ❤️ is important to keep maintaining my packages. You can support in various ways, have a look at the [sponser page](https://erdogant.github.io/pca/pages/html/Documentation.html). Report bugs, issues or help out with developing new features! If you don't have the time to help or are still learning, you can also take a [Medium Mebership using my referral link](https://erdogant.medium.com/) to keep reading all my hands-on blogs. If you also don't need that, there is always the coffee! Thank you! 
+<a href='https://www.buymeacoffee.com/erdogant' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
 
 ## Read the Medium blog for more details.
 
@@ -51,16 +54,12 @@ Other functionalities of PCA are:
 #### [3. Quantitative comparisons between t-SNE, UMAP, PCA, and Other Mappings.](https://towardsdatascience.com/the-similarity-between-t-sne-umap-pca-and-other-mappings-c6453b80f303)
 
 
-#
-
-
----
 
 ## [Documentation pages](https://erdogant.github.io/pca/)
 
 On the [documentation pages](https://erdogant.github.io/pca/) you can find detailed information about the working of the ``pca`` with many examples. 
 
----
+
 
 ## Installation
 
@@ -219,9 +218,3 @@ Please cite in your publications if this is useful for your research (see citati
 * Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
 
 ---
-
-## Support
-
-Your ❤️ is important to keep maintaining this package. You can [support](https://erdogant.github.io/pca/pages/html/Documentation.html) in various ways, have a look at the [sponser page](https://erdogant.github.io/pca/pages/html/Documentation.html). Report bugs, issues and feature extensions at [github page](https://github.com/erdogant/pca).
-
-<a href='https://www.buymeacoffee.com/erdogant' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
