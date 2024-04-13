@@ -45,7 +45,7 @@ Your ❤️ is important to keep maintaining my packages. You can support in var
 <a href='https://www.buymeacoffee.com/erdogant' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 
-## Read the Medium blog for more details.
+### Read the Medium blog for more details.
 
 #### [1. What are PCA loadings and how to effectively use Biplots?](https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559)
 
