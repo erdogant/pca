@@ -969,7 +969,7 @@ class pca:
             ax.set_xticklabels(xticklabel, rotation=90, ha='left', va='top')
 
         plt.ylabel('Percentage explained variance')
-        plt.xlabel('Principle Component')
+        plt.xlabel('Principal Component')
         plt.ylim([0, 1.05])
         plt.xlim([0, len(explvar) + 1])
         if title is None:
