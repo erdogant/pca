@@ -8,6 +8,34 @@ import numpy as np
 from sklearn.datasets import load_iris
 import pandas as pd
 
+
+# %% issue 54
+# https://github.com/erdogant/pca/issues/54
+from pca import pca
+
+# Create dataset
+np.random.seed(42)
+X_orig = pd.DataFrame(np.random.randint(low=1, high=10, size=(10000, 10)))
+# Insert Outliers
+X_orig.iloc[500:510, 8:] = 15
+
+# PCA Training
+model = pca(n_components=5, alpha=0.05, n_std=3, normalize=True, random_state=42)
+results = model.fit_transform(X=X_orig)
+
+outliers_original = model.results['outliers']
+
+# Create New Data
+X_new = pd.DataFrame(np.random.randint(low=1, high=10, size=(1000, 10)))
+
+# Transform New Data
+model.transform(X=X_new, update_outlier_params=False)
+outliers_new = model.results['outliers']
+
+# Compare Original Points Outlier Results Before and After Transform
+print("Before:", outliers_original['y_bool'].value_counts())
+print("After:", outliers_new.iloc[:1]['y_bool'].value_counts())
+
 # %%
 # Load pca
 from pca import pca
@@ -33,7 +61,7 @@ from pca import pca
 
 data = load_wine()
 df = pd.DataFrame(index=data.target, data=data.data, columns=data.feature_names)
-model = pca(normalize=True, detect_outliers=['ht2', 'spe'], n_std=2)
+model = pca(normalize=True, detect_outliers=['ht2', 'spe'], n_std=2, verbose='info')
 results = model.fit_transform(df)
 
 model.biplot(SPE=False, HT2=True, density=True)
