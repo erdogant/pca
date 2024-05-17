@@ -696,7 +696,9 @@ class pca:
                            figsize=figsize,
                            visible=visible,
                            fig=fig,
-                           ax=ax)
+                           ax=ax,
+                           verbose=verbose,
+                           )
 
         # Plot the SPE with Elipse
         fig, ax = _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, s, fig, ax)
