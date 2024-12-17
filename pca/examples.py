@@ -10,7 +10,7 @@ df = model.import_example(data='iris')
 # Fit transform
 results = model.fit_transform(df)
 
-model.biplot(s=15, fontsize=0)
+model.biplot(s=20, fontsize=0, labels=None)
 
 # %% issue 54
 # https://github.com/erdogant/pca/issues/54
@@ -216,7 +216,7 @@ X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
 # All available markers
 markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
 # Create colors
-cmap = plt.cm.get_cmap('tab20c', len(markers))
+cmap = plt.get_cmap('tab20c', len(markers))
 # Generate random integers
 random_integers = np.random.randint(0, len(markers), size=X.shape[0])
 # Draw markers

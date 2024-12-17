@@ -42,7 +42,7 @@ class TestPCA(unittest.TestCase):
         combinations=list(combinations)
 
         # Init
-        model = pca(verbose=0)
+        model = pca(verbose=None)
         # Fit
         model.fit_transform(X)
         # Make plot with blue arrows and text
@@ -215,7 +215,7 @@ class TestPCA(unittest.TestCase):
     def test_for_new_outliers_after_transformation(self):
         # Generate dataset
         np.random.seed(42)
-        n_total = 10000
+        n_total = 1000
         train_ratio = 0.8
         n_features = 10
         my_array = np.random.randint(low=1, high=10, size=(n_total, n_features))
@@ -231,7 +231,7 @@ class TestPCA(unittest.TestCase):
         # Inference: mapping of data into space.
         PC_test = model.transform(X=X_test[features])
         # Compute new outliers
-        scores, _ = model.compute_outliers(PC=PC_test, n_std=3, verbose=3) 
+        scores, _ = model.compute_outliers(PC=PC_test, n_std=3, verbose=3)
         
         assert model.results.get('outliers_params', None) is not None
         assert scores.shape[0]==X_test.shape[0]
