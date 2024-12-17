@@ -369,8 +369,12 @@ class pca:
     def compute_topfeat(self, loadings=None, verbose=3):
         """Compute the top-scoring features.
 
-        Per Principal Component, the feature with absolute maximum loading is stored.
-        This can result into the detection of PCs that contain the same features. The feature that were never detected are stored as "weak".
+        The biplot show the loadings (arrows) together with the samples (scatterplot).
+        The loadings can be colored red and blue which indicates the strength of the particular feature in the PC.
+
+        For each principal component (PC), the feature is determined with the largest absolute loading. This indicates which feature contributes the most to each PC and can occur in multiple PCs.
+        The highest loading values for the features are colored red in the biplot and described as "best" in the output dataframe.
+        The features that were not seen with highest loadings for any PC are considered weaker features, and are colored blue the biplot. In the output dataframe these features are described as "weak".
 
         Parameters
         ----------
@@ -855,7 +859,6 @@ class pca:
         References
         ----------
             * https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
-            * https://stackoverflow.com/questions/50796024/feature-variable-importance-after-a-pca-analysis/50845697#50845697
 
         """
         if verbose is None: verbose = self.verbose
