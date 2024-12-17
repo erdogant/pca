@@ -225,7 +225,7 @@ Control color/marker/size per sample
 	# All available markers
 	markers = np.array(['.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X'])
 	# Create colors
-	cmap = plt.cm.get_cmap('tab20c', len(markers))
+	cmap = plt.get_cmap('tab20c', len(markers))
 	# Generate random integers
 	random_integers = np.random.randint(0, len(markers), size=X.shape[0])
 	# Draw markers
