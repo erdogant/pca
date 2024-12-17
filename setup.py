@@ -15,11 +15,11 @@ with open("README.md", "r", encoding='utf8') as fh:
 setuptools.setup(
      install_requires=['datazets',
                        'statsmodels',
-                       'matplotlib',
+                       'matplotlib>=3.10',
                        'numpy',
                        'scikit-learn',
                        'scipy',
-                       'colourmap>=1.1.15',
+                       'colourmap>=1.1.18',
                        'pandas',
                        'scatterd>=1.3.7',
                        'adjusttext',
