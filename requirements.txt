@@ -3,9 +3,9 @@ numpy
 scikit-learn
 scipy
 pandas
-colourmap>="1.1.15"
-scatterd>="1.3.7"
-pca>="2.0.5"
+colourmap>=1.1.15
+scatterd>=1.3.7
+pca>=2.0.5
 adjusttext
 statsmodels
-datazets>="0.1.7"
+datazets>=0.1.7
