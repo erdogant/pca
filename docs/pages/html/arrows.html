@@ -1,20 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Control Arrows &mdash; pca pca documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e0179649" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5d2b88f6"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -33,9 +35,6 @@
           <a href="index.html" class="icon icon-home">
             pca
           </a>
-              <div class="version">
-                2.0.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -134,7 +133,7 @@
            <div itemprop="articleBody">
              
   <section id="control-arrows">
-<h1>Control Arrows<a class="headerlink" href="#control-arrows" title="Permalink to this heading"></a></h1>
+<h1>Control Arrows<a class="headerlink" href="#control-arrows" title="Link to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load pca</span>
 <span class="kn">from</span> <span class="nn">pca</span> <span class="kn">import</span> <span class="n">pca</span>
 
@@ -152,42 +151,50 @@
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_arrow_1.png"><img alt="_images/wine_arrow_1.png" class="align-center" src="_images/wine_arrow_1.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/wine_arrow_1.png"><img alt="_images/wine_arrow_1.png" class="align-center" src="_images/wine_arrow_1.png" style="width: 600px;" />
+</a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change colors</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color_strong&#39;</span><span class="p">:</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;color_weak&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_arrow_2.png"><img alt="_images/wine_arrow_2.png" class="align-center" src="_images/wine_arrow_2.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/wine_arrow_2.png"><img alt="_images/wine_arrow_2.png" class="align-center" src="_images/wine_arrow_2.png" style="width: 600px;" />
+</a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># The transparancy of the arrows are set on the loading value. You can also set it to a constant value.</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">})</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_arrow_3.png"><img alt="_images/wine_arrow_3.png" class="align-center" src="_images/wine_arrow_3.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/wine_arrow_3.png"><img alt="_images/wine_arrow_3.png" class="align-center" src="_images/wine_arrow_3.png" style="width: 600px;" />
+</a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change text color</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color_text&#39;</span><span class="p">:</span> <span class="s1">&#39;k&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_arrow_4.png"><img alt="_images/wine_arrow_4.png" class="align-center" src="_images/wine_arrow_4.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/wine_arrow_4.png"><img alt="_images/wine_arrow_4.png" class="align-center" src="_images/wine_arrow_4.png" style="width: 600px;" />
+</a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change arrow color.</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_arrow_5.png"><img alt="_images/wine_arrow_5.png" class="align-center" src="_images/wine_arrow_5.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/wine_arrow_5.png"><img alt="_images/wine_arrow_5.png" class="align-center" src="_images/wine_arrow_5.png" style="width: 600px;" />
+</a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set color arrow and color text</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color_text&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_arrow_8.png"><img alt="_images/wine_arrow_8.png" class="align-center" src="_images/wine_arrow_8.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/wine_arrow_8.png"><img alt="_images/wine_arrow_8.png" class="align-center" src="_images/wine_arrow_8.png" style="width: 600px;" />
+</a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default settings</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_arrow_9.png"><img alt="_images/wine_arrow_9.png" class="align-center" src="_images/wine_arrow_9.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/wine_arrow_9.png"><img alt="_images/wine_arrow_9.png" class="align-center" src="_images/wine_arrow_9.png" style="width: 600px;" />
+</a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change the scale factor of the arrow. The scale_factor of 3 seems a little bit too much here ;)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">(</span><span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_arrow_10.png"><img alt="_images/wine_arrow_10.png" class="align-center" src="_images/wine_arrow_10.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/wine_arrow_10.png"><img alt="_images/wine_arrow_10.png" class="align-center" src="_images/wine_arrow_10.png" style="width: 600px;" />
+</a>
 <hr>
 <center>
         <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>

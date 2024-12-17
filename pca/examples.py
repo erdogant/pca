@@ -1,3 +1,19 @@
+# Load pca
+from pca import pca
+
+# Initialize pca
+model = pca(n_components=3)
+
+# Load example data set
+df = model.import_example(data='iris')
+
+# Fit transform
+results = model.fit_transform(df)
+
+model.biplot(s=15, fontsize=0)
+
+# %% issue 54
+# https://github.com/erdogant/pca/issues/54
 from pca import pca
 import pandas as pd
 import numpy as np
@@ -8,9 +24,6 @@ import numpy as np
 from sklearn.datasets import load_iris
 import pandas as pd
 
-
-# %% issue 54
-# https://github.com/erdogant/pca/issues/54
 from pca import pca
 
 # Create dataset
@@ -36,20 +49,6 @@ outliers_new = model.results['outliers']
 print("Before:", outliers_original['y_bool'].value_counts())
 print("After:", outliers_new.iloc[:1]['y_bool'].value_counts())
 
-# %%
-# Load pca
-from pca import pca
-
-# Initialize pca
-model = pca(n_components=3)
-
-# Load example data set
-df = model.import_example(data='iris')
-
-# Fit transform
-results = model.fit_transform(df)
-
-model.biplot(s=1, fontsize=0)
 
 
 # %%
@@ -65,6 +64,58 @@ model = pca(normalize=True, detect_outliers=['ht2', 'spe'], n_std=2, verbose='in
 results = model.fit_transform(df)
 
 model.biplot(SPE=False, HT2=True, density=True)
+
+# %%
+
+df = dz.get('ds_salaries.zip')
+
+# Store salary in separate target variable.
+y = df['salary_in_usd']
+
+# Remove redundant variables
+df.drop(labels=['salary_currency', 'salary', 'salary_in_usd'], inplace=True, axis=1)
+
+# Make the catagorical variables better to understand.
+df['experience_level'] = df['experience_level'].replace({'EN':'Entry-level', 'MI':'Junior Mid-level', 'SE':'Intermediate Senior-level', 'EX':'Expert Executive-level / Director'}, regex=True)
+df['employment_type'] = df['employment_type'].replace({'PT':'Part-time', 'FT':'Full-time', 'CT':'Contract', 'FL':'Freelance'}, regex=True)
+df['company_size'] = df['company_size'].replace({'S':'Small (less than 50)', 'M':'Medium (50 to 250)', 'L':'Large (>250)'}, regex=True)
+df['remote_ratio'] = df['remote_ratio'].replace({0:'No remote', 50:'Partially remote', 100:'>80% remote'}, regex=True)
+df['work_year'] = df['work_year'].astype(str)
+
+df.shape
+# (4134, 8)
+
+from df2onehot import df2onehot
+
+# One hot encoding and removing any multicollinearity to prevent the dummy trap.
+dfhot = df2onehot(df,
+                  remove_multicollinearity=True,
+                  y_min=5,
+                  verbose=4)['onehot']
+
+# Import library
+from pca import pca
+# Initialize
+model = pca(normalize=False)
+# Fit model using PCA
+model.fit_transform(dfhot)
+
+# Make biplot
+model.biplot(labels=df['job_title'],
+             s=y/500,
+             marker=df['experience_level'],
+             n_feat=10,
+             density=True,
+             fontsize=0,
+             jitter=0.05,
+             alpha=0.8,
+             color_arrow='#000000',
+             arrowdict={'color_text': '#000000', 'fontsize': 32},
+             figsize=(40, 30),
+             verbose=4,
+             )
+
+
 
 # %%
 # Load pca
@@ -350,6 +401,7 @@ fig, ax = model.biplot(c=[0, 0, 0],
 
 # Import library
 from pca import pca
+import numpy as np
 
 # Initialize
 model = pca()

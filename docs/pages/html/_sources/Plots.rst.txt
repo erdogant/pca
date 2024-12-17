@@ -83,6 +83,14 @@ Scatter plot
 Biplot
 ###############
 
+The biplot draws the loadings (arrows) together with the samples (scatterplot).
+The loadings can be colored red and blue which indicates the strength of the particular feature in the PC.
+
+For each principal component (PC), the feature is determined with the largest absolute loading. This indicates which feature contributes the most to each PC and can occur in multiple PCs.
+The highest loading values for the features are colored red in the biplot and described as "best" in the output dataframe.
+The features that were not seen with highest loadings for any PC are considered weaker features, and are colored blue the biplot. In the output dataframe these features are described as "weak".
+
+
 .. code:: python
 
 	# Make biplot
@@ -91,6 +99,24 @@ Biplot
 	# Here again, many other options can be turned on and off
 	model.biplot(SPE=True, HT2=True, legend=1)
 
+	# Show the top features
+	results['topfeat']
+
+	#       PC                       feature   loading  type
+	# 0    PC1                    flavanoids  0.422934  best
+	# 1    PC2               color_intensity  0.529996  best
+	# 2    PC3                           ash  0.626224  best
+	# 3    PC4                    malic_acid  0.536890  best
+	# 4    PC5                     magnesium  0.727049  best
+	# 5    PC6                    malic_acid  0.536814  best
+	# 6    PC7          nonflavanoid_phenols  0.595447  best
+	# 7    PC8                           hue  0.436624  best
+	# 8    PC9                       proline  0.575786  best
+	# 9   PC10  od280/od315_of_diluted_wines  0.523706  best
+	# 10   PC9                       alcohol -0.508619  weak
+	# 11   PC3             alcalinity_of_ash  0.612080  weak
+	# 12   PC8                 total_phenols -0.405934  weak
+	# 13   PC6               proanthocyanins -0.533795  weak
 
 .. |figP5| image:: ../figs/wine_biplot.png
 .. |figP6| image:: ../figs/wine_biplot_with_outliers.png

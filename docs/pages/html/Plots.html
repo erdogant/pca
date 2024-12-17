@@ -1,20 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Load dataset &mdash; pca pca documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e0179649" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5d2b88f6"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -33,9 +35,6 @@
           <a href="index.html" class="icon icon-home">
             pca
           </a>
-              <div class="version">
-                2.0.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -134,7 +133,7 @@
            <div itemprop="articleBody">
              
   <section id="load-dataset">
-<h1>Load dataset<a class="headerlink" href="#load-dataset" title="Permalink to this heading"></a></h1>
+<h1>Load dataset<a class="headerlink" href="#load-dataset" title="Link to this heading"></a></h1>
 <p>Let’s load the <strong>wine</strong> dataset to demonstrate the plots.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load library</span>
 <span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_wine</span>
@@ -166,7 +165,7 @@
 </div>
 </section>
 <section id="scatter-plot">
-<h1>Scatter plot<a class="headerlink" href="#scatter-plot" title="Permalink to this heading"></a></h1>
+<h1>Scatter plot<a class="headerlink" href="#scatter-plot" title="Link to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make scatterplot</span>
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">()</span>
 
@@ -187,7 +186,7 @@
 </pre></div>
 </div>
 <table class="docutils align-center" id="id1">
-<caption><span class="caption-text">Scatterplots</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Scatterplots</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
 <tbody>
 <tr class="row-odd"><td colspan="2"><p><img alt="figP1" src="_images/wine_scatter.png" /></p></td>
 </tr>
@@ -204,16 +203,40 @@
 </table>
 </section>
 <section id="biplot">
-<h1>Biplot<a class="headerlink" href="#biplot" title="Permalink to this heading"></a></h1>
+<h1>Biplot<a class="headerlink" href="#biplot" title="Link to this heading"></a></h1>
+<p>The biplot draws the loadings (arrows) together with the samples (scatterplot).
+The loadings can be colored red and blue which indicates the strength of the particular feature in the PC.</p>
+<p>For each principal component (PC), the feature is determined with the largest absolute loading. This indicates which feature contributes the most to each PC and can occur in multiple PCs.
+The highest loading values for the features are colored red in the biplot and described as “best” in the output dataframe.
+The features that were not seen with highest loadings for any PC are considered weaker features, and are colored blue the biplot. In the output dataframe these features are described as “weak”.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make biplot</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">()</span>
 
 <span class="c1"># Here again, many other options can be turned on and off</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Show the top features</span>
+<span class="n">results</span><span class="p">[</span><span class="s1">&#39;topfeat&#39;</span><span class="p">]</span>
+
+<span class="c1">#       PC                       feature   loading  type</span>
+<span class="c1"># 0    PC1                    flavanoids  0.422934  best</span>
+<span class="c1"># 1    PC2               color_intensity  0.529996  best</span>
+<span class="c1"># 2    PC3                           ash  0.626224  best</span>
+<span class="c1"># 3    PC4                    malic_acid  0.536890  best</span>
+<span class="c1"># 4    PC5                     magnesium  0.727049  best</span>
+<span class="c1"># 5    PC6                    malic_acid  0.536814  best</span>
+<span class="c1"># 6    PC7          nonflavanoid_phenols  0.595447  best</span>
+<span class="c1"># 7    PC8                           hue  0.436624  best</span>
+<span class="c1"># 8    PC9                       proline  0.575786  best</span>
+<span class="c1"># 9   PC10  od280/od315_of_diluted_wines  0.523706  best</span>
+<span class="c1"># 10   PC9                       alcohol -0.508619  weak</span>
+<span class="c1"># 11   PC3             alcalinity_of_ash  0.612080  weak</span>
+<span class="c1"># 12   PC8                 total_phenols -0.405934  weak</span>
+<span class="c1"># 13   PC6               proanthocyanins -0.533795  weak</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id2">
-<caption><span class="caption-text">Biplots</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Biplots</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figP5" src="_images/wine_biplot.png" /></p></td>
 </tr>
@@ -223,28 +246,30 @@
 </table>
 </section>
 <section id="biplot-only-arrows">
-<h1>Biplot (only arrows)<a class="headerlink" href="#biplot-only-arrows" title="Permalink to this heading"></a></h1>
+<h1>Biplot (only arrows)<a class="headerlink" href="#biplot-only-arrows" title="Link to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make plot with parameters: set cmap to None and label and legend to False. Only directions will be plotted.</span>
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/biplot_only_directions.png"><img alt="_images/biplot_only_directions.png" class="align-center" src="_images/biplot_only_directions.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/biplot_only_directions.png"><img alt="_images/biplot_only_directions.png" class="align-center" src="_images/biplot_only_directions.png" style="width: 600px;" />
+</a>
 </section>
 <section id="explained-variance-plot">
-<h1>Explained variance plot<a class="headerlink" href="#explained-variance-plot" title="Permalink to this heading"></a></h1>
+<h1>Explained variance plot<a class="headerlink" href="#explained-variance-plot" title="Link to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_explained_variance.png"><img alt="_images/wine_explained_variance.png" class="align-center" src="_images/wine_explained_variance.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/wine_explained_variance.png"><img alt="_images/wine_explained_variance.png" class="align-center" src="_images/wine_explained_variance.png" style="width: 600px;" />
+</a>
 </section>
 <section id="alpha-transparency">
-<h1>Alpha Transparency<a class="headerlink" href="#alpha-transparency" title="Permalink to this heading"></a></h1>
+<h1>Alpha Transparency<a class="headerlink" href="#alpha-transparency" title="Link to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="markers">
-<h1>Markers<a class="headerlink" href="#markers" title="Permalink to this heading"></a></h1>
+<h1>Markers<a class="headerlink" href="#markers" title="Link to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_friedman1</span>
 <span class="kn">from</span> <span class="nn">pca</span> <span class="kn">import</span> <span class="n">pca</span>
@@ -272,7 +297,7 @@
 </pre></div>
 </div>
 <table class="docutils align-center" id="id3">
-<caption><span class="caption-text">Biplots with markers</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Biplots with markers</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figP8" src="_images/marker_example_1.png" /></p></td>
 </tr>
@@ -280,7 +305,7 @@
 </table>
 </section>
 <section id="control-color-marker-size-per-sample">
-<h1>Control color/marker/size per sample<a class="headerlink" href="#control-color-marker-size-per-sample" title="Permalink to this heading"></a></h1>
+<h1>Control color/marker/size per sample<a class="headerlink" href="#control-color-marker-size-per-sample" title="Link to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">mcolors</span>
@@ -329,7 +354,7 @@
 </pre></div>
 </div>
 <table class="docutils align-center" id="id4">
-<caption><span class="caption-text">Biplot with customized properties per sample.</span><a class="headerlink" href="#id4" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Biplot with customized properties per sample.</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
 <tbody>
 <tr class="row-odd"><td><p><img alt="figP9" src="_images/custom_example_2.png" /></p></td>
 </tr>
@@ -337,15 +362,16 @@
 </table>
 </section>
 <section id="d-plots">
-<h1>3D plots<a class="headerlink" href="#d-plots" title="Permalink to this heading"></a></h1>
+<h1>3D plots<a class="headerlink" href="#d-plots" title="Link to this heading"></a></h1>
 <p>All plots can also be created in 3D by setting the <code class="docutils literal notranslate"><span class="pre">d3=True</span></code> parameter.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_biplot3d.png"><img alt="_images/wine_biplot3d.png" class="align-center" src="_images/wine_biplot3d.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/wine_biplot3d.png"><img alt="_images/wine_biplot3d.png" class="align-center" src="_images/wine_biplot3d.png" style="width: 600px;" />
+</a>
 </section>
 <section id="toggle-visible-status">
-<h1>Toggle visible status<a class="headerlink" href="#toggle-visible-status" title="Permalink to this heading"></a></h1>
+<h1>Toggle visible status<a class="headerlink" href="#toggle-visible-status" title="Link to this heading"></a></h1>
 <p>The visible status for can be turned on and off.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make plot but not visible.</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

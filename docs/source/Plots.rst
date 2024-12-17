@@ -83,7 +83,7 @@ Scatter plot
 Biplot
 ###############
 
-The biplot show the loadings (arrows) together with the samples (scatterplot).
+The biplot draws the loadings (arrows) together with the samples (scatterplot).
 The loadings can be colored red and blue which indicates the strength of the particular feature in the PC.
 
 For each principal component (PC), the feature is determined with the largest absolute loading. This indicates which feature contributes the most to each PC and can occur in multiple PCs.
@@ -101,7 +101,6 @@ The features that were not seen with highest loadings for any PC are considered 
 
 	# Show the top features
 	results['topfeat']
-
 
 	#       PC                       feature   loading  type
 	# 0    PC1                    flavanoids  0.422934  best
