@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pca"
+dynamic = ["version"]
+authors = [{ name = "Erdogan Taskesen", email = "erdogant@gmail.com" },]
+description = "pca: A Python Package for Principal Component Analysis."
+readme = "README.md"
+requires-python = ">=3"
+license = { file = "LICENSE" }
+keywords = ["Python", "pca", "outliers", "biplot", "explained-variance", "hotelling-t2", "3d-plot"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    'datazets',
+    'statsmodels',
+    'matplotlib',
+    'numpy',
+    'scikit-learn',
+    'scipy',
+    'colourmap>=1.1.19',
+    'pandas',
+    'scatterd>=1.3.7',
+    'adjusttext',
+]
+
+[project.urls]
+Homepage = "https://erdogant.github.io/pca"
+Download = "https://github.com/erdogant/pca/archive/{version}.tar.gz"
+
+[tool.setuptools]
+packages = ["pca"]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "pca.__version__" }
