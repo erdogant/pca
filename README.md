@@ -1,12 +1,3 @@
-
-<p align="center">
-  <a href="https://erdogant.github.io/pca/">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/iris_density.png" width="600" />
-  </a>
-</p>
-
-
-
 [![Python](https://img.shields.io/pypi/pyversions/pca)](https://img.shields.io/pypi/pyversions/pca)
 [![Pypi](https://img.shields.io/pypi/v/pca)](https://pypi.org/project/pca/)
 [![Docs](https://img.shields.io/badge/Sphinx-Docs-Green)](https://erdogant.github.io/pca/)
@@ -22,43 +13,45 @@
 [![Colab](https://colab.research.google.com/assets/colab-badge.svg?logo=github%20sponsors)](https://erdogant.github.io/pca/pages/html/Documentation.html#colab-notebook)
 ![GitHub repo size](https://img.shields.io/github/repo-size/erdogant/pca)
 [![Donate](https://img.shields.io/badge/Support%20this%20project-grey.svg?logo=github%20sponsors)](https://erdogant.github.io/pca/pages/html/Documentation.html#)
-<!---[![BuyMeCoffee](https://img.shields.io/badge/buymea-coffee-yellow.svg)](https://www.buymeacoffee.com/erdogant)-->
-<!---[![Coffee](https://img.shields.io/badge/coffee-black-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)-->
 
-**pca** A Python Package for Principal Component Analysis. The core of PCA is build on sklearn functionality to find maximum compatibility when combining with other packages.
-But this package can do a lot more. Besides the regular pca, it can also perform **SparsePCA**, and **TruncatedSVD**. Depending on your input data, the best approach will be chosen.
-**⭐️ Star this repo if you like it ⭐️**
+### 
 
+<div>
 
-Other functionalities of PCA are:
+<a href="https://erdogant.github.io/pca/"><img src="https://github.com/erdogant/pca/blob/master/docs/figs/iris_density.png" width="175" align="left" /></a>
+``pca`` is a Python package for Principal Component Analysis. The core of PCA is built on sklearn functionality to find maximum compatibility when combining with other packages.
+But this package can do a lot more. Besides the regular PCA, it can also perform SparsePCA, and TruncatedSVD. Depending on your input data, the best approach can be chosen.
+``pca`` contains the most-wanted analysis and plots. Navigate to [API documentations](https://erdogant.github.io/pca/) for more detailed information. **⭐️ Star it if you like it ⭐️**
+</div>
 
-  * **Biplot** to plot the loadings
-  * Determine the **explained variance** 
-  * Extract the best performing **features**
-  * Scatter plot with the **loadings**
-  * Outlier detection using **Hotelling T2 and/or SPE/Dmodx**
+---
 
 
-## Support
+### Key Features
 
-Your ❤️ is important to keep maintaining my packages. You can support in various ways, have a look at the [sponser page](https://erdogant.github.io/pca/pages/html/Documentation.html). Report bugs, issues or help out with developing new features! If you don't have the time to help or are still learning, you can also take a [Medium Mebership using my referral link](https://erdogant.medium.com/) to keep reading all my hands-on blogs. If you also don't need that, there is always the coffee! Thank you! 
-<a href='https://www.buymeacoffee.com/erdogant' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
-
-
-### Read the Medium blog for more details.
-
-#### [1. What are PCA loadings and how to effectively use Biplots?](https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559)
-
-#### [2. Outlier Detection Using Principal Component Analysis and Hotelling’s T2 and SPE/DmodX Methods](https://towardsdatascience.com/outlier-detection-using-principal-component-analysis-and-hotellings-t2-and-spe-dmodx-methods-625b3c90897)
-
-#### [3. Quantitative comparisons between t-SNE, UMAP, PCA, and Other Mappings.](https://towardsdatascience.com/the-similarity-between-t-sne-umap-pca-and-other-mappings-c6453b80f303)
+| Feature | Description |
+|--------|-------------|
+| [**Fit and Transform**](https://erdogant.github.io/pca/pages/html/Algorithm.html) | Perform the PCA analysis. |
+| [**Biplot and Loadings**](https://erdogant.github.io/pca/pages/html/Plots.html#biplot) | Make Biplot with the loadings. |
+| [**Explained Variance**](https://erdogant.github.io/pca/pages/html/Plots.html#explained-variance-plot) | Determine the explained variance and plot. |
+| [**Best Performing Features**](https://erdogant.github.io/pca/pages/html/Algorithm.html#best-performing-features) | Extract the best performing features. |
+| [**Scatterplot**](https://erdogant.github.io/pca/pages/html/Plots.html#scatter-plot) | Create scaterplot with loadings. |
+| [**Outlier Detection**](https://erdogant.github.io/pca/pages/html/Outlier%20detection.html) | Detect outliers using Hotelling T2 and/or SPE/Dmodx. |
+| [**Normalize out Variance**](https://erdogant.github.io/pca/pages/html/Examples.html#normalizing-out-pcs) | Remove any bias from your data. |
+| [**Save and load**](https://erdogant.github.io/pca/pages/html/save.html) | Save and load models. |
+| [**Analyze discrete datasets**](https://erdogant.github.io/pca/pages/html/Examples.html#analyzing-discrete-datasets) | Analyze discrete datasets. |
 
 
 
-## [Documentation pages](https://erdogant.github.io/pca/)
+---
 
-On the [documentation pages](https://erdogant.github.io/pca/) you can find detailed information about the working of the ``pca`` with many examples. 
+### Resources and Links
+- **Example Notebooks:** [Examples](https://erdogant.github.io/pca/pages/html/Documentation.html#colab-notebook)
+- **Blog Posts:** [Medium](https://erdogant.medium.com/)
+- **Documentation:** [Website](https://erdogant.github.io/pca)
+- **Bug Reports and Feature Requests:** [GitHub Issues](https://github.com/erdogant/pca/issues)
 
+---
 
 
 ## Installation
@@ -67,154 +60,148 @@ On the [documentation pages](https://erdogant.github.io/pca/) you can find detai
 pip install pca
 ```
 
-##### Import pca package
 
 ```python
 from pca import pca
 ```
 
-# 
+---
+## Examples
 
 <table style="width:100%">
+
+  <!-- Row 1 -->
   <tr>
-    <th><a href="https://erdogant.github.io/pca/pages/html/Examples.html">Quick start</a></th>
-    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#biplot">Make biplot</a></th>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Examples.html">Quick Start</a></th>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#biplot">Make Biplot</a></th>
   </tr>
   <tr>
-    <td>
-      <p align="left">
-        <a href="https://erdogant.github.io/pca/pages/html/Examples.html">
-          <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter.png?raw=true" width="400" />
-        </a>
-      </p>    
+    <td align="left">
+      <a href="https://erdogant.github.io/pca/pages/html/Examples.html">
+        <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter.png?raw=true" width="400" />
+      </a>
     </td>
-    <td>
-      <p align="left">
-        <a href="https://erdogant.github.io/pca/pages/html/Plots.html#biplot">
-          <img src="https://github.com/erdogant/pca/blob/master/docs/figs/custom_example_2.png?raw=true" width="350" />
-        </a>
-      </p>
+    <td align="left">
+      <a href="https://erdogant.github.io/pca/pages/html/Plots.html#biplot">
+        <img src="https://github.com/erdogant/pca/blob/master/docs/figs/custom_example_2.png?raw=true" width="350" />
+      </a>
     </td>
   </tr>
-</table>
 
-
-
-# 
-
-<table style="width:100%">
+  <!-- Row 2 -->
   <tr>
-    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#explained-variance-plot">Plot Explained variance</a></th>
-    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#d-plots">3D plots</a></th>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#explained-variance-plot">Explained Variance Plot</a></th>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#d-plots">3D Plots</a></th>
   </tr>
   <tr>
-    <td>
-      <p align="left">
-        <a href="https://erdogant.github.io/pca/pages/html/Plots.html#explained-variance-plot">
+    <td align="left">
+      <a href="https://erdogant.github.io/pca/pages/html/Plots.html#explained-variance-plot">
         <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_plot.png" width="350" />
-        </a>
-      </p>
+      </a>
     </td>
-    <td>
-      <p align="left">
-        <a href="https://erdogant.github.io/pca/pages/html/Plots.html#d-plots">
+    <td align="left">
+      <a href="https://erdogant.github.io/pca/pages/html/Plots.html#d-plots">
         <img src="https://github.com/erdogant/pca/blob/master/docs/figs/iris_3d_density.png" width="350" />
-        </a>
-      </p>
+      </a>
     </td>
   </tr>
+
+  <!-- Row 3 -->
+  <tr>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#alpha-transparency">Alpha Transparency</a></th>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Algorithm.html#normalizing-out-pcs">Normalize Out Principal Components</a></th>
+  </tr>
+  <tr>
+    <td align="left">
+      <a href="https://erdogant.github.io/pca/pages/html/Plots.html#alpha-transparency">
+        <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter.png" width="350" />
+      </a>
+    </td>
+    <td align="left">
+      <a href="https://erdogant.github.io/pca/pages/html/Algorithm.html#normalizing-out-pcs">
+        <img src="https://i.stack.imgur.com/Wb1rN.png" width="350" />
+      </a>
+    </td>
+  </tr>
+
+  <!-- Row 4: Feature Importance -->
+  <tr>
+    <th colspan="2"><a href="https://erdogant.github.io/pca/pages/html/Examples.html#feature-importance">Extract Feature Importance</a></th>
+  </tr>
+  <tr>
+    <td colspan="2">
+      Make the biplot to visualize the contribution of each feature to the principal components.
+      <br/><br/>
+      <a href="https://i.stack.imgur.com/V6BYZ.png">
+        <img src="https://i.stack.imgur.com/V6BYZ.png" width="350" />
+      </a>
+      <a href="https://i.stack.imgur.com/831NF.png">
+        <img src="https://i.stack.imgur.com/831NF.png" width="350" />
+      </a>
+    </td>
+  </tr>
+
+  <!-- Row 5 -->
+  <tr>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Outlier%20detection.html">Detect Outliers</a></th>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#biplot-only-arrows">Show Only Loadings</a></th>
+  </tr>
+  <tr>
+    <td align="left">
+      Detect outliers using Hotelling's T² and Fisher’s method across top components (PC1–PC5).
+      <br/><br/>
+      <a href="https://erdogant.github.io/pca/pages/html/Outlier%20detection.html">
+        <img src="https://github.com/erdogant/pca/blob/master/docs/figs/outliers_biplot_spe_hot.png" width="170" />
+        <img src="https://github.com/erdogant/pca/blob/master/docs/figs/outliers_biplot3d.png" width="170" />
+      </a>
+    </td>
+    <td align="left">
+      <a href="https://erdogant.github.io/pca/pages/html/Plots.html#biplot-only-arrows">
+        <img src="https://github.com/erdogant/pca/blob/master/docs/figs/biplot_only_directions.png" width="350" />
+      </a>
+    </td>
+  </tr>
+
+  <!-- Row 6 -->
+  <tr>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Outlier%20detection.html#selection-of-the-outliers">Select Outliers</a></th>
+    <th><a href="https://erdogant.github.io/pca/pages/html/Plots.html#toggle-visible-status">Toggle Visibility</a></th>
+  </tr>
+  <tr>
+    <td align="left">
+      Select and filter identified outliers for deeper inspection or removal.
+    </td>
+    <td align="left">
+      Toggle visibility of samples and components to clean up visualizations.
+    </td>
+  </tr>
+
+  <!-- Row 7 -->
+  <tr>
+    <th colspan="2"><a href="https://erdogant.github.io/pca/pages/html/Examples.html#map-unseen-datapoints-into-fitted-space">Map Unseen Datapoints</a></th>
+  </tr>
+  <tr>
+    <td colspan="2">
+      Project new data into the transformed PCA space. This enables testing new observations without re-fitting the model.
+    </td>
+  </tr>
+
 </table>
-
-
-
-# 
-
-* [Example: Set alpha transparency](https://erdogant.github.io/pca/pages/html/Plots.html#alpha-transparency)
-
-<p align="left">
-  <a href="https://erdogant.github.io/pca/pages/html/Plots.html#alpha-transparency">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/fig_scatter.png" width="350" />
-  </a>
-</p>
-
-
-# 
-
-* [Example: Normalizing out Principal Components](https://erdogant.github.io/pca/pages/html/Algorithm.html#normalizing-out-pcs)
-
-Normalizing out the 1st and more components from the data. 
-This is usefull if the data is seperated in its first component(s) by unwanted or biased variance. Such as sex or experiment location etc. 
-
-# 
-
-* [Example: Extract Feature Importance](https://erdogant.github.io/pca/pages/html/Examples.html#feature-importance)
-
-Make the biplot. It can be nicely seen that the first feature with most variance (f1), is almost horizontal in the plot, whereas the second most variance (f2) is almost vertical. This is expected because most of the variance is in f1, followed by f2 etc.
-
-[![Explained variance][1]][1]
-
-
-Biplot in 2d and 3d. Here we see the nice addition of the expected f3 in the plot in the z-direction.
-
-[![biplot][2]][2]
-
-[![biplot3d][3]][3]
-
-
-  [1]: https://i.stack.imgur.com/Wb1rN.png
-  [2]: https://i.stack.imgur.com/V6BYZ.png
-  [3]: https://i.stack.imgur.com/831NF.png
-  
-
-# 
-
-* [Example: Detection of outliers](https://erdogant.github.io/pca/pages/html/Plots.html#alpha-transparency)
-
-To detect any outliers across the multi-dimensional space of PCA, the *hotellings T2* test is incorporated. 
-This basically means that we compute the chi-square tests across the top n_components (default is PC1 to PC5).
-It is expected that the highest variance (and thus the outliers) will be seen in the first few components because of the nature of PCA.
-Going deeper into PC space may therefore not required but the depth is optional.
-This approach results in a P-value matrix (samples x PCs) for which the P-values per sample are then combined using *fishers* method. 
-This approach allows to determine outliers and the ranking of the outliers (strongest tot weak). The alpha parameter determines the detection of outliers (default: 0.05).
-
-<p align="left">
-  <a href="https://erdogant.github.io/pca/pages/html/Outlier%20detection.html">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/outliers_biplot_spe_hot.png" width="350" />
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/outliers_biplot3d.png" width="350" />
-  </a>
-</p>
-
-
-
-# 
-
-* [Example: Plot only the loadings (arrows)](https://erdogant.github.io/pca/pages/html/Plots.html#alpha-transparency)
-
-<p align="left">
-  <a href="https://erdogant.github.io/pca/pages/html/Plots.html#biplot-only-arrows">
-  <img src="https://github.com/erdogant/pca/blob/master/docs/figs/biplot_only_directions.png" width="350" />
-  </a>
-</p>
-
-
-# 
-
-* [Example: Selection of outliers](https://erdogant.github.io/pca/pages/html/Outlier%20detection.html#selection-of-the-outliers)
-
-# 
-
-* [Example: Toggle visible status](https://erdogant.github.io/pca/pages/html/Plots.html#toggle-visible-status)
-
-# 
-
-* [Example: Map unseen (new) datapoint to the transfomred space](https://erdogant.github.io/pca/pages/html/Examples.html#map-unseen-datapoints-into-fitted-space)
-
-<hr>
-
-#### Citation
-Please cite in your publications if this is useful for your research (see citation).
-
-### Maintainers
-* Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
 
 ---
+
+### Contributors
+Setting up and maintaining PCA has been possible thanks to users and contributors. Thanks to:
+
+<p align="left">
+  <a href="https://github.com/erdogant/pca/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=erdogant/pca" />
+  </a>
+</p>
+
+### Maintainer
+* Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
+* Contributions are welcome.
+* Yes! This library is entirely **free** but it runs on coffee! :) Feel free to support with a <a href="https://erdogant.github.io/donate/?currency=USD&amount=5">Coffee</a>.
+
+[![Buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy+me+a+coffee&emoji=&slug=erdogant&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff)](https://www.buymeacoffee.com/erdogant)
