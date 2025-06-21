@@ -1,7 +1,6 @@
 numpy
 sphinx_rtd_theme
 rst2pdf
-spyder-kernels==2.3.*
 sphinx
 pytest
 git+https://github.com/SuperKogito/sphinxcontrib-pdfembed.git
