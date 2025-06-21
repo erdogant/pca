@@ -1,3 +1,4 @@
+import logging
 from pca.pca import pca
 
 from pca.pca import (
@@ -9,7 +10,18 @@ from pca.pca import (
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '2.0.9'
+__version__ = '2.10.0'
+
+# Setup root logger
+_logger = logging.getLogger('pca')
+_log_handler = logging.StreamHandler()
+_fmt = '[{asctime}] [{name}] [{levelname}] {msg}'
+_formatter = logging.Formatter(fmt=_fmt, style='{', datefmt='%d-%m-%Y %H:%M:%S')
+_log_handler.setFormatter(_formatter)
+_log_handler.setLevel(logging.DEBUG)
+_logger.addHandler(_log_handler)
+_logger.propagate = False
+
 
 # module level doc-string
 __doc__ = """
@@ -35,20 +47,21 @@ Examples
 >>> fig, ax = model.plot()
 >>>
 >>> # Plot loadings
+>>> marker=df['label']
+>>> labels=df['label']
+>>>
 >>> fig, ax = model.biplot()
->>> fig, ax = model.biplot(density=True, SPE=True, HT2=True)
->>> fig, ax = model.scatter()
+>>> fig, ax = model.biplot(density=True, SPE=True, HT2=True, marker=marker, labels=labels)
+>>> fig, ax = model.scatter(marker=marker, labels=labels)
 >>>
->>> 3D plots
->>> fig, ax = model.scatter3d()
->>> fig, ax = model.biplot3d(density=True, SPE=True, HT2=True)
+>>> # 3D plots
+>>> fig, ax = model.scatter3d(marker=marker, labels=labels)
+>>> fig, ax = model.biplot3d()
 >>>
->>> # Normalize out PCs
->>> X_norm = model.norm(X)
 
 References
 ----------
-* Blog: https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
+* Blog: erdogant.medium.com
 * Github: https://github.com/erdogant/pca
 * Documentation: https://erdogant.github.io/pca/
 

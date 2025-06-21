@@ -14,16 +14,11 @@ import matplotlib.pyplot as plt
 from adjustText import adjust_text
 import statsmodels.stats.multitest as multitest
 from typing import Union
-# import logging
+import logging
 
-# logger = logging.getLogger('')
-# [logger.removeHandler(handler) for handler in logger.handlers[:]]
-# console = logging.StreamHandler()
-# formatter = logging.Formatter('[pca] >%(levelname)s> %(message)s')
-# console.setFormatter(formatter)
-# logger.addHandler(console)
-# logger = logging.getLogger(__name__)
-
+logger = logging.getLogger(__name__)
+if not logger.hasHandlers():
+    logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
 # %% Association learning across all variables
 class pca:
@@ -31,54 +26,88 @@ class pca:
 
     Parameters
     ----------
-    n_components : [0..1] or [1..number of samples-1], (default: 0.95)
-        Number of PCs to be returned. When n_components is set >=1, the specified number of PCs is returned.
-        When n_components is set between [0..1], the number of PCs is returned that covers at least this percentage of variance.
-        n_components=None : Return all PCs
-        n_components=0.95 : Return the number of PCs that cover at least 95% of variance.
-        n_components=3    : Return the top 3 PCs.
-    n_feat : int, default: 10
-        Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
-    method : 'pca' (default)
-        'pca' : Principal Component Analysis.
-        'sparse_pca' : Sparse Principal Components Analysis.
-        'trunc_svd' : truncated SVD (aka LSA).
-    alpha : float, default: 0.05
-        Alpha to set the threshold to determine the outliers based on on the Hoteling T2 test.
-    multipletests : str, default: 'fdr_bh'
-        Multiple testing method to correct for the Hoteling T2 test:
-            * None : No multiple testing
-            * 'bonferroni' : one-step correction
-            * 'sidak' : one-step correction
-            * 'holm-sidak' : step down method using Sidak adjustments
-            * 'holm' : step-down method using Bonferroni adjustments
-            * 'simes-hochberg' : step-up method  (independent)
-            * 'hommel' : closed method based on Simes tests (non-negative)
-            * 'fdr_bh' : Benjamini/Hochberg  (non-negative)
-            * 'fdr_by' : Benjamini/Yekutieli (negative)
-            * 'fdr_tsbh' : two stage fdr correction (non-negative)
-            * 'fdr_tsbky' : two stage fdr correction (non-negative
-    n_std : int, default: 3
-        Number of standard deviations to determine the outliers using SPE/DmodX method.
-    onehot : [Bool] optional, (default: False)
-        Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers.
-        Note this is different then a sparse matrix. In case of a sparse matrix, use method='trunc_svd'.
-    normalize : bool (default : False)
-        Normalize data, Z-score
-    detect_outliers : list (default : ['ht2','spe'])
-        None: Do not compute outliers.
-        'ht2': compute outliers based on Hotelling T2.
-        'spe': compute outliers basedon SPE/DmodX method.
-    random_state : int optional
-        Random state
-    Verbose : int (default : 3)
-        Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+    n_components : float or int or None, optional, default=0.95
+        Number of PCs to be returned.
+        - If >= 1, returns the specified number of PCs.
+        - If between 0 and 1, returns the number of PCs that cover at least this percentage of variance.
+        - None : returns all PCs.
+        - 0.95 : return the number of PCs covering at least 95% variance.
+        - 3 : return the top 3 PCs.
+
+    n_feat : int, optional, default=10
+        Number of features explaining the space most, derived from the loadings.
+        Used for visualization purposes only.
+
+    method : {'pca', 'sparse_pca', 'trunc_svd'}, optional, default='pca'
+        Method for dimensionality reduction.
+        - 'pca' : Principal Component Analysis.
+        - 'sparse_pca' : Sparse Principal Component Analysis.
+        - 'trunc_svd' : Truncated Singular Value Decomposition (aka LSA).
+
+    alpha : float, optional, default=0.05
+        Significance level to determine outliers based on Hotelling's T2 test.
+
+    multipletests : str or None, optional, default='fdr_bh'
+        Multiple testing correction method for Hotelling's T2 test.
+        Options include:
+        - None : No multiple testing correction.
+        - 'bonferroni' : One-step correction.
+        - 'sidak' : One-step correction.
+        - 'holm-sidak' : Step-down method using Sidak adjustments.
+        - 'holm' : Step-down method using Bonferroni adjustments.
+        - 'simes-hochberg' : Step-up method (independent).
+        - 'hommel' : Closed method based on Simes tests (non-negative).
+        - 'fdr_bh' : Benjamini/Hochberg (non-negative).
+        - 'fdr_by' : Benjamini/Yekutieli (negative).
+        - 'fdr_tsbh' : Two-stage FDR correction (non-negative).
+        - 'fdr_tsbky' : Two-stage FDR correction (non-negative).
+
+    n_std : int, optional, default=3
+        Number of standard deviations for outlier detection using SPE/DmodX method.
+
+    onehot : bool, optional, default=False
+        Set True if X is sparse data such as output from a TF-IDF model (many zeros, few numbers).
+        Note: This differs from a sparse matrix. For sparse matrices, use method='trunc_svd'.
+
+    normalize : bool, optional, default=False
+        Whether to normalize data (Z-score).
+
+    detect_outliers : list or None, optional, default=['ht2', 'spe']
+        Outlier detection methods to apply:
+        - None : Do not compute outliers.
+        - 'ht2' : Compute outliers based on Hotelling's T2.
+        - 'spe' : Compute outliers based on SPE/DmodX method.
+
+    random_state : int or None, optional
+        Random seed for reproducibility.
+    verbose : str or int, optional, default='info' (20)
+        Logging verbosity level. Possible values:
+        - 0, 60, None, 'silent', 'off', 'no' : no messages.
+        - 10, 'debug' : debug level and above.
+        - 20, 'info' : info level and above.
+        - 30, 'warning' : warning level and above.
+        - 50, 'critical' : critical level and above.
+
+    Examples
+    --------
+    >>> from pca import pca
+    >>>
+    >>> # Initialize
+    >>> model = pca(n_components=None)
+    >>>
+    >>> df = model.import_example(data='iris')
+    >>>
+    >>> # Fit transform
+    >>> out = model.fit_transform(df)
+    >>>
+    >>> # plot
+    >>> model.biplot(density=True, labels=df['label'], marker=df['label'], s=300, SPE=True)
 
     References
     ----------
-    * Blog: https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
-    * Github: https://github.com/erdogant/pca
-    * Documentation: https://erdogant.github.io/pca/
+    - Blog: erdogant.medium.com
+    - Github: https://github.com/erdogant/pca
+    - Documentation: https://erdogant.github.io/pca/
 
     """
 
@@ -98,15 +127,12 @@ class pca:
         if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
         if detect_outliers is not None: detect_outliers=list(map(str.lower, detect_outliers))
 
-        verbose = convert_verbose_to_old(verbose)
-        # Convert to new verbose
-        # verbose = convert_verbose_to_new(verbose)
         # Set the logger
-        # set_logger(verbose=verbose)
+        verbose = set_logger(verbose=verbose, return_status=True)
 
         if onehot:
-            if verbose>=3: print('[pca] >Method is set to: [sparse_pca] because onehot=True.')
             method = 'sparse_pca'
+            logger.info(f"Method is set to: {method} because onehot=True")
 
         # Store in object
         self.n_components = n_components
@@ -120,6 +146,13 @@ class pca:
         self.n_std = n_std
         self.detect_outliers = detect_outliers
         self.verbose = verbose
+
+    def check_verbosity(self):
+        """Check the verbosity."""
+        logger.debug('DEBUG')
+        logger.info('INFO')
+        logger.warning('WARNING')
+        logger.critical('CRITICAL')
 
     # Make PCA fit_transform
     def transform(self, X, row_labels=None, col_labels=None, update_outlier_params=True, verbose=None):
@@ -175,7 +208,8 @@ class pca:
         pca transformed data.
 
         """
-        if verbose is None: verbose = self.verbose
+        # Set the logger
+        if verbose is not None: set_logger(verbose=verbose)
         # Check type to make sure we can perform matrix operations
         if isinstance(X, list):
             X = np.array(X)
@@ -266,12 +300,13 @@ class pca:
         >>> X_norm = model.norm(X)
 
         """
-        if verbose is None: verbose = self.verbose
+        # Set the logger
+        if verbose is not None: set_logger(verbose=verbose)
         percentExplVar=None
         # Check type to make sure we can perform matrix operations
         if sp.issparse(X):
-            if self.verbose>=3: print('[pca] >Input data is a sparse matrix. Method is set to: [trunc_svd].')
             self.method = 'trunc_svd'
+            logger.info(f'Input data is a sparse matrix. Method is set to: {self.method}.')
         if isinstance(X, list):
             X = np.array(X)
 
@@ -280,20 +315,22 @@ class pca:
         # Pre-processing
         X, row_labels, col_labels, scaler = self._preprocessing(X, row_labels, col_labels, verbose=verbose)
 
-        if self.n_components<1:
-            if verbose>=3: print('[pca] >The PCA reduction is performed to capture [%.1f%%] explained variance using the [%.d] columns of the input data.' %(self.n_components * 100, X.shape[1]))
+        # Set number components
+        if self.n_components < 1:
+            logger.info(f"PCA reduction performed to capture {self.n_components * 100:.1f}% explained variance using {X.shape[1]} columns of the input data.")
+
             pcp = self.n_components
             # Run with all components to get all PCs back. This is needed for the step after.
             _, _, _, percentExplVar = _explainedvar(X, method=self.method, n_components=None, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
             # Take number of components with minimal [n_components] explained variance
             if percentExplVar is None:
                 self.n_components = X.shape[1] - 1
-                if verbose>=3: print('[pca] >n_components is set to %d' %(self.n_components))
+                logger.info(f"n_components is set to {self.n_components}")
             else:
                 self.n_components = np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
-                if verbose>=3: print('[pca] >Number of components is [%d] that covers the [%.2f%%] explained variance.' %(self.n_components, pcp * 100))
+                logger.info(f"Number of components is {self.n_components} that covers {pcp * 100:.2f}% explained variance.")
 
-        if verbose>=3: print('[pca] >The PCA reduction is performed on the [%.d] columns of the input dataframe.' %(X.shape[1]))
+        logger.info(f"The PCA reduction is performed on the {X.shape[1]} columns of the input dataframe.")
         model_pca, PC, loadings, percentExplVar = _explainedvar(X, method=self.method, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, percentExplVar=percentExplVar, verbose=verbose)
         pcp = None if percentExplVar is None else percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components)]
 
@@ -311,7 +348,7 @@ class pca:
     def _clean(self, verbose=3):
         # Clean readily fitted models to ensure correct results.
         if hasattr(self, 'results'):
-            if verbose>=3: print('[pca] >Cleaning previous fitted model results..')
+            logger.info("Cleaning previous fitted model results...")
             if hasattr(self, 'results'): del self.results
 
     # Outlier detection
@@ -346,11 +383,11 @@ class pca:
 
         if np.any(np.isin(self.detect_outliers, 'ht2')):
             # Detection of outliers using hotelling T2 test.
-            if (paramT2 is not None) and (verbose>=3): print('[pca] >compute hotellingsT2 with precomputed parameter.')
+            if paramT2 is not None: logger.info("Compute Hotelling's T2 with precomputed parameter.")
             outliersHT2, _, paramT2 = hotellingsT2(PC, alpha=self.alpha, df=1, n_components=self.n_components, multipletests=self.multipletests, param=paramT2, verbose=verbose)
         if np.any(np.isin(self.detect_outliers, 'spe')):
             # Detection of outliers using elipse method.
-            if (paramSPE is not None) and (verbose>=3): print('[pca] >compute SPE with precomputed parameter.')
+            if paramSPE is not None: logger.info("Compute SPE with precomputed parameter.")
             outliersELIPS, _, paramSPE = spe_dmodx(PC, n_std=self.n_std, param=paramSPE, verbose=verbose)
         # Combine
         outliers = pd.concat([outliersHT2, outliersELIPS], axis=1)
@@ -439,31 +476,31 @@ class pca:
     def _preprocessing(self, X, row_labels, col_labels, scaler=None, verbose=3):
         if self.n_components is None:
             self.n_components = X.shape[1] - 1
-            if verbose>=3: print('[pca] >n_components is set to %d' %(self.n_components))
+            logger.info(f"n_components is set to {self.n_components}")
 
         self.n_feat = np.min([self.n_feat, X.shape[1]])
 
         if (not self.onehot) and (not self.normalize) and isinstance(X, pd.DataFrame) and (str(X.values.dtype)=='bool'):
-            if verbose>=2: print('[pca] >[WARNING]: Sparse or one-hot boolean input data is detected, it is highly recommended to set onehot=True or alternatively, normalize=True')
+            logger.warning("Sparse or one-hot boolean input data is detected; it is highly recommended to set onehot=True or alternatively, normalize=True.")
 
         # Set col labels
         if isinstance(X, pd.DataFrame) and col_labels is None:
-            if verbose>=3: print('[pca] >Extracting column labels from dataframe.')
+            logger.info("Extracting column labels from dataframe.")
             col_labels = X.columns.values
         if col_labels is None or len(col_labels)==0 or len(col_labels)!=X.shape[1]:
-            if verbose>=3: print('[pca] >Column labels are auto-completed.')
+            logger.info("Column labels are auto-completed.")
             col_labels = np.arange(1, X.shape[1] + 1).astype(str)
         # if isinstance(col_labels, list):
         col_labels=np.array(col_labels)
 
         # Set row labels
         if isinstance(X, pd.DataFrame) and row_labels is None:
-            if verbose>=3: print('[pca] >Extracting row labels from dataframe.')
+            logger.info("Extracting row labels from dataframe.")
             row_labels = X.index.values
         if row_labels is None or len(row_labels)!=X.shape[0]:
             # row_labels = np.ones(X.shape[0]).astype(int)
             row_labels = np.arange(0, X.shape[0]).astype(int)
-            if verbose>=3: print('[pca] >Row labels are auto-completed.')
+            logger.info("Row labels are auto-completed.")
         # if isinstance(row_labels, list):
         row_labels=np.array(row_labels)
 
@@ -471,16 +508,19 @@ class pca:
             X = X.values
 
         if sp.issparse(X) and self.normalize:
-            if verbose>=3: print('[pca] >[WARNING]: Can not normalize a sparse matrix. Normalize is set to [False]')
+            logger.warning("Cannot normalize a sparse matrix. Normalize is set to False.")
             self.normalize=False
         if (sp.issparse(X) is False) and (self.n_components > X.shape[1]):
             # raise Exception('[pca] >Number of components can not be more then number of features.')
-            if verbose>=2: print('[pca] >[WARNING]: >Number of components can not be more then number of features. n_components is set to %d' %(X.shape[1] - 1))
+            logger.warning(
+                f"Number of components cannot be more than the number of features. "
+                f"n_components is set to {X.shape[1] - 1}.")
+
             self.n_components = X.shape[1] - 1
 
         # normalize data
         if self.normalize:
-            if verbose>=3: print('[pca] >Normalizing input data per feature (zero mean and unit variance)..')
+            logger.info("Normalizing input data per feature (zero mean and unit variance)..")
             # Plot the data distribution
             # fig,(ax1,ax2)=plt.subplots(1,2, figsize=(15,5))
             # ax1.hist(X.ravel().astype(float), bins=50)
@@ -532,7 +572,7 @@ class pca:
         if len(np.unique(labels))==self.results['PC'].shape[0]: labels=None
 
         if self.method=='sparse_pca':
-            print('[pca] >sparse pca does not supported variance ratio and therefore, biplots will not be supported. <return>')
+            logger.info("Sparse PCA does not support variance ratio and therefore, biplots will not be supported.")
             self.results['explained_var'] = [None, None]
             self.results['model'].explained_variance_ratio_ = [0, 0]
             self.results['pcp'] = 0
@@ -653,13 +693,16 @@ class pca:
         tuple containing (fig, ax)
 
         """
-        if verbose is None: verbose = self.verbose
+        # Set the logger
+        if verbose is not None: set_logger(verbose=verbose)
+        # Show warnings when required
         _show_deprecated_warning(label, y, verbose)
+        # Make checks
         if not hasattr(self, 'results'):
-            if verbose>=2: print('[pca]> No results to plot. Hint: model.fit(X) <return>.')
+            logger.warning("No results to plot. Hint: model.fit(X) needed.")
             return None, None
         if (PC is not None) and self.results['PC'].shape[1]<len(PC):
-            if verbose>=1: print('[pca]> 3D plot requires 3 PCs <return>.')
+            logger.warning("3D plot requires 3 principal components.")
             return None, None
 
         # Set parameters based on intuition
@@ -861,10 +904,11 @@ class pca:
             * https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
 
         """
-        if verbose is None: verbose = self.verbose
+        # Set the logger
+        if verbose is not None: set_logger(verbose=verbose)
         _show_deprecated_warning(label, y, verbose)
         if not hasattr(self, 'results'):
-            if verbose>=2: print('[pca]> [WARNING]: No results to plot. Hint: model.fit(X) <return>')
+            logger.warning("No results to plot. Hint: model.fit(X) required.")
             return None, None
 
         # Input checks
@@ -936,14 +980,15 @@ class pca:
         tuple containing (fig, ax)
 
         """
-        if verbose is None: verbose = self.verbose
+        # Set the logger
+        if verbose is not None: set_logger(verbose=verbose)
 
         if self.method=='sparse_pca':
-            print('[pca] >sparse pca does not support variance ratio and therefores scree plots are not supported. <return>')
+            logger.info("Sparse PCA does not support variance ratio; therefore, scree plots are not supported.")
             return None, None
         if n_components is not None:
             if n_components>len(self.results['explained_var']):
-                if verbose>=2: print('[pca] >[WARNING]: Input "n_components=%s" is > then number of PCs (=%s)' %(n_components, len(self.results['explained_var'])))
+                logger.warning(f'Input "n_components={n_components}" is greater than the number of PCs (= {len(self.results["explained_var"])})')
             n_components = np.minimum(len(self.results['explained_var']), n_components)
             explvarCum = self.results['explained_var'][0:n_components]
             explvar = self.results['variance_ratio'][0:n_components]
@@ -1126,7 +1171,7 @@ def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', visible=False, 
     param : 2-element tuple
         computed g_ell_center and cov from X.
     """
-    if verbose>=3: print('[pca] >Outlier detection using SPE/DmodX with n_std=[%d]' %(n_std))
+    logger.info(f"Outlier detection using SPE/DmodX with n_std=[{n_std}]")
     g_ellipse = None
     # The 2x2 covariance matrix to base the ellipse on the location of the center of the ellipse. Expects a 2-element sequence of [x0, y0].
     n_components = np.minimum(2, X.shape[1])
@@ -1232,7 +1277,7 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', pa
     else:
         mean, var = np.mean(X), np.var(X)
         param = (mean, var)
-    if verbose>=3: print('[pca] >Outlier detection using Hotelling T2 test with alpha=[%.2f] and n_components=[%d]' %(alpha, n_components))
+    logger.info(f"Outlier detection using Hotelling T2 test with alpha=[{alpha:.2f}] and n_components=[{n_components}]")
     y_score = (y - mean) ** 2 / var
     # Compute probability per PC whether datapoints are outside the boundary
     y_proba = 1 - stats.chi2.cdf(y_score, df=df)
@@ -1289,7 +1334,7 @@ def multitest_correction(Praw, multipletests='fdr_bh', verbose=3):
 
     """
     if multipletests is not None:
-        if verbose>=3: print("[pca] >Multiple test correction applied for Hotelling T2 test: [%s]" %(multipletests))
+        logger.info(f"Multiple test correction applied for Hotelling T2 test: [{multipletests}]")
         Padj = multitest.multipletests(Praw, method=multipletests)[1]
     else:
         Padj=Praw
@@ -1302,29 +1347,29 @@ def multitest_correction(Praw, multipletests='fdr_bh', verbose=3):
 def _explainedvar(X, method='pca', n_components=None, onehot=False, random_state=None, n_jobs=-1, percentExplVar=None, verbose=3):
     # Create the model
     if method=='trunc_svd':
-        if verbose>=3: print('[pca] >Fit using Truncated SVD.')
+        logger.info("Fit using Truncated SVD.")
         if n_components is None:
             n_components = X.shape[1] - 1
         model = TruncatedSVD(n_components=n_components, random_state=random_state)
     elif method=='sparse_pca':
-        if verbose>=3: print('[pca] >Fit using Sparse PCA.')
+        logger.info("Fit using Sparse PCA.")
         onehot=True
         model = SparsePCA(n_components=n_components, random_state=random_state, n_jobs=n_jobs)
         # model = MiniBatchSparsePCA(n_components=n_components, random_state=random_state, n_jobs=n_jobs)
     else:
-        if verbose>=3: print('[pca] >Fit using PCA.')
+        logger.info('Fit using PCA.')
         model = PCA(n_components=n_components, random_state=random_state)
 
     # Fit model
     model.fit(X)
     # Do the reduction
-    if verbose>=3: print('[pca] >Compute loadings and PCs.')
+    logger.info("Compute loadings and PCs.")
     loadings = model.components_  # Ook wel de coeeficienten genoemd: coefs!
     PC = model.transform(X)
 
     # Compute explained variance, top 95% variance
     if (not onehot) and (percentExplVar is None):
-        if verbose>=3: print('[pca] >Compute explained variance.')
+        logger.info("Compute explained variance.")
         percentExplVar = model.explained_variance_ratio_.cumsum()
     # if method=='sparse_pca':
     #     model.explained_variance_ = _get_explained_variance(X.T, PC.T)
@@ -1456,10 +1501,10 @@ def _biplot_input_checks(results, PC, cmap, arrowdict, color_arrow, fontsize, fo
     # Check PCs
     if results['PC'].shape[1]<2: raise ValueError('[pca] >[Error] Requires 2 PCs to make 2d plot.')
     if np.max(PC)>=results['PC'].shape[1]: raise ValueError('[pca] >[Error] PC%.0d does not exist!' %(np.max(PC) + 1))
-    if verbose>=3 and d3:
-        print('[pca] >Plot PC%.0d vs PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1, PC[2] + 1))
-    elif verbose>=3:
-        print('[pca] >Plot PC%.0d vs PC%.0d with loadings.' %(PC[0] + 1, PC[1] + 1))
+    if d3:
+        logger.info(f"Plot PC{PC[0] + 1} vs PC{PC[1] + 1} vs PC{PC[2] + 1} with loadings.")
+    else:
+        logger.info(f"Plot PC{PC[0] + 1} vs PC{PC[1] + 1} with loadings.")
 
     # Set defaults in arrowdict
     arrowdict =_set_arrowdict(arrowdict, color_arrow=color_arrow, fontsize=fontsize, fontweight=fontweight)
@@ -1502,7 +1547,10 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
     topfeat = topfeat.drop_duplicates(subset=['feature'])
     if topfeat.shape[0]<n_feat:
         n_feat = topfeat.shape[0]
-        if verbose>=2: print('[pca] >[WARNING]: n_feat can not be reached because of the limitation of n_components (=%d). n_feat is reduced to %d.' %(self.n_components, n_feat))
+        logger.warning(
+            f"n_feat cannot be reached because of the limitation of n_components (={self.n_components}). "
+            f"n_feat is reduced to {n_feat}."
+        )
 
     # Plot arrows and text
     arrow_line_color = arrowdict['color_arrow']
@@ -1659,7 +1707,7 @@ def normalize_size(getsizes, minscale: Union[int, float] = 0.5, maxscale: Union[
     return getsizes
 
 
-# %%
+# %% Logger handling
 def convert_verbose_to_old(verbose):
     """Convert new verbosity to the old ones."""
     # In case the new verbosity is used, convert to the old one.
@@ -1676,86 +1724,99 @@ def convert_verbose_to_old(verbose):
         return verbose
 
 
-# def convert_verbose_to_new(verbose):
-#     """Convert old verbosity to the new."""
-#     # In case the new verbosity is used, convert to the old one.
-#     if verbose is None: verbose=0
-#     if not isinstance(verbose, str) and verbose<10:
-#         status_map = {
-#             'None': 'silent',
-#             0: 'silent',
-#             6: 'silent',
-#             1: 'critical',
-#             2: 'warning',
-#             3: 'info',
-#             4: 'debug',
-#             5: 'debug'}
-#         if verbose>=2: print('[scatterd]> WARNING use the standardized verbose status. The status [1-6] will be deprecated in future versions.')
-#         return status_map.get(verbose, 0)
-#     else:
-#         return verbose
+def convert_verbose_to_new(verbose):
+    """Convert old verbosity to the new."""
+    # In case the new verbosity is used, convert to the old one.
+    if verbose is None: verbose=0
+    if not isinstance(verbose, str) and verbose<10:
+        status_map = {
+            1: 'critical',
+            2: 'warning',
+            3: 'info',
+            4: 'debug',
+            5: 'debug',
+            6: 'silent',
+            0: 'silent',
+            'None': 'silent',
+            }
+        if verbose>=2: print('[pca] WARNING use the standardized verbose status. The status [1-6] will be deprecated in future versions.')
+        return status_map.get(verbose, 0)
+    else:
+        return verbose
+
+def get_logger():
+    return logger.getEffectiveLevel()
 
 
-# def get_logger():
-#     return logger.getEffectiveLevel()
+def set_logger(verbose: [str, int] = 'info', return_status: bool = False):
+    """Set the logger for verbosity messages.
+
+    Parameters
+    ----------
+    verbose : [str, int], default is 'info' or 20
+        Set the verbose messages using string or integer values.
+        * [0, 60, None, 'silent', 'off', 'no']: No message.
+        * [10, 'debug']: Messages from debug level and higher.
+        * [20, 'info']: Messages from info level and higher.
+        * [30, 'warning']: Messages from warning level and higher.
+        * [50, 'critical', 'error']: Messages from critical level and higher.
+
+    Returns
+    -------
+    None.
+
+    > # Set the logger to warning
+    > set_logger(verbose='warning')
+    > # Test with different messages
+    > logger.debug("Hello debug")
+    > logger.info("Hello info")
+    > logger.warning("Hello warning")
+    > logger.critical("Hello critical")
+
+    """
+    # Convert verbose to new
+    verbose = convert_verbose_to_new(verbose)
+    # Set 0 and None as no messages.
+    if (verbose==0) or (verbose is None):
+        verbose=60
+    # Convert str to levels
+    if isinstance(verbose, str):
+        levels = {
+            'silent': logging.CRITICAL + 10,
+            'off': logging.CRITICAL + 10,
+            'no': logging.CRITICAL + 10,
+            'debug': logging.DEBUG,
+            'info': logging.INFO,
+            'warning': logging.WARNING,
+            'error': logging.ERROR,
+            'critical': logging.CRITICAL,
+        }
+        verbose = levels[verbose]
+
+    # Show examples
+    logger.setLevel(verbose)
+
+    if return_status:
+        return verbose
 
 
-# def set_logger(verbose: [str, int] = 'info'):
-#     """Set the logger for verbosity messages.
-
-#     Parameters
-#     ----------
-#     verbose : [str, int], default is 'info' or 20
-#         Set the verbose messages using string or integer values.
-#         * [0, 60, None, 'silent', 'off', 'no']: No message.
-#         * [10, 'debug']: Messages from debug level and higher.
-#         * [20, 'info']: Messages from info level and higher.
-#         * [30, 'warning']: Messages from warning level and higher.
-#         * [50, 'critical']: Messages from critical level and higher.
-
-#     Returns
-#     -------
-#     None.
-
-#     > # Set the logger to warning
-#     > set_logger(verbose='warning')
-#     > # Test with different messages
-#     > logger.debug("Hello debug")
-#     > logger.info("Hello info")
-#     > logger.warning("Hello warning")
-#     > logger.critical("Hello critical")
-
-#     """
-#     # Set 0 and None as no messages.
-#     if (verbose==0) or (verbose is None):
-#         verbose=60
-#     # Convert to verbose
-#     verbose = convert_verbose_to_new(verbose)
-#     # Convert str to levels
-#     if isinstance(verbose, str):
-#         levels = {'silent': 60,
-#                   'off': 60,
-#                   'no': 60,
-#                   'debug': 10,
-#                   'info': 20,
-#                   'warning': 30,
-#                   'error': 50,
-#                   'critical': 50}
-#         verbose = levels[verbose]
-
-#     # Show examples
-#     logger.setLevel(verbose)
-#     logger.debug('Set verbose to %s' %(verbose))
+def disable_tqdm():
+    """Set the logger for verbosity messages."""
+    return (True if (logger.getEffectiveLevel()>=30) else False)
 
 
-# def disable_tqdm():
-#     """Set the logger for verbosity messages."""
-#     return (True if (logger.getEffectiveLevel()>=30) else False)
+def check_logger(verbose: [str, int] = 'info'):
+    """Check the logger."""
+    set_logger(verbose)
+    logger.debug('DEBUG')
+    logger.info('INFO')
+    logger.warning('WARNING')
+    logger.critical('CRITICAL')
 
 
 # %%
 def _show_deprecated_warning(label, y, verbose):
     if label is not None:
-        if verbose>=2: print('[pca]> [WARNING]: De parameter <label> is deprecated and will not be supported in future version.')
+        logger.warning('Parameter <label> is deprecated and will not be supported in future version.')
     if y is not None:
-        if verbose>=2: print('[pca]> [WARNING]: De parameter <y> is deprecated and will not be supported in future version. Use <labels> instead.')
+        logger.warning('Parameter <y> is deprecated and will not be supported in future version. Use <labels> instead.')
