@@ -7,10 +7,14 @@ model = pca(n_components=2, verbose='debug', n_std=2)
 # Load example data set
 df = model.import_example(data='iris')
 
+import colourmap as cm
+colours = cm.fromlist(df['label'].values, cmap='Set1', scheme='rgb')[0]
+            
 # Fit transform
-results = model.fit_transform(df)
+out = model.fit_transform(df)
 
-ax = model.biplot(s=200, SPE=True, HT2=True, labels=df['label'])
+ax = model.scatter(s=200, SPE=True, HT2=True, labels=df['label'], c=colours)
+ax = model.biplot(s=200, SPE=True, HT2=True, c=colours)
 
 # %% issue 54
 # https://github.com/erdogant/pca/issues/54
@@ -324,7 +328,7 @@ results = model.fit_transform(df)
 model.biplot(HT2=True,
              SPE=True,
              s=np.random.randint(20, 500, size=df.shape[0]),
-             marker=y,
+             marker=df.index.values,
              cmap='bwr_r',
              fontsize=22,
              legend=2,
