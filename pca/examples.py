@@ -145,34 +145,38 @@ model.biplot(HT2=True,
 # model.biplot(arrowdict={'color_strong': 'r', 'color_weak': 'g'})
 
 # %%
-# from sklearn.datasets import make_friedman1
-# X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
+from sklearn.datasets import make_friedman1
+X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
 
-# model = pca()
-# model.fit_transform(X)
+model = pca()
+model.fit_transform(X)
 
 # Loading are automatically set based on weak/strong
+model.biplot()
+# Remove scatter points
 model.biplot(s=0)
+# Set arrow pointer size
+model.biplot(s=0, arrowdict={'scale_factor': 4})
 # Change strong and weak colors
-model.biplot(s=0, arrowdict={'color_strong': 'r', 'color_weak': 'g'})
+model.biplot(s=0, arrowdict={'color_strong': 'r', 'color_weak': 'g', 'scale_factor': 4})
 # Set alpha to constant value
-model.biplot(s=0, arrowdict={'alpha': 0.8})
+model.biplot(s=0, arrowdict={'alpha': 0.8, 'scale_factor': 4})
 # Change arrow text color
-model.biplot(s=0, arrowdict={'color_text': 'k'})
+model.biplot(s=0, arrowdict={'color_text': 'k', 'scale_factor': 4})
 # Change arrow color, which automatically changes the label color too
 model.biplot(s=0, color_arrow='k')
 # Almost Remove arrows but keep the text
-model.biplot(s=0, color_arrow='k', arrowdict={'alpha': 0.9})
+model.biplot(s=0, color_arrow='k', arrowdict={'alpha': 0.9, 'scale_factor': 4})
 # Set color text
-model.biplot(s=0, arrowdict={'color_text': 'k'})
+model.biplot(s=0, arrowdict={'color_text': 'k', 'scale_factor': 4})
 # Set color arrow and color text
-model.biplot(s=0, color_arrow='k', arrowdict={'color_text': 'g'})
+model.biplot(s=0, color_arrow='k', arrowdict={'color_text': 'g', 'scale_factor': 4})
 # Set color arrow and color text and alpha
-model.biplot(s=0, color_arrow='k', arrowdict={'color_text': 'g', 'alpha': 0.8})
+model.biplot(s=0, color_arrow='k', arrowdict={'color_text': 'g', 'alpha': 0.8, 'scale_factor': 4})
 
 # Change the scale factor of the arrow
 model.biplot(arrowdict={'scale_factor': 2})
-model.biplot3d(arrowdict={'scale_factor': 3})
+model.biplot3d(arrowdict={'scale_factor': 4})
 
 model.biplot(s=0, arrowdict={'weight':'bold', 'fontsize': 24, 'color_text': 'r'}, color_arrow='k')
 model.biplot3d(density=True, fontsize=0, arrowdict={'weight':'bold', 'fontsize': 14})
@@ -194,13 +198,23 @@ labels = data.feature_names
 # Make dataframe
 df = pd.DataFrame(data=X, columns=labels, index=y)
 
-model = pca(normalize=True, n_components=None)
+model = pca(normalize=True, n_std=2)
 # Fit transform with dataframe
 results = model.fit_transform(df)
 # Plot
 model.biplot(fontsize=0, labels=df['flavanoids'].values, legend=False, cmap='seismic', n_feat=3, arrowdict={'fontsize':28, 'c':'g'}, density=True)
 # model.biplot3d(legend=None, n_feat=3, fontcolor='r', arrowdict={'fontsize':22, 'c':'k'}, density=True, figsize=(35, 30))
+model.biplot(density=True, s=0)
 
+# 2D plot with samples colored on color_intensity
+model.biplot(labels=df['color_intensity'].values, legend=False, cmap='seismic')
+# 3D plot with samples colored on color_intensity
+model.biplot3d(labels=df['color_intensity'].values, legend=False, label=False, cmap='seismic', fontsize=0)
+
+# 2D plot with samples colored on magnesium
+model.biplot(labels=df['magnesium'].values, legend=False, cmap='seismic')
+# 3D plot with samples colored on magnesium
+model.biplot3d(labels=df['magnesium'].values, legend=False, label=False, cmap='seismic', fontsize=0)
 
 # %% Demonstration of specifying colors, markers, alpha, and size per sample
 # Import library
@@ -753,6 +767,7 @@ fig, ax = model.biplot(cmap=None, legend=True)
 import numpy as np
 import pandas as pd
 from pca import pca
+import matplotlib.pyplot as plt
 
 feat_1 = np.random.randint(0,100,250)
 feat_2 = np.random.randint(0,50,250)
@@ -767,15 +782,13 @@ feat_8 = np.random.randint(0,1,250)
 X = np.c_[feat_1, feat_2, feat_3, feat_4, feat_5, feat_6 ,feat_7, feat_8]
 X = pd.DataFrame(data=X, columns=['feat_1','feat_2','feat_3','feat_4','feat_5','feat_6','feat_7','feat_8'])
 
-# fig, ax = plt.subplots(figsize=(20, 12))
-# X = np.c_[f8,f7,f6,f5,f4,f3,f2,f1]
-# X = pd.DataFrame(data=X, columns=['feat_8','feat_7','feat_6','feat_5','feat_4','feat_3','feat_2','feat_1'])
-# X.plot.hist(bins=50, cmap='Set1', ax=ax)
-# ax.grid(True)
-# ax.set_xlabel('Value')
+fig, ax = plt.subplots(figsize=(20, 12))
+X.plot.hist(bins=50, cmap='Set1', ax=ax, edgecolor='black',linewidth=0.5,alpha=0.6)
+ax.grid(True)
+ax.set_xlabel('Value')
 
 # Initialize
-model = pca(n_components=None, normalize=False)
+model = pca(n_components=0.95, normalize=False)
 # Fit transform data
 results = model.fit_transform(X)
 # Extract the most informative features
@@ -796,14 +809,13 @@ model.plot()
 # Biplot with the loadings
 ax = model.biplot(legend=False)
 # Biplot with the loadings
-ax = model.biplot(n_feat=3, legend=False, )
+ax = model.biplot(n_feat=3, legend=False)
+
 # Cleaning the biplot by removing the scatter, and looking only at the top 3 features.
-ax = model.biplot(n_feat=3, legend=False, cmap=None)
+model.biplot(n_feat=3, legend=False, cmap=None)
 # Make plot with 3 dimensions
 model.biplot3d(n_feat=3, legend=False, cmap=None)
 
-ax = model.biplot(n_feat=3, legend=False, cmap=None, PC=[1,2])
-ax = model.biplot(n_feat=3, legend=False, cmap=None, PC=[2,3])
 
 
 ax = model.biplot(n_feat=10, legend=False, cmap=None, )
