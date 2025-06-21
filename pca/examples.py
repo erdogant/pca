@@ -2,7 +2,7 @@
 from pca import pca
 
 # Initialize pca
-model = pca(n_components=2, verbose='debug', n_std=2)
+model = pca(n_components=2, verbose='info', n_std=2)
 
 # Load example data set
 df = model.import_example(data='iris')
@@ -13,8 +13,9 @@ colours = cm.fromlist(df['label'].values, cmap='Set1', scheme='rgb')[0]
 # Fit transform
 out = model.fit_transform(df)
 
-ax = model.scatter(s=200, SPE=True, HT2=True, labels=df['label'], c=colours)
 ax = model.biplot(s=200, SPE=True, HT2=True, c=colours)
+ax = model.scatter(s=200, SPE=True, HT2=True, labels=df['label'], c=colours)
+
 
 # %% issue 54
 # https://github.com/erdogant/pca/issues/54
