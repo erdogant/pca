@@ -209,14 +209,14 @@ class pca:
 
         """
         # Set the logger
-        if verbose is not None: set_logger(verbose=verbose)
+        verbose = set_logger(verbose) if verbose is not None else get_logger()
         # Check type to make sure we can perform matrix operations
         if isinstance(X, list):
             X = np.array(X)
         if row_labels is None:
             row_labels = np.repeat('mapped', X.shape[0])
         # Pre-processing using scaler.
-        X_scaled, row_labels, _, _ = self._preprocessing(X, row_labels, col_labels, scaler=self.results['scaler'], verbose=verbose)
+        X_scaled, row_labels, _, _ = self._preprocessing(X, row_labels, col_labels, scaler=self.results['scaler'])
         # Transform the data using fitted model.
         PCs = self.results['model'].transform(X_scaled)
         # Store in dataframe
@@ -301,7 +301,7 @@ class pca:
 
         """
         # Set the logger
-        if verbose is not None: set_logger(verbose=verbose)
+        verbose = set_logger(verbose) if verbose is not None else get_logger()
         percentExplVar=None
         # Check type to make sure we can perform matrix operations
         if sp.issparse(X):
@@ -311,9 +311,9 @@ class pca:
             X = np.array(X)
 
         # Clean readily fitted models to ensure correct results.
-        self._clean(verbose=verbose)
+        self._clean()
         # Pre-processing
-        X, row_labels, col_labels, scaler = self._preprocessing(X, row_labels, col_labels, verbose=verbose)
+        X, row_labels, col_labels, scaler = self._preprocessing(X, row_labels, col_labels)
 
         # Set number components
         if self.n_components < 1:
@@ -321,7 +321,7 @@ class pca:
 
             pcp = self.n_components
             # Run with all components to get all PCs back. This is needed for the step after.
-            _, _, _, percentExplVar = _explainedvar(X, method=self.method, n_components=None, onehot=self.onehot, random_state=self.random_state, verbose=verbose)
+            _, _, _, percentExplVar = _explainedvar(X, method=self.method, n_components=None, onehot=self.onehot, random_state=self.random_state)
             # Take number of components with minimal [n_components] explained variance
             if percentExplVar is None:
                 self.n_components = X.shape[1] - 1
@@ -331,13 +331,13 @@ class pca:
                 logger.info(f"Number of components is {self.n_components} that covers {pcp * 100:.2f}% explained variance.")
 
         logger.info(f"The PCA reduction is performed on the {X.shape[1]} columns of the input dataframe.")
-        model_pca, PC, loadings, percentExplVar = _explainedvar(X, method=self.method, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, percentExplVar=percentExplVar, verbose=verbose)
+        model_pca, PC, loadings, percentExplVar = _explainedvar(X, method=self.method, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, percentExplVar=percentExplVar)
         pcp = None if percentExplVar is None else percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components)]
 
         # Combine components relations with features
-        loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components, verbose=verbose)
+        loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components)
         # Top scoring n_components
-        topfeat = self.compute_topfeat(loadings=loadings, verbose=verbose)
+        topfeat = self.compute_topfeat(loadings=loadings)
         # Detection of outliers
         outliers, outliers_params = self.compute_outliers(PC, verbose=verbose)
         # Store
@@ -345,14 +345,14 @@ class pca:
         # Return
         return self.results
 
-    def _clean(self, verbose=3):
+    def _clean(self):
         # Clean readily fitted models to ensure correct results.
         if hasattr(self, 'results'):
             logger.info("Cleaning previous fitted model results...")
             if hasattr(self, 'results'): del self.results
 
     # Outlier detection
-    def compute_outliers(self, PC, n_std=3, verbose=3):
+    def compute_outliers(self, PC, n_std=3, verbose='info'):
         """Compute outliers.
 
         Parameters
@@ -371,6 +371,8 @@ class pca:
         outliers_params: dict, (default: None)
             Contains parameters for hotellingsT2() and spe_dmodx(), reusable in the future.
         """
+        # Set logger
+        verbose = set_logger(verbose) if verbose is not None else get_logger()
         # Convert to numpy array if required
         if isinstance(PC, pd.DataFrame): PC = np.array(PC)
         # Initialize
@@ -395,7 +397,7 @@ class pca:
         return outliers, outliers_params
 
     # Post processing.
-    def _postprocessing(self, model_pca, loadings, col_labels, n_components, verbose=3):
+    def _postprocessing(self, model_pca, loadings, col_labels, n_components):
         PCzip = list(zip(['PC'] * model_pca.components_.shape[0], np.arange(1, model_pca.components_.shape[0] + 1).astype(str)))
         PCnames = list(map(lambda x: ''.join(x), PCzip))
         loadings = pd.DataFrame(loadings, columns=col_labels, index=PCnames)
@@ -403,7 +405,7 @@ class pca:
         return loadings
 
     # Top scoring components
-    def compute_topfeat(self, loadings=None, verbose=3):
+    def compute_topfeat(self, loadings=None):
         """Compute the top-scoring features.
 
         The biplot show the loadings (arrows) together with the samples (scatterplot).
@@ -473,7 +475,7 @@ class pca:
         return df
 
     # Check input values
-    def _preprocessing(self, X, row_labels, col_labels, scaler=None, verbose=3):
+    def _preprocessing(self, X, row_labels, col_labels, scaler=None):
         if self.n_components is None:
             self.n_components = X.shape[1] - 1
             logger.info(f"n_components is set to {self.n_components}")
@@ -611,7 +613,7 @@ class pca:
                 grid=True,
                 y=None,  # deprecated
                 label=None,  # deprecated
-                verbose=3):
+                verbose='info'):
         """Scatter 2d plot.
 
         Parameters
@@ -1113,7 +1115,7 @@ class pca:
             Dataset containing mixed features.
 
         """
-        return import_example(data=data, url=url, sep=sep, verbose=0)
+        return import_example(data=data, url=url, sep=sep, verbose=get_logger())
 
 
 # %%
@@ -1141,7 +1143,7 @@ def _eigsorted(cov, n_std):
     return vals[order], vecs[:, order]
 
 
-def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', visible=False, verbose=3):
+def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', visible=False, verbose='info'):
     """Compute SPE/distance to model (DmodX).
 
     Outlier can be detected using SPE/DmodX (distance to model) based on the mean and covariance of the first 2 dimensions of X.
@@ -1170,7 +1172,9 @@ def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', visible=False, 
         Figure axis.
     param : 2-element tuple
         computed g_ell_center and cov from X.
+
     """
+    if verbose is not None: set_logger(verbose)
     logger.info(f"Outlier detection using SPE/DmodX with n_std=[{n_std}]")
     g_ellipse = None
     # The 2x2 covariance matrix to base the ellipse on the location of the center of the ellipse. Expects a 2-element sequence of [x0, y0].
@@ -1223,7 +1227,7 @@ def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', visible=False, 
 
 
 # %% Outlier detection
-def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', param=None, verbose=3):
+def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', param=None, verbose='info'):
     """Test for outlier using hotelling T2 test.
 
     Test for outliers using chi-square tests for each of the n_components.
@@ -1267,7 +1271,9 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', pa
         boolean value when significant per PC.
     param : 2-element tuple
         computed mean and variance from X.
+
     """
+    if verbose is not None: set_logger(verbose)
     n_components = np.minimum(n_components, X.shape[1])
     X = X[:, 0:n_components]
     y = X
@@ -1298,7 +1304,7 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', pa
 
     Pcomb = np.array(Pcomb)
     # Multiple test correction
-    Pcorr = multitest_correction(Pcomb[:, 1], multipletests=multipletests, verbose=verbose)
+    Pcorr = multitest_correction(Pcomb[:, 1], multipletests=multipletests)
     # Set dataframe
     outliers = pd.DataFrame(data={'y_proba': Pcorr, 'p_raw': Pcomb[:, 1], 'y_score': Pcomb[:, 0], 'y_bool': Pcorr <= alpha})
     # Return
@@ -1306,7 +1312,7 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', pa
 
 
 # %% Do multiple test correction
-def multitest_correction(Praw, multipletests='fdr_bh', verbose=3):
+def multitest_correction(Praw, multipletests='fdr_bh'):
     """Multiple test correction for input pvalues.
 
     Parameters
@@ -1344,7 +1350,7 @@ def multitest_correction(Praw, multipletests='fdr_bh', verbose=3):
 
 
 # %% Explained variance
-def _explainedvar(X, method='pca', n_components=None, onehot=False, random_state=None, n_jobs=-1, percentExplVar=None, verbose=3):
+def _explainedvar(X, method='pca', n_components=None, onehot=False, random_state=None, n_jobs=-1, percentExplVar=None):
     # Create the model
     if method=='trunc_svd':
         logger.info("Fit using Truncated SVD.")
@@ -1402,7 +1408,7 @@ def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_label
 
 
 # %% Import example dataset from github.
-def import_example(data='iris', url=None, sep=',', verbose=3):
+def import_example(data='iris', url=None, sep=',', verbose='info'):
     """Import example dataset from github source.
 
     Import one of the few datasets from github source or specify your own download url link.
@@ -1431,7 +1437,7 @@ def import_example(data='iris', url=None, sep=',', verbose=3):
         Dataset containing mixed features.
 
     """
-    return dz.get(data, url=url, sep=sep, verbose=0)
+    return dz.get(data, url=url, sep=sep, verbose=verbose)
 
 
 # %%
@@ -1597,7 +1603,7 @@ def _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, s, fig, ax):
         Ioutlier2 = self.results['outliers']['y_bool_spe'].values
         if not d3:
             # Plot the ellipse
-            g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.1, visible=False, verbose=0)[1]
+            g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.1, visible=False, verbose=get_logger())[1]
             if g_ellipse is not None:
                 ax.add_artist(g_ellipse)
                 # Set the order of the layer at 1. At this point it is over the density layer which looks nicer.
