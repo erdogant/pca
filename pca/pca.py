@@ -1201,7 +1201,7 @@ def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', visible=False, 
         rad_cc = (xct**2 / (width / 2.)**2) + (yct**2 / (height / 2.)**2)
 
         # Mark the samples outside the ellipse
-        outliers = rad_cc>1
+        outliers = rad_cc > 1
 
         # Plot the raw points.
         g_ellipse = Ellipse(xy=g_ell_center, width=width, height=height, angle=angle, color=color, alpha=calpha)
@@ -1609,9 +1609,9 @@ def _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, s, fig, ax):
     if SPE and ('y_bool_spe' in self.results['outliers'].columns):
         label_spe = str(sum(Ioutlier2)) + ' outlier(s) (SPE/DmodX)'
         if d3:
-            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[0.5, 0.5, 0.5], s=s, label=label_spe, alpha=alpha, zorder=15)
+            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[1, 0, 0], s=s*1.5, label=label_spe, alpha=alpha, zorder=15)
         else:
-            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[0.5, 0.5, 0.5], s=s, label=label_spe, alpha=alpha, zorder=15)
+            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[1, 0, 0], s=s*1.5, label=label_spe, alpha=alpha, zorder=15)
 
     return fig, ax
 
@@ -1627,9 +1627,9 @@ def _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, s, fig, ax):
     if HT2 and ('y_bool' in self.results['outliers'].columns):
         label_t2 = str(sum(Ioutlier1)) + ' outlier(s) (hotelling t2)'
         if d3:
-            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[0, 0, 0], s=s, label=label_t2, alpha=alpha, zorder=15)
+            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[1, 0, 0], s=s*1.5, label=label_t2, alpha=alpha, zorder=15)
         else:
-            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[0, 0, 0], s=s, label=label_t2, alpha=alpha, zorder=15)
+            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[1, 0, 0], s=s*1.5, label=label_t2, alpha=alpha, zorder=15)
 
     return fig, ax
 
