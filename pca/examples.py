@@ -717,58 +717,6 @@ fig, ax = model.biplot(cmap=None, legend=True)
 
 # %%
 import numpy as np
-from sklearn.datasets import load_iris
-
-# Load dataset
-X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
-
-# Load pca
-from pca import pca
-
-# Initialize to reduce the data up to the nubmer of componentes that explains 95% of the variance.
-model = pca(n_components=0.95)
-
-# Reduce the data towards 3 PCs
-model = pca(n_components=3)
-
-# Fit transform
-results = model.fit_transform(X)
-
-# model.plot()
-
-model.scatter(gradient='#ffffff', cmap='Set1')
-model.scatter(cmap='Set1', legend=True, gradient='#ffffff')
-model.scatter(cmap='Set1', legend=True, gradient=None)
-
-model.scatter3d(cmap='Set1', legend=True, gradient='#ffffff')
-model.scatter3d(cmap='Set1', legend=True, gradient=None)
-
-model.biplot(legend=True, SPE=True, HT2=True, visible=True, gradient='#ffffff')
-model.biplot(legend=True, SPE=True, HT2=True, visible=True, gradient=None)
-model.biplot3d(legend=True, SPE=True, HT2=True, visible=True, gradient=None)
-model.biplot3d(legend=True, SPE=True, HT2=True, visible=True, gradient='#ffffff')
-
-
-# %%
-from pca import pca
-from sklearn.datasets import load_iris
-X = pd.DataFrame(data=load_iris().data, columns=load_iris().feature_names, index=load_iris().target)
-model = pca(n_components=3, normalize=True)
-
-out = model.fit_transform(X)
-# fig, ax = model.biplot(legend=False, PC=[1,0])
-print(out['topfeat'])
-
-fig, ax = model.biplot(cmap='Set1', legend=True)
-fig, ax = model.biplot(cmap='Set1', legend=False)
-fig, ax = model.biplot(cmap='Set1', legend=False)
-fig, ax = model.biplot(cmap=None, legend=False)
-fig, ax = model.biplot(cmap=None, legend=True)
-fig, ax = model.biplot(cmap=None, legend=True)
-
-
-# %%
-import numpy as np
 import pandas as pd
 from pca import pca
 import matplotlib.pyplot as plt
