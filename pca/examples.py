@@ -2,15 +2,15 @@
 from pca import pca
 
 # Initialize pca
-model = pca(n_components=2)
+model = pca(n_components=2, verbose='debug', n_std=2)
 
 # Load example data set
 df = model.import_example(data='iris')
 
 # Fit transform
-results = model.fit_transform(df.iloc[:,1:])
+results = model.fit_transform(df)
 
-ax = model.biplot(s=20, fontsize=0, labels=None, verbose=None)
+ax = model.biplot(s=200, SPE=True, HT2=True, labels=df['label'])
 
 # %% issue 54
 # https://github.com/erdogant/pca/issues/54
