@@ -18,7 +18,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 if not logger.hasHandlers():
-    logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
+    logging.basicConfig(level=logging.INFO, format='[{asctime}] [{name}] [{levelname}] {msg}', style='{', datefmt='%Y-%m-%d %H:%M:%S')
 
 # %% Association learning across all variables
 class pca:
@@ -209,7 +209,7 @@ class pca:
 
         """
         # Set the logger
-        verbose = set_logger(verbose) if verbose is not None else get_logger()
+        if verbose is not None: set_logger(verbose)
         # Check type to make sure we can perform matrix operations
         if isinstance(X, list):
             X = np.array(X)
@@ -231,7 +231,7 @@ class pca:
                 self.results['outliers_params']['paramSPE']=None
             PCtot = pd.concat([self.results['PC'], PCs], axis=0)
             # Detection of outliers
-            self.results['outliers'], _ = self.compute_outliers(PCtot, verbose=verbose)
+            self.results['outliers'], _ = self.compute_outliers(PCtot, verbose=get_logger())
             # Store
             self.results['PC'] = PCtot
 
@@ -301,7 +301,7 @@ class pca:
 
         """
         # Set the logger
-        verbose = set_logger(verbose) if verbose is not None else get_logger()
+        if verbose is not None: set_logger(verbose)
         percentExplVar=None
         # Check type to make sure we can perform matrix operations
         if sp.issparse(X):
@@ -339,7 +339,7 @@ class pca:
         # Top scoring n_components
         topfeat = self.compute_topfeat(loadings=loadings)
         # Detection of outliers
-        outliers, outliers_params = self.compute_outliers(PC, verbose=verbose)
+        outliers, outliers_params = self.compute_outliers(PC, verbose=get_logger())
         # Store
         self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler, outliers_params)
         # Return
@@ -372,7 +372,7 @@ class pca:
             Contains parameters for hotellingsT2() and spe_dmodx(), reusable in the future.
         """
         # Set logger
-        verbose = set_logger(verbose) if verbose is not None else get_logger()
+        if verbose is not None: set_logger(verbose)
         # Convert to numpy array if required
         if isinstance(PC, pd.DataFrame): PC = np.array(PC)
         # Initialize
@@ -386,11 +386,11 @@ class pca:
         if np.any(np.isin(self.detect_outliers, 'ht2')):
             # Detection of outliers using hotelling T2 test.
             if paramT2 is not None: logger.info("Compute Hotelling's T2 with precomputed parameter.")
-            outliersHT2, _, paramT2 = hotellingsT2(PC, alpha=self.alpha, df=1, n_components=self.n_components, multipletests=self.multipletests, param=paramT2, verbose=verbose)
+            outliersHT2, _, paramT2 = hotellingsT2(PC, alpha=self.alpha, df=1, n_components=self.n_components, multipletests=self.multipletests, param=paramT2, verbose=get_logger())
         if np.any(np.isin(self.detect_outliers, 'spe')):
             # Detection of outliers using elipse method.
             if paramSPE is not None: logger.info("Compute SPE with precomputed parameter.")
-            outliersELIPS, _, paramSPE = spe_dmodx(PC, n_std=self.n_std, param=paramSPE, verbose=verbose)
+            outliersELIPS, _, paramSPE = spe_dmodx(PC, n_std=self.n_std, param=paramSPE, verbose=get_logger())
         # Combine
         outliers = pd.concat([outliersHT2, outliersELIPS], axis=1)
         outliers_params = {'paramT2': paramT2, 'paramSPE': paramSPE}
@@ -696,9 +696,9 @@ class pca:
 
         """
         # Set the logger
-        if verbose is not None: set_logger(verbose=verbose)
+        if verbose is not None: set_logger(verbose)
         # Show warnings when required
-        _show_deprecated_warning(label, y, verbose)
+        _show_deprecated_warning(label, y, get_logger())
         # Make checks
         if not hasattr(self, 'results'):
             logger.warning("No results to plot. Hint: model.fit(X) needed.")
@@ -746,7 +746,7 @@ class pca:
                            visible=visible,
                            fig=fig,
                            ax=ax,
-                           verbose=verbose,
+                           verbose=get_logger(),
                            )
 
         # Plot the SPE with Elipse
@@ -907,20 +907,20 @@ class pca:
 
         """
         # Set the logger
-        if verbose is not None: set_logger(verbose=verbose)
+        if verbose is not None: set_logger(verbose)
         _show_deprecated_warning(label, y, verbose)
         if not hasattr(self, 'results'):
             logger.warning("No results to plot. Hint: model.fit(X) required.")
             return None, None
 
         # Input checks
-        arrowdict, cmap, PC, d3, s = _biplot_input_checks(self.results, PC, cmap, arrowdict, color_arrow, fontsize, fontweight, c, s, verbose)
+        arrowdict, cmap, PC, d3, s = _biplot_input_checks(self.results, PC, cmap, arrowdict, color_arrow, fontsize, fontweight, c, s, get_logger())
         # Pre-processing
         labels, topfeat, n_feat = self._fig_preprocessing(labels, n_feat, d3)
         # Scatterplot
-        fig, ax = self.scatter(labels=labels, legend=legend, PC=PC, SPE=SPE, HT2=HT2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, fontweight=fontweight, fontsize=fontsize, edgecolor=edgecolor, density=density, density_on_top=density_on_top, dpi=dpi, grid=grid, verbose=verbose)
+        fig, ax = self.scatter(labels=labels, legend=legend, PC=PC, SPE=SPE, HT2=HT2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, fontweight=fontweight, fontsize=fontsize, edgecolor=edgecolor, density=density, density_on_top=density_on_top, dpi=dpi, grid=grid, verbose=get_logger())
         # Add the loadings with arrow to the plot
-        fig, ax = _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose)
+        fig, ax = _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, get_logger())
         # Plot
         # if visible: plt.show()
         # Return
@@ -983,7 +983,7 @@ class pca:
 
         """
         # Set the logger
-        if verbose is not None: set_logger(verbose=verbose)
+        if verbose is not None: set_logger(verbose)
 
         if self.method=='sparse_pca':
             logger.info("Sparse PCA does not support variance ratio; therefore, scree plots are not supported.")
@@ -1765,7 +1765,8 @@ def set_logger(verbose: [str, int] = 'info', return_status: bool = False):
         * [10, 'debug']: Messages from debug level and higher.
         * [20, 'info']: Messages from info level and higher.
         * [30, 'warning']: Messages from warning level and higher.
-        * [50, 'critical', 'error']: Messages from critical level and higher.
+        * [40, 'error']: Messages from warning level and higher.
+        * [50, 'critical']: Messages from critical level and higher.
 
     Returns
     -------
@@ -1777,6 +1778,7 @@ def set_logger(verbose: [str, int] = 'info', return_status: bool = False):
     > logger.debug("Hello debug")
     > logger.info("Hello info")
     > logger.warning("Hello warning")
+    > logger.error("Hello error")
     > logger.critical("Hello critical")
 
     """
@@ -1817,6 +1819,7 @@ def check_logger(verbose: [str, int] = 'info'):
     logger.debug('DEBUG')
     logger.info('INFO')
     logger.warning('WARNING')
+    logger.error('ERROR')
     logger.critical('CRITICAL')
 
 

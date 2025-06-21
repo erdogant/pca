@@ -70,7 +70,7 @@ results = model.fit_transform(df)
 model.biplot(SPE=False, HT2=True, density=True)
 
 # %%
-
+import datazets as dz
 df = dz.get('ds_salaries.zip')
 
 # Store salary in separate target variable.
