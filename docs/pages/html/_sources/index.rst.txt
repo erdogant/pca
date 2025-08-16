@@ -5,10 +5,10 @@ PCA documentation!
 
 
 .. tip::
-	`Read more about PCA loadings and Biplots. <https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559>`_
+	`Read more about PCA loadings and Biplots. <https://medium.com/data-science-collective/pca-fb6ea1208bda>`_
 
 .. tip::
-	`Read more about outlier detection. <https://towardsdatascience.com/outlier-detection-using-principal-component-analysis-and-hotellings-t2-and-spe-dmodx-methods-625b3c90897>`_
+	`Read more about outlier detection. <https://medium.com/data-science-collective/outlier-detection-using-principal-component-analysis-with-hotellings-t2-and-spe-dmodx-methods-c9c0c76cc6c7>`_
 
 .. _logo:
 

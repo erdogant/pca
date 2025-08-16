@@ -103,7 +103,11 @@
 <li class="toctree-l1"><a class="reference internal" href="Additional_Information.html">Additional Information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Coding%20quality.html">Coding quality</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.check_logger"><code class="docutils literal notranslate"><span class="pre">check_logger()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.convert_verbose_to_new"><code class="docutils literal notranslate"><span class="pre">convert_verbose_to_new()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pca.pca.convert_verbose_to_old"><code class="docutils literal notranslate"><span class="pre">convert_verbose_to_old()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.disable_tqdm"><code class="docutils literal notranslate"><span class="pre">disable_tqdm()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pca.pca.hotellingsT2"><code class="docutils literal notranslate"><span class="pre">hotellingsT2()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pca.pca.import_example"><code class="docutils literal notranslate"><span class="pre">import_example()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pca.pca.multitest_correction"><code class="docutils literal notranslate"><span class="pre">multitest_correction()</span></code></a></li>
@@ -111,6 +115,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#pca.pca.pca"><code class="docutils literal notranslate"><span class="pre">pca</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.biplot"><code class="docutils literal notranslate"><span class="pre">pca.biplot()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.biplot3d"><code class="docutils literal notranslate"><span class="pre">pca.biplot3d()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.check_verbosity"><code class="docutils literal notranslate"><span class="pre">pca.check_verbosity()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.compute_outliers"><code class="docutils literal notranslate"><span class="pre">pca.compute_outliers()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.compute_topfeat"><code class="docutils literal notranslate"><span class="pre">pca.compute_topfeat()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.fit_transform"><code class="docutils literal notranslate"><span class="pre">pca.fit_transform()</span></code></a></li>
@@ -122,6 +127,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#pca.pca.pca.transform"><code class="docutils literal notranslate"><span class="pre">pca.transform()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#pca.pca.set_logger"><code class="docutils literal notranslate"><span class="pre">set_logger()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pca.pca.spe_dmodx"><code class="docutils literal notranslate"><span class="pre">spe_dmodx()</span></code></a></li>
 </ul>
 </li>
@@ -157,14 +163,37 @@
 <span id="api-references"></span><h1>API References<a class="headerlink" href="#module-pca.pca" title="Link to this heading"></a></h1>
 <p>pca: A Python Package for Principal Component Analysis.</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="pca.pca.check_logger">
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">check_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;]</span> <span class="pre">=</span> <span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.check_logger" title="Link to this definition"></a></dt>
+<dd><p>Check the logger.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pca.pca.convert_verbose_to_new">
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">convert_verbose_to_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.convert_verbose_to_new" title="Link to this definition"></a></dt>
+<dd><p>Convert old verbosity to the new.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pca.pca.convert_verbose_to_old">
 <span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">convert_verbose_to_old</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.convert_verbose_to_old" title="Link to this definition"></a></dt>
 <dd><p>Convert new verbosity to the old ones.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pca.pca.disable_tqdm">
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">disable_tqdm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.disable_tqdm" title="Link to this definition"></a></dt>
+<dd><p>Set the logger for verbosity messages.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pca.pca.get_logger">
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.get_logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pca.pca.hotellingsT2">
-<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">hotellingsT2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multipletests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fdr_bh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.hotellingsT2" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">hotellingsT2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multipletests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fdr_bh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.hotellingsT2" title="Link to this definition"></a></dt>
 <dd><p>Test for outlier using hotelling T2 test.</p>
 <p>Test for outliers using chi-square tests for each of the n_components.
 The resulting P-value matrix is then combined using fishers method per sample.
@@ -211,7 +240,7 @@ across multiple dimensions will be more significant then others.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pca.pca.import_example">
-<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">import_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'iris'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.import_example" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">import_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'iris'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.import_example" title="Link to this definition"></a></dt>
 <dd><p>Import example dataset from github source.</p>
 <p>Import one of the few datasets from github source or specify your own download url link.</p>
 <dl class="field-list simple">
@@ -251,7 +280,7 @@ verbose : int, (default: 20)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pca.pca.multitest_correction">
-<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">multitest_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Praw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multipletests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fdr_bh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.multitest_correction" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">multitest_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Praw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multipletests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fdr_bh'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.multitest_correction" title="Link to this definition"></a></dt>
 <dd><p>Multiple test correction for input pvalues.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -316,53 +345,73 @@ verbose : int, (default: 20)</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pca.pca.pca">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">pca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pca'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multipletests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fdr_bh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onehot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['ht2',</span> <span class="pre">'spe']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">pca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pca'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multipletests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fdr_bh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onehot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['ht2',</span> <span class="pre">'spe']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca" title="Link to this definition"></a></dt>
 <dd><p>pca module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_components</strong> (<em>[</em><em>0..1</em><em>] or </em><em>[</em><em>1..number</em><em> of </em><em>samples-1</em><em>]</em><em>, </em><em>(</em><em>default: 0.95</em><em>)</em>) – Number of PCs to be returned. When n_components is set &gt;=1, the specified number of PCs is returned.
-When n_components is set between [0..1], the number of PCs is returned that covers at least this percentage of variance.
-n_components=None : Return all PCs
-n_components=0.95 : Return the number of PCs that cover at least 95% of variance.
-n_components=3    : Return the top 3 PCs.</p></li>
-<li><p><strong>n_feat</strong> (<em>int</em><em>, </em><em>default: 10</em>) – Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.</p></li>
-<li><p><strong>method</strong> (<em>'pca'</em><em> (</em><em>default</em><em>)</em>) – ‘pca’ : Principal Component Analysis.
-‘sparse_pca’ : Sparse Principal Components Analysis.
-‘trunc_svd’ : truncated SVD (aka LSA).</p></li>
-<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>default: 0.05</em>) – Alpha to set the threshold to determine the outliers based on on the Hoteling T2 test.</p></li>
-<li><p><strong>multipletests</strong> (<em>str</em><em>, </em><em>default: 'fdr_bh'</em>) – <dl class="simple">
-<dt>Multiple testing method to correct for the Hoteling T2 test:</dt><dd><ul>
-<li><p>None : No multiple testing</p></li>
-<li><p>’bonferroni’ : one-step correction</p></li>
-<li><p>’sidak’ : one-step correction</p></li>
-<li><p>’holm-sidak’ : step down method using Sidak adjustments</p></li>
-<li><p>’holm’ : step-down method using Bonferroni adjustments</p></li>
-<li><p>’simes-hochberg’ : step-up method  (independent)</p></li>
-<li><p>’hommel’ : closed method based on Simes tests (non-negative)</p></li>
-<li><p>’fdr_bh’ : Benjamini/Hochberg  (non-negative)</p></li>
-<li><p>’fdr_by’ : Benjamini/Yekutieli (negative)</p></li>
-<li><p>’fdr_tsbh’ : two stage fdr correction (non-negative)</p></li>
-<li><p>’fdr_tsbky’ : two stage fdr correction (non-negative</p></li>
+<li><p><strong>n_components</strong> (<em>float</em><em> or </em><em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>default=0.95</em>) – Number of PCs to be returned.
+- If &gt;= 1, returns the specified number of PCs.
+- If between 0 and 1, returns the number of PCs that cover at least this percentage of variance.
+- None : returns all PCs.
+- 0.95 : return the number of PCs covering at least 95% variance.
+- 3 : return the top 3 PCs.</p></li>
+<li><p><strong>n_feat</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default=10</em>) – Number of features explaining the space most, derived from the loadings.
+Used for visualization purposes only.</p></li>
+<li><p><strong>method</strong> (<em>{'pca'</em><em>, </em><em>'sparse_pca'</em><em>, </em><em>'trunc_svd'}</em><em>, </em><em>optional</em><em>, </em><em>default='pca'</em>) – Method for dimensionality reduction.
+- ‘pca’ : Principal Component Analysis.
+- ‘sparse_pca’ : Sparse Principal Component Analysis.
+- ‘trunc_svd’ : Truncated Singular Value Decomposition (aka LSA).</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em><em>, </em><em>default=0.05</em>) – Significance level to determine outliers based on Hotelling’s T2 test.</p></li>
+<li><p><strong>multipletests</strong> (<em>str</em><em> or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>default='fdr_bh'</em>) – Multiple testing correction method for Hotelling’s T2 test.
+Options include:
+- None : No multiple testing correction.
+- ‘bonferroni’ : One-step correction.
+- ‘sidak’ : One-step correction.
+- ‘holm-sidak’ : Step-down method using Sidak adjustments.
+- ‘holm’ : Step-down method using Bonferroni adjustments.
+- ‘simes-hochberg’ : Step-up method (independent).
+- ‘hommel’ : Closed method based on Simes tests (non-negative).
+- ‘fdr_bh’ : Benjamini/Hochberg (non-negative).
+- ‘fdr_by’ : Benjamini/Yekutieli (negative).
+- ‘fdr_tsbh’ : Two-stage FDR correction (non-negative).
+- ‘fdr_tsbky’ : Two-stage FDR correction (non-negative).</p></li>
+<li><p><strong>n_std</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default=3</em>) – Number of standard deviations for outlier detection using SPE/DmodX method.</p></li>
+<li><p><strong>onehot</strong> (<em>bool</em><em>, </em><em>optional</em><em>, </em><em>default=False</em>) – Set True if X is sparse data such as output from a TF-IDF model (many zeros, few numbers).
+Note: This differs from a sparse matrix. For sparse matrices, use method=’trunc_svd’.</p></li>
+<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>optional</em><em>, </em><em>default=False</em>) – Whether to normalize data (Z-score).</p></li>
+<li><p><strong>detect_outliers</strong> (<em>list</em><em> or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>default=</em><em>[</em><em>'ht2'</em><em>, </em><em>'spe'</em><em>]</em>) – Outlier detection methods to apply:
+- None : Do not compute outliers.
+- ‘ht2’ : Compute outliers based on Hotelling’s T2.
+- ‘spe’ : Compute outliers based on SPE/DmodX method.</p></li>
+<li><p><strong>random_state</strong> (<em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Random seed for reproducibility.</p></li>
+<li><p><strong>verbose</strong> (<em>str</em><em> or </em><em>int</em><em>, </em><em>optional</em><em>, </em><em>default='info'</em><em> (</em><em>20</em><em>)</em>) – Logging verbosity level. Possible values:
+- 0, 60, None, ‘silent’, ‘off’, ‘no’ : no messages.
+- 10, ‘debug’ : debug level and above.
+- 20, ‘info’ : info level and above.
+- 30, ‘warning’ : warning level and above.
+- 50, ‘critical’ : critical level and above.</p></li>
 </ul>
 </dd>
 </dl>
-</p></li>
-<li><p><strong>n_std</strong> (<em>int</em><em>, </em><em>default: 3</em>) – Number of standard deviations to determine the outliers using SPE/DmodX method.</p></li>
-<li><p><strong>onehot</strong> (<em>[</em><em>Bool</em><em>] </em><em>optional</em><em>, </em><em>(</em><em>default: False</em><em>)</em>) – Boolean: Set True if X is a sparse data set such as the output of a tfidf model. Many zeros and few numbers.
-Note this is different then a sparse matrix. In case of a sparse matrix, use method=’trunc_svd’.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em> (</em><em>default : False</em><em>)</em>) – Normalize data, Z-score</p></li>
-<li><p><strong>detect_outliers</strong> (<em>list</em><em> (</em><em>default :</em><em> [</em><em>'ht2'</em><em>,</em><em>'spe'</em><em>]</em><em>)</em>) – None: Do not compute outliers.
-‘ht2’: compute outliers based on Hotelling T2.
-‘spe’: compute outliers basedon SPE/DmodX method.</p></li>
-<li><p><strong>random_state</strong> (<em>int optional</em>) – Random state</p></li>
-<li><p><strong>Verbose</strong> (<em>int</em><em> (</em><em>default : 3</em><em>)</em>) – Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p></li>
-</ul>
-</dd>
-</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pca</span><span class="w"> </span><span class="kn">import</span> <span class="n">pca</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">import_example</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;iris&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Fit transform</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># plot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 <p class="rubric">References</p>
 <ul class="simple">
-<li><p>Blog: <a class="reference external" href="https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559">https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559</a></p></li>
+<li><p>Blog: erdogant.medium.com</p></li>
 <li><p>Github: <a class="reference external" href="https://github.com/erdogant/pca">https://github.com/erdogant/pca</a></p></li>
 <li><p>Documentation: <a class="reference external" href="https://erdogant.github.io/pca/">https://erdogant.github.io/pca/</a></p></li>
 </ul>
@@ -507,8 +556,14 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pca.pca.pca.check_verbosity">
+<span class="sig-name descname"><span class="pre">check_verbosity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.check_verbosity" title="Link to this definition"></a></dt>
+<dd><p>Check the verbosity.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.compute_outliers">
-<span class="sig-name descname"><span class="pre">compute_outliers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.compute_outliers" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_outliers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.compute_outliers" title="Link to this definition"></a></dt>
 <dd><p>Compute outliers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -530,7 +585,7 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.compute_topfeat">
-<span class="sig-name descname"><span class="pre">compute_topfeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loadings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.compute_topfeat" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_topfeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loadings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.compute_topfeat" title="Link to this definition"></a></dt>
 <dd><p>Compute the top-scoring features.</p>
 <p>The biplot show the loadings (arrows) together with the samples (scatterplot).
 The loadings can be colored red and blue which indicates the strength of the particular feature in the PC.</p>
@@ -698,7 +753,7 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.scatter">
-<span class="sig-name descname"><span class="pre">scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0.1,</span> <span class="pre">0.4]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'o'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edgecolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'#000000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HT2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density_on_top</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">18</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontweight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tab20c'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(25,</span> <span class="pre">15)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.scatter" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0.1,</span> <span class="pre">0.4]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'o'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edgecolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'#000000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HT2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density_on_top</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">18</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontweight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tab20c'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(25,</span> <span class="pre">15)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca.scatter" title="Link to this definition"></a></dt>
 <dd><p>Scatter 2d plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -850,8 +905,39 @@ False: Do not update outlier parameters and outliers that were initially detecte
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pca.pca.set_logger">
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">set_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;]</span> <span class="pre">=</span> <span class="pre">'info'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_status:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.set_logger" title="Link to this definition"></a></dt>
+<dd><p>Set the logger for verbosity messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>verbose</strong> (<em>[</em><em>str</em><em>, </em><em>int</em><em>]</em><em>, </em><em>default is 'info'</em><em> or </em><em>20</em>) – Set the verbose messages using string or integer values.
+* [0, 60, None, ‘silent’, ‘off’, ‘no’]: No message.
+* [10, ‘debug’]: Messages from debug level and higher.
+* [20, ‘info’]: Messages from info level and higher.
+* [30, ‘warning’]: Messages from warning level and higher.
+* [40, ‘error’]: Messages from warning level and higher.
+* [50, ‘critical’]: Messages from critical level and higher.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>None.</em></p></li>
+<li><p><em>&gt; # Set the logger to warning</em></p></li>
+<li><p><em>&gt; set_logger(verbose=’warning’)</em></p></li>
+<li><p><em>&gt; # Test with different messages</em></p></li>
+<li><p><em>&gt; logger.debug(“Hello debug”)</em></p></li>
+<li><p><em>&gt; logger.info(“Hello info”)</em></p></li>
+<li><p><em>&gt; logger.warning(“Hello warning”)</em></p></li>
+<li><p><em>&gt; logger.error(“Hello error”)</em></p></li>
+<li><p><em>&gt; logger.critical(“Hello critical”)</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pca.pca.spe_dmodx">
-<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">spe_dmodx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'green'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.spe_dmodx" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">spe_dmodx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'green'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.spe_dmodx" title="Link to this definition"></a></dt>
 <dd><p>Compute SPE/distance to model (DmodX).</p>
 <p>Outlier can be detected using SPE/DmodX (distance to model) based on the mean and covariance of the first 2 dimensions of X.
 On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are complementary to each other.</p>
