@@ -47,7 +47,7 @@ But this package can do a lot more. Besides the regular PCA, it can also perform
 ### Resources and Links
 - **Example Notebooks:** [Examples](https://erdogant.github.io/pca/pages/html/Documentation.html#colab-notebook)
 - **Medium Blogs** [Medium](https://erdogant.github.io/pca/pages/html/Documentation.html#medium-blogs)
-- **Gumroad Blogs with podcast:** [GumRoad]([https://erdogant.gumroad.com/l/PCA](https://erdogant.github.io/pca/pages/html/Documentation.html#gumroad-products-with-podcasts))
+- **Gumroad Blogs with podcast:** [GumRoad](https://erdogant.github.io/pca/pages/html/Documentation.html#gumroad-products-with-podcasts)
 - **Documentation:** [Website](https://erdogant.github.io/pca)
 - **Bug Reports and Feature Requests:** [GitHub Issues](https://github.com/erdogant/pca/issues)
 
