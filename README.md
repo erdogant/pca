@@ -46,9 +46,8 @@ But this package can do a lot more. Besides the regular PCA, it can also perform
 
 ### Resources and Links
 - **Example Notebooks:** [Examples](https://erdogant.github.io/pca/pages/html/Documentation.html#colab-notebook)
-- **Blog: PCA and Loadings:** [Medium](https://medium.com/data-science-collective/pca-fb6ea1208bda)
-- **Blog: Outlier Detection:** [Medium](https://medium.com/data-science-collective/outlier-detection-using-principal-component-analysis-with-hotellings-t2-and-spe-dmodx-methods-c9c0c76cc6c7)
-- **Blog and podcast:** [GumRoad](https://erdogant.gumroad.com/l/PCA)
+- **Medium Blogs** [Medium](https://erdogant.github.io/pca/pages/html/Documentation.html#medium-blogs)
+- **Gumroad Blogs with podcast:** [GumRoad]([https://erdogant.gumroad.com/l/PCA](https://erdogant.github.io/pca/pages/html/Documentation.html#gumroad-products-with-podcasts))
 - **Documentation:** [Website](https://erdogant.github.io/pca)
 - **Bug Reports and Feature Requests:** [GitHub Issues](https://github.com/erdogant/pca/issues)
 
