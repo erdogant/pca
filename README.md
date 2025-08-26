@@ -30,17 +30,18 @@ But this package can do a lot more. Besides the regular PCA, it can also perform
 
 ### Key Features
 
-| Feature | Description |
-|--------|-------------|
-| [**Fit and Transform**](https://erdogant.github.io/pca/pages/html/Algorithm.html) | Perform the PCA analysis. |
-| [**Biplot and Loadings**](https://erdogant.github.io/pca/pages/html/Plots.html#biplot) | Make Biplot with the loadings. |
-| [**Explained Variance**](https://erdogant.github.io/pca/pages/html/Plots.html#explained-variance-plot) | Determine the explained variance and plot. |
-| [**Best Performing Features**](https://erdogant.github.io/pca/pages/html/Algorithm.html#best-performing-features) | Extract the best performing features. |
-| [**Scatterplot**](https://erdogant.github.io/pca/pages/html/Plots.html#scatter-plot) | Create scaterplot with loadings. |
-| [**Outlier Detection**](https://erdogant.github.io/pca/pages/html/Outlier%20detection.html) | Detect outliers using Hotelling T2 and/or SPE/Dmodx. |
-| [**Normalize out Variance**](https://erdogant.github.io/pca/pages/html/Examples.html#normalizing-out-pcs) | Remove any bias from your data. |
-| [**Save and load**](https://erdogant.github.io/pca/pages/html/save.html) | Save and load models. |
-| [**Analyze discrete datasets**](https://erdogant.github.io/pca/pages/html/Examples.html#analyzing-discrete-datasets) | Analyze discrete datasets. |
+| Feature | Description | Docs | Medium | Gumroad & Podcast |
+|---------|-------------|----------------------|--------|---------|
+| **Fit and Transform** | Perform the PCA analysis. | [Link](https://erdogant.github.io/pca/pages/html/Algorithm.html) | [PCA Guide](https://medium.com/data-science-collective/pca-fb6ea1208bda) | [Link](https://erdogant.gumroad.com/l/PCA) |
+| **Biplot and Loadings** | Make Biplot with the loadings. | [Link](https://erdogant.github.io/pca/pages/html/Plots.html#biplot) | – | – |
+| **Explained Variance** | Determine the explained variance and plot. | [Link](https://erdogant.github.io/pca/pages/html/Plots.html#explained-variance-plot) | – | – |
+| **Best Performing Features** | Extract the best performing features. | [Link](https://erdogant.github.io/pca/pages/html/Algorithm.html#best-performing-features) | – | – |
+| **Scatterplot** | Create scatterplot with loadings. | [Link](https://erdogant.github.io/pca/pages/html/Plots.html#scatter-plot) | – | – |
+| **Outlier Detection** | Detect outliers using Hotelling T2 and/or SPE/Dmodx. | [Link](https://erdogant.github.io/pca/pages/html/Outlier%20detection.html) | [Outlier Detection](https://medium.com/data-science-collective/outlier-detection-using-principal-component-analysis-with-hotellings-t2-and-spe-dmodx-methods-c9c0c76cc6c7) | [Link](https://erdogant.gumroad.com/l/outlier-detection-using-principal-component-analysis-with-hotellings-t2-and-spe-dmodx-methods-c9c0c76cc6c7) |
+| **Normalize out Variance** | Remove any bias from your data. | [Link](https://erdogant.github.io/pca/pages/html/Examples.html#normalizing-out-pcs) | – | – |
+| **Save and load** | Save and load models. | [Link](https://erdogant.github.io/pca/pages/html/save.html) | – | – |
+| **Analyze discrete datasets** | Analyze discrete datasets. | [Link](https://erdogant.github.io/pca/pages/html/Examples.html#analyzing-discrete-datasets) | – | – |
+
 
 ---
 
