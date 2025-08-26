@@ -50,7 +50,6 @@ But this package can do a lot more. Besides the regular PCA, it can also perform
 - **Example Notebooks:** [Examples](https://erdogant.github.io/pca/pages/html/Documentation.html#colab-notebook)
 - **Medium:** [Medium](https://erdogant.medium.com)
 - **GumRoad:** [GumRoad](https://erdogant.gumroad.com/l/PCA)
-- https://erdogant.gumroad.com/l/PCA
 - **Documentation:** [Website](https://erdogant.github.io/pca)
 - **Bug Reports and Feature Requests:** [GitHub Issues](https://github.com/erdogant/pca/issues)
 
