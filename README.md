@@ -42,16 +42,12 @@ But this package can do a lot more. Besides the regular PCA, it can also perform
 | [**Save and load**](https://erdogant.github.io/pca/pages/html/save.html) | Save and load models. |
 | [**Analyze discrete datasets**](https://erdogant.github.io/pca/pages/html/Examples.html#analyzing-discrete-datasets) | Analyze discrete datasets. |
 
-
-
 ---
 
 ### Resources and Links
 - **Example Notebooks:** [Examples](https://erdogant.github.io/pca/pages/html/Documentation.html#colab-notebook)
 - **Medium: PCA and Loadings:** [Medium](https://medium.com/data-science-collective/pca-fb6ea1208bda)
 - **Medium: Outlier Detection:** [Medium](https://medium.com/data-science-collective/outlier-detection-using-principal-component-analysis-with-hotellings-t2-and-spe-dmodx-methods-c9c0c76cc6c7)
-
-  
 - **GumRoad:** [GumRoad](https://erdogant.gumroad.com/l/PCA)
 - **Documentation:** [Website](https://erdogant.github.io/pca)
 - **Bug Reports and Feature Requests:** [GitHub Issues](https://github.com/erdogant/pca/issues)
