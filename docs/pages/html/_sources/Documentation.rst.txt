@@ -7,16 +7,17 @@ Medium Blogs
 #############
 
 .. tip::
-	`What are PCA Loadings, and How To Effectively Use Biplots? <https://medium.com/data-science-collective/pca-fb6ea1208bda>`_
-	`Outlier Detection Using Principal Component Analysis with Hotelling’s T2 and SPE/DmodX Methods. <https://medium.com/data-science-collective/outlier-detection-using-principal-component-analysis-with-hotellings-t2-and-spe-dmodx-methods-c9c0c76cc6c7>`_
+	#. `Medium blogs <https://erdogant.medium.com/subscribe>`_
+	#. `What are PCA Loadings, and How To Effectively Use Biplots? <https://medium.com/data-science-collective/pca-fb6ea1208bda>`_
+	#. `Outlier Detection Using Principal Component Analysis with Hotelling’s T2 and SPE/DmodX Methods. <https://medium.com/data-science-collective/outlier-detection-using-principal-component-analysis-with-hotellings-t2-and-spe-dmodx-methods-c9c0c76cc6c7>`_
 
 
-GumRoad Blogs
-##############
+GumRoad Products with Podcasts
+###############################
 
 .. tip::
-	`Read more about PCA loadings and Biplots. <https://erdogant.gumroad.com/l/PCA>`_
-
+	#. `Gumroad products <https://erdogant.gumroad.com>`_
+	#. `Blog with podcast. <https://erdogant.gumroad.com/l/PCA>`_
 
 
 Colab Notebook
@@ -27,6 +28,12 @@ Colab Notebook
 
 .. _Colab notebook: https://colab.research.google.com/github/erdogant/pca/blob/master/notebooks/pca_examples.ipynb
 
+
+Github
+############
+
+.. note::
+	`Source code of PCA can be found at Github <https://erdogant.github.com/pca/>`_
 
 Citing
 #########
