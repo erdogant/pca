@@ -3,21 +3,20 @@ Sponsor
 
 .. include:: sponsor.rst
 
-Blog
-######
+Medium Blogs
+#############
 
 .. tip::
-	`Read more about PCA loadings and Biplots. <https://medium.com/data-science-collective/pca-fb6ea1208bda>`_
+	`What are PCA Loadings, and How To Effectively Use Biplots? <https://medium.com/data-science-collective/pca-fb6ea1208bda>`_
+	`Outlier Detection Using Principal Component Analysis with Hotelling’s T2 and SPE/DmodX Methods. <https://medium.com/data-science-collective/outlier-detection-using-principal-component-analysis-with-hotellings-t2-and-spe-dmodx-methods-c9c0c76cc6c7>`_
+
+
+GumRoad Blogs
+##############
 
 .. tip::
-	`Read more about outlier detection. <https://medium.com/data-science-collective/outlier-detection-using-principal-component-analysis-with-hotellings-t2-and-spe-dmodx-methods-c9c0c76cc6c7>`_
+	`Read more about PCA loadings and Biplots. <https://erdogant.gumroad.com/l/PCA>`_
 
-
-Github
-############
-
-.. note::
-	`Source code of pca can be found at Github <https://github.com/erdogant/pca/>`_
 
 
 Colab Notebook
