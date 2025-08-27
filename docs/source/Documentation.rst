@@ -17,7 +17,8 @@ GumRoad Products with Podcasts
 
 .. tip::
 	#. `Gumroad products <https://erdogant.gumroad.com>`_
-	#. `Blog with podcast. <https://erdogant.gumroad.com/l/PCA>`_
+	#. `What are PCA Loadings, and How To Effectively Use Biplots? <https://erdogant.gumroad.com/l/PCA>`_
+	#. `Outlier Detection Using Principal Component Analysis with Hotelling’s T2 and SPE/DmodX Methods. <https://erdogant.gumroad.com/l/outlier-detection-using-principal-component-analysis-with-hotellings-t2-and-spe-dmodx-methods-c9c0c76cc6c7>`_
 
 
 Colab Notebook
