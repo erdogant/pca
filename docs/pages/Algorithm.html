@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithm &mdash; pca pca documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e0179649" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5d2b88f6"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Hotelling T2" href="Outlier%20detection.html" />
+    <link rel="prev" title="Installation" href="Installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pca
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <p class="caption" role="heading"><span class="caption-text">Background</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Abstract.html">Background</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html#uninstalling">Uninstalling</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Methods</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#standardization">Standardization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#explained-variance">Explained Variance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#loadings">Loadings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#examination-of-the-loadings">Examination of the loadings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#best-performing-features">Best Performing Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Outlier detection</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html">Hotelling T2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#spe-dmodx">SPE/Dmodx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#selection-of-the-outliers">Selection of the Outliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#detect-new-unseen-outliers">Detect new unseen outliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#detection-of-outliers-without-pca">Detection of outliers without PCA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html">Load dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot">Scatter plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot">Biplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-only-arrows">Biplot (only arrows)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-plot">Explained variance plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#alpha-transparency">Alpha Transparency</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#markers">Markers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#d-plots">3D plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#toggle-visible-status">Toggle visible status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arrows.html">Control Arrows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#demonstration-of-feature-importance">Demonstration of feature importance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#normalizing-out-pcs">Normalizing out PCs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#colors-in-plots">Colors in plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebook.html">Notebook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html">Sponsor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#medium-blogs">Medium Blogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#gumroad-products-with-podcasts">GumRoad Products with Podcasts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#colab-notebook">Colab Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#github">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#citing">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Additional_Information.html">Additional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Coding%20quality.html">Coding quality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pca.pca.html">API References</a></li>
+</ul>
+
+    <a href= "genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pca</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Algorithm</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Algorithm.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="algorithm">
+<h1>Algorithm<a class="headerlink" href="#algorithm" title="Link to this heading"></a></h1>
+<p>Principal Component Analysis, or PCA, is a dimensionality-reduction method that is often used to reduce the dimensionality of large data sets.</p>
+<p>Reducing the number of variables of a data set naturally comes at the expense of accuracy, but the trick in dimensionality reduction is to trade a little accuracy for <em>simplicity</em>. Because smaller data sets are easier to explore and visualize, it becomes easier and faster to analyze your data.</p>
+<p>The idea of PCA is simple — <strong>reduce the number of variables</strong> of a data set, while <strong>preserving</strong> as much <strong>information</strong> as possible.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pca</span></code> library contains various functionalities to carefully examine the data, which can help for better understanding and removal of redundant information.</p>
+</section>
+<section id="standardization">
+<h1>Standardization<a class="headerlink" href="#standardization" title="Link to this heading"></a></h1>
+<p>Feature scaling through standardization (or Z-score normalization) is an important preprocessing step for many machine learning algorithms. Standardization involves rescaling the features such that they have the properties of a standard normal distribution with a mean of zero and a standard deviation of one. The standardization step depends on the type of variables, the distribution of the data, and also your aim. In general, the standardizing step is to range the continuous initial variables so that each one of them contributes <em>equally</em> to the analysis.</p>
+<p>It is utterly important to carefully standardize your data because PCA works under the assumption that the data is <em>normal distributed</em>, and is very <em>sensitive</em> to the variance of the variables. Or in other words, large differences between the ranges of variables will dominate over those with small ranges. Let me explain this by example; a variable that ranges between 0 and 100 will dominate over a variable that ranges between 0 and 1. Transforming the data to comparable scales can prevent this issue.</p>
+<p>The most straightforward manner for standardization is by computing the <em>Z-scores</em> or <em>Standardized scores</em>.
+Once the standardization is done, all the variables will be transformed to the same scale.</p>
+<table class="docutils align-left" style="width: 80">
+<tbody>
+<tr class="row-odd"><td><p><img alt="figA7" src="_images/z_score.svg" /></p></td>
+</tr>
+</tbody>
+</table>
+<p>Scaling your data can easily being done with the sklearn library. In the following example we will import the <strong>wine dataset</strong> and scale the variables. Think carefully whether you want to standardize column-wise or row-wise. In general, you want to standardize row-wise. This means that the Z-score is computer per row.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import the StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="w"> </span><span class="kn">import</span> <span class="n">datasets</span>
+
+<span class="c1"># Load dataset</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_wine</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">target</span>
+<span class="n">col_labels</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">feature_names</span>
+
+<span class="c1">#In general it is a good idea to scale the data</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">(</span><span class="n">with_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_std</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The normalization step is also incorporated in <code class="docutils literal notranslate"><span class="pre">pca</span></code> that can be set by the parameter <code class="docutils literal notranslate"><span class="pre">normalize=True</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load library</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pca</span><span class="w"> </span><span class="kn">import</span> <span class="n">pca</span>
+
+<span class="c1"># Initialize pca with default parameters</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An example of the differences of feature reduction using PCA with and without standardization.</p>
+<table class="docutils align-center" id="id1">
+<caption><span class="caption-text">Without standardization (left) and with standardization (right)</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<tbody>
+<tr class="row-odd"><td><p><img alt="figA3" src="_images/wine_no_standardization.png" /></p></td>
+<td><p><img alt="figA4" src="_images/wine_yes_standardization.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="explained-variance">
+<h1>Explained Variance<a class="headerlink" href="#explained-variance" title="Link to this heading"></a></h1>
+<p>Before jumping into the <strong>explained variance</strong>, we first need to understand what principal components are.</p>
+<p><strong>Principal components</strong> are new (latent) <strong>variables</strong> that are constructed as <strong>linear combinations</strong> or <strong>mixtures</strong> of the initial variables. These combinations are in such a way that the new variables (i.e., principal components) are uncorrelated and most of the information within the initial variables is squeezed or compressed into the first components.
+<strong>Explained variance</strong> refers to the variance explained by each of the principal components (eigenvectors). By organizing information Principal</p>
+<p>Let’s compute the explained variance for the wine dataset (this is a follow up from the previous standardization part).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load library</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pca</span><span class="w"> </span><span class="kn">import</span> <span class="n">pca</span>
+
+<span class="c1"># Initialize pca with default parameters</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Fit transform</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="c1"># Plot the explained variance</span>
+<span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In this example we have 13 variables in the <strong>wine</strong> dataset, and thus 13 dimensions. PCA will optimize to store maximum variance in the first PC, then in the second and so on, until having something like shown in the plot below. This plot provides insights in the amount of <em>information</em> or <em>explained variance</em> in the data. We can clearly see that the 1st PC contains almost 36% of explained variance in total. With the top 10 PCs we cover 97.9% of all variance.</p>
+<a class="reference internal image-reference" href="_images/wine_explained_variance.png"><img alt="_images/wine_explained_variance.png" class="align-center" src="_images/wine_explained_variance.png" style="width: 600px;" />
+</a>
+<p>There are as many principal components as there are variables in the data. The <strong>explained variance plot</strong> can therefore never have more then 13 PCs in this case. Principal components are constructed in such a manner that the first principal component accounts for the largest possible variance in the data set.</p>
+</section>
+<section id="loadings">
+<h1>Loadings<a class="headerlink" href="#loadings" title="Link to this heading"></a></h1>
+<p>It is important to realize that principal components are less interpretable and don’t have any real meaning since they are constructed as <strong>linear combinations</strong> of the initial variables. But we can analyze the <strong>loadings</strong> which describe the importance of the independent variables.
+The first principal component (Y1) is given by a linear combination of the variables X1, X2, …, Xp, and is calculated such that it accounts for the greatest possible variance in the data.</p>
+<a class="reference internal image-reference" href="_images/PCAequation1.png"><img alt="_images/PCAequation1.png" src="_images/PCAequation1.png" style="width: 300px;" />
+</a>
+<p>Of course, one could make the variance of Y1 as large as possible by choosing large values for the weights a11, a12, … a1p. To prevent this, the sum of squares of the weights is constrained to be 1.</p>
+<a class="reference internal image-reference" href="_images/PCAequation3.png"><img alt="_images/PCAequation3.png" src="_images/PCAequation3.png" style="width: 300px;" />
+</a>
+<p>For example, let’s assume that the scatter plot of our data set is as shown below. Can we guess the first principal component? Yes, it’s approximately the line that matches the purple marks because it goes through the origin and it’s the line in which the projection of the points (red dots) is the most spread out. Or mathematically speaking, it’s the line that maximizes the variance which is the average of the squared distances from the projected points (red dots) to the origin.</p>
+<a class="reference internal image-reference" href="_images/PCA_rotation.gif"><img alt="_images/PCA_rotation.gif" class="align-center" src="_images/PCA_rotation.gif" style="width: 900px;" />
+</a>
+<p>The second principal component is calculated in the same way, with the conditions that it is uncorrelated with (i.e., perpendicular to) the first principal component and that it accounts for the next highest variance.</p>
+<a class="reference internal image-reference" href="_images/PCAequation4.png"><img alt="_images/PCAequation4.png" src="_images/PCAequation4.png" style="width: 300px;" />
+</a>
+<p>This continues until a total of <strong>p</strong> principal components have been calculated, that is, the number of principal components is the same as the original number of variables. At this point, the total variance on all of the principal components will equal the total variance among all of the variables. In this way, all of the information contained in the original data is preserved; no information is lost: PCA is just a rotation of the data.</p>
+<p>The elements of an eigenvector, that is, the values within a particular row of matrix, are the weights <strong>aij</strong>. These values are called the <strong>loadings</strong>, and they describe how much each variable contributes to a particular principal component.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Large loadings (+ or -) indicate that a particular variable has a strong relationship to a particular principal component.</p></li>
+<li><p>The sign of a loading indicates whether a variable and a principal component are positively or negatively correlated.</p></li>
+</ul>
+</div></blockquote>
+<p>Let’s go back to our <strong>wine</strong> example and plot the <strong>loadings</strong> of the PCs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load dataset</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_wine</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">target</span>
+<span class="n">col_labels</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">feature_names</span>
+
+<span class="c1"># Load library</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pca</span><span class="w"> </span><span class="kn">import</span> <span class="n">pca</span>
+
+<span class="c1"># Initialize pca with default parameters</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Fit transform and include the column labels and row labels</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">col_labels</span><span class="o">=</span><span class="n">col_labels</span><span class="p">,</span> <span class="n">row_labels</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># Scatter plot with loadings</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>First of all, we see a nice seperation of the 3 wine classes (red, orange and gray samples). In the middle of the plot we see various arrows. Each of the arrows describes its story in the Principal Components. The angle of the arrow describes the contribution of the variable that is seen in the particular PC. The length describes the strength of the loading.</p>
+<a class="reference internal image-reference" href="_images/wine_biplot.png"><img alt="_images/wine_biplot.png" class="align-center" src="_images/wine_biplot.png" style="width: 600px;" />
+</a>
+</section>
+<section id="examination-of-the-loadings">
+<h1>Examination of the loadings<a class="headerlink" href="#examination-of-the-loadings" title="Link to this heading"></a></h1>
+<p>Let’s examine the <strong>loadings</strong> (arrows) a bit more to understand what is going on in the distribution of the samples given the variables. The variable <strong>flavanoids</strong> has a positive loading and explaines mostly the variance in the first PC1 (it is almost a horizontal line). If we would color the samples in the scatter plot based on <strong>flavanoids</strong> values, we expect to see a distinction between samples that are respectively left and right side of the scatter plot.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grap the values for flavanoids</span>
+<span class="n">X_feat</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">col_labels</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;flavanoids&#39;</span><span class="p">]</span>
+
+<span class="c1"># Color based on mean</span>
+<span class="n">color_label</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_feat</span><span class="o">&gt;=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X_feat</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="c1"># Scatter based on discrete color</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on flavanoids (Gray colored samples are &gt; mean)&#39;</span><span class="p">)</span>
+
+<span class="c1"># 3d scatter plot</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on flavanoids (Gray colored samples are &gt; mean)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils align-center" id="id2">
+<caption><span class="caption-text">Color on flavanoids</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<tbody>
+<tr class="row-odd"><td><p><img alt="figA1" src="_images/wine_flavanoids.png" /></p></td>
+<td><p><img alt="figA2" src="_images/wine_flavanoids3d.png" /></p></td>
+</tr>
+</tbody>
+</table>
+<p>Let’s take another variable for demonstration purposes. The variable <strong>alcohol</strong> has a strong negative loading (almost vertical), and should therefoe explains mostly the 2nd PC but the angle is not exactly vertical, thus there is also some variance seen in the 1st PC. Let’s color the samples based on <strong>alcohol</strong>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grap the values for alcohol</span>
+<span class="n">X_feat</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">col_labels</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;alcohol&#39;</span><span class="p">]</span>
+
+<span class="c1"># Color based on mean</span>
+<span class="n">color_label</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_feat</span><span class="o">&gt;=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X_feat</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="c1"># Scatter based on discrete color</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on alcohol (Gray colored samples are &lt; mean)&#39;</span><span class="p">)</span>
+
+<span class="c1"># 3d scatter plot</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on alcohol (Gray colored samples are &lt; mean)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils align-center" id="id3">
+<caption><span class="caption-text">Color on alcohol</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+<tbody>
+<tr class="row-odd"><td><p><img alt="figA8" src="_images/wine_alcohol.png" /></p></td>
+<td><p><img alt="figA9" src="_images/wine_alcohol3d.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="best-performing-features">
+<h1>Best Performing Features<a class="headerlink" href="#best-performing-features" title="Link to this heading"></a></h1>
+<p>Extracting the best performing features is based on the loadings of the Principal Components, which are readily computed.
+The information is stored in the object itself. We can extract it as following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print the top features.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;topfeat&#39;</span><span class="p">])</span>
+
+<span class="c1">#      PC                       feature   loading  type</span>
+<span class="c1">#     PC1                    flavanoids  0.422934  best</span>
+<span class="c1">#     PC2               color_intensity -0.529996  best</span>
+<span class="c1">#     PC3                           ash  0.626224  best</span>
+<span class="c1">#     PC4                    malic_acid  0.536890  best</span>
+<span class="c1">#     PC5                     magnesium  0.727049  best</span>
+<span class="c1">#     PC6                    malic_acid -0.536814  best</span>
+<span class="c1">#     PC7          nonflavanoid_phenols  0.595447  best</span>
+<span class="c1">#     PC8                           hue -0.436624  best</span>
+<span class="c1">#     PC9                       proline -0.575786  best</span>
+<span class="c1">#     PC10  od280/od315_of_diluted_wines  0.523706  best</span>
+<span class="c1">#     PC9                       alcohol  0.508619  weak</span>
+<span class="c1">#     PC3             alcalinity_of_ash  0.612080  weak</span>
+<span class="c1">#     PC8                 total_phenols  0.405934  weak</span>
+<span class="c1">#     PC6               proanthocyanins  0.533795  weak</span>
+</pre></div>
+</div>
+<p>We see that most of the variance for the 1st PC is derived from the variable <strong>flavanoids</strong>. For the 2nd component, it is by <strong>color_intensity</strong>, etc.</p>
+<p><strong>References</strong></p>
+<ul class="simple">
+<li><p>[1] <a class="reference external" href="https://builtin.com/data-science/step-step-explanation-principal-component-analysis">https://builtin.com/data-science/step-step-explanation-principal-component-analysis</a></p></li>
+<li><p>[2] <a class="reference external" href="http://strata.uga.edu/8370/lecturenotes/principalComponents.html">http://strata.uga.edu/8370/lecturenotes/principalComponents.html</a></p></li>
+</ul>
+<hr>
+<center>
+        <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
+        <!-- Show an image ad -->
+        <!-- <div data-ea-publisher="erdogantgithubio" data-ea-type="image"></div> -->
+        <div data-ea-publisher="erdogantgithubio" data-ea-type="image" data-ea-style="stickybox"></div>
+</center>
+<hr></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Outlier%20detection.html" class="btn btn-neutral float-right" title="Hotelling T2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Erdogan Taskesen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

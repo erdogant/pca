@@ -1,0 +1,239 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Control Arrows &mdash; pca pca documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e0179649" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5d2b88f6"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quickstart" href="Examples.html" />
+    <link rel="prev" title="Load dataset" href="Plots.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pca
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <p class="caption" role="heading"><span class="caption-text">Background</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Abstract.html">Background</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html#uninstalling">Uninstalling</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Methods</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#standardization">Standardization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#explained-variance">Explained Variance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#loadings">Loadings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#examination-of-the-loadings">Examination of the loadings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#best-performing-features">Best Performing Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Outlier detection</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html">Hotelling T2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#spe-dmodx">SPE/Dmodx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#selection-of-the-outliers">Selection of the Outliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#detect-new-unseen-outliers">Detect new unseen outliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#detection-of-outliers-without-pca">Detection of outliers without PCA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plots</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Plots.html">Load dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot">Scatter plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot">Biplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-only-arrows">Biplot (only arrows)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-plot">Explained variance plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#alpha-transparency">Alpha Transparency</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#markers">Markers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#d-plots">3D plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#toggle-visible-status">Toggle visible status</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Control Arrows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#demonstration-of-feature-importance">Demonstration of feature importance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#normalizing-out-pcs">Normalizing out PCs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#colors-in-plots">Colors in plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebook.html">Notebook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html">Sponsor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#medium-blogs">Medium Blogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#gumroad-products-with-podcasts">GumRoad Products with Podcasts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#colab-notebook">Colab Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#github">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#citing">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Additional_Information.html">Additional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Coding%20quality.html">Coding quality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pca.pca.html">API References</a></li>
+</ul>
+
+    <a href= "genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pca</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Control Arrows</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/arrows.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="control-arrows">
+<h1>Control Arrows<a class="headerlink" href="#control-arrows" title="Link to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load pca</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pca</span><span class="w"> </span><span class="kn">import</span> <span class="n">pca</span>
+
+<span class="c1"># Initialize pca</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Load example data set</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">import_example</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;iris&#39;</span><span class="p">)</span>
+
+<span class="c1"># Fit transform</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Strenght of the loadings are shown in two colors (red=strong, blue=weak).</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/wine_arrow_1.png"><img alt="_images/wine_arrow_1.png" class="align-center" src="_images/wine_arrow_1.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change colors</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color_strong&#39;</span><span class="p">:</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;color_weak&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/wine_arrow_2.png"><img alt="_images/wine_arrow_2.png" class="align-center" src="_images/wine_arrow_2.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># The transparancy of the arrows are set on the loading value. You can also set it to a constant value.</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">})</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/wine_arrow_3.png"><img alt="_images/wine_arrow_3.png" class="align-center" src="_images/wine_arrow_3.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change text color</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color_text&#39;</span><span class="p">:</span> <span class="s1">&#39;k&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/wine_arrow_4.png"><img alt="_images/wine_arrow_4.png" class="align-center" src="_images/wine_arrow_4.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change arrow color.</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/wine_arrow_5.png"><img alt="_images/wine_arrow_5.png" class="align-center" src="_images/wine_arrow_5.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set color arrow and color text</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color_text&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/wine_arrow_8.png"><img alt="_images/wine_arrow_8.png" class="align-center" src="_images/wine_arrow_8.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default settings</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/wine_arrow_9.png"><img alt="_images/wine_arrow_9.png" class="align-center" src="_images/wine_arrow_9.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change the scale factor of the arrow. The scale_factor of 3 seems a little bit too much here ;)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">(</span><span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/wine_arrow_10.png"><img alt="_images/wine_arrow_10.png" class="align-center" src="_images/wine_arrow_10.png" style="width: 600px;" />
+</a>
+<hr>
+<center>
+        <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
+        <!-- Show an image ad -->
+        <!-- <div data-ea-publisher="erdogantgithubio" data-ea-type="image"></div> -->
+        <div data-ea-publisher="erdogantgithubio" data-ea-type="image" data-ea-style="stickybox"></div>
+</center>
+<hr></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Plots.html" class="btn btn-neutral float-left" title="Load dataset" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Examples.html" class="btn btn-neutral float-right" title="Quickstart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Erdogan Taskesen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
