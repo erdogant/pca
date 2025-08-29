@@ -9,12 +9,31 @@ authors = [{ name = "Erdogan Taskesen", email = "erdogant@gmail.com" },]
 description = "pca: A Python Package for Principal Component Analysis."
 readme = "README.md"
 requires-python = ">=3"
-license = { file = "LICENSE" }
-keywords = ["Python", "pca", "outliers", "biplot", "explained-variance", "hotelling-t2", "3d-plot"]
+license = "MIT"
+keywords = [
+    "Python",
+    "PCA",
+    "principal component analysis",
+    "dimensionality reduction",
+    "outlier detection",
+    "biplot",
+    "explained variance",
+    "hotelling t2",
+    "3d plot",
+    "data visualization",
+    "feature extraction",
+    "eigenvalues",
+    "eigenvectors"
+]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Operating System :: Unix",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
     'datazets',
