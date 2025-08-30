@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Load dataset &mdash; pca pca documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e0179649" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5d2b88f6"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Control Arrows" href="arrows.html" />
+    <link rel="prev" title="Hotelling T2" href="Outlier%20detection.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pca
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <p class="caption" role="heading"><span class="caption-text">Background</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Abstract.html">Background</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html#uninstalling">Uninstalling</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Methods</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#standardization">Standardization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#explained-variance">Explained Variance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#loadings">Loadings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#examination-of-the-loadings">Examination of the loadings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#best-performing-features">Best Performing Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Outlier detection</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html">Hotelling T2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#spe-dmodx">SPE/Dmodx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#selection-of-the-outliers">Selection of the Outliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#detect-new-unseen-outliers">Detect new unseen outliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Outlier%20detection.html#detection-of-outliers-without-pca">Detection of outliers without PCA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plots</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Load dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#scatter-plot">Scatter plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#biplot">Biplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#biplot-only-arrows">Biplot (only arrows)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#explained-variance-plot">Explained variance plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#alpha-transparency">Alpha Transparency</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#markers">Markers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#d-plots">3D plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#toggle-visible-status">Toggle visible status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arrows.html">Control Arrows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#demonstration-of-feature-importance">Demonstration of feature importance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#normalizing-out-pcs">Normalizing out PCs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#colors-in-plots">Colors in plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebook.html">Notebook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html">Sponsor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#medium-blogs">Medium Blogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#gumroad-products-with-podcasts">GumRoad Products with Podcasts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#colab-notebook">Colab Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#github">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation.html#citing">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Additional_Information.html">Additional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Coding%20quality.html">Coding quality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pca.pca.html">API References</a></li>
+</ul>
+
+    <a href= "genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pca</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Load dataset</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Plots.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="load-dataset">
+<h1>Load dataset<a class="headerlink" href="#load-dataset" title="Link to this heading"></a></h1>
+<p>Let’s load the <strong>wine</strong> dataset to demonstrate the plots.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load library</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_wine</span>
+<span class="c1"># Load dataset</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">load_wine</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">target</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">feature_names</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pca</span><span class="w"> </span><span class="kn">import</span> <span class="n">pca</span>
+<span class="c1"># Initialize</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Fit transform and include the column labels and row labels</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">col_labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">row_labels</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># [pca] &gt;Normalizing input data per feature (zero mean and unit variance)..</span>
+<span class="c1"># [pca] &gt;The PCA reduction is performed to capture [95.0%] explained variance using the [13] columns of the input data.</span>
+<span class="c1"># [pca] &gt;Fitting using PCA..</span>
+<span class="c1"># [pca] &gt;Computing loadings and PCs..</span>
+<span class="c1"># [pca] &gt;Computing explained variance..</span>
+<span class="c1"># [pca] &gt;Number of components is [10] that covers the [95.00%] explained variance.</span>
+<span class="c1"># [pca] &gt;The PCA reduction is performed on the [13] columns of the input dataframe.</span>
+<span class="c1"># [pca] &gt;Fitting using PCA..</span>
+<span class="c1"># [pca] &gt;Computing loadings and PCs..</span>
+<span class="c1"># [pca] &gt;Outlier detection using Hotelling T2 test with alpha=[0.05] and n_components=[10]</span>
+<span class="c1"># [pca] &gt;Outlier detection using SPE/DmodX with n_std=[2]</span>
+</pre></div>
+</div>
+</section>
+<section id="scatter-plot">
+<h1>Scatter plot<a class="headerlink" href="#scatter-plot" title="Link to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make scatterplot</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">()</span>
+
+<span class="c1"># Make scatterplot</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Gradient over the samples. High dense areas will be more colourful.</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">gradient</span><span class="o">=</span><span class="s1">&#39;#FFFFFF&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># Include the outlier detection</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Include the outlier detection</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Look at different PCs: 1st PC=1  vs PC=3</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">PC</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+<table class="docutils align-center" id="id1">
+<caption><span class="caption-text">Scatterplots</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<tbody>
+<tr class="row-odd"><td colspan="2"><p><img alt="figP1" src="_images/wine_scatter.png" /></p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="figP1d" src="_images/wine_scatter_density.png" /></p></td>
+<td><p><img alt="figP1g" src="_images/wine_scatter_gradient.png" /></p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="figP2" src="_images/wine_scatter_spe.png" /></p></td>
+<td><p><img alt="figP3" src="_images/wine_scatter_hotel.png" /></p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="figP4" src="_images/wine_scatter_PC13.png" /></p></td>
+<td><p><img alt="figP7" src="_images/wine_scatter_density.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="biplot">
+<h1>Biplot<a class="headerlink" href="#biplot" title="Link to this heading"></a></h1>
+<p>The biplot draws the loadings (arrows) together with the samples (scatterplot).
+The loadings can be colored red and blue which indicates the strength of the particular feature in the PC.</p>
+<p>For each principal component (PC), the feature is determined with the largest absolute loading. This indicates which feature contributes the most to each PC and can occur in multiple PCs.
+The highest loading values for the features are colored red in the biplot and described as “best” in the output dataframe.
+The features that were not seen with highest loadings for any PC are considered weaker features, and are colored blue the biplot. In the output dataframe these features are described as “weak”.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make biplot</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">()</span>
+
+<span class="c1"># Here again, many other options can be turned on and off</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Show the top features</span>
+<span class="n">results</span><span class="p">[</span><span class="s1">&#39;topfeat&#39;</span><span class="p">]</span>
+
+<span class="c1">#       PC                       feature   loading  type</span>
+<span class="c1"># 0    PC1                    flavanoids  0.422934  best</span>
+<span class="c1"># 1    PC2               color_intensity  0.529996  best</span>
+<span class="c1"># 2    PC3                           ash  0.626224  best</span>
+<span class="c1"># 3    PC4                    malic_acid  0.536890  best</span>
+<span class="c1"># 4    PC5                     magnesium  0.727049  best</span>
+<span class="c1"># 5    PC6                    malic_acid  0.536814  best</span>
+<span class="c1"># 6    PC7          nonflavanoid_phenols  0.595447  best</span>
+<span class="c1"># 7    PC8                           hue  0.436624  best</span>
+<span class="c1"># 8    PC9                       proline  0.575786  best</span>
+<span class="c1"># 9   PC10  od280/od315_of_diluted_wines  0.523706  best</span>
+<span class="c1"># 10   PC9                       alcohol -0.508619  weak</span>
+<span class="c1"># 11   PC3             alcalinity_of_ash  0.612080  weak</span>
+<span class="c1"># 12   PC8                 total_phenols -0.405934  weak</span>
+<span class="c1"># 13   PC6               proanthocyanins -0.533795  weak</span>
+</pre></div>
+</div>
+<table class="docutils align-center" id="id2">
+<caption><span class="caption-text">Biplots</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<tbody>
+<tr class="row-odd"><td><p><img alt="figP5" src="_images/wine_biplot.png" /></p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="figP6" src="_images/wine_biplot_with_outliers.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="biplot-only-arrows">
+<h1>Biplot (only arrows)<a class="headerlink" href="#biplot-only-arrows" title="Link to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make plot with parameters: set cmap to None and label and legend to False. Only directions will be plotted.</span>
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/biplot_only_directions.png"><img alt="_images/biplot_only_directions.png" class="align-center" src="_images/biplot_only_directions.png" style="width: 600px;" />
+</a>
+</section>
+<section id="explained-variance-plot">
+<h1>Explained variance plot<a class="headerlink" href="#explained-variance-plot" title="Link to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/wine_explained_variance.png"><img alt="_images/wine_explained_variance.png" class="align-center" src="_images/wine_explained_variance.png" style="width: 600px;" />
+</a>
+</section>
+<section id="alpha-transparency">
+<h1>Alpha Transparency<a class="headerlink" href="#alpha-transparency" title="Link to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="markers">
+<h1>Markers<a class="headerlink" href="#markers" title="Link to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_friedman1</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pca</span><span class="w"> </span><span class="kn">import</span> <span class="n">pca</span>
+
+<span class="c1"># Make data set</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">make_friedman1</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># All available markers</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">])</span>
+<span class="c1"># Generate random integers</span>
+<span class="n">random_integers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># Draw markers</span>
+<span class="n">marker</span> <span class="o">=</span> <span class="n">markers</span><span class="p">[</span><span class="n">random_integers</span><span class="p">]</span>
+
+<span class="c1"># Init</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1"># Fit</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="c1"># Make plot with markers</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                       <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span>
+                       <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Demonstration of specifying markers per sample.&#39;</span><span class="p">,</span>
+                       <span class="n">n_feat</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                       <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils align-center" id="id3">
+<caption><span class="caption-text">Biplots with markers</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+<tbody>
+<tr class="row-odd"><td><p><img alt="figP8" src="_images/marker_example_1.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="control-color-marker-size-per-sample">
+<h1>Control color/marker/size per sample<a class="headerlink" href="#control-color-marker-size-per-sample" title="Link to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.colors</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mcolors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_friedman1</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pca</span><span class="w"> </span><span class="kn">import</span> <span class="n">pca</span>
+
+<span class="c1"># Make data set</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">make_friedman1</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># All available markers</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">])</span>
+<span class="c1"># Create colors</span>
+<span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;tab20c&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">))</span>
+<span class="c1"># Generate random integers</span>
+<span class="n">random_integers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># Draw markers</span>
+<span class="n">marker</span> <span class="o">=</span> <span class="n">markers</span><span class="p">[</span><span class="n">random_integers</span><span class="p">]</span>
+<span class="c1"># Set colors</span>
+<span class="n">color</span> <span class="o">=</span> <span class="n">cmap</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">random_integers</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="c1"># Set Size</span>
+<span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># Set alpha</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="n">random_integers</span><span class="p">]</span>
+
+<span class="c1"># Init</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1"># Fit</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="c1"># Make plot with blue arrows and text</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span>
+                        <span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                        <span class="n">s</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+                        <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span>
+                        <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+                        <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Demonstration of specifying colors, markers, alpha, and size per sample.&#39;</span><span class="p">,</span>
+                        <span class="n">n_feat</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                        <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">,</span>
+                        <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">},</span>
+                        <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">density_on_top</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils align-center" id="id4">
+<caption><span class="caption-text">Biplot with customized properties per sample.</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
+<tbody>
+<tr class="row-odd"><td><p><img alt="figP9" src="_images/custom_example_2.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="d-plots">
+<h1>3D plots<a class="headerlink" href="#d-plots" title="Link to this heading"></a></h1>
+<p>All plots can also be created in 3D by setting the <code class="docutils literal notranslate"><span class="pre">d3=True</span></code> parameter.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/wine_biplot3d.png"><img alt="_images/wine_biplot3d.png" class="align-center" src="_images/wine_biplot3d.png" style="width: 600px;" />
+</a>
+</section>
+<section id="toggle-visible-status">
+<h1>Toggle visible status<a class="headerlink" href="#toggle-visible-status" title="Link to this heading"></a></h1>
+<p>The visible status for can be turned on and off.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make plot but not visible.</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Set the figure again to True and show the figure.</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+<hr>
+<center>
+        <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
+        <!-- Show an image ad -->
+        <!-- <div data-ea-publisher="erdogantgithubio" data-ea-type="image"></div> -->
+        <div data-ea-publisher="erdogantgithubio" data-ea-type="image" data-ea-style="stickybox"></div>
+</center>
+<hr></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Outlier%20detection.html" class="btn btn-neutral float-left" title="Hotelling T2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="arrows.html" class="btn btn-neutral float-right" title="Control Arrows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Erdogan Taskesen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
