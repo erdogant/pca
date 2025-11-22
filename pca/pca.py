@@ -317,7 +317,7 @@ class pca:
 
         # Set number components
         if self.n_components < 1:
-            logger.info(f"PCA reduction performed to capture {self.n_components * 100:.1f}% explained variance using {X.shape[1]} columns of the input data.")
+            logger.info(f"PCA reduction performed to capture at least {self.n_components * 100:.1f}% explained variance using {X.shape[1]} columns of the input data.")
 
             pcp = self.n_components
             # Run with all components to get all PCs back. This is needed for the step after.
@@ -328,11 +328,12 @@ class pca:
                 logger.info(f"n_components is set to {self.n_components}")
             else:
                 self.n_components = np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
-                logger.info(f"Number of components is {self.n_components} that covers {pcp * 100:.2f}% explained variance.")
+                logger.info(f"The top {self.n_components} principal component(s) explains >= {pcp * 100:.2f}% of the explained variance.")
 
-        logger.info(f"The PCA reduction is performed on the {X.shape[1]} columns of the input dataframe.")
+        logger.info(f"The PCA reduction is performed on {X.shape[1]} variables (columns) of the input dataframe.")
         model_pca, PC, loadings, percentExplVar = _explainedvar(X, method=self.method, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, percentExplVar=percentExplVar)
-        pcp = None if percentExplVar is None else percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components)]
+        # Take the explained variance for the nr of components
+        pcp = None if percentExplVar is None else percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components - 1)]
 
         # Combine components relations with features
         loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components)
@@ -515,10 +516,10 @@ class pca:
         if (sp.issparse(X) is False) and (self.n_components > X.shape[1]):
             # raise Exception('[pca] >Number of components can not be more then number of features.')
             logger.warning(
-                f"Number of components cannot be more than the number of features. "
+                f"Number of components cannot be more than the number of features - 1. "
                 f"n_components is set to {X.shape[1] - 1}.")
 
-            self.n_components = X.shape[1] - 1
+            self.n_components = X.shape[1]
 
         # normalize data
         if self.normalize:
@@ -579,7 +580,7 @@ class pca:
             self.results['model'].explained_variance_ratio_ = [0, 0]
             self.results['pcp'] = 0
 
-        if (self.results['explained_var'] is None) or len(self.results['explained_var'])<=1:
+        if (self.results['explained_var'] is None) or len(self.results['explained_var'])<1:
             raise Exception('[pca] >Error: No PCs are found with explained variance.')
 
         return labels, topfeat, n_feat
@@ -997,7 +998,7 @@ class pca:
         else:
             explvarCum = self.results['explained_var']
             explvar = self.results['variance_ratio']
-        xtick_idx = np.arange(1, len(explvar) + 1)
+        xtick_idx = np.arange(0, len(explvar)) + 1
 
         # Make figure
         if fig is None and ax is None:
@@ -1023,7 +1024,7 @@ class pca:
         plt.ylim([0, 1.05])
         plt.xlim([0, len(explvar) + 1])
         if title is None:
-            title = 'Cumulative explained variance\n ' + str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance.'
+            title = 'Cumulative explained variance.\n The top ' + str(self.n_components) + ' Principal Component(s) explains [' + str(explvarCum[self.n_components-1] * 100)[0:5] + '%] of the variance.'
         plt.title(title)
         plt.grid(True)
 
@@ -1063,6 +1064,7 @@ class pca:
         Normalized numpy array.
 
         """
+        self.detect_outliers = None
         if n_components is None:
             self.n_components = X.shape[1]
         else:
@@ -1076,7 +1078,7 @@ class pca:
         if not isinstance(pcexclude, list): pcexclude=[pcexclude]
 
         # Fit using PCA
-        _ = self.fit_transform(X)
+        _ = self.fit_transform(X)        
         coeff = self.results['loadings'].values
         score = self.results['PC']
         # Compute explained percentage of variance
@@ -1653,6 +1655,8 @@ def _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, fontsize,
     # Set title
     if title is None:
         title = str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance'
+        explvarCum = self.results['explained_var']
+        title = 'The top ' + str(self.n_components) + ' Principal Component(s) explains [' + str(explvarCum[self.n_components-1] * 100)[0:5] + '%] of the variance.'
 
     # Determine the legend status if set to None
     if isinstance(legend, bool): legend = 0 if legend else -1

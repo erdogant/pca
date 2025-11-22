@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import unittest
 from sklearn.datasets import make_friedman1
+import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend for tests
 
 class TestPCA(unittest.TestCase):
