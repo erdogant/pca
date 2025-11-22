@@ -290,6 +290,8 @@ model = pca(normalize=True, detect_outliers=['HT2', 'SPE'])
 # Fit
 model.fit_transform(df_hot)
 
+model.plot()
+
 # model.scatter(legend=False)
 # model.biplot(legend=False)
 
