@@ -1,24 +1,26 @@
 """pca: A Python Package for Principal Component Analysis."""
 
-import datazets as dz
-from scatterd import scatterd
-from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD  # MiniBatchSparsePCA
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics.pairwise import euclidean_distances
-from scipy import stats
-from matplotlib.patches import Ellipse
-import scipy.sparse as sp
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from adjustText import adjust_text
-import statsmodels.stats.multitest as multitest
-from typing import Union
 import logging
+from typing import Union
+
+import datazets as dz
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import scipy.sparse as sp
+import statsmodels.stats.multitest as multitest
+from adjustText import adjust_text
+from matplotlib.patches import Ellipse
+from scatterd import scatterd
+from scipy import stats
+from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD  # MiniBatchSparsePCA
+from sklearn.metrics.pairwise import euclidean_distances
+from sklearn.preprocessing import StandardScaler
 
 logger = logging.getLogger(__name__)
 # if not logger.hasHandlers():
 #     logging.basicConfig(level=logging.INFO, format='[{asctime}] [{name}] [{levelname}] {msg}', style='{', datefmt='%d-%m-%Y %H:%M:%S')
+
 
 # %% Association learning across all variables
 class pca:
@@ -73,10 +75,10 @@ class pca:
         Whether to normalize data (Z-score).
 
     detect_outliers : list or None, optional, default=['ht2', 'spe']
-        Outlier detection methods to apply:
-        - None : Do not compute outliers.
-        - 'ht2' : Compute outliers based on Hotelling's T2.
-        - 'spe' : Compute outliers based on SPE/DmodX method.
+            Outlier detection methods to apply:
+            - None : Do not compute outliers.
+            - 'ht2' : Compute outliers based on Hotelling's T2.
+            - 'spe' : Compute outliers based on SPE/DmodX method.
 
     random_state : int or None, optional
         Random seed for reproducibility.
@@ -111,27 +113,31 @@ class pca:
 
     """
 
-    def __init__(self,
-                 n_components=0.95,
-                 n_feat=25,
-                 method='pca',
-                 alpha=0.05,
-                 multipletests='fdr_bh',
-                 n_std=3,
-                 onehot=False,
-                 normalize=False,
-                 detect_outliers=['ht2', 'spe'],
-                 random_state=None,
-                 verbose='info'):
+    def __init__(
+        self,
+        n_components=0.95,
+        n_feat=25,
+        method="pca",
+        alpha=0.05,
+        multipletests="fdr_bh",
+        n_std=3,
+        onehot=False,
+        normalize=False,
+        detect_outliers=["ht2", "spe"],
+        random_state=None,
+        verbose="info",
+    ):
         """Initialize pca with user-defined parameters."""
-        if isinstance(detect_outliers, str): detect_outliers = [detect_outliers]
-        if detect_outliers is not None: detect_outliers=list(map(str.lower, detect_outliers))
+        if isinstance(detect_outliers, str):
+            detect_outliers = [detect_outliers]
+        if detect_outliers is not None:
+            detect_outliers = list(map(str.lower, detect_outliers))
 
         # Set the logger
         verbose = set_logger(verbose=verbose, return_status=True)
 
         if onehot:
-            method = 'sparse_pca'
+            method = "sparse_pca"
             logger.info(f"Method is set to: {method} because onehot=True")
 
         # Store in object
@@ -149,13 +155,20 @@ class pca:
 
     def check_verbosity(self):
         """Check the verbosity."""
-        logger.debug('DEBUG')
-        logger.info('INFO')
-        logger.warning('WARNING')
-        logger.critical('CRITICAL')
+        logger.debug("DEBUG")
+        logger.info("INFO")
+        logger.warning("WARNING")
+        logger.critical("CRITICAL")
 
     # Make PCA fit_transform
-    def transform(self, X, row_labels=None, col_labels=None, update_outlier_params=True, verbose=None):
+    def transform(
+        self,
+        X,
+        row_labels=None,
+        col_labels=None,
+        update_outlier_params=True,
+        verbose=None,
+    ):
         """Transform new input data with fitted model.
 
         Parameters
@@ -209,31 +222,36 @@ class pca:
 
         """
         # Set the logger
-        if verbose is not None: set_logger(verbose)
+        if verbose is not None:
+            set_logger(verbose)
         # Check type to make sure we can perform matrix operations
         if isinstance(X, list):
             X = np.array(X)
         if row_labels is None:
-            row_labels = np.repeat('mapped', X.shape[0])
+            row_labels = np.repeat("mapped", X.shape[0])
         # Pre-processing using scaler.
-        X_scaled, row_labels, _, _ = self._preprocessing(X, row_labels, col_labels, scaler=self.results['scaler'])
+        X_scaled, row_labels, _, _ = self._preprocessing(
+            X, row_labels, col_labels, scaler=self.results["scaler"]
+        )
         # Transform the data using fitted model.
-        PCs = self.results['model'].transform(X_scaled)
+        PCs = self.results["model"].transform(X_scaled)
         # Store in dataframe
-        columns = ['PC{}'.format(i + 1) for i in np.arange(0, PCs.shape[1])]
+        columns = ["PC{}".format(i + 1) for i in np.arange(0, PCs.shape[1])]
         PCs = pd.DataFrame(data=PCs, index=row_labels, columns=columns)
 
         # Add mapped PCs to dataframe
         if self.detect_outliers is not None:
             # By setting the outliers params to None, it will update the parameters on the new input data.
             if update_outlier_params:
-                self.results['outliers_params']['paramT2']=None
-                self.results['outliers_params']['paramSPE']=None
-            PCtot = pd.concat([self.results['PC'], PCs], axis=0)
+                self.results["outliers_params"]["paramT2"] = None
+                self.results["outliers_params"]["paramSPE"] = None
+            PCtot = pd.concat([self.results["PC"], PCs], axis=0)
             # Detection of outliers
-            self.results['outliers'], _ = self.compute_outliers(PCtot, verbose=get_logger())
+            self.results["outliers"], _ = self.compute_outliers(
+                PCtot, verbose=get_logger()
+            )
             # Store
-            self.results['PC'] = PCtot
+            self.results["PC"] = PCtot
 
         # Return
         return PCs
@@ -301,59 +319,107 @@ class pca:
 
         """
         # Set the logger
-        if verbose is not None: set_logger(verbose)
-        percentExplVar=None
+        if verbose is not None:
+            set_logger(verbose)
+        percentExplVar = None
         # Check type to make sure we can perform matrix operations
         if sp.issparse(X):
-            self.method = 'trunc_svd'
-            logger.info(f'Input data is a sparse matrix. Method is set to: {self.method}.')
+            self.method = "trunc_svd"
+            logger.info(
+                f"Input data is a sparse matrix. Method is set to: {self.method}."
+            )
         if isinstance(X, list):
             X = np.array(X)
 
         # Clean readily fitted models to ensure correct results.
         self._clean()
         # Pre-processing
-        X, row_labels, col_labels, scaler = self._preprocessing(X, row_labels, col_labels)
+        X, row_labels, col_labels, scaler = self._preprocessing(
+            X, row_labels, col_labels
+        )
 
         # Set number components
         if self.n_components < 1:
-            logger.info(f"PCA reduction performed to capture at least {self.n_components * 100:.1f}% explained variance using {X.shape[1]} columns of the input data.")
+            logger.info(
+                f"PCA reduction performed to capture at least {self.n_components * 100:.1f}% explained variance using {X.shape[1]} columns of the input data."
+            )
 
             pcp = self.n_components
             # Run with all components to get all PCs back. This is needed for the step after.
-            _, _, _, percentExplVar = _explainedvar(X, method=self.method, n_components=None, onehot=self.onehot, random_state=self.random_state)
+            _, _, _, percentExplVar = _explainedvar(
+                X,
+                method=self.method,
+                n_components=None,
+                onehot=self.onehot,
+                random_state=self.random_state,
+            )
             # Take number of components with minimal [n_components] explained variance
             if percentExplVar is None:
                 self.n_components = X.shape[1] - 1
                 logger.info(f"n_components is set to {self.n_components}")
             else:
-                self.n_components = np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
-                logger.info(f"The top {self.n_components} principal component(s) explains >= {pcp * 100:.2f}% of the explained variance.")
+                self.n_components = (
+                    np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
+                )
+                logger.info(
+                    f"The top {self.n_components} principal component(s) explains >= {pcp * 100:.2f}% of the explained variance."
+                )
 
-        logger.info(f"The PCA reduction is performed on {X.shape[1]} variables (columns) of the input dataframe.")
-        model_pca, PC, loadings, percentExplVar = _explainedvar(X, method=self.method, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, percentExplVar=percentExplVar)
+        logger.info(
+            f"The PCA reduction is performed on {X.shape[1]} variables (columns) of the input dataframe."
+        )
+        model_pca, PC, loadings, percentExplVar = _explainedvar(
+            X,
+            method=self.method,
+            n_components=self.n_components,
+            onehot=self.onehot,
+            random_state=self.random_state,
+            percentExplVar=percentExplVar,
+        )
         # Take the explained variance for the nr of components
-        pcp = None if percentExplVar is None else percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components - 1)]
+        pcp = (
+            None
+            if percentExplVar is None
+            else percentExplVar[
+                np.minimum(len(percentExplVar) - 1, self.n_components - 1)
+            ]
+        )
 
         # Combine components relations with features
-        loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components)
+        loadings = self._postprocessing(
+            model_pca, loadings, col_labels, self.n_components
+        )
         # Top scoring n_components
         topfeat = self.compute_topfeat(loadings=loadings)
         # Detection of outliers
         outliers, outliers_params = self.compute_outliers(PC, verbose=get_logger())
         # Store
-        self.results = _store(PC, loadings, percentExplVar, model_pca, self.n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler, outliers_params)
+        self.results = _store(
+            PC,
+            loadings,
+            percentExplVar,
+            model_pca,
+            self.n_components,
+            pcp,
+            col_labels,
+            row_labels,
+            topfeat,
+            outliers,
+            scaler,
+            outliers_params,
+        )
         # Return
         return self.results
 
     def _clean(self):
         # Clean readily fitted models to ensure correct results.
-        if hasattr(self, 'results'):
+        if hasattr(self, "results"):
             logger.info("Cleaning previous fitted model results...")
-            if hasattr(self, 'results'): del self.results
+            if hasattr(self, "results"):
+                del self.results
 
     # Outlier detection
-    def compute_outliers(self, PC, n_std=3, verbose='info'):
+    def compute_outliers(self, PC, n_std=3, verbose="info"):
         """Compute outliers.
 
         Parameters
@@ -373,34 +439,53 @@ class pca:
             Contains parameters for hotellingsT2() and spe_dmodx(), reusable in the future.
         """
         # Set logger
-        if verbose is not None: set_logger(verbose)
+        if verbose is not None:
+            set_logger(verbose)
         # Convert to numpy array if required
-        if isinstance(PC, pd.DataFrame): PC = np.array(PC)
+        if isinstance(PC, pd.DataFrame):
+            PC = np.array(PC)
         # Initialize
         outliersHT2, outliersELIPS = pd.DataFrame(), pd.DataFrame()
-        if hasattr(self, 'results'):
-            paramT2 = self.results['outliers_params'].get('paramT2', None)
-            paramSPE = self.results['outliers_params'].get('paramSPE', None)
+        if hasattr(self, "results"):
+            paramT2 = self.results["outliers_params"].get("paramT2", None)
+            paramSPE = self.results["outliers_params"].get("paramSPE", None)
         else:
             paramT2, paramSPE = None, None
 
-        if np.any(np.isin(self.detect_outliers, 'ht2')):
+        if np.any(np.isin(self.detect_outliers, "ht2")):
             # Detection of outliers using hotelling T2 test.
-            if paramT2 is not None: logger.info("Compute Hotelling's T2 with precomputed parameter.")
-            outliersHT2, _, paramT2 = hotellingsT2(PC, alpha=self.alpha, df=1, n_components=self.n_components, multipletests=self.multipletests, param=paramT2, verbose=get_logger())
-        if np.any(np.isin(self.detect_outliers, 'spe')):
+            if paramT2 is not None:
+                logger.info("Compute Hotelling's T2 with precomputed parameter.")
+            outliersHT2, _, paramT2 = hotellingsT2(
+                PC,
+                alpha=self.alpha,
+                df=1,
+                n_components=self.n_components,
+                multipletests=self.multipletests,
+                param=paramT2,
+                verbose=get_logger(),
+            )
+        if np.any(np.isin(self.detect_outliers, "spe")):
             # Detection of outliers using elipse method.
-            if paramSPE is not None: logger.info("Compute SPE with precomputed parameter.")
-            outliersELIPS, _, paramSPE = spe_dmodx(PC, n_std=self.n_std, param=paramSPE, verbose=get_logger())
+            if paramSPE is not None:
+                logger.info("Compute SPE with precomputed parameter.")
+            outliersELIPS, _, paramSPE = spe_dmodx(
+                PC, n_std=self.n_std, param=paramSPE, verbose=get_logger()
+            )
         # Combine
         outliers = pd.concat([outliersHT2, outliersELIPS], axis=1)
-        outliers_params = {'paramT2': paramT2, 'paramSPE': paramSPE}
+        outliers_params = {"paramT2": paramT2, "paramSPE": paramSPE}
         return outliers, outliers_params
 
     # Post processing.
     def _postprocessing(self, model_pca, loadings, col_labels, n_components):
-        PCzip = list(zip(['PC'] * model_pca.components_.shape[0], np.arange(1, model_pca.components_.shape[0] + 1).astype(str)))
-        PCnames = list(map(lambda x: ''.join(x), PCzip))
+        PCzip = list(
+            zip(
+                ["PC"] * model_pca.components_.shape[0],
+                np.arange(1, model_pca.components_.shape[0] + 1).astype(str),
+            )
+        )
+        PCnames = list(map(lambda x: "".join(x), PCzip))
         loadings = pd.DataFrame(loadings, columns=col_labels, index=PCnames)
         # Return
         return loadings
@@ -429,13 +514,15 @@ class pca:
             Best performing features per PC.
 
         """
-        if (loadings is None):
+        if loadings is None:
             try:
                 # Get feature names
-                initial_feature_names = self.results['loadings'].columns.values
-                loadings = self.results['loadings'].values.copy()
+                initial_feature_names = self.results["loadings"].columns.values
+                loadings = self.results["loadings"].values.copy()
             except:
-                raise Exception('[pca] >Error: loadings is not defined. Tip: run model.fit_transform() or provide the loadings yourself as input argument.')
+                raise Exception(
+                    "[pca] >Error: loadings is not defined. Tip: run model.fit_transform() or provide the loadings yourself as input argument."
+                )
 
         if isinstance(loadings, pd.DataFrame):
             initial_feature_names = loadings.columns.values
@@ -450,24 +537,36 @@ class pca:
         # get the names
         most_important_names = [initial_feature_names[idx[i]] for i in range(len(idx))]
         # Make dict with most important features
-        dic = {'PC{}'.format(i + 1): most_important_names[i] for i in range(len(most_important_names))}
+        dic = {
+            "PC{}".format(i + 1): most_important_names[i]
+            for i in range(len(most_important_names))
+        }
         # Collect the features that were never discovered. The weak features.
         idxcol = np.setdiff1d(range(loadings.shape[1]), idx)
         # get the names
-        least_important_names = [initial_feature_names[idxcol[i]] for i in range(len(idxcol))]
+        least_important_names = [
+            initial_feature_names[idxcol[i]] for i in range(len(idxcol))
+        ]
         # Find the strongest loading across the PCs for the least important ones
         idxrow = [np.abs(loadings[:, i]).argmax() for i in idxcol]
         loading_weak = loadings[idxrow, idxcol]
         # Make dict with most important features
         # dic_weak = {'weak'.format(i+1): least_important_names[i] for i in range(len(least_important_names))}
-        PC_weak = ['PC{}'.format(i + 1) for i in idxrow]
+        PC_weak = ["PC{}".format(i + 1) for i in idxrow]
 
         # build the dataframe
-        topfeat = pd.DataFrame(list(dic.items()), columns=['PC', 'feature'])
-        topfeat['loading'] = loading_best
-        topfeat['type'] = 'best'
+        topfeat = pd.DataFrame(list(dic.items()), columns=["PC", "feature"])
+        topfeat["loading"] = loading_best
+        topfeat["type"] = "best"
         # Weak features
-        weakfeat = pd.DataFrame({'PC': PC_weak, 'feature': least_important_names, 'loading': loading_weak, 'type': 'weak'})
+        weakfeat = pd.DataFrame(
+            {
+                "PC": PC_weak,
+                "feature": least_important_names,
+                "loading": loading_weak,
+                "type": "weak",
+            }
+        )
 
         # Combine features
         df = pd.concat([topfeat, weakfeat])
@@ -483,47 +582,59 @@ class pca:
 
         self.n_feat = np.min([self.n_feat, X.shape[1]])
 
-        if (not self.onehot) and (not self.normalize) and isinstance(X, pd.DataFrame) and (str(X.values.dtype)=='bool'):
-            logger.warning("Sparse or one-hot boolean input data is detected; it is highly recommended to set onehot=True or alternatively, normalize=True.")
+        if (
+            (not self.onehot)
+            and (not self.normalize)
+            and isinstance(X, pd.DataFrame)
+            and (str(X.values.dtype) == "bool")
+        ):
+            logger.warning(
+                "Sparse or one-hot boolean input data is detected; it is highly recommended to set onehot=True or alternatively, normalize=True."
+            )
 
         # Set col labels
         if isinstance(X, pd.DataFrame) and col_labels is None:
             logger.info("Extracting column labels from dataframe.")
             col_labels = X.columns.values
-        if col_labels is None or len(col_labels)==0 or len(col_labels)!=X.shape[1]:
+        if col_labels is None or len(col_labels) == 0 or len(col_labels) != X.shape[1]:
             logger.info("Column labels are auto-completed.")
             col_labels = np.arange(1, X.shape[1] + 1).astype(str)
         # if isinstance(col_labels, list):
-        col_labels=np.array(col_labels)
+        col_labels = np.array(col_labels)
 
         # Set row labels
         if isinstance(X, pd.DataFrame) and row_labels is None:
             logger.info("Extracting row labels from dataframe.")
             row_labels = X.index.values
-        if row_labels is None or len(row_labels)!=X.shape[0]:
+        if row_labels is None or len(row_labels) != X.shape[0]:
             # row_labels = np.ones(X.shape[0]).astype(int)
             row_labels = np.arange(0, X.shape[0]).astype(int)
             logger.info("Row labels are auto-completed.")
         # if isinstance(row_labels, list):
-        row_labels=np.array(row_labels)
+        row_labels = np.array(row_labels)
 
         if isinstance(X, pd.DataFrame):
             X = X.values
 
         if sp.issparse(X) and self.normalize:
-            logger.warning("Cannot normalize a sparse matrix. Normalize is set to False.")
-            self.normalize=False
+            logger.warning(
+                "Cannot normalize a sparse matrix. Normalize is set to False."
+            )
+            self.normalize = False
         if (sp.issparse(X) is False) and (self.n_components > X.shape[1]):
             # raise Exception('[pca] >Number of components can not be more then number of features.')
             logger.warning(
                 f"Number of components cannot be more than the number of features - 1. "
-                f"n_components is set to {X.shape[1] - 1}.")
+                f"n_components is set to {X.shape[1] - 1}."
+            )
 
             self.n_components = X.shape[1]
 
         # normalize data
         if self.normalize:
-            logger.info("Normalizing input data per feature (zero mean and unit variance)..")
+            logger.info(
+                "Normalizing input data per feature (zero mean and unit variance).."
+            )
             # Plot the data distribution
             # fig,(ax1,ax2)=plt.subplots(1,2, figsize=(15,5))
             # ax1.hist(X.ravel().astype(float), bins=50)
@@ -550,71 +661,90 @@ class pca:
 
     # Figure pre processing
     def _fig_preprocessing(self, labels, n_feat, d3):
-        if hasattr(self, 'PC'): raise Exception('[pca] >Error: Principal components are not derived yet. Tip: run fit_transform() first.')
-        if self.results['PC'].shape[1]<1: raise Exception('[pca] >Requires at least 1 PC to make plot.')
+        if hasattr(self, "PC"):
+            raise Exception(
+                "[pca] >Error: Principal components are not derived yet. Tip: run fit_transform() first."
+            )
+        if self.results["PC"].shape[1] < 1:
+            raise Exception("[pca] >Requires at least 1 PC to make plot.")
 
-        if (n_feat is not None):
+        if n_feat is not None:
             topfeat = self.compute_topfeat()
             # n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[0]), 2)
         else:
-            topfeat = self.results['topfeat']
+            topfeat = self.results["topfeat"]
             n_feat = self.n_feat
 
         if d3:
-            n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 1)
+            n_feat = np.maximum(
+                np.minimum(n_feat, self.results["loadings"].shape[1]), 1
+            )
         else:
-            n_feat = np.maximum(np.minimum(n_feat, self.results['loadings'].shape[1]), 1)
+            n_feat = np.maximum(
+                np.minimum(n_feat, self.results["loadings"].shape[1]), 1
+            )
 
-        if (labels is not None):
-            if len(labels)!=self.results['PC'].shape[0]: raise Exception('[pca] >Error: Input variable [labels] should have some length as the number input samples: [%d].' %(self.results['PC'].shape[0]))
+        if labels is not None:
+            if len(labels) != self.results["PC"].shape[0]:
+                raise Exception(
+                    "[pca] >Error: Input variable [labels] should have some length as the number input samples: [%d]."
+                    % (self.results["PC"].shape[0])
+                )
             labels = labels.astype(str)
         else:
-            labels = self.results['PC'].index.values.astype(str)
+            labels = self.results["PC"].index.values.astype(str)
 
         # if all labels appear to be not uniuqe. Do not plot because it takes to much time.
-        if len(np.unique(labels))==self.results['PC'].shape[0]: labels=None
+        if len(np.unique(labels)) == self.results["PC"].shape[0]:
+            labels = None
 
-        if self.method=='sparse_pca':
-            logger.info("Sparse PCA does not support variance ratio and therefore, biplots will not be supported.")
-            self.results['explained_var'] = [None, None]
-            self.results['model'].explained_variance_ratio_ = [0, 0]
-            self.results['pcp'] = 0
+        if self.method == "sparse_pca":
+            logger.info(
+                "Sparse PCA does not support variance ratio and therefore, biplots will not be supported."
+            )
+            self.results["explained_var"] = [None, None]
+            self.results["model"].explained_variance_ratio_ = [0, 0]
+            self.results["pcp"] = 0
 
-        if (self.results['explained_var'] is None) or len(self.results['explained_var'])<1:
-            raise Exception('[pca] >Error: No PCs are found with explained variance.')
+        if (self.results["explained_var"] is None) or len(
+            self.results["explained_var"]
+        ) < 1:
+            raise Exception("[pca] >Error: No PCs are found with explained variance.")
 
         return labels, topfeat, n_feat
 
     # Scatter plot
-    def scatter(self,
-                labels=None,
-                c=[0, 0.1, 0.4],
-                s=150,
-                marker='o',
-                edgecolor='#000000',
-                SPE=False,
-                HT2=False,
-                jitter=None,
-                PC=None,
-                alpha=0.8,
-                gradient=None,
-                density=False,
-                density_on_top=False,
-                fontcolor=[0, 0, 0],
-                fontsize=18,
-                fontweight='normal',
-                cmap='tab20c',
-                title=None,
-                legend=None,
-                figsize=(25, 15),
-                dpi=100,
-                visible=True,
-                fig=None,
-                ax=None,
-                grid=True,
-                y=None,  # deprecated
-                label=None,  # deprecated
-                verbose='info'):
+    def scatter(
+        self,
+        labels=None,
+        c=[0, 0.1, 0.4],
+        s=150,
+        marker="o",
+        edgecolor="#000000",
+        SPE=False,
+        HT2=False,
+        jitter=None,
+        PC=None,
+        alpha=0.8,
+        gradient=None,
+        density=False,
+        density_on_top=False,
+        fontcolor=[0, 0, 0],
+        fontsize=18,
+        fontweight="normal",
+        cmap="tab20c",
+        title=None,
+        legend=None,
+        figsize=(25, 15),
+        dpi=100,
+        visible=True,
+        fig=None,
+        ax=None,
+        grid=True,
+        y=None,  # deprecated
+        label=None,  # deprecated
+        verbose="info",
+    ):
         """Scatter 2d plot.
 
         Parameters
@@ -697,100 +827,119 @@ class pca:
 
         """
         # Set the logger
-        if verbose is not None: set_logger(verbose)
+        if verbose is not None:
+            set_logger(verbose)
         # Show warnings when required
         _show_deprecated_warning(label, y, get_logger())
         # Make checks
-        if not hasattr(self, 'results'):
+        if not hasattr(self, "results"):
             logger.warning("No results to plot. Hint: model.fit(X) needed.")
             return None, None
-        if (PC is not None) and self.results['PC'].shape[1]<len(PC):
+        if (PC is not None) and self.results["PC"].shape[1] < len(PC):
             logger.warning("3D plot requires 3 principal components.")
             return None, None
 
         # Set parameters based on intuition
-        if c is None: s=0
-        if cmap is None: s=0
-        if alpha is None: alpha=0.8
-        if PC is None: PC=[0, 1]
-        d3 = True if len(PC)==3 else False
+        if c is None:
+            s = 0
+        if cmap is None:
+            s = 0
+        if alpha is None:
+            alpha = 0.8
+        if PC is None:
+            PC = [0, 1]
+        d3 = True if len(PC) == 3 else False
 
         # Set the labels
-        if labels is None: labels, _, _ = self._fig_preprocessing(labels, None, d3)
+        if labels is None:
+            labels, _, _ = self._fig_preprocessing(labels, None, d3)
         # Get coordinates
-        xs, ys, zs = _get_coordinates(self.results['PC'], PC)
+        xs, ys, zs = _get_coordinates(self.results["PC"], PC)
         # Setup figure
         # fig, ax = _setup_figure(fig, ax, d3, visible, figsize, dpi)
 
-        fig, ax = scatterd(x=xs,
-                           y=ys,
-                           z=zs,
-                           s=s,
-                           c=c,
-                           labels=labels,
-                           edgecolor=edgecolor,
-                           alpha=alpha,
-                           marker=marker,
-                           jitter=jitter,
-                           density=density,
-                           opaque_type='per_class',
-                           density_on_top=density_on_top,
-                           gradient=gradient,
-                           cmap=cmap,
-                           legend=legend,
-                           fontcolor=fontcolor,
-                           fontsize=fontsize,
-                           fontweight=fontweight,
-                           grid=grid,
-                           dpi=dpi,
-                           figsize=figsize,
-                           visible=visible,
-                           fig=fig,
-                           ax=ax,
-                           verbose=get_logger(),
-                           )
+        fig, ax = scatterd(
+            x=xs,
+            y=ys,
+            z=zs,
+            s=s,
+            c=c,
+            labels=labels,
+            edgecolor=edgecolor,
+            alpha=alpha,
+            marker=marker,
+            jitter=jitter,
+            density=density,
+            opaque_type="per_class",
+            density_on_top=density_on_top,
+            gradient=gradient,
+            cmap=cmap,
+            legend=legend,
+            fontcolor=fontcolor,
+            fontsize=fontsize,
+            fontweight=fontweight,
+            grid=grid,
+            dpi=dpi,
+            figsize=figsize,
+            visible=visible,
+            fig=fig,
+            ax=ax,
+            verbose=get_logger(),
+        )
 
         # Plot the SPE with Elipse
         fig, ax = _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, s, fig, ax)
         # Plot hotelling T2
         fig, ax = _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, s, fig, ax)
         # Add figure properties
-        fig, ax = _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, fontsize, verbose)
+        fig, ax = _add_plot_properties(
+            self, PC, d3, title, legend, labels, fig, ax, fontsize, verbose
+        )
         # Return
         return (fig, ax)
 
-    def biplot(self,
-               labels=None,
-               c=[0, 0.1, 0.4],
-               s=150,
-               marker='o',
-               edgecolor='#000000',
-               jitter=None,
-               n_feat=None,
-               PC=None,
-               SPE=None,
-               HT2=None,
-               alpha=0.8,
-               gradient=None,
-               density=False,
-               density_on_top=False,
-               fontcolor=[0, 0, 0],
-               fontsize=18,
-               fontweight='normal',
-               color_arrow=None,
-               arrowdict={'fontsize': None, 'color_text': None, 'weight': None, 'alpha': None, 'color_strong': '#880808', 'color_weak': '#002a77', 'scale_factor': None},
-               cmap='tab20c',
-               title=None,
-               legend=None,
-               figsize=(25, 15),
-               visible=True,
-               fig=None,
-               ax=None,
-               dpi=100,
-               grid=True,
-               y=None,  # deprecated
-               label=None,  # deprecated
-               verbose=None):
+    def biplot(
+        self,
+        labels=None,
+        c=[0, 0.1, 0.4],
+        s=150,
+        marker="o",
+        edgecolor="#000000",
+        jitter=None,
+        n_feat=None,
+        PC=None,
+        SPE=None,
+        HT2=None,
+        alpha=0.8,
+        gradient=None,
+        density=False,
+        density_on_top=False,
+        fontcolor=[0, 0, 0],
+        fontsize=18,
+        fontweight="normal",
+        color_arrow=None,
+        arrowdict={
+            "fontsize": None,
+            "color_text": None,
+            "weight": None,
+            "alpha": None,
+            "color_strong": "#880808",
+            "color_weak": "#002a77",
+            "scale_factor": None,
+        },
+        cmap="tab20c",
+        title=None,
+        legend=None,
+        figsize=(25, 15),
+        visible=True,
+        fig=None,
+        ax=None,
+        dpi=100,
+        grid=True,
+        y=None,  # deprecated
+        label=None,  # deprecated
+        verbose=None,
+    ):
         """Create Biplot.
 
         Plots the Principal components with the samples, and the best performing features.
@@ -908,20 +1057,61 @@ class pca:
 
         """
         # Set the logger
-        if verbose is not None: set_logger(verbose)
+        if verbose is not None:
+            set_logger(verbose)
         _show_deprecated_warning(label, y, verbose)
-        if not hasattr(self, 'results'):
+        if not hasattr(self, "results"):
             logger.warning("No results to plot. Hint: model.fit(X) required.")
             return None, None
 
         # Input checks
-        arrowdict, cmap, PC, d3, s = _biplot_input_checks(self.results, PC, cmap, arrowdict, color_arrow, fontsize, fontweight, c, s, get_logger())
+        arrowdict, cmap, PC, d3, s = _biplot_input_checks(
+            self.results,
+            PC,
+            cmap,
+            arrowdict,
+            color_arrow,
+            fontsize,
+            fontweight,
+            c,
+            s,
+            get_logger(),
+        )
         # Pre-processing
         labels, topfeat, n_feat = self._fig_preprocessing(labels, n_feat, d3)
         # Scatterplot
-        fig, ax = self.scatter(labels=labels, legend=legend, PC=PC, SPE=SPE, HT2=HT2, cmap=cmap, visible=visible, figsize=figsize, alpha=alpha, title=title, gradient=gradient, fig=fig, ax=ax, c=c, s=s, jitter=jitter, marker=marker, fontcolor=fontcolor, fontweight=fontweight, fontsize=fontsize, edgecolor=edgecolor, density=density, density_on_top=density_on_top, dpi=dpi, grid=grid, verbose=get_logger())
+        fig, ax = self.scatter(
+            labels=labels,
+            legend=legend,
+            PC=PC,
+            SPE=SPE,
+            HT2=HT2,
+            cmap=cmap,
+            visible=visible,
+            figsize=figsize,
+            alpha=alpha,
+            title=title,
+            gradient=gradient,
+            fig=fig,
+            ax=ax,
+            c=c,
+            s=s,
+            jitter=jitter,
+            marker=marker,
+            fontcolor=fontcolor,
+            fontweight=fontweight,
+            fontsize=fontsize,
+            edgecolor=edgecolor,
+            density=density,
+            density_on_top=density_on_top,
+            dpi=dpi,
+            grid=grid,
+            verbose=get_logger(),
+        )
         # Add the loadings with arrow to the plot
-        fig, ax = _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, get_logger())
+        fig, ax = _plot_loadings(
+            self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, get_logger()
+        )
         # Plot
         # if visible: plt.show()
         # Return
@@ -944,12 +1134,23 @@ class pca:
         ----------
         Input parameters are described under <scatter>.
         """
-        if not isinstance(alpha, (int, float)): alpha=0.8
+        if not isinstance(alpha, (int, float)):
+            alpha = 0.8
         fig, ax = self.biplot(PC=PC, alpha=alpha, figsize=figsize, **args)
         return fig, ax
 
     # Show explained variance plot
-    def plot(self, n_components=None, xsteps=None, title=None, visible=True, figsize=(15, 10), fig=None, ax=None, verbose=None):
+    def plot(
+        self,
+        n_components=None,
+        xsteps=None,
+        title=None,
+        visible=True,
+        figsize=(15, 10),
+        fig=None,
+        ax=None,
+        verbose=None,
+    ):
         """Scree-plot together with explained variance.
 
         Parameters
@@ -984,55 +1185,81 @@ class pca:
 
         """
         # Set the logger
-        if verbose is not None: set_logger(verbose)
+        if verbose is not None:
+            set_logger(verbose)
 
-        if self.method=='sparse_pca':
-            logger.info("Sparse PCA does not support variance ratio; therefore, scree plots are not supported.")
+        if self.method == "sparse_pca":
+            logger.info(
+                "Sparse PCA does not support variance ratio; therefore, scree plots are not supported."
+            )
             return None, None
         if n_components is not None:
-            if n_components>len(self.results['explained_var']):
-                logger.warning(f'Input "n_components={n_components}" is greater than the number of PCs (= {len(self.results["explained_var"])})')
-            n_components = np.minimum(len(self.results['explained_var']), n_components)
-            explvarCum = self.results['explained_var'][0:n_components]
-            explvar = self.results['variance_ratio'][0:n_components]
+            if n_components > len(self.results["explained_var"]):
+                logger.warning(
+                    f'Input "n_components={n_components}" is greater than the number of PCs (= {len(self.results["explained_var"])})'
+                )
+            n_components = np.minimum(len(self.results["explained_var"]), n_components)
+            explvarCum = self.results["explained_var"][0:n_components]
+            explvar = self.results["variance_ratio"][0:n_components]
         else:
-            explvarCum = self.results['explained_var']
-            explvar = self.results['variance_ratio']
+            explvarCum = self.results["explained_var"]
+            explvar = self.results["variance_ratio"]
         xtick_idx = np.arange(0, len(explvar)) + 1
 
         # Make figure
         if fig is None and ax is None:
             # Create entire new figure.
-            fig, ax = plt.subplots(figsize=figsize, edgecolor='k')
+            fig, ax = plt.subplots(figsize=figsize, edgecolor="k")
         elif fig is not None and ax is None:
             ax = fig.axes[0]
 
         # Set visibility and plot
-        if fig is not None: fig.set_visible(visible)
-        plt.plot(xtick_idx, explvarCum, 'o-', color='k', linewidth=1, label='Cumulative explained variance', visible=visible)
+        if fig is not None:
+            fig.set_visible(visible)
+        plt.plot(
+            xtick_idx,
+            explvarCum,
+            "o-",
+            color="k",
+            linewidth=1,
+            label="Cumulative explained variance",
+            visible=visible,
+        )
 
         # Set xticks if less then 100 datapoints
-        if len(explvar)<100:
+        if len(explvar) < 100:
             ax.set_xticks(xtick_idx)
-            xticklabel=xtick_idx.astype(str)
+            xticklabel = xtick_idx.astype(str)
             if xsteps is not None:
-                xticklabel[np.arange(1, len(xticklabel), xsteps)] = ''
-            ax.set_xticklabels(xticklabel, rotation=90, ha='left', va='top')
+                xticklabel[np.arange(1, len(xticklabel), xsteps)] = ""
+            ax.set_xticklabels(xticklabel, rotation=90, ha="left", va="top")
 
-        plt.ylabel('Percentage explained variance')
-        plt.xlabel('Principal Component')
+        plt.ylabel("Percentage explained variance")
+        plt.xlabel("Principal Component")
         plt.ylim([0, 1.05])
         plt.xlim([0, len(explvar) + 1])
         if title is None:
-            title = 'Cumulative explained variance.\n The top ' + str(self.n_components) + ' Principal Component(s) explains [' + str(explvarCum[self.n_components-1] * 100)[0:5] + '%] of the variance.'
+            title = (
+                "Cumulative explained variance.\n The top "
+                + str(self.n_components)
+                + " Principal Component(s) explains ["
+                + str(explvarCum[self.n_components - 1] * 100)[0:5]
+                + "%] of the variance."
+            )
         plt.title(title)
         plt.grid(True)
 
         # Plot vertical line To stress the cut-off point
-        ax.axvline(self.n_components, linewidth=0.8, color='r')
-        ax.axhline(y=self.results['pcp'], xmin=0, xmax=1, linewidth=0.8, color='r')
-        if len(xtick_idx)<100:
-            plt.bar(xtick_idx, explvar, color='#3182bd', alpha=0.8, label='Explained variance')
+        ax.axvline(self.n_components, linewidth=0.8, color="r")
+        ax.axhline(y=self.results["pcp"], xmin=0, xmax=1, linewidth=0.8, color="r")
+        if len(xtick_idx) < 100:
+            plt.bar(
+                xtick_idx,
+                explvar,
+                color="#3182bd",
+                alpha=0.8,
+                label="Explained variance",
+            )
 
         # if visible:
         #     plt.draw()
@@ -1075,47 +1302,52 @@ class pca:
         if isinstance(X, pd.DataFrame):
             X = X.values
 
-        if not isinstance(pcexclude, list): pcexclude=[pcexclude]
+        if not isinstance(pcexclude, list):
+            pcexclude = [pcexclude]
 
         # Fit using PCA
-        _ = self.fit_transform(X)        
-        coeff = self.results['loadings'].values
-        score = self.results['PC']
+        _ = self.fit_transform(X)
+        coeff = self.results["loadings"].values
+        score = self.results["PC"]
         # Compute explained percentage of variance
-        q = self.results['explained_var']
-        ndims = np.where(q<=self.n_components)[0]
+        q = self.results["explained_var"]
+        ndims = np.where(q <= self.n_components)[0]
         ndims = (np.setdiff1d(ndims + 1, pcexclude)) - 1
         # Transform data
-        out = np.repeat(np.mean(X, axis=1).reshape(-1, 1), X.shape[1], axis=1) + np.dot(score.values[:, ndims], coeff[:, ndims].T)
+        out = np.repeat(np.mean(X, axis=1).reshape(-1, 1), X.shape[1], axis=1) + np.dot(
+            score.values[:, ndims], coeff[:, ndims].T
+        )
         # Return
         return out
 
-    # Import example
-    def import_example(self, data='iris', url=None, sep=','):
-        """Import example dataset from github source.
-
-        Import one of the few datasets from github source or specify your own download url link.
-
+    def import_example(self, data="iris", url=None, sep=","):
+        """
+        Import one of several built-in datasets, or specify your own download
+        URL link.
+    
         Parameters
         ----------
         data : str
-            Name of datasets
-                * 'iris'
-                * 'sprinkler'
-                * 'titanic'
-                * 'student'
-                * 'fifa'
-                * 'cancer'
-                * 'waterpump'
-                * 'retail'
-        url : str
-            url link to to dataset.
-
+            Name of the dataset to load. Options include:
+    
+            * 'iris'
+            * 'sprinkler'
+            * 'titanic'
+            * 'student'
+            * 'fifa'
+            * 'cancer'
+            * 'waterpump'
+            * 'retail'
+    
+        url : str, optional
+            Custom URL link to a dataset. If provided, this overrides ``data``.
+        sep : str, optional
+            Column separator used when reading the dataset (default is ",").
+    
         Returns
         -------
-        pd.DataFrame()
+        pandas.DataFrame
             Dataset containing mixed features.
-
         """
         return import_example(data=data, url=url, sep=sep, verbose=get_logger())
 
@@ -1127,11 +1359,11 @@ def _get_coordinates(PCs, PC):
     zs = None
 
     # Get y-axis
-    if PCs.shape[1]>1:
+    if PCs.shape[1] > 1:
         ys = PCs.iloc[:, PC[1]].values
 
     # Get Z-axis
-    if len(PC)>=3:
+    if len(PC) >= 3:
         zs = PCs.iloc[:, PC[2]].values
 
     return xs, ys, zs
@@ -1145,7 +1377,9 @@ def _eigsorted(cov, n_std):
     return vals[order], vecs[:, order]
 
 
-def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', visible=False, verbose='info'):
+def spe_dmodx(
+    X, n_std=3, param=None, calpha=0.3, color="green", visible=False, verbose="info"
+):
     """Compute SPE/distance to model (DmodX).
 
     Outlier can be detected using SPE/DmodX (distance to model) based on the mean and covariance of the first 2 dimensions of X.
@@ -1176,16 +1410,17 @@ def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', visible=False, 
         computed g_ell_center and cov from X.
 
     """
-    if verbose is not None: set_logger(verbose)
+    if verbose is not None:
+        set_logger(verbose)
     logger.info(f"Outlier detection using SPE/DmodX with n_std=[{n_std}]")
     g_ellipse = None
     # The 2x2 covariance matrix to base the ellipse on the location of the center of the ellipse. Expects a 2-element sequence of [x0, y0].
     n_components = np.minimum(2, X.shape[1])
     X = X[:, 0:n_components]
 
-    if X.shape[1]>=2:
+    if X.shape[1] >= 2:
         # Compute mean and covariance
-        if (param is not None):
+        if param is not None:
             g_ell_center, cov = param
         else:
             g_ell_center = X.mean(axis=0)
@@ -1197,39 +1432,66 @@ def spe_dmodx(X, n_std=3, param=None, calpha=0.3, color='green', visible=False, 
         angle = np.degrees(np.arctan2(*vecs[:, 0][::-1]))
         width, height = 2 * n_std * np.sqrt(vals)
         # Compute angles of ellipse
-        cos_angle = np.cos(np.radians(180. - angle))
-        sin_angle = np.sin(np.radians(180. - angle))
+        cos_angle = np.cos(np.radians(180.0 - angle))
+        sin_angle = np.sin(np.radians(180.0 - angle))
         # Determine the elipse range
         xc = X[:, 0] - g_ell_center[0]
         yc = X[:, 1] - g_ell_center[1]
         xct = xc * cos_angle - yc * sin_angle
         yct = xc * sin_angle + yc * cos_angle
-        rad_cc = (xct**2 / (width / 2.)**2) + (yct**2 / (height / 2.)**2)
+        rad_cc = (xct**2 / (width / 2.0) ** 2) + (yct**2 / (height / 2.0) ** 2)
 
         # Mark the samples outside the ellipse
         outliers = rad_cc > 1
 
         # Plot the raw points.
-        g_ellipse = Ellipse(xy=g_ell_center, width=width, height=height, angle=angle, color=color, alpha=calpha)
-        y_score = list(map(lambda x: euclidean_distances([g_ell_center], x.reshape(1, -1))[0][0], X))
+        g_ellipse = Ellipse(
+            xy=g_ell_center,
+            width=width,
+            height=height,
+            angle=angle,
+            color=color,
+            alpha=calpha,
+        )
+        y_score = list(
+            map(
+                lambda x: euclidean_distances([g_ell_center], x.reshape(1, -1))[0][0], X
+            )
+        )
 
         if visible:
             ax = plt.gca()
             ax.add_artist(g_ellipse)
-            ax.scatter(X[~outliers, 0], X[~outliers, 1], c='black', linewidths=0.3, label='normal')
-            ax.scatter(X[outliers, 0], X[outliers, 1], c='red', linewidths=0.3, label='outlier')
+            ax.scatter(
+                X[~outliers, 0],
+                X[~outliers, 1],
+                c="black",
+                linewidths=0.3,
+                label="normal",
+            )
+            ax.scatter(
+                X[outliers, 0], X[outliers, 1], c="red", linewidths=0.3, label="outlier"
+            )
             ax.legend(loc=0)
     else:
         outliers = np.repeat(False, X.shape[1])
         y_score = np.repeat(None, X.shape[1])
 
     # Store in dataframe
-    out = pd.DataFrame(data={'y_bool_spe': outliers, 'y_score_spe': y_score})
+    out = pd.DataFrame(data={"y_bool_spe": outliers, "y_score_spe": y_score})
     return out, g_ellipse, param
 
 
 # %% Outlier detection
-def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', param=None, verbose='info'):
+def hotellingsT2(
+    X,
+    alpha=0.05,
+    df=1,
+    n_components=5,
+    multipletests="fdr_bh",
+    param=None,
+    verbose="info",
+):
     """Test for outlier using hotelling T2 test.
 
     Test for outliers using chi-square tests for each of the n_components.
@@ -1275,22 +1537,25 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', pa
         computed mean and variance from X.
 
     """
-    if verbose is not None: set_logger(verbose)
+    if verbose is not None:
+        set_logger(verbose)
     n_components = np.minimum(n_components, X.shape[1])
     X = X[:, 0:n_components]
     y = X
 
-    if (param is not None):
+    if param is not None:
         mean, var = param
     else:
         mean, var = np.mean(X), np.var(X)
         param = (mean, var)
-    logger.info(f"Outlier detection using Hotelling T2 test with alpha=[{alpha:.2f}] and n_components=[{n_components}]")
+    logger.info(
+        f"Outlier detection using Hotelling T2 test with alpha=[{alpha:.2f}] and n_components=[{n_components}]"
+    )
     y_score = (y - mean) ** 2 / var
     # Compute probability per PC whether datapoints are outside the boundary
     y_proba = 1 - stats.chi2.cdf(y_score, df=df)
     # Set probabilities at a very small value when 0. This is required for the Fishers method. Otherwise inf values will occur.
-    y_proba[y_proba==0]=1e-300
+    y_proba[y_proba == 0] = 1e-300
 
     # Compute the anomaly threshold
     anomaly_score_threshold = stats.chi2.ppf(q=(1 - alpha), df=df)
@@ -1302,19 +1567,26 @@ def hotellingsT2(X, alpha=0.05, df=1, n_components=5, multipletests='fdr_bh', pa
     # weights = np.arange(0, 1, (1/n_components) )[::-1] + (1/n_components)
     for i in range(0, y_proba.shape[0]):
         # Pcomb.append(stats.combine_pvalues(y_proba[i, :], method='stouffer', weights=weights))
-        Pcomb.append(stats.combine_pvalues(y_proba[i, :], method='fisher'))
+        Pcomb.append(stats.combine_pvalues(y_proba[i, :], method="fisher"))
 
     Pcomb = np.array(Pcomb)
     # Multiple test correction
     Pcorr = multitest_correction(Pcomb[:, 1], multipletests=multipletests)
     # Set dataframe
-    outliers = pd.DataFrame(data={'y_proba': Pcorr, 'p_raw': Pcomb[:, 1], 'y_score': Pcomb[:, 0], 'y_bool': Pcorr <= alpha})
+    outliers = pd.DataFrame(
+        data={
+            "y_proba": Pcorr,
+            "p_raw": Pcomb[:, 1],
+            "y_score": Pcomb[:, 0],
+            "y_bool": Pcorr <= alpha,
+        }
+    )
     # Return
     return outliers, y_bools, param
 
 
 # %% Do multiple test correction
-def multitest_correction(Praw, multipletests='fdr_bh'):
+def multitest_correction(Praw, multipletests="fdr_bh"):
     """Multiple test correction for input pvalues.
 
     Parameters
@@ -1342,30 +1614,42 @@ def multitest_correction(Praw, multipletests='fdr_bh'):
 
     """
     if multipletests is not None:
-        logger.info(f"Multiple test correction applied for Hotelling T2 test: [{multipletests}]")
+        logger.info(
+            f"Multiple test correction applied for Hotelling T2 test: [{multipletests}]"
+        )
         Padj = multitest.multipletests(Praw, method=multipletests)[1]
     else:
-        Padj=Praw
+        Padj = Praw
 
     Padj = np.clip(Padj, 0, 1)
     return Padj
 
 
 # %% Explained variance
-def _explainedvar(X, method='pca', n_components=None, onehot=False, random_state=None, n_jobs=-1, percentExplVar=None):
+def _explainedvar(
+    X,
+    method="pca",
+    n_components=None,
+    onehot=False,
+    random_state=None,
+    n_jobs=-1,
+    percentExplVar=None,
+):
     # Create the model
-    if method=='trunc_svd':
+    if method == "trunc_svd":
         logger.info("Fit using Truncated SVD.")
         if n_components is None:
             n_components = X.shape[1] - 1
         model = TruncatedSVD(n_components=n_components, random_state=random_state)
-    elif method=='sparse_pca':
+    elif method == "sparse_pca":
         logger.info("Fit using Sparse PCA.")
-        onehot=True
-        model = SparsePCA(n_components=n_components, random_state=random_state, n_jobs=n_jobs)
+        onehot = True
+        model = SparsePCA(
+            n_components=n_components, random_state=random_state, n_jobs=n_jobs
+        )
         # model = MiniBatchSparsePCA(n_components=n_components, random_state=random_state, n_jobs=n_jobs)
     else:
-        logger.info('Fit using PCA.')
+        logger.info("Fit using PCA.")
         model = PCA(n_components=n_components, random_state=random_state)
 
     # Fit model
@@ -1389,28 +1673,45 @@ def _explainedvar(X, method='pca', n_components=None, onehot=False, random_state
 
 
 # %% Store results
-def _store(PC, loadings, percentExplVar, model_pca, n_components, pcp, col_labels, row_labels, topfeat, outliers, scaler, outliers_params):
-
-    if not outliers.empty: outliers.index = row_labels
+def _store(
+    PC,
+    loadings,
+    percentExplVar,
+    model_pca,
+    n_components,
+    pcp,
+    col_labels,
+    row_labels,
+    topfeat,
+    outliers,
+    scaler,
+    outliers_params,
+):
+    if not outliers.empty:
+        outliers.index = row_labels
     out = {}
-    out['loadings'] = loadings
-    out['PC'] = pd.DataFrame(data=PC[:, 0:n_components], index=row_labels, columns=loadings.index.values[0:n_components])
-    out['explained_var'] = percentExplVar
+    out["loadings"] = loadings
+    out["PC"] = pd.DataFrame(
+        data=PC[:, 0:n_components],
+        index=row_labels,
+        columns=loadings.index.values[0:n_components],
+    )
+    out["explained_var"] = percentExplVar
     if percentExplVar is None:
-        out['variance_ratio'] = None
+        out["variance_ratio"] = None
     else:
-        out['variance_ratio'] = np.diff(percentExplVar, prepend=0)
-    out['model'] = model_pca
-    out['scaler'] = scaler
-    out['pcp'] = pcp
-    out['topfeat'] = topfeat
-    out['outliers'] = outliers
-    out['outliers_params'] = outliers_params
+        out["variance_ratio"] = np.diff(percentExplVar, prepend=0)
+    out["model"] = model_pca
+    out["scaler"] = scaler
+    out["pcp"] = pcp
+    out["topfeat"] = topfeat
+    out["outliers"] = outliers
+    out["outliers_params"] = outliers_params
     return out
 
 
 # %% Import example dataset from github.
-def import_example(data='iris', url=None, sep=',', verbose='info'):
+def import_example(data="iris", url=None, sep=",", verbose="info"):
     """Import example dataset from github source.
 
     Import one of the few datasets from github source or specify your own download url link.
@@ -1429,9 +1730,9 @@ def import_example(data='iris', url=None, sep=',', verbose='info'):
             * 'retail'
     url : str
         url link to to dataset.
-	verbose : int, (default: 20)
-		Print progress to screen. The default is 3.
-		60: None, 40: Error, 30: Warn, 20: Info, 10: Debug
+        verbose : int, (default: 20)
+                Print progress to screen. The default is 3.
+                60: None, 40: Error, 30: Warn, 20: Info, 10: Debug
 
     Returns
     -------
@@ -1499,34 +1800,60 @@ def _get_explained_variance(X, components):
     return explained_variance
 
 
-def _biplot_input_checks(results, PC, cmap, arrowdict, color_arrow, fontsize, fontweight, c, s, verbose):
-    if c is None: s=0
-    if cmap is None: s=0
-    if isinstance(s, (int, float)) and s==0: fontsize=0
-    if PC is None: PC=[0, 1]
-    d3 = True if len(PC)>=3 else False
+def _biplot_input_checks(
+    results, PC, cmap, arrowdict, color_arrow, fontsize, fontweight, c, s, verbose
+):
+    if c is None:
+        s = 0
+    if cmap is None:
+        s = 0
+    if isinstance(s, (int, float)) and s == 0:
+        fontsize = 0
+    if PC is None:
+        PC = [0, 1]
+    d3 = True if len(PC) >= 3 else False
 
     # Check PCs
-    if results['PC'].shape[1]<2: raise ValueError('[pca] >[Error] Requires 2 PCs to make 2d plot.')
-    if np.max(PC)>=results['PC'].shape[1]: raise ValueError('[pca] >[Error] PC%.0d does not exist!' %(np.max(PC) + 1))
+    if results["PC"].shape[1] < 2:
+        raise ValueError("[pca] >[Error] Requires 2 PCs to make 2d plot.")
+    if np.max(PC) >= results["PC"].shape[1]:
+        raise ValueError("[pca] >[Error] PC%.0d does not exist!" % (np.max(PC) + 1))
     if d3:
-        logger.info(f"Plot PC{PC[0] + 1} vs PC{PC[1] + 1} vs PC{PC[2] + 1} with loadings.")
+        logger.info(
+            f"Plot PC{PC[0] + 1} vs PC{PC[1] + 1} vs PC{PC[2] + 1} with loadings."
+        )
     else:
         logger.info(f"Plot PC{PC[0] + 1} vs PC{PC[1] + 1} with loadings.")
 
     # Set defaults in arrowdict
-    arrowdict =_set_arrowdict(arrowdict, color_arrow=color_arrow, fontsize=fontsize, fontweight=fontweight)
+    arrowdict = _set_arrowdict(
+        arrowdict, color_arrow=color_arrow, fontsize=fontsize, fontweight=fontweight
+    )
     # Return
     return arrowdict, cmap, PC, d3, s
 
 
-def _set_arrowdict(arrowdict, color_arrow=None, fontsize=18, fontweight='normal'):
+def _set_arrowdict(arrowdict, color_arrow=None, fontsize=18, fontweight="normal"):
     # color_arrow = None if (color_arrow is None) else color_arrow
-    arrowdict = {**{'color_arrow': color_arrow, 'color_text': None, 'fontsize': 18 if fontsize==0 else fontsize, 'weight': fontweight, 'alpha': None, 'ha': 'center', 'va': 'center', 'color_strong': '#880808', 'color_weak': '#002a77', 'scale_factor': None}, **arrowdict}
-    if arrowdict.get('fontsize') is None:
-        arrowdict['fontsize'] = 18 if fontsize==0 else fontsize
-    if arrowdict.get('weight') is None:
-        arrowdict['weight'] = fontweight
+    arrowdict = {
+        **{
+            "color_arrow": color_arrow,
+            "color_text": None,
+            "fontsize": 18 if fontsize == 0 else fontsize,
+            "weight": fontweight,
+            "alpha": None,
+            "ha": "center",
+            "va": "center",
+            "color_strong": "#880808",
+            "color_weak": "#002a77",
+            "scale_factor": None,
+        },
+        **arrowdict,
+    }
+    if arrowdict.get("fontsize") is None:
+        arrowdict["fontsize"] = 18 if fontsize == 0 else fontsize
+    if arrowdict.get("weight") is None:
+        arrowdict["weight"] = fontweight
     return arrowdict
 
 
@@ -1534,26 +1861,27 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
     topfeat = pd.concat([topfeat.iloc[PC, :], topfeat.loc[~topfeat.index.isin(PC), :]])
     topfeat.reset_index(inplace=True)
     # Collect coefficients
-    coeff = self.results['loadings'].iloc[PC, :]
+    coeff = self.results["loadings"].iloc[PC, :]
 
     # Use the PCs only for scaling purposes
-    mean_x = np.mean(self.results['PC'].iloc[:, PC[0]].values)
-    mean_y = np.mean(self.results['PC'].iloc[:, PC[1]].values)
-    if d3: mean_z = np.mean(self.results['PC'].iloc[:, PC[2]].values)
+    mean_x = np.mean(self.results["PC"].iloc[:, PC[0]].values)
+    mean_y = np.mean(self.results["PC"].iloc[:, PC[1]].values)
+    if d3:
+        mean_z = np.mean(self.results["PC"].iloc[:, PC[2]].values)
 
     # Plot and scale values for arrows and text by taking the absolute minimum range of the x-axis and y-axis.
-    max_axis = np.max(np.abs(self.results['PC'].iloc[:, PC]).min(axis=1))
+    max_axis = np.max(np.abs(self.results["PC"].iloc[:, PC]).min(axis=1))
     max_arrow = np.abs(coeff).max().max()
-    if arrowdict['scale_factor'] is None:
+    if arrowdict["scale_factor"] is None:
         scale_factor = 1.8 if d3 else 1.1
     else:
-        scale_factor = arrowdict['scale_factor']
+        scale_factor = arrowdict["scale_factor"]
     # Scale the arrows using the scale factor
     scale = (np.max([1, np.round(max_axis / max_arrow, 2)])) * scale_factor
 
     # For vizualization purposes we will keep only the unique feature-names
-    topfeat = topfeat.drop_duplicates(subset=['feature'])
-    if topfeat.shape[0]<n_feat:
+    topfeat = topfeat.drop_duplicates(subset=["feature"])
+    if topfeat.shape[0] < n_feat:
         n_feat = topfeat.shape[0]
         logger.warning(
             f"n_feat cannot be reached because of the limitation of n_components (={self.n_components}). "
@@ -1561,13 +1889,18 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
         )
 
     # Plot arrows and text
-    arrow_line_color = arrowdict['color_arrow']
-    arrow_text_color = arrowdict['color_text']
-    arrow_alpha = arrowdict['alpha']
-    alpha_scaled = normalize_size(topfeat['loading'].abs().values.reshape(-1, 1), minscale=0.35, maxscale=0.95, scaler='minmax')
+    arrow_line_color = arrowdict["color_arrow"]
+    arrow_text_color = arrowdict["color_text"]
+    arrow_alpha = arrowdict["alpha"]
+    alpha_scaled = normalize_size(
+        topfeat["loading"].abs().values.reshape(-1, 1),
+        minscale=0.35,
+        maxscale=0.95,
+        scaler="minmax",
+    )
     texts = []
     for i in range(0, n_feat):
-        getfeat = topfeat['feature'].iloc[i]
+        getfeat = topfeat["feature"].iloc[i]
         # label = getfeat + ' (' + ('%.3g' %topfeat['loading'].iloc[i]) + ')'
         label = f"{getfeat} ({topfeat['loading'].iloc[i]:.3g})"
         getcoef = coeff[getfeat].values
@@ -1576,23 +1909,78 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
         yarrow = getcoef[1] * scale  # Second PC in the y-axis direction
         # Set the arrow and arrow-text colors
         # Update arrow color if None
-        loading_color = arrowdict['color_weak'] if topfeat['type'].iloc[i] == 'weak' else arrowdict['color_strong']
+        loading_color = (
+            arrowdict["color_weak"]
+            if topfeat["type"].iloc[i] == "weak"
+            else arrowdict["color_strong"]
+        )
         # Update colors if None
-        if arrowdict['color_arrow'] is None: arrow_line_color = loading_color
-        if arrowdict['color_text'] is None: arrow_text_color = loading_color
-        if arrowdict['alpha'] is None: arrow_alpha = alpha_scaled[i]
+        if arrowdict["color_arrow"] is None:
+            arrow_line_color = loading_color
+        if arrowdict["color_text"] is None:
+            arrow_text_color = loading_color
+        if arrowdict["alpha"] is None:
+            arrow_alpha = alpha_scaled[i]
 
         if d3:
             zarrow = getcoef[2] * scale
-            ax.quiver(mean_x, mean_y, mean_z, xarrow - mean_x, yarrow - mean_y, zarrow - mean_z, color=arrow_line_color, alpha=arrow_alpha, lw=2)
-            texts.append(ax.text(xarrow, yarrow, zarrow, label, fontsize=arrowdict['fontsize'], c=arrow_text_color, weight=arrowdict['weight'], ha=arrowdict['ha'], va=arrowdict['va'], zorder=25))
+            ax.quiver(
+                mean_x,
+                mean_y,
+                mean_z,
+                xarrow - mean_x,
+                yarrow - mean_y,
+                zarrow - mean_z,
+                color=arrow_line_color,
+                alpha=arrow_alpha,
+                lw=2,
+            )
+            texts.append(
+                ax.text(
+                    xarrow,
+                    yarrow,
+                    zarrow,
+                    label,
+                    fontsize=arrowdict["fontsize"],
+                    c=arrow_text_color,
+                    weight=arrowdict["weight"],
+                    ha=arrowdict["ha"],
+                    va=arrowdict["va"],
+                    zorder=25,
+                )
+            )
         else:
             head_width = 0.1
-            ax.arrow(mean_x, mean_y, xarrow - mean_x, yarrow - mean_y, color=arrow_line_color, alpha=arrow_alpha, width=0.002, head_width=head_width, head_length=head_width * 1.1, length_includes_head=True, zorder=10)
-            texts.append(ax.text(xarrow, yarrow, label, fontsize=arrowdict['fontsize'], c=arrow_text_color, weight=arrowdict['weight'], ha=arrowdict['ha'], va=arrowdict['va'], zorder=10))
+            ax.arrow(
+                mean_x,
+                mean_y,
+                xarrow - mean_x,
+                yarrow - mean_y,
+                color=arrow_line_color,
+                alpha=arrow_alpha,
+                width=0.002,
+                head_width=head_width,
+                head_length=head_width * 1.1,
+                length_includes_head=True,
+                zorder=10,
+            )
+            texts.append(
+                ax.text(
+                    xarrow,
+                    yarrow,
+                    label,
+                    fontsize=arrowdict["fontsize"],
+                    c=arrow_text_color,
+                    weight=arrowdict["weight"],
+                    ha=arrowdict["ha"],
+                    va=arrowdict["va"],
+                    zorder=10,
+                )
+            )
 
     # Plot the adjusted text labels to prevent overlap. Do not adjust text in 3d plots as it will mess up the locations.
-    if len(texts)>0 and not d3: adjust_text(texts)
+    if len(texts) > 0 and not d3:
+        adjust_text(texts)
 
     # Return
     return fig, ax
@@ -1600,68 +1988,151 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
 
 def _add_plot_SPE(self, xs, ys, zs, SPE, d3, alpha, s, fig, ax):
     # Get the outliers
-    Ioutlier2 = np.repeat(False, self.results['PC'].shape[0])
-    if SPE and ('y_bool_spe' in self.results['outliers'].columns):
-        Ioutlier2 = self.results['outliers']['y_bool_spe'].values
+    Ioutlier2 = np.repeat(False, self.results["PC"].shape[0])
+    if SPE and ("y_bool_spe" in self.results["outliers"].columns):
+        Ioutlier2 = self.results["outliers"]["y_bool_spe"].values
         if not d3:
             # Plot the ellipse
-            g_ellipse = spe_dmodx(np.c_[xs, ys], n_std=self.n_std, color='green', calpha=0.1, visible=False, verbose=get_logger())[1]
+            g_ellipse = spe_dmodx(
+                np.c_[xs, ys],
+                n_std=self.n_std,
+                color="green",
+                calpha=0.1,
+                visible=False,
+                verbose=get_logger(),
+            )[1]
             if g_ellipse is not None:
                 ax.add_artist(g_ellipse)
                 # Set the order of the layer at 1. At this point it is over the density layer which looks nicer.
                 g_ellipse.set_zorder(1)
 
     # Plot outliers for hotelling T2 test.
-    if isinstance(s, (int, float)): s = 150 if s>0 else 0
-    if not isinstance(s, (int, float)): s=150
-    if SPE and ('y_bool_spe' in self.results['outliers'].columns):
-        label_spe = str(sum(Ioutlier2)) + ' outlier(s) (SPE/DmodX)'
+    if isinstance(s, (int, float)):
+        s = 150 if s > 0 else 0
+    if not isinstance(s, (int, float)):
+        s = 150
+    if SPE and ("y_bool_spe" in self.results["outliers"].columns):
+        label_spe = str(sum(Ioutlier2)) + " outlier(s) (SPE/DmodX)"
         if d3:
-            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], zs[Ioutlier2], marker='x', color=[1, 0, 0], s=s*1.5, label=label_spe, alpha=alpha, zorder=15)
+            ax.scatter(
+                xs[Ioutlier2],
+                ys[Ioutlier2],
+                zs[Ioutlier2],
+                marker="x",
+                color=[1, 0, 0],
+                s=s * 1.5,
+                label=label_spe,
+                alpha=alpha,
+                zorder=15,
+            )
         else:
-            ax.scatter(xs[Ioutlier2], ys[Ioutlier2], marker='d', color=[1, 0, 0], s=s*1.5, label=label_spe, alpha=alpha, zorder=15)
+            ax.scatter(
+                xs[Ioutlier2],
+                ys[Ioutlier2],
+                marker="d",
+                color=[1, 0, 0],
+                s=s * 1.5,
+                label=label_spe,
+                alpha=alpha,
+                zorder=15,
+            )
 
     return fig, ax
 
 
 def _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, s, fig, ax):
     # Plot outliers for hotelling T2 test.
-    if isinstance(s, (int, float)): s = 150 if s>0 else 0
-    if not isinstance(s, (int, float)): s=150
+    if isinstance(s, (int, float)):
+        s = 150 if s > 0 else 0
+    if not isinstance(s, (int, float)):
+        s = 150
     # Plot outliers for hotelling T2 test.
-    if HT2 and ('y_bool' in self.results['outliers'].columns):
-        Ioutlier1 = self.results['outliers']['y_bool'].values
+    if HT2 and ("y_bool" in self.results["outliers"].columns):
+        Ioutlier1 = self.results["outliers"]["y_bool"].values
 
-    if HT2 and ('y_bool' in self.results['outliers'].columns):
-        label_t2 = str(sum(Ioutlier1)) + ' outlier(s) (hotelling t2)'
+    if HT2 and ("y_bool" in self.results["outliers"].columns):
+        label_t2 = str(sum(Ioutlier1)) + " outlier(s) (hotelling t2)"
         if d3:
-            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], zs[Ioutlier1], marker='d', color=[1, 0, 0], s=s*1.5, label=label_t2, alpha=alpha, zorder=15)
+            ax.scatter(
+                xs[Ioutlier1],
+                ys[Ioutlier1],
+                zs[Ioutlier1],
+                marker="d",
+                color=[1, 0, 0],
+                s=s * 1.5,
+                label=label_t2,
+                alpha=alpha,
+                zorder=15,
+            )
         else:
-            ax.scatter(xs[Ioutlier1], ys[Ioutlier1], marker='x', color=[1, 0, 0], s=s*1.5, label=label_t2, alpha=alpha, zorder=15)
+            ax.scatter(
+                xs[Ioutlier1],
+                ys[Ioutlier1],
+                marker="x",
+                color=[1, 0, 0],
+                s=s * 1.5,
+                label=label_t2,
+                alpha=alpha,
+                zorder=15,
+            )
 
     return fig, ax
 
 
-def _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, fontsize, verbose):
+def _add_plot_properties(
+    self, PC, d3, title, legend, labels, fig, ax, fontsize, verbose
+):
     # Set labels
-    ax.set_xlabel('PC' + str(PC[0] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[0]] * 100)[0:4] + '% expl.var)')
-    if len(self.results['model'].explained_variance_ratio_)>=2:
-        ax.set_ylabel('PC' + str(PC[1] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[1]] * 100)[0:4] + '% expl.var)')
+    ax.set_xlabel(
+        "PC"
+        + str(PC[0] + 1)
+        + " ("
+        + str(self.results["model"].explained_variance_ratio_[PC[0]] * 100)[0:4]
+        + "% expl.var)"
+    )
+    if len(self.results["model"].explained_variance_ratio_) >= 2:
+        ax.set_ylabel(
+            "PC"
+            + str(PC[1] + 1)
+            + " ("
+            + str(self.results["model"].explained_variance_ratio_[PC[1]] * 100)[0:4]
+            + "% expl.var)"
+        )
     else:
-        ax.set_ylabel('PC2 (0% expl.var)')
-    if d3 and (len(self.results['model'].explained_variance_ratio_)>=3):
-        ax.set_zlabel('PC' + str(PC[2] + 1) + ' (' + str(self.results['model'].explained_variance_ratio_[PC[2]] * 100)[0:4] + '% expl.var)')
+        ax.set_ylabel("PC2 (0% expl.var)")
+    if d3 and (len(self.results["model"].explained_variance_ratio_) >= 3):
+        ax.set_zlabel(
+            "PC"
+            + str(PC[2] + 1)
+            + " ("
+            + str(self.results["model"].explained_variance_ratio_[PC[2]] * 100)[0:4]
+            + "% expl.var)"
+        )
 
     # Set title
     if title is None:
-        title = str(self.n_components) + ' Principal Components explain [' + str(self.results['pcp'] * 100)[0:5] + '%] of the variance'
-        explvarCum = self.results['explained_var']
-        title = 'The top ' + str(self.n_components) + ' Principal Component(s) explains [' + str(explvarCum[self.n_components-1] * 100)[0:5] + '%] of the variance.'
+        title = (
+            str(self.n_components)
+            + " Principal Components explain ["
+            + str(self.results["pcp"] * 100)[0:5]
+            + "%] of the variance"
+        )
+        explvarCum = self.results["explained_var"]
+        title = (
+            "The top "
+            + str(self.n_components)
+            + " Principal Component(s) explains ["
+            + str(explvarCum[self.n_components - 1] * 100)[0:5]
+            + "%] of the variance."
+        )
 
     # Determine the legend status if set to None
-    if isinstance(legend, bool): legend = 0 if legend else -1
-    if legend is None: legend = -1 if len(np.unique(labels))>20 else 0
-    if (legend>=0) and (labels is not None): ax.legend(loc=legend, fontsize=14)
+    if isinstance(legend, bool):
+        legend = 0 if legend else -1
+    if legend is None:
+        legend = -1 if len(np.unique(labels)) > 20 else 0
+    if (legend >= 0) and (labels is not None):
+        ax.legend(loc=legend, fontsize=14)
 
     ax.set_title(title, fontsize=18)
     ax.grid(True)
@@ -1669,7 +2140,12 @@ def _add_plot_properties(self, PC, d3, title, legend, labels, fig, ax, fontsize,
     return fig, ax
 
 
-def normalize_size(getsizes, minscale: Union[int, float] = 0.5, maxscale: Union[int, float] = 4, scaler: str = 'zscore'):
+def normalize_size(
+    getsizes,
+    minscale: Union[int, float] = 0.5,
+    maxscale: Union[int, float] = 4,
+    scaler: str = "zscore",
+):
     """Normalize values between minimum and maximum value.
 
     Parameters
@@ -1695,20 +2171,26 @@ def normalize_size(getsizes, minscale: Union[int, float] = 0.5, maxscale: Union[
     # Z-scores is better. Min-Max Scaling is too sensitive to outlier observations and generates unseen problems,
 
     # Set sizes to 0 if not available
-    getsizes[np.isinf(getsizes)]=0
-    getsizes[np.isnan(getsizes)]=0
+    getsizes[np.isinf(getsizes)] = 0
+    getsizes[np.isnan(getsizes)] = 0
 
     # out-of-scale datapoints.
-    if scaler == 'zscore' and len(np.unique(getsizes)) > 3:
+    if scaler == "zscore" and len(np.unique(getsizes)) > 3:
         getsizes = (getsizes.flatten() - np.mean(getsizes)) / np.std(getsizes)
         getsizes = getsizes + (minscale - np.min(getsizes))
-    elif scaler == 'minmax':
+    elif scaler == "minmax":
         try:
             from sklearn.preprocessing import MinMaxScaler
         except:
-            raise Exception('sklearn needs to be pip installed first. Try: pip install scikit-learn')
+            raise Exception(
+                "sklearn needs to be pip installed first. Try: pip install scikit-learn"
+            )
         # scaling
-        getsizes = MinMaxScaler(feature_range=(minscale, maxscale)).fit_transform(getsizes).flatten()
+        getsizes = (
+            MinMaxScaler(feature_range=(minscale, maxscale))
+            .fit_transform(getsizes)
+            .flatten()
+        )
     else:
         getsizes = getsizes.ravel()
     # Max digits is 4
@@ -1721,14 +2203,25 @@ def normalize_size(getsizes, minscale: Union[int, float] = 0.5, maxscale: Union[
 def convert_verbose_to_old(verbose):
     """Convert new verbosity to the old ones."""
     # In case the new verbosity is used, convert to the old one.
-    if verbose is None: verbose=0
-    if isinstance(verbose, str) or verbose>=10:
+    if verbose is None:
+        verbose = 0
+    if isinstance(verbose, str) or verbose >= 10:
         status_map = {
-            60: 0, 'silent': 0, 'off': 0, 'no': 0, None: 0,
-            40: 1, 'error': 1, 'critical': 1,
-            30: 2, 'warning': 2,
-            20: 3, 'info': 3,
-            10: 4, 'debug': 4}
+            60: 0,
+            "silent": 0,
+            "off": 0,
+            "no": 0,
+            None: 0,
+            40: 1,
+            "error": 1,
+            "critical": 1,
+            30: 2,
+            "warning": 2,
+            20: 3,
+            "info": 3,
+            10: 4,
+            "debug": 4,
+        }
         return status_map.get(verbose, 0)
     else:
         return verbose
@@ -1737,28 +2230,33 @@ def convert_verbose_to_old(verbose):
 def convert_verbose_to_new(verbose):
     """Convert old verbosity to the new."""
     # In case the new verbosity is used, convert to the old one.
-    if verbose is None: verbose=0
-    if not isinstance(verbose, str) and verbose<10:
+    if verbose is None:
+        verbose = 0
+    if not isinstance(verbose, str) and verbose < 10:
         status_map = {
-            1: 'critical',
-            2: 'warning',
-            3: 'info',
-            4: 'debug',
-            5: 'debug',
-            6: 'silent',
-            0: 'silent',
-            'None': 'silent',
-            }
-        if verbose>=2: print('[pca] WARNING use the standardized verbose status. The status [1-6] will be deprecated in future versions.')
+            1: "critical",
+            2: "warning",
+            3: "info",
+            4: "debug",
+            5: "debug",
+            6: "silent",
+            0: "silent",
+            "None": "silent",
+        }
+        if verbose >= 2:
+            print(
+                "[pca] WARNING use the standardized verbose status. The status [1-6] will be deprecated in future versions."
+            )
         return status_map.get(verbose, 0)
     else:
         return verbose
+
 
 def get_logger():
     return logger.getEffectiveLevel()
 
 
-def set_logger(verbose: [str, int] = 'info', return_status: bool = False):
+def set_logger(verbose: [str, int] = "info", return_status: bool = False):
     """Set the logger for verbosity messages.
 
     Parameters
@@ -1789,19 +2287,19 @@ def set_logger(verbose: [str, int] = 'info', return_status: bool = False):
     # Convert verbose to new
     verbose = convert_verbose_to_new(verbose)
     # Set 0 and None as no messages.
-    if (verbose==0) or (verbose is None):
-        verbose=60
+    if (verbose == 0) or (verbose is None):
+        verbose = 60
     # Convert str to levels
     if isinstance(verbose, str):
         levels = {
-            'silent': logging.CRITICAL + 10,
-            'off': logging.CRITICAL + 10,
-            'no': logging.CRITICAL + 10,
-            'debug': logging.DEBUG,
-            'info': logging.INFO,
-            'warning': logging.WARNING,
-            'error': logging.ERROR,
-            'critical': logging.CRITICAL,
+            "silent": logging.CRITICAL + 10,
+            "off": logging.CRITICAL + 10,
+            "no": logging.CRITICAL + 10,
+            "debug": logging.DEBUG,
+            "info": logging.INFO,
+            "warning": logging.WARNING,
+            "error": logging.ERROR,
+            "critical": logging.CRITICAL,
         }
         verbose = levels[verbose]
 
@@ -1814,22 +2312,26 @@ def set_logger(verbose: [str, int] = 'info', return_status: bool = False):
 
 def disable_tqdm():
     """Set the logger for verbosity messages."""
-    return (True if (logger.getEffectiveLevel()>=30) else False)
+    return True if (logger.getEffectiveLevel() >= 30) else False
 
 
-def check_logger(verbose: [str, int] = 'info'):
+def check_logger(verbose: [str, int] = "info"):
     """Check the logger."""
     set_logger(verbose)
-    logger.debug('DEBUG')
-    logger.info('INFO')
-    logger.warning('WARNING')
-    logger.error('ERROR')
-    logger.critical('CRITICAL')
+    logger.debug("DEBUG")
+    logger.info("INFO")
+    logger.warning("WARNING")
+    logger.error("ERROR")
+    logger.critical("CRITICAL")
 
 
 # %%
 def _show_deprecated_warning(label, y, verbose):
     if label is not None:
-        logger.warning('Parameter <label> is deprecated and will not be supported in future version.')
+        logger.warning(
+            "Parameter <label> is deprecated and will not be supported in future version."
+        )
     if y is not None:
-        logger.warning('Parameter <y> is deprecated and will not be supported in future version. Use <labels> instead.')
+        logger.warning(
+            "Parameter <y> is deprecated and will not be supported in future version. Use <labels> instead."
+        )
