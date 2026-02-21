@@ -2171,6 +2171,7 @@ def normalize_size(
     # Z-scores is better. Min-Max Scaling is too sensitive to outlier observations and generates unseen problems,
 
     # Set sizes to 0 if not available
+    getsizes = np.array(getsizes, dtype=float)  # makes a writable copy
     getsizes[np.isinf(getsizes)] = 0
     getsizes[np.isnan(getsizes)] = 0
 

@@ -9,7 +9,7 @@ from pca.pca import (
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '2.10.1'
+__version__ = '2.10.2'
 
 # Setup root logger
 _logger = logging.getLogger('pca')
