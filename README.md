@@ -8,7 +8,6 @@
 [![Github Forks](https://img.shields.io/github/forks/erdogant/pca.svg)](https://github.com/erdogant/pca/network)
 [![Open Issues](https://img.shields.io/github/issues/erdogant/pca.svg)](https://github.com/erdogant/pca/issues)
 [![Project Status](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![DOI](https://zenodo.org/badge/233232884.svg)](https://zenodo.org/badge/latestdoi/233232884)
 [![Medium](https://img.shields.io/badge/Medium-Blog-purple)](https://erdogant.medium.com)
 [![Gumroad](https://img.shields.io/badge/Gumroad-Blog-purple)](https://erdogant.gumroad.com/)
 [![Colab](https://colab.research.google.com/assets/colab-badge.svg?logo=github%20sponsors)](https://erdogant.github.io/pca/pages/html/Documentation.html#colab-notebook)
