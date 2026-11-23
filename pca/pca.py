@@ -325,9 +325,7 @@ class pca:
         # Check type to make sure we can perform matrix operations
         if sp.issparse(X):
             self.method = "trunc_svd"
-            logger.info(
-                f"Input data is a sparse matrix. Method is set to: {self.method}."
-            )
+            logger.info(f"Input data is a sparse matrix. Method is set to: {self.method}.")
         if isinstance(X, list):
             X = np.array(X)
 
@@ -340,9 +338,7 @@ class pca:
 
         # Set number components
         if self.n_components < 1:
-            logger.info(
-                f"PCA reduction performed to capture at least {self.n_components * 100:.1f}% explained variance using {X.shape[1]} columns of the input data."
-            )
+            logger.info(f"PCA reduction performed to capture at least {self.n_components * 100:.1f}% explained variance using {X.shape[1]} columns of the input data.")
 
             pcp = self.n_components
             # Run with all components to get all PCs back. This is needed for the step after.
@@ -361,13 +357,9 @@ class pca:
                 self.n_components = (
                     np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
                 )
-                logger.info(
-                    f"The top {self.n_components} principal component(s) explains >= {pcp * 100:.2f}% of the explained variance."
-                )
+                logger.info(f"The top {self.n_components} principal component(s) explains >= {pcp * 100:.2f}% of the explained variance.")
 
-        logger.info(
-            f"The PCA reduction is performed on {X.shape[1]} variables (columns) of the input dataframe."
-        )
+        logger.info(f"The PCA reduction is performed on {X.shape[1]} variables (columns) of the input dataframe.")
         model_pca, PC, loadings, percentExplVar = _explainedvar(
             X,
             method=self.method,
@@ -588,9 +580,7 @@ class pca:
             and isinstance(X, pd.DataFrame)
             and (str(X.values.dtype) == "bool")
         ):
-            logger.warning(
-                "Sparse or one-hot boolean input data is detected; it is highly recommended to set onehot=True or alternatively, normalize=True."
-            )
+            logger.warning("Sparse or one-hot boolean input data is detected; it is highly recommended to set onehot=True or alternatively, normalize=True.")
 
         # Set col labels
         if isinstance(X, pd.DataFrame) and col_labels is None:
@@ -632,9 +622,7 @@ class pca:
 
         # normalize data
         if self.normalize:
-            logger.info(
-                "Normalizing input data per feature (zero mean and unit variance).."
-            )
+            logger.info("Normalizing input data per feature (zero mean and unit variance)..")
             # Plot the data distribution
             # fig,(ax1,ax2)=plt.subplots(1,2, figsize=(15,5))
             # ax1.hist(X.ravel().astype(float), bins=50)
@@ -699,19 +687,29 @@ class pca:
             labels = None
 
         if self.method == "sparse_pca":
-            logger.info(
-                "Sparse PCA does not support variance ratio and therefore, biplots will not be supported."
-            )
-            self.results["explained_var"] = [None, None]
-            self.results["model"].explained_variance_ratio_ = [0, 0]
-            self.results["pcp"] = 0
+            # Variance ratios are now computed with the adjusted method when possible.
+            # Only fall back to dummy values when the computation failed.
+            expl = self.results.get("explained_var")
+            
+            if expl is None or (len(expl) == 0 or expl[0] is None):
+                logger.info("Sparse PCA: adjusted variance ratio not available; some plot annotations will be limited.")
 
-        if (self.results["explained_var"] is None) or len(
-            self.results["explained_var"]
-        ) < 1:
+                n_pc = self.results["PC"].shape[1]
+                # Keep plotting functions compatible without reporting false variance.
+                self.results["explained_var"] = [None] * max(n_pc, 2)
+    
+                # fallback values for plot axis annotations.
+                if getattr(self.results["model"], "explained_variance_ratio_", None) is None:
+                    self.results["model"].explained_variance_ratio_ = np.zeros(n_pc)
+            
+                # Variance ratio is unavailable
+                self.results["pcp"] = None
+
+        if (self.results["explained_var"] is None) or len(self.results["explained_var"]) < 1:
             raise Exception("[pca] >Error: No PCs are found with explained variance.")
 
         return labels, topfeat, n_feat
+
 
     # Scatter plot
     def scatter(
@@ -1188,16 +1186,17 @@ class pca:
         if verbose is not None:
             set_logger(verbose)
 
+        # SparsePCA now tries to compute an adjusted variance ratio.
+        # Only abort when that computation failed.
         if self.method == "sparse_pca":
-            logger.info(
-                "Sparse PCA does not support variance ratio; therefore, scree plots are not supported."
-            )
-            return None, None
+            expl = self.results.get("explained_var")
+            if expl is None or (hasattr(expl, "__len__") and (len(expl) == 0 or expl[0] is None)):
+                logger.info("Sparse PCA: adjusted variance ratio not available; scree plot is not supported.")
+                return None, None
+
         if n_components is not None:
             if n_components > len(self.results["explained_var"]):
-                logger.warning(
-                    f'Input "n_components={n_components}" is greater than the number of PCs (= {len(self.results["explained_var"])})'
-                )
+                logger.warning(f'Input "n_components={n_components}" is greater than the number of PCs (= {len(self.results["explained_var"])})')
             n_components = np.minimum(len(self.results["explained_var"]), n_components)
             explvarCum = self.results["explained_var"][0:n_components]
             explvar = self.results["variance_ratio"][0:n_components]
@@ -1239,11 +1238,14 @@ class pca:
         plt.ylim([0, 1.05])
         plt.xlim([0, len(explvar) + 1])
         if title is None:
+            # Safely pick the cumulative variance at the requested number of components
+            idx = min(self.n_components - 1, len(explvarCum) - 1)
+            pct = float(explvarCum[idx]) * 100 if explvarCum[idx] is not None else 0.0
             title = (
                 "Cumulative explained variance.\n The top "
                 + str(self.n_components)
                 + " Principal Component(s) explains ["
-                + str(explvarCum[self.n_components - 1] * 100)[0:5]
+                + str(pct)[0:5]
                 + "%] of the variance."
             )
         plt.title(title)
@@ -1251,8 +1253,10 @@ class pca:
 
         # Plot vertical line To stress the cut-off point
         ax.axvline(self.n_components, linewidth=0.8, color="r")
-        ax.axhline(y=self.results["pcp"], xmin=0, xmax=1, linewidth=0.8, color="r")
-        if len(xtick_idx) < 100:
+        pcp_val = self.results.get("pcp")
+        if pcp_val is not None:
+            ax.axhline(y=pcp_val, xmin=0, xmax=1, linewidth=0.8, color="r")
+        if len(xtick_idx) < 100 and explvar is not None:
             plt.bar(
                 xtick_idx,
                 explvar,
@@ -1548,9 +1552,7 @@ def hotellingsT2(
     else:
         mean, var = np.mean(X), np.var(X)
         param = (mean, var)
-    logger.info(
-        f"Outlier detection using Hotelling T2 test with alpha=[{alpha:.2f}] and n_components=[{n_components}]"
-    )
+    logger.info(f"Outlier detection using Hotelling T2 test with alpha=[{alpha:.2f}] and n_components=[{n_components}]")
     y_score = (y - mean) ** 2 / var
     # Compute probability per PC whether datapoints are outside the boundary
     y_proba = 1 - stats.chi2.cdf(y_score, df=df)
@@ -1614,9 +1616,7 @@ def multitest_correction(Praw, multipletests="fdr_bh"):
 
     """
     if multipletests is not None:
-        logger.info(
-            f"Multiple test correction applied for Hotelling T2 test: [{multipletests}]"
-        )
+        logger.info(f"Multiple test correction applied for Hotelling T2 test: [{multipletests}]")
         Padj = multitest.multipletests(Praw, method=multipletests)[1]
     else:
         Padj = Praw
@@ -1626,15 +1626,8 @@ def multitest_correction(Praw, multipletests="fdr_bh"):
 
 
 # %% Explained variance
-def _explainedvar(
-    X,
-    method="pca",
-    n_components=None,
-    onehot=False,
-    random_state=None,
-    n_jobs=-1,
-    percentExplVar=None,
-):
+def _explainedvar(X, method="pca", n_components=None, onehot=False, random_state=None, n_jobs=-1, percentExplVar=None):
+
     # Create the model
     if method == "trunc_svd":
         logger.info("Fit using Truncated SVD.")
@@ -1663,10 +1656,23 @@ def _explainedvar(
     if (not onehot) and (percentExplVar is None):
         logger.info("Compute explained variance.")
         percentExplVar = model.explained_variance_ratio_.cumsum()
-    # if method=='sparse_pca':
-    #     model.explained_variance_ = _get_explained_variance(X.T, PC.T)
-    #     model.explained_variance_ratio_ = model.explained_variance_ / model.explained_variance_.sum()
-    #     percentExplVar = model.explained_variance_ratio_.cumsum()
+    elif method == "sparse_pca":
+        # SparsePCA does not provide explained_variance_ratio_.
+        # Compute an adjusted version using orthogonalized components.
+        logger.info("Compute adjusted explained variance for SparsePCA.")
+        try:
+            model.explained_variance_ = _get_explained_variance(X.T, PC.T)
+            total = np.sum(model.explained_variance_)
+            if total > 0:
+                model.explained_variance_ratio_ = model.explained_variance_ / total
+                percentExplVar = np.cumsum(model.explained_variance_ratio_)
+            else:
+                model.explained_variance_ratio_ = np.zeros(PC.shape[1])
+                percentExplVar = None
+        except Exception as e:
+            logger.warning(f"Could not compute adjusted variance for SparsePCA: {e}")
+            model.explained_variance_ratio_ = np.zeros(PC.shape[1])
+            percentExplVar = None
 
     # Return
     return (model, PC, loadings, percentExplVar)
@@ -1819,9 +1825,7 @@ def _biplot_input_checks(
     if np.max(PC) >= results["PC"].shape[1]:
         raise ValueError("[pca] >[Error] PC%.0d does not exist!" % (np.max(PC) + 1))
     if d3:
-        logger.info(
-            f"Plot PC{PC[0] + 1} vs PC{PC[1] + 1} vs PC{PC[2] + 1} with loadings."
-        )
+        logger.info(f"Plot PC{PC[0] + 1} vs PC{PC[1] + 1} vs PC{PC[2] + 1} with loadings.")
     else:
         logger.info(f"Plot PC{PC[0] + 1} vs PC{PC[1] + 1} with loadings.")
 
@@ -2082,49 +2086,79 @@ def _add_plot_HT2(self, xs, ys, zs, HT2, d3, alpha, s, fig, ax):
 def _add_plot_properties(
     self, PC, d3, title, legend, labels, fig, ax, fontsize, verbose
 ):
+    # Helper: safely get a variance-ratio value (returns 0 when unavailable)
+    def _safe_var_ratio(idx):
+        try:
+            ratios = getattr(self.results["model"], "explained_variance_ratio_", None)
+            if ratios is None or len(ratios) <= idx:
+                return 0.0
+            val = ratios[idx]
+            return 0.0 if val is None else float(val)
+        except Exception:
+            return 0.0
+
     # Set labels
     ax.set_xlabel(
         "PC"
         + str(PC[0] + 1)
         + " ("
-        + str(self.results["model"].explained_variance_ratio_[PC[0]] * 100)[0:4]
+        + str(_safe_var_ratio(PC[0]) * 100)[0:4]
         + "% expl.var)"
     )
-    if len(self.results["model"].explained_variance_ratio_) >= 2:
+    if self.results["PC"].shape[1] >= 2:
         ax.set_ylabel(
             "PC"
             + str(PC[1] + 1)
             + " ("
-            + str(self.results["model"].explained_variance_ratio_[PC[1]] * 100)[0:4]
+            + str(_safe_var_ratio(PC[1]) * 100)[0:4]
             + "% expl.var)"
         )
     else:
         ax.set_ylabel("PC2 (0% expl.var)")
-    if d3 and (len(self.results["model"].explained_variance_ratio_) >= 3):
+    if d3 and self.results["PC"].shape[1] >= 3:
         ax.set_zlabel(
             "PC"
             + str(PC[2] + 1)
             + " ("
-            + str(self.results["model"].explained_variance_ratio_[PC[2]] * 100)[0:4]
+            + str(_safe_var_ratio(PC[2]) * 100)[0:4]
             + "% expl.var)"
         )
 
-    # Set title
+    # Set title – be robust when explained_var / pcp are missing (SparsePCA)
     if title is None:
-        title = (
-            str(self.n_components)
-            + " Principal Components explain ["
-            + str(self.results["pcp"] * 100)[0:5]
-            + "%] of the variance"
-        )
-        explvarCum = self.results["explained_var"]
-        title = (
-            "The top "
-            + str(self.n_components)
-            + " Principal Component(s) explains ["
-            + str(explvarCum[self.n_components - 1] * 100)[0:5]
-            + "%] of the variance."
-        )
+        explvarCum = self.results.get("explained_var")
+        pcp = self.results.get("pcp")
+
+        pct = None
+        if explvarCum is not None and hasattr(explvarCum, "__len__") and len(explvarCum) > 0:
+            idx = min(self.n_components - 1, len(explvarCum) - 1)
+            try:
+                val = explvarCum[idx]
+                if val is not None:
+                    pct = float(val) * 100
+            except Exception:
+                pct = None
+
+        if pct is None and pcp is not None:
+            try:
+                pct = float(pcp) * 100
+            except Exception:
+                pct = None
+
+        if pct is not None:
+            title = (
+                "The top "
+                + str(self.n_components)
+                + " Principal Component(s) explains ["
+                + str(pct)[0:5]
+                + "%] of the variance."
+            )
+        else:
+            # Fallback for methods that cannot provide variance ratios
+            title = (
+                str(self.n_components)
+                + " Principal Components (variance ratio not available)"
+            )
 
     # Determine the legend status if set to None
     if isinstance(legend, bool):
