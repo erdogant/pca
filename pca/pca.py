@@ -48,8 +48,10 @@ class pca:
         - 'sparse_pca' : Sparse Principal Component Analysis.
         - 'trunc_svd' : Truncated Singular Value Decomposition (aka LSA).
         - 'logistic_pca' : Logistic PCA for binary data (Landgraf & Lee, 2015). Missing values (nan/None) are supported
-          natively without imputation. Requires an integer n_components. Instead of explained variance, the results
-          contain 'deviance_explained' and the fitted probabilities 'fitted'; 'explained_var' and 'variance_ratio' are None.
+          natively without imputation. Instead of explained variance, the results contain 'deviance_explained' and the
+          fitted probabilities 'fitted'; 'explained_var' and 'variance_ratio' are None. If n_components is between 0 and 1,
+          the smallest number of components is used whose deviance explained (proportion of the null deviance) is at least
+          that value. Note that this requires fitting the model for 1, 2, ... components until the threshold is reached.
 
     alpha : float, optional, default=0.05
         Significance level to determine outliers based on Hotelling's T2 test.
@@ -429,14 +431,21 @@ class pca:
         if self.normalize:
             raise ValueError("[pca] >Error: normalize=True is not supported for method='logistic_pca' (binary data).")
         n = self.n_components
-        if isinstance(n, bool) or not isinstance(n, (int, np.integer)) or n < 1:
-            raise ValueError(f"[pca] >Error: method='logistic_pca' requires n_components to be an integer >= 1, got {n!r}.")
-        if n > np.shape(X)[1]:
+        is_int = isinstance(n, (int, np.integer)) and not isinstance(n, bool)
+        is_fraction = isinstance(n, (float, np.floating)) and 0 < n < 1
+        if not (is_fraction or (is_int and n >= 1)):
+            raise ValueError(f"[pca] >Error: method='logistic_pca' requires n_components to be an integer >= 1 or a float between 0 and 1 (deviance explained), got {n!r}.")
+        if is_int and n > np.shape(X)[1]:
             raise ValueError(f"[pca] >Error: n_components={n} cannot exceed the number of features ({np.shape(X)[1]}).")
 
     def _fit_logistic(self, X, row_labels, col_labels):
         logger.info(f"Fit using Logistic PCA (m={self.m}).")
-        model = LogisticPCA(n_components=self.n_components, m=self.m).fit(X)
+        path = None
+        if self.n_components < 1:
+            model, path = self._select_logistic_components(X)
+            self.n_components = model.n_components
+        else:
+            model = LogisticPCA(n_components=self.n_components, m=self.m).fit(X)
         if not model.converged_:
             logger.warning(f"Logistic PCA did not converge within {model.max_iter} iterations.")
         loadings = self._postprocessing(model, model.components_, col_labels, self.n_components)
@@ -458,7 +467,31 @@ class pca:
         )
         self.results["fitted"] = pd.DataFrame(model.fitted_, index=row_labels, columns=col_labels)
         self.results["deviance_explained"] = model.deviance_explained_
+        if path is not None:
+            self.results["deviance_explained_path"] = path
         return self.results
+
+    def _select_logistic_components(self, X):
+        """Smallest number of components whose deviance explained is >= self.n_components.
+
+        Logistic PCA models are not nested, so each number of components is fitted separately.
+        Returns the selected model and the deviance explained for 1..k components.
+        """
+        target = self.n_components
+        logger.info(f"Logistic PCA: searching the smallest number of components that explains at least {target * 100:.1f}% of the deviance.")
+        path = []
+        for k in range(1, min(X.shape) + 1):
+            model = LogisticPCA(n_components=k, m=self.m).fit(X)
+            path.append(model.deviance_explained_)
+            if np.isnan(model.deviance_explained_):
+                logger.warning("Deviance explained is undefined (the data has no variation); n_components is set to 1.")
+                break
+            if model.deviance_explained_ >= target:
+                break
+        else:
+            logger.warning(f"{target * 100:.1f}% of the deviance could not be explained; all {k} components are used.")
+        logger.info(f"The top {k} principal component(s) explain {path[-1] * 100:.2f}% of the deviance.")
+        return model, np.array(path)
 
     def _clean(self):
         # Clean readily fitted models to ensure correct results.

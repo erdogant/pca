@@ -88,11 +88,46 @@ def test_invalid_values_raise(data):
 
 
 # --- Parameter validation ----------------------------------------------------------------------------------------
-@pytest.mark.parametrize("n_components", [0.95, None, 0, 2.0, True, 100])
-def test_n_components_must_be_valid_integer(data, n_components):
+@pytest.mark.parametrize("n_components", [None, 0, 0.0, 1.5, 2.0, True, 100])
+def test_n_components_must_be_valid(data, n_components):
     X, _, _ = data
     with pytest.raises(ValueError):
         fit(X, n_components=n_components)
+
+
+def test_n_components_fraction_uses_deviance_explained(data):
+    X, _, _ = data
+    model, out = fit(X, n_components=0.3)
+    k = model.n_components
+    assert isinstance(k, (int, np.integer)) and k >= 1
+    assert out["PC"].shape[1] == k and out["loadings"].shape[0] == k
+    assert out["deviance_explained"] >= 0.3
+    path = out["deviance_explained_path"]
+    assert len(path) == k and path[-1] == pytest.approx(out["deviance_explained"])
+    assert (path[:-1] < 0.3).all()  # k is the smallest number reaching the threshold
+    # Same result as fitting k components explicitly
+    _, out_k = fit(X, n_components=k)
+    np.testing.assert_allclose(out["PC"].values, out_k["PC"].values, atol=1e-8)
+    # plot reuses the stored path
+    fig, ax = model.plot(visible=False)
+    plt.close("all")
+
+
+def test_n_components_fraction_default_and_missing_values(data):
+    X, _, _ = data
+    Xm = X.copy()
+    Xm[np.random.default_rng(4).random(X.shape) < 0.1] = np.nan
+    model = pca(method="logistic_pca", verbose="silent")  # default n_components=0.95
+    out = model.fit_transform(Xm)
+    assert model.n_components >= 1 and np.isfinite(out["PC"].values).all()
+    _, out = fit(Xm, n_components=0.25)
+    assert out["deviance_explained"] >= 0.25
+
+
+def test_n_components_fraction_unreachable_uses_all_components():
+    X, _, _ = make_data(n=100, d=5, seed=5)
+    model, out = fit(X, n_components=0.9999)
+    assert model.n_components == 5
 
 
 def test_unsupported_options(data):
