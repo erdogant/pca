@@ -9,7 +9,7 @@ from pca.pca import (
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '2.10.3'
+__version__ = '2.11.0'
 
 # Setup root logger
 _logger = logging.getLogger('pca')
@@ -56,6 +56,13 @@ Examples
 >>> # 3D plots
 >>> fig, ax = model.scatter3d(marker=marker, labels=labels)
 >>> fig, ax = model.biplot3d()
+>>>
+>>> # Logistic PCA for binary data (missing values are supported natively)
+>>> model = pca(n_components=2, method='logistic_pca', m=4)
+>>> results = model.fit_transform(X_binary)  # X_binary contains 0, 1 and np.nan
+>>> results['deviance_explained'], results['fitted']
+>>> fig, ax = model.plot()  # Deviance explained versus number of components
+>>> fig, ax = model.biplot()
 >>>
 
 References

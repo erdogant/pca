@@ -17,6 +17,8 @@ from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD  # MiniBatchSpars
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.preprocessing import StandardScaler
 
+from pca.logistic_pca import LogisticPCA
+
 logger = logging.getLogger(__name__)
 # if not logger.hasHandlers():
 #     logging.basicConfig(level=logging.INFO, format='[{asctime}] [{name}] [{levelname}] {msg}', style='{', datefmt='%d-%m-%Y %H:%M:%S')
@@ -40,11 +42,14 @@ class pca:
         Number of features explaining the space most, derived from the loadings.
         Used for visualization purposes only.
 
-    method : {'pca', 'sparse_pca', 'trunc_svd'}, optional, default='pca'
+    method : {'pca', 'sparse_pca', 'trunc_svd', 'logistic_pca'}, optional, default='pca'
         Method for dimensionality reduction.
         - 'pca' : Principal Component Analysis.
         - 'sparse_pca' : Sparse Principal Component Analysis.
         - 'trunc_svd' : Truncated Singular Value Decomposition (aka LSA).
+        - 'logistic_pca' : Logistic PCA for binary data (Landgraf & Lee, 2015). Missing values (nan/None) are supported
+          natively without imputation. Requires an integer n_components. Instead of explained variance, the results
+          contain 'deviance_explained' and the fitted probabilities 'fitted'; 'explained_var' and 'variance_ratio' are None.
 
     alpha : float, optional, default=0.05
         Significance level to determine outliers based on Hotelling's T2 test.
@@ -90,6 +95,9 @@ class pca:
         - 30, 'warning' : warning level and above.
         - 50, 'critical' : critical level and above.
 
+    m : float, optional, default=4
+        Only used for method='logistic_pca'. Approximation of the saturated natural parameters (m * (2X - 1)).
+
     Examples
     --------
     >>> from pca import pca
@@ -104,6 +112,11 @@ class pca:
     >>>
     >>> # plot
     >>> model.biplot(density=True, labels=df['label'], marker=df['label'], s=300, SPE=True)
+    >>>
+    >>> # Logistic PCA on binary data with missing values
+    >>> model = pca(n_components=2, method='logistic_pca', m=4)
+    >>> out = model.fit_transform(X_binary)  # X_binary contains 0, 1 and np.nan
+    >>> out['deviance_explained'], out['fitted']
 
     References
     ----------
@@ -126,6 +139,7 @@ class pca:
         detect_outliers=["ht2", "spe"],
         random_state=None,
         verbose="info",
+        m=4,
     ):
         """Initialize pca with user-defined parameters."""
         if isinstance(detect_outliers, str):
@@ -136,7 +150,7 @@ class pca:
         # Set the logger
         verbose = set_logger(verbose=verbose, return_status=True)
 
-        if onehot:
+        if onehot and str(method).lower() != "logistic_pca":
             method = "sparse_pca"
             logger.info(f"Method is set to: {method} because onehot=True")
 
@@ -152,6 +166,7 @@ class pca:
         self.n_std = n_std
         self.detect_outliers = detect_outliers
         self.verbose = verbose
+        self.m = m
 
     def check_verbosity(self):
         """Check the verbosity."""
@@ -322,6 +337,8 @@ class pca:
         if verbose is not None:
             set_logger(verbose)
         percentExplVar = None
+        if self.method == "logistic_pca":
+            self._check_logistic_params(X)
         # Check type to make sure we can perform matrix operations
         if sp.issparse(X):
             self.method = "trunc_svd"
@@ -335,6 +352,9 @@ class pca:
         X, row_labels, col_labels, scaler = self._preprocessing(
             X, row_labels, col_labels
         )
+
+        if self.method == "logistic_pca":
+            return self._fit_logistic(X, row_labels, col_labels)
 
         # Set number components
         if self.n_components < 1:
@@ -401,6 +421,43 @@ class pca:
             outliers_params,
         )
         # Return
+        return self.results
+
+    def _check_logistic_params(self, X):
+        if sp.issparse(X):
+            raise ValueError("[pca] >Error: method='logistic_pca' does not support sparse matrices.")
+        if self.normalize:
+            raise ValueError("[pca] >Error: normalize=True is not supported for method='logistic_pca' (binary data).")
+        n = self.n_components
+        if isinstance(n, bool) or not isinstance(n, (int, np.integer)) or n < 1:
+            raise ValueError(f"[pca] >Error: method='logistic_pca' requires n_components to be an integer >= 1, got {n!r}.")
+        if n > np.shape(X)[1]:
+            raise ValueError(f"[pca] >Error: n_components={n} cannot exceed the number of features ({np.shape(X)[1]}).")
+
+    def _fit_logistic(self, X, row_labels, col_labels):
+        logger.info(f"Fit using Logistic PCA (m={self.m}).")
+        model = LogisticPCA(n_components=self.n_components, m=self.m).fit(X)
+        if not model.converged_:
+            logger.warning(f"Logistic PCA did not converge within {model.max_iter} iterations.")
+        loadings = self._postprocessing(model, model.components_, col_labels, self.n_components)
+        topfeat = self.compute_topfeat(loadings=loadings)
+        outliers, outliers_params = self.compute_outliers(model.scores_, verbose=get_logger())
+        self.results = _store(
+            model.scores_,
+            loadings,
+            None,
+            model,
+            self.n_components,
+            None,
+            col_labels,
+            row_labels,
+            topfeat,
+            outliers,
+            None,
+            outliers_params,
+        )
+        self.results["fitted"] = pd.DataFrame(model.fitted_, index=row_labels, columns=col_labels)
+        self.results["deviance_explained"] = model.deviance_explained_
         return self.results
 
     def _clean(self):
@@ -576,6 +633,7 @@ class pca:
 
         if (
             (not self.onehot)
+            and (self.method != "logistic_pca")
             and (not self.normalize)
             and isinstance(X, pd.DataFrame)
             and (str(X.values.dtype) == "bool")
@@ -705,7 +763,7 @@ class pca:
                 # Variance ratio is unavailable
                 self.results["pcp"] = None
 
-        if (self.results["explained_var"] is None) or len(self.results["explained_var"]) < 1:
+        if (self.method != "logistic_pca") and ((self.results["explained_var"] is None) or len(self.results["explained_var"]) < 1):
             raise Exception("[pca] >Error: No PCs are found with explained variance.")
 
         return labels, topfeat, n_feat
@@ -1186,6 +1244,9 @@ class pca:
         if verbose is not None:
             set_logger(verbose)
 
+        if self.method == "logistic_pca":
+            return self._plot_deviance(n_components, xsteps, title, visible, figsize, fig, ax)
+
         # SparsePCA now tries to compute an adjusted variance ratio.
         # Only abort when that computation failed.
         if self.method == "sparse_pca":
@@ -1271,6 +1332,48 @@ class pca:
         # Return
         return (fig, ax)
 
+    def _plot_deviance(self, n_components, xsteps, title, visible, figsize, fig, ax):
+        """Deviance explained versus number of components (Logistic PCA).
+
+        The curve for k < n_components requires refitting the model with k components (Logistic PCA is not nested).
+        It is computed once and stored in results['deviance_explained_path'].
+        """
+        model = self.results["model"]
+        if self.results.get("deviance_explained_path") is None:
+            self.results["deviance_explained_path"] = np.array([
+                model.deviance_explained_ if k == self.n_components
+                else LogisticPCA(n_components=k, m=model.m).fit(model.X_).deviance_explained_
+                for k in range(1, self.n_components + 1)
+            ])
+        n_plot = self.n_components if n_components is None else int(min(n_components, self.n_components))
+        path = self.results["deviance_explained_path"][:n_plot]
+        xtick_idx = np.arange(1, n_plot + 1)
+
+        if fig is None and ax is None:
+            fig, ax = plt.subplots(figsize=figsize, edgecolor="k")
+        elif fig is not None and ax is None:
+            ax = fig.axes[0]
+        if fig is not None:
+            fig.set_visible(visible)
+
+        ax.plot(xtick_idx, path, "o-", color="k", linewidth=1, label="Deviance explained", visible=visible)
+        if n_plot < 100:
+            ax.set_xticks(xtick_idx)
+            xticklabel = xtick_idx.astype(str)
+            if xsteps is not None:
+                xticklabel[np.arange(1, len(xticklabel), xsteps)] = ""
+            ax.set_xticklabels(xticklabel, rotation=90, ha="left", va="top")
+        ax.set_ylabel("Proportion of deviance explained")
+        ax.set_xlabel("Principal Component")
+        ax.set_ylim([0, 1.05])
+        ax.set_xlim([0, n_plot + 1])
+        if title is None:
+            title = f"Deviance explained.\n The top {self.n_components} Principal Component(s) explains [{str(self.results['deviance_explained'] * 100)[0:5]}%] of the deviance."
+        ax.set_title(title)
+        ax.grid(True)
+        ax.axvline(self.n_components, linewidth=0.8, color="r")
+        return (fig, ax)
+
     # Top scoring components
     def norm(self, X, n_components=None, pcexclude=[1]):
         """Normalize out PCs.
@@ -1295,6 +1398,8 @@ class pca:
         Normalized numpy array.
 
         """
+        if self.method == "logistic_pca":
+            raise NotImplementedError("[pca] >Error: norm() is not supported for method='logistic_pca'.")
         self.detect_outliers = None
         if n_components is None:
             self.n_components = X.shape[1]
@@ -2097,31 +2202,27 @@ def _add_plot_properties(
         except Exception:
             return 0.0
 
+    # Logistic PCA has no explained variance per PC; the axes are labeled without it.
+    is_logistic = self.method == "logistic_pca"
+
+    def _pc_label(idx):
+        if is_logistic:
+            return "PC" + str(idx + 1)
+        return "PC" + str(idx + 1) + " (" + str(_safe_var_ratio(idx) * 100)[0:4] + "% expl.var)"
+
     # Set labels
-    ax.set_xlabel(
-        "PC"
-        + str(PC[0] + 1)
-        + " ("
-        + str(_safe_var_ratio(PC[0]) * 100)[0:4]
-        + "% expl.var)"
-    )
+    ax.set_xlabel(_pc_label(PC[0]))
     if self.results["PC"].shape[1] >= 2:
-        ax.set_ylabel(
-            "PC"
-            + str(PC[1] + 1)
-            + " ("
-            + str(_safe_var_ratio(PC[1]) * 100)[0:4]
-            + "% expl.var)"
-        )
+        ax.set_ylabel(_pc_label(PC[1]))
     else:
         ax.set_ylabel("PC2 (0% expl.var)")
     if d3 and self.results["PC"].shape[1] >= 3:
-        ax.set_zlabel(
-            "PC"
-            + str(PC[2] + 1)
-            + " ("
-            + str(_safe_var_ratio(PC[2]) * 100)[0:4]
-            + "% expl.var)"
+        ax.set_zlabel(_pc_label(PC[2]))
+
+    if title is None and is_logistic:
+        title = (
+            "The top " + str(self.n_components) + " Principal Component(s) explains ["
+            + str(self.results["deviance_explained"] * 100)[0:5] + "%] of the deviance."
         )
 
     # Set title – be robust when explained_var / pcp are missing (SparsePCA)

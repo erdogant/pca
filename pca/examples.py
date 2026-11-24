@@ -1,3 +1,68 @@
+# Logistic PCA for binary data (missing values are supported natively)
+from pca import pca
+
+model = pca(n_components=2, method='logistic_pca', m=4)
+results = model.fit_transform(X_binary)  # X_binary contains 0, 1 and np.nan
+results['deviance_explained'], results['fitted']
+fig, ax = model.plot()  # Deviance explained versus number of components
+fig, ax = model.biplot()
+
+# %% Add logistic PCA
+import datazets as dz
+from df2onehot import df2onehot
+from pca import pca
+
+df = dz.get(data='titanic')
+
+# Create one-hot array
+df_hot = df2onehot(df,
+                   remove_multicollinearity=True,
+                   remove_mutual_exclusive=True,
+                   excl_background=['PassengerId', 'None'],
+                   y_min=10,
+                   verbose='debug',
+                   )['onehot']
+
+# Initialize
+# model = pca(normalize=True,
+#             detect_outliers=['HT2', 'SPE'],
+#             )
+model = pca(normalize=False,
+            detect_outliers=['HT2', 'SPE'],
+            method='logistic_pca',
+            n_components=0.95,
+            )
+
+# Fit
+model.fit_transform(df_hot)
+
+model.plot()
+
+# model.scatter(legend=False, jitter=0.1)
+# model.biplot(legend=False)
+
+model.biplot(SPE=True,
+              HT2=True,
+              marker=df['Survived'],
+              s=df['Age']*20,
+              n_feat=2,
+              labels=df['Embarked']=='S',
+              title='Biplot with with the pca library.',
+              color_arrow='k',
+              fontsize=28,
+              fontcolor=None,
+              arrowdict={'fontsize': 18},
+              cmap='bwr_r',
+              edgecolor='#FFF000',
+              gradient='#FFFFFF',
+              density=True,
+              density_on_top=False,
+              visible=True,
+              jitter=0.15,
+              )
+
+
+# %%
 # Load pca
 from pca import pca
 
@@ -270,49 +335,6 @@ fig, ax = model.biplot(
                         )
 
 
-# %%
-from df2onehot import df2onehot
-from pca import pca
-
-model = pca()
-df = model.import_example(data='titanic')
-
-# Create one-hot array
-df_hot = df2onehot(df,
-                   remove_mutual_exclusive=True,
-                   excl_background=['PassengerId', 'None'],
-                   y_min=10,
-                   verbose=4)['onehot']
-
-# Initialize
-model = pca(normalize=True, detect_outliers=['HT2', 'SPE'])
-
-# Fit
-model.fit_transform(df_hot)
-
-model.plot()
-
-# model.scatter(legend=False)
-# model.biplot(legend=False)
-
-model.biplot(SPE=True,
-              HT2=True,
-              marker=df['Survived'],
-              s=df['Age']*20,
-              n_feat=2,
-              labels=df['Sex'],
-              title='Biplot with with the pca library.',
-              color_arrow='k',
-              fontsize=28,
-              fontcolor=None,
-              arrowdict={'fontsize': 18},
-              cmap='bwr_r',
-              edgecolor='#FFFFFF',
-              gradient='#FFFFFF',
-              density=True,
-              density_on_top=False,
-              visible=True,
-              )
 
 # %%
 # Load pca
