@@ -33,8 +33,8 @@ Let's load the **wine** dataset to demonstrate the plots.
 	# [pca] >Outlier detection using SPE/DmodX with n_std=[2]
 
 
-Scatter plot
-###############
+Scatter plot visualization
+################################
 
 
 .. code:: python
@@ -80,8 +80,8 @@ Scatter plot
    +----------+----------+
 
 
-Biplot
-###############
+Biplot visualization
+############################
 
 The biplot draws the loadings (arrows) together with the samples (scatterplot).
 The loadings can be colored red and blue which indicates the strength of the particular feature in the PC.
@@ -145,8 +145,8 @@ Biplot (only arrows)
    :align: center
 
 
-Explained variance plot
-##############################
+Explained variance visualization
+##################################
 
 
 .. code:: python
@@ -157,6 +157,9 @@ Explained variance plot
    :width: 600
    :align: center
 
+For ``method='logistic_pca'``, ``plot()`` shows **deviance explained** versus
+the number of components (not explained variance), and uses
+``results['deviance_explained_path']`` when available.
 
 
 Alpha Transparency

@@ -8,15 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Load dataset &mdash; pca pca documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e0179649" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5d2b88f6"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -58,6 +58,8 @@
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html">Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#standardization">Standardization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#explained-variance">Explained Variance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#variance-pca-versus-deviance-explained-logistic-pca">Variance (PCA) versus deviance explained (Logistic PCA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#how-logistic-pca-works">How Logistic PCA works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#loadings">Loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#examination-of-the-loadings">Examination of the loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#best-performing-features">Best Performing Features</a></li>
@@ -73,10 +75,10 @@
 <p class="caption" role="heading"><span class="caption-text">Plots</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Load dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#scatter-plot">Scatter plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#biplot">Biplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#scatter-plot-visualization">Scatter plot visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#biplot-visualization">Biplot visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#biplot-only-arrows">Biplot (only arrows)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#explained-variance-plot">Explained variance plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#explained-variance-visualization">Explained variance visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#alpha-transparency">Alpha Transparency</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#markers">Markers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
@@ -89,6 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#demonstration-of-feature-importance">Demonstration of feature importance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#logistic-pca-for-binary-one-hot-data">Logistic PCA for binary / one-hot data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#normalizing-out-pcs">Normalizing out PCs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#colors-in-plots">Colors in plots</a></li>
@@ -165,8 +168,8 @@
 </pre></div>
 </div>
 </section>
-<section id="scatter-plot">
-<h1>Scatter plot<a class="headerlink" href="#scatter-plot" title="Link to this heading"></a></h1>
+<section id="scatter-plot-visualization">
+<h1>Scatter plot visualization<a class="headerlink" href="#scatter-plot-visualization" title="Link to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make scatterplot</span>
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">()</span>
 
@@ -174,7 +177,7 @@
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Gradient over the samples. High dense areas will be more colourful.</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">gradient</span><span class="o">=</span><span class="s1">&#39;#FFFFFF&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">gradient</span><span class="o">=</span><span class="s1">'#FFFFFF'</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="c1"># Include the outlier detection</span>
 <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -203,8 +206,8 @@
 </tbody>
 </table>
 </section>
-<section id="biplot">
-<h1>Biplot<a class="headerlink" href="#biplot" title="Link to this heading"></a></h1>
+<section id="biplot-visualization">
+<h1>Biplot visualization<a class="headerlink" href="#biplot-visualization" title="Link to this heading"></a></h1>
 <p>The biplot draws the loadings (arrows) together with the samples (scatterplot).
 The loadings can be colored red and blue which indicates the strength of the particular feature in the PC.</p>
 <p>For each principal component (PC), the feature is determined with the largest absolute loading. This indicates which feature contributes the most to each PC and can occur in multiple PCs.
@@ -217,7 +220,7 @@ The features that were not seen with highest loadings for any PC are considered 
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># Show the top features</span>
-<span class="n">results</span><span class="p">[</span><span class="s1">&#39;topfeat&#39;</span><span class="p">]</span>
+<span class="n">results</span><span class="p">[</span><span class="s1">'topfeat'</span><span class="p">]</span>
 
 <span class="c1">#       PC                       feature   loading  type</span>
 <span class="c1"># 0    PC1                    flavanoids  0.422934  best</span>
@@ -252,16 +255,19 @@ The features that were not seen with highest loadings for any PC are considered 
 <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/biplot_only_directions.png"><img alt="_images/biplot_only_directions.png" class="align-center" src="_images/biplot_only_directions.png" style="width: 600px;" />
+<a class="reference internal image-reference" href="_images/biplot_only_directions.png"><img alt="_images/biplot_only_directions.png" class="align-center" src="_images/biplot_only_directions.png" width="600" />
 </a>
 </section>
-<section id="explained-variance-plot">
-<h1>Explained variance plot<a class="headerlink" href="#explained-variance-plot" title="Link to this heading"></a></h1>
+<section id="explained-variance-visualization">
+<h1>Explained variance visualization<a class="headerlink" href="#explained-variance-visualization" title="Link to this heading"></a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_explained_variance.png"><img alt="_images/wine_explained_variance.png" class="align-center" src="_images/wine_explained_variance.png" style="width: 600px;" />
+<a class="reference internal image-reference" href="_images/wine_explained_variance.png"><img alt="_images/wine_explained_variance.png" class="align-center" src="_images/wine_explained_variance.png" width="600" />
 </a>
+<p>For <code class="docutils literal notranslate"><span class="pre">method='logistic_pca'</span></code>, <code class="docutils literal notranslate"><span class="pre">plot()</span></code> shows <strong>deviance explained</strong> versus
+the number of components (not explained variance), and uses
+<code class="docutils literal notranslate"><span class="pre">results['deviance_explained_path']</span></code> when available.</p>
 </section>
 <section id="alpha-transparency">
 <h1>Alpha Transparency<a class="headerlink" href="#alpha-transparency" title="Link to this heading"></a></h1>
@@ -279,7 +285,7 @@ The features that were not seen with highest loadings for any PC are considered 
 <span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">make_friedman1</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="c1"># All available markers</span>
-<span class="n">markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">])</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'.'</span><span class="p">,</span> <span class="s1">'o'</span><span class="p">,</span> <span class="s1">'v'</span><span class="p">,</span> <span class="s1">'^'</span><span class="p">,</span> <span class="s1">'&lt;'</span><span class="p">,</span> <span class="s1">'&gt;'</span><span class="p">,</span> <span class="s1">'8'</span><span class="p">,</span> <span class="s1">'s'</span><span class="p">,</span> <span class="s1">'p'</span><span class="p">,</span> <span class="s1">'*'</span><span class="p">,</span> <span class="s1">'h'</span><span class="p">,</span> <span class="s1">'H'</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">,</span> <span class="s1">'d'</span><span class="p">,</span> <span class="s1">'P'</span><span class="p">,</span> <span class="s1">'X'</span><span class="p">])</span>
 <span class="c1"># Generate random integers</span>
 <span class="n">random_integers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="c1"># Draw markers</span>
@@ -292,7 +298,7 @@ The features that were not seen with highest loadings for any PC are considered 
 <span class="c1"># Make plot with markers</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
                        <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span>
-                       <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Demonstration of specifying markers per sample.&#39;</span><span class="p">,</span>
+                       <span class="n">title</span><span class="o">=</span><span class="s1">'Demonstration of specifying markers per sample.'</span><span class="p">,</span>
                        <span class="n">n_feat</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                        <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -317,9 +323,9 @@ The features that were not seen with highest loadings for any PC are considered 
 <span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">make_friedman1</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="c1"># All available markers</span>
-<span class="n">markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">])</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'.'</span><span class="p">,</span> <span class="s1">'o'</span><span class="p">,</span> <span class="s1">'v'</span><span class="p">,</span> <span class="s1">'^'</span><span class="p">,</span> <span class="s1">'&lt;'</span><span class="p">,</span> <span class="s1">'&gt;'</span><span class="p">,</span> <span class="s1">'8'</span><span class="p">,</span> <span class="s1">'s'</span><span class="p">,</span> <span class="s1">'p'</span><span class="p">,</span> <span class="s1">'*'</span><span class="p">,</span> <span class="s1">'h'</span><span class="p">,</span> <span class="s1">'H'</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">,</span> <span class="s1">'d'</span><span class="p">,</span> <span class="s1">'P'</span><span class="p">,</span> <span class="s1">'X'</span><span class="p">])</span>
 <span class="c1"># Create colors</span>
-<span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;tab20c&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">))</span>
+<span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">'tab20c'</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">))</span>
 <span class="c1"># Generate random integers</span>
 <span class="n">random_integers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="c1"># Draw markers</span>
@@ -343,12 +349,12 @@ The features that were not seen with highest loadings for any PC are considered 
                         <span class="n">s</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
                         <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span>
                         <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
-                        <span class="n">color_arrow</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
-                        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Demonstration of specifying colors, markers, alpha, and size per sample.&#39;</span><span class="p">,</span>
+                        <span class="n">color_arrow</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span>
+                        <span class="n">title</span><span class="o">=</span><span class="s1">'Demonstration of specifying colors, markers, alpha, and size per sample.'</span><span class="p">,</span>
                         <span class="n">n_feat</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                         <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-                        <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">,</span>
-                        <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">},</span>
+                        <span class="n">fontweight</span><span class="o">=</span><span class="s1">'normal'</span><span class="p">,</span>
+                        <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">'fontsize'</span><span class="p">:</span> <span class="mi">18</span><span class="p">},</span>
                         <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                         <span class="n">density_on_top</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                         <span class="p">)</span>
@@ -368,7 +374,7 @@ The features that were not seen with highest loadings for any PC are considered 
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">biplot3d</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/wine_biplot3d.png"><img alt="_images/wine_biplot3d.png" class="align-center" src="_images/wine_biplot3d.png" style="width: 600px;" />
+<a class="reference internal image-reference" href="_images/wine_biplot3d.png"><img alt="_images/wine_biplot3d.png" class="align-center" src="_images/wine_biplot3d.png" width="600" />
 </a>
 </section>
 <section id="toggle-visible-status">

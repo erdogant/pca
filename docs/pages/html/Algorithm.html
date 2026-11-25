@@ -8,15 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Algorithm &mdash; pca pca documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e0179649" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5d2b88f6"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -58,6 +58,13 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#standardization">Standardization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#explained-variance">Explained Variance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#variance-pca-versus-deviance-explained-logistic-pca">Variance (PCA) versus deviance explained (Logistic PCA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#how-logistic-pca-works">How Logistic PCA works</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-this-differs-from-explained-variance">Why this differs from explained variance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#practical-behavior-in-this-package">Practical behavior in this package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="#loadings">Loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#examination-of-the-loadings">Examination of the loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#best-performing-features">Best Performing Features</a></li>
@@ -73,10 +80,10 @@
 <p class="caption" role="heading"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html">Load dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot">Scatter plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot">Biplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot-visualization">Scatter plot visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-visualization">Biplot visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-only-arrows">Biplot (only arrows)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-plot">Explained variance plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-visualization">Explained variance visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#alpha-transparency">Alpha Transparency</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#markers">Markers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
@@ -89,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#demonstration-of-feature-importance">Demonstration of feature importance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#logistic-pca-for-binary-one-hot-data">Logistic PCA for binary / one-hot data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#normalizing-out-pcs">Normalizing out PCs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#colors-in-plots">Colors in plots</a></li>
@@ -206,24 +214,104 @@ Once the standardization is done, all the variables will be transformed to the s
 </pre></div>
 </div>
 <p>In this example we have 13 variables in the <strong>wine</strong> dataset, and thus 13 dimensions. PCA will optimize to store maximum variance in the first PC, then in the second and so on, until having something like shown in the plot below. This plot provides insights in the amount of <em>information</em> or <em>explained variance</em> in the data. We can clearly see that the 1st PC contains almost 36% of explained variance in total. With the top 10 PCs we cover 97.9% of all variance.</p>
-<a class="reference internal image-reference" href="_images/wine_explained_variance.png"><img alt="_images/wine_explained_variance.png" class="align-center" src="_images/wine_explained_variance.png" style="width: 600px;" />
+<a class="reference internal image-reference" href="_images/wine_explained_variance.png"><img alt="_images/wine_explained_variance.png" class="align-center" src="_images/wine_explained_variance.png" width="600" />
 </a>
 <p>There are as many principal components as there are variables in the data. The <strong>explained variance plot</strong> can therefore never have more then 13 PCs in this case. Principal components are constructed in such a manner that the first principal component accounts for the largest possible variance in the data set.</p>
+</section>
+<section id="variance-pca-versus-deviance-explained-logistic-pca">
+<h1>Variance (PCA) versus deviance explained (Logistic PCA)<a class="headerlink" href="#variance-pca-versus-deviance-explained-logistic-pca" title="Link to this heading"></a></h1>
+<p>For standard PCA, model quality is expressed in <strong>explained variance</strong>.
+Variance measures spread around the mean in continuous data (it is the average
+squared deviation from that mean).</p>
+<p>For Logistic PCA on binary/one-hot data, this quantity is not defined. Instead,
+<code class="docutils literal notranslate"><span class="pre">pca(method='logistic_pca')</span></code> reports <strong>deviance explained</strong>.
+Deviance is a likelihood-based goodness-of-fit measure for binary outcomes, and
+<strong>deviance explained</strong> is the proportion of <em>null deviance</em> captured by the
+model.</p>
+<p>In practice, this means that <code class="docutils literal notranslate"><span class="pre">n_components</span></code> behaves as follows for
+<code class="docutils literal notranslate"><span class="pre">method='logistic_pca'</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n_components</span></code> as an integer (for example <code class="docutils literal notranslate"><span class="pre">2</span></code>): fit exactly that many
+components.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_components</span></code> as a float between <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">1</span></code> (for example <code class="docutils literal notranslate"><span class="pre">0.95</span></code>):
+select the <strong>smallest</strong> number of components whose deviance explained reaches
+that threshold.</p></li>
+</ul>
+<p>Because Logistic PCA models are not nested, the threshold search fits
+<code class="docutils literal notranslate"><span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">...</span></code> components until it reaches the target (or the maximum allowed
+components).</p>
+</section>
+<section id="how-logistic-pca-works">
+<h1>How Logistic PCA works<a class="headerlink" href="#how-logistic-pca-works" title="Link to this heading"></a></h1>
+<p>Standard PCA is built for continuous values (such as height, weight, or sensor
+readings). Logistic PCA is built for binary values (<code class="docutils literal notranslate"><span class="pre">0/1</span></code>), such as one-hot
+encoded categories or yes/no indicators.</p>
+<p>A simple way to think about Logistic PCA is:</p>
+<ol class="arabic simple">
+<li><p>It looks for a small set of hidden patterns (components) in your binary
+matrix.</p></li>
+<li><p>Those patterns are used to reconstruct probabilities for each cell.</p></li>
+<li><p>A probability close to <code class="docutils literal notranslate"><span class="pre">1</span></code> means “likely on” and close to <code class="docutils literal notranslate"><span class="pre">0</span></code> means
+“likely off”.</p></li>
+<li><p>Model quality is measured by how much better these reconstructed
+probabilities are compared to a very simple baseline model (the null model).</p></li>
+</ol>
+<p>That improvement is summarized as <strong>deviance explained</strong>.</p>
+<ul class="simple">
+<li><p>Null model: a baseline that ignores component structure.</p></li>
+<li><p>Fitted model: uses the selected components.</p></li>
+<li><p>Deviance explained: how much of the null-model error is removed by the fitted
+model.</p></li>
+</ul>
+<p>So, if deviance explained is <code class="docutils literal notranslate"><span class="pre">0.95</span></code>, the model removes about 95% of the error
+relative to the null model.</p>
+<section id="why-this-differs-from-explained-variance">
+<h2>Why this differs from explained variance<a class="headerlink" href="#why-this-differs-from-explained-variance" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Variance</strong> is based on distances around a mean and is natural for
+continuous Gaussian-like data.</p></li>
+<li><p><strong>Deviance</strong> is based on likelihood for binary outcomes and is natural for
+Bernoulli/logistic modeling.</p></li>
+</ul>
+<p>So for Logistic PCA, deviance explained is the right metric, while explained
+variance is not defined.</p>
+</section>
+<section id="practical-behavior-in-this-package">
+<h2>Practical behavior in this package<a class="headerlink" href="#practical-behavior-in-this-package" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The default <code class="docutils literal notranslate"><span class="pre">n_components=0.95</span></code> works for <code class="docutils literal notranslate"><span class="pre">method='logistic_pca'</span></code> and
+means: “pick the smallest number of components that reaches 95% deviance
+explained.”</p></li>
+<li><p>After fitting, <code class="docutils literal notranslate"><span class="pre">model.n_components</span></code> is the selected integer.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">results['deviance_explained_path']</span></code> stores the path used in the search, so
+<code class="docutils literal notranslate"><span class="pre">plot()</span></code> can reuse it.</p></li>
+<li><p>If the threshold is unreachable, the model uses the maximum allowed number of
+components and logs a warning.</p></li>
+<li><p>If the data has no variation (deviance explained undefined), the model falls
+back to 1 component and logs a warning.</p></li>
+</ul>
+</section>
+<section id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Link to this heading"></a></h2>
+<p>Landgraf, A. J., &amp; Lee, Y. (2015). <em>Dimensionality Reduction for Binary Data
+through the Projection of Natural Parameters.</em>
+<a class="reference external" href="https://arxiv.org/abs/1510.06112">https://arxiv.org/abs/1510.06112</a></p>
+</section>
 </section>
 <section id="loadings">
 <h1>Loadings<a class="headerlink" href="#loadings" title="Link to this heading"></a></h1>
 <p>It is important to realize that principal components are less interpretable and don’t have any real meaning since they are constructed as <strong>linear combinations</strong> of the initial variables. But we can analyze the <strong>loadings</strong> which describe the importance of the independent variables.
 The first principal component (Y1) is given by a linear combination of the variables X1, X2, …, Xp, and is calculated such that it accounts for the greatest possible variance in the data.</p>
-<a class="reference internal image-reference" href="_images/PCAequation1.png"><img alt="_images/PCAequation1.png" src="_images/PCAequation1.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/PCAequation1.png"><img alt="_images/PCAequation1.png" src="_images/PCAequation1.png" width="300" />
 </a>
 <p>Of course, one could make the variance of Y1 as large as possible by choosing large values for the weights a11, a12, … a1p. To prevent this, the sum of squares of the weights is constrained to be 1.</p>
-<a class="reference internal image-reference" href="_images/PCAequation3.png"><img alt="_images/PCAequation3.png" src="_images/PCAequation3.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/PCAequation3.png"><img alt="_images/PCAequation3.png" src="_images/PCAequation3.png" width="300" />
 </a>
 <p>For example, let’s assume that the scatter plot of our data set is as shown below. Can we guess the first principal component? Yes, it’s approximately the line that matches the purple marks because it goes through the origin and it’s the line in which the projection of the points (red dots) is the most spread out. Or mathematically speaking, it’s the line that maximizes the variance which is the average of the squared distances from the projected points (red dots) to the origin.</p>
-<a class="reference internal image-reference" href="_images/PCA_rotation.gif"><img alt="_images/PCA_rotation.gif" class="align-center" src="_images/PCA_rotation.gif" style="width: 900px;" />
+<a class="reference internal image-reference" href="_images/PCA_rotation.gif"><img alt="_images/PCA_rotation.gif" class="align-center" src="_images/PCA_rotation.gif" width="900" />
 </a>
 <p>The second principal component is calculated in the same way, with the conditions that it is uncorrelated with (i.e., perpendicular to) the first principal component and that it accounts for the next highest variance.</p>
-<a class="reference internal image-reference" href="_images/PCAequation4.png"><img alt="_images/PCAequation4.png" src="_images/PCAequation4.png" style="width: 300px;" />
+<a class="reference internal image-reference" href="_images/PCAequation4.png"><img alt="_images/PCAequation4.png" src="_images/PCAequation4.png" width="300" />
 </a>
 <p>This continues until a total of <strong>p</strong> principal components have been calculated, that is, the number of principal components is the same as the original number of variables. At this point, the total variance on all of the principal components will equal the total variance among all of the variables. In this way, all of the information contained in the original data is preserved; no information is lost: PCA is just a rotation of the data.</p>
 <p>The elements of an eigenvector, that is, the values within a particular row of matrix, are the weights <strong>aij</strong>. These values are called the <strong>loadings</strong>, and they describe how much each variable contributes to a particular principal component.</p>
@@ -254,23 +342,23 @@ The first principal component (Y1) is given by a linear combination of the varia
 </pre></div>
 </div>
 <p>First of all, we see a nice seperation of the 3 wine classes (red, orange and gray samples). In the middle of the plot we see various arrows. Each of the arrows describes its story in the Principal Components. The angle of the arrow describes the contribution of the variable that is seen in the particular PC. The length describes the strength of the loading.</p>
-<a class="reference internal image-reference" href="_images/wine_biplot.png"><img alt="_images/wine_biplot.png" class="align-center" src="_images/wine_biplot.png" style="width: 600px;" />
+<a class="reference internal image-reference" href="_images/wine_biplot.png"><img alt="_images/wine_biplot.png" class="align-center" src="_images/wine_biplot.png" width="600" />
 </a>
 </section>
 <section id="examination-of-the-loadings">
 <h1>Examination of the loadings<a class="headerlink" href="#examination-of-the-loadings" title="Link to this heading"></a></h1>
 <p>Let’s examine the <strong>loadings</strong> (arrows) a bit more to understand what is going on in the distribution of the samples given the variables. The variable <strong>flavanoids</strong> has a positive loading and explaines mostly the variance in the first PC1 (it is almost a horizontal line). If we would color the samples in the scatter plot based on <strong>flavanoids</strong> values, we expect to see a distinction between samples that are respectively left and right side of the scatter plot.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grap the values for flavanoids</span>
-<span class="n">X_feat</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">col_labels</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;flavanoids&#39;</span><span class="p">]</span>
+<span class="n">X_feat</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">col_labels</span><span class="p">)</span><span class="o">==</span><span class="s1">'flavanoids'</span><span class="p">]</span>
 
 <span class="c1"># Color based on mean</span>
 <span class="n">color_label</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_feat</span><span class="o">&gt;=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X_feat</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
 <span class="c1"># Scatter based on discrete color</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on flavanoids (Gray colored samples are &gt; mean)&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'Color on flavanoids (Gray colored samples are &gt; mean)'</span><span class="p">)</span>
 
 <span class="c1"># 3d scatter plot</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on flavanoids (Gray colored samples are &gt; mean)&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'Color on flavanoids (Gray colored samples are &gt; mean)'</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id2">
@@ -283,16 +371,16 @@ The first principal component (Y1) is given by a linear combination of the varia
 </table>
 <p>Let’s take another variable for demonstration purposes. The variable <strong>alcohol</strong> has a strong negative loading (almost vertical), and should therefoe explains mostly the 2nd PC but the angle is not exactly vertical, thus there is also some variance seen in the 1st PC. Let’s color the samples based on <strong>alcohol</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grap the values for alcohol</span>
-<span class="n">X_feat</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">col_labels</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;alcohol&#39;</span><span class="p">]</span>
+<span class="n">X_feat</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">col_labels</span><span class="p">)</span><span class="o">==</span><span class="s1">'alcohol'</span><span class="p">]</span>
 
 <span class="c1"># Color based on mean</span>
 <span class="n">color_label</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_feat</span><span class="o">&gt;=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X_feat</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
 <span class="c1"># Scatter based on discrete color</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on alcohol (Gray colored samples are &lt; mean)&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'Color on alcohol (Gray colored samples are &lt; mean)'</span><span class="p">)</span>
 
 <span class="c1"># 3d scatter plot</span>
-<span class="n">model</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Color on alcohol (Gray colored samples are &lt; mean)&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">scatter3d</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">color_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'Color on alcohol (Gray colored samples are &lt; mean)'</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils align-center" id="id3">
@@ -309,7 +397,7 @@ The first principal component (Y1) is given by a linear combination of the varia
 <p>Extracting the best performing features is based on the loadings of the Principal Components, which are readily computed.
 The information is stored in the object itself. We can extract it as following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print the top features.</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;topfeat&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">'topfeat'</span><span class="p">])</span>
 
 <span class="c1">#      PC                       feature   loading  type</span>
 <span class="c1">#     PC1                    flavanoids  0.422934  best</span>

@@ -8,15 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PCA documentation! &mdash; pca pca documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e0179649" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5d2b88f6"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -57,6 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html">Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#standardization">Standardization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#explained-variance">Explained Variance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#variance-pca-versus-deviance-explained-logistic-pca">Variance (PCA) versus deviance explained (Logistic PCA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#how-logistic-pca-works">How Logistic PCA works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#loadings">Loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#examination-of-the-loadings">Examination of the loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#best-performing-features">Best Performing Features</a></li>
@@ -72,10 +74,10 @@
 <p class="caption" role="heading"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html">Load dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot">Scatter plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot">Biplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot-visualization">Scatter plot visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-visualization">Biplot visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-only-arrows">Biplot (only arrows)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-plot">Explained variance plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-visualization">Explained variance visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#alpha-transparency">Alpha Transparency</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#markers">Markers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
@@ -88,6 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#demonstration-of-feature-importance">Demonstration of feature importance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#logistic-pca-for-binary-one-hot-data">Logistic PCA for binary / one-hot data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#normalizing-out-pcs">Normalizing out PCs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#colors-in-plots">Colors in plots</a></li>
@@ -153,7 +156,7 @@ But this pca package can do a lot more. Besides the regular <strong>Principal Co
 <dl class="simple">
 <dt>Summary of Functionalities:</dt><dd><ul class="simple">
 <li><p>Biplot to plot the loadings.</p></li>
-<li><p>Determine the explained variance.</p></li>
+<li><p>Determine explained variance (PCA) or deviance explained (Logistic PCA).</p></li>
 <li><p>Extract the best performing features.</p></li>
 <li><p>Scatter plot with the loadings.</p></li>
 <li><p>Outlier detection using Hotelling T2 and/or SPE/Dmodx.</p></li>
@@ -192,6 +195,8 @@ Report bugs, issues and feature extensions at <a class="reference external" href
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html">Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#standardization">Standardization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#explained-variance">Explained Variance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#variance-pca-versus-deviance-explained-logistic-pca">Variance (PCA) versus deviance explained (Logistic PCA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#how-logistic-pca-works">How Logistic PCA works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#loadings">Loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#examination-of-the-loadings">Examination of the loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#best-performing-features">Best Performing Features</a></li>
@@ -211,10 +216,10 @@ Report bugs, issues and feature extensions at <a class="reference external" href
 <p class="caption" role="heading"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html">Load dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot">Scatter plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot">Biplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot-visualization">Scatter plot visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-visualization">Biplot visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-only-arrows">Biplot (only arrows)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-plot">Explained variance plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-visualization">Explained variance visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#alpha-transparency">Alpha Transparency</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#markers">Markers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
@@ -229,6 +234,7 @@ Report bugs, issues and feature extensions at <a class="reference external" href
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#demonstration-of-feature-importance">Demonstration of feature importance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#logistic-pca-for-binary-one-hot-data">Logistic PCA for binary / one-hot data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#normalizing-out-pcs">Normalizing out PCs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#colors-in-plots">Colors in plots</a></li>

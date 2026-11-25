@@ -8,15 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hotelling T2 &mdash; pca pca documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e0179649" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5d2b88f6"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -58,6 +58,8 @@
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html">Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#standardization">Standardization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#explained-variance">Explained Variance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#variance-pca-versus-deviance-explained-logistic-pca">Variance (PCA) versus deviance explained (Logistic PCA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#how-logistic-pca-works">How Logistic PCA works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#loadings">Loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#examination-of-the-loadings">Examination of the loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#best-performing-features">Best Performing Features</a></li>
@@ -73,10 +75,10 @@
 <p class="caption" role="heading"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html">Load dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot">Scatter plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot">Biplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot-visualization">Scatter plot visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-visualization">Biplot visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-only-arrows">Biplot (only arrows)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-plot">Explained variance plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-visualization">Explained variance visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#alpha-transparency">Alpha Transparency</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#markers">Markers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
@@ -89,6 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#demonstration-of-feature-importance">Demonstration of feature importance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#logistic-pca-for-binary-one-hot-data">Logistic PCA for binary / one-hot data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#normalizing-out-pcs">Normalizing out PCs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#colors-in-plots">Colors in plots</a></li>
@@ -151,7 +154,7 @@ It works by computing the <strong>chi-square tests</strong> across the top n_com
 <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">X</span><span class="p">,</span> <span class="n">outliers</span><span class="p">))</span>
 
 <span class="c1"># Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">detect_outliers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ht2&#39;</span><span class="p">,</span> <span class="s1">&#39;spe&#39;</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">detect_outliers</span><span class="o">=</span><span class="p">[</span><span class="s1">'ht2'</span><span class="p">,</span> <span class="s1">'spe'</span><span class="p">])</span>
 
 <span class="c1"># Fit transform</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -171,9 +174,9 @@ It works by computing the <strong>chi-square tests</strong> across the top n_com
 </pre></div>
 </div>
 <p>The information regarding the outliers are stored in the dict ‘outliers’ (see below). The outliers computed using <strong>hotelling T2</strong> test are the columns <strong>y_proba</strong>, <strong>y_score</strong> and <strong>y_bool</strong>. The outliers computed using <strong>SPE/DmodX</strong> are the columns <strong>y_bool_spe</strong>, <strong>y_score_spe</strong>, where <strong>y_score_spe</strong> is the euclidean distance of the center to the samples. The rows belong the same rows on the input samples.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">'outliers'</span><span class="p">])</span>
 <span class="c1"># or</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">'outliers'</span><span class="p">])</span>
 
 
 <span class="c1">#            y_proba      y_score  y_bool  y_bool_spe  y_score_spe</span>
@@ -216,10 +219,10 @@ On the model plane (SPE ≈ 0). Note that the SPE or Hotelling’s T2 are comple
 <h1>Selection of the Outliers<a class="headerlink" href="#selection-of-the-outliers" title="Link to this heading"></a></h1>
 <p>Selecting the outliers can be usefull to remove them from the dataset or for deeper investigation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select the outliers</span>
-<span class="n">Xoutliers</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">][</span><span class="s1">&#39;y_bool&#39;</span><span class="p">],:]</span>
+<span class="n">Xoutliers</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">'outliers'</span><span class="p">][</span><span class="s1">'y_bool'</span><span class="p">],:]</span>
 
 <span class="c1"># Select the other set</span>
-<span class="n">Xnormal</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">][</span><span class="s1">&#39;y_bool&#39;</span><span class="p">],:]</span>
+<span class="n">Xnormal</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">results</span><span class="p">[</span><span class="s1">'outliers'</span><span class="p">][</span><span class="s1">'y_bool'</span><span class="p">],:]</span>
 </pre></div>
 </div>
 </section>
@@ -236,7 +239,7 @@ Detection of <em>outliers</em> is performed in the <strong>transform</strong> fu
 <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
 <span class="c1"># Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">detect_outliers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ht2&#39;</span><span class="p">,</span> <span class="s1">&#39;spe&#39;</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">detect_outliers</span><span class="o">=</span><span class="p">[</span><span class="s1">'ht2'</span><span class="p">,</span> <span class="s1">'spe'</span><span class="p">])</span>
 
 <span class="c1"># Fit transform</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -244,7 +247,7 @@ Detection of <em>outliers</em> is performed in the <strong>transform</strong> fu
 <span class="c1"># Create 5 outliers</span>
 <span class="n">X_unseen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
-<span class="c1"># Transform new &quot;unseen&quot; data into existing PC space.</span>
+<span class="c1"># Transform new "unseen" data into existing PC space.</span>
 <span class="n">PCnew</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_unseen</span><span class="p">)</span>
 
 <span class="c1"># Plot image</span>
@@ -267,7 +270,7 @@ Detection of <em>outliers</em> is performed in the <strong>transform</strong> fu
 <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
 <span class="c1"># Initialize model. Alpha is the threshold for the hotellings T2 test to determine outliers in the data.</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">detect_outliers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ht2&#39;</span><span class="p">,</span> <span class="s1">&#39;spe&#39;</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">detect_outliers</span><span class="o">=</span><span class="p">[</span><span class="s1">'ht2'</span><span class="p">,</span> <span class="s1">'spe'</span><span class="p">])</span>
 <span class="c1"># model = pca(alpha=0.05, detect_outliers=None)</span>
 
 <span class="c1"># Fit transform</span>
@@ -277,8 +280,8 @@ Detection of <em>outliers</em> is performed in the <strong>transform</strong> fu
     <span class="c1"># Create 5 outliers</span>
     <span class="n">X_unseen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
-    <span class="c1"># Transform new &quot;unseen&quot; data into existing PC space.</span>
-    <span class="n">PCnew</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_unseen</span><span class="p">,</span> <span class="n">row_labels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="s1">&#39;mapped_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">X_unseen</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">update_outlier_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Transform new "unseen" data into existing PC space.</span>
+    <span class="n">PCnew</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_unseen</span><span class="p">,</span> <span class="n">row_labels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="s1">'mapped_'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">X_unseen</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">update_outlier_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># Scatterplot</span>
     <span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -300,8 +303,8 @@ Detection of <em>outliers</em> is performed in the <strong>transform</strong> fu
 <p>If desired, the outliers can also be detected directly using the hotelling T2 and/or SPE/DmodX functionality.
 For demonstration purposes I use the PCs from the results but any other dataset would also work.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pca</span>
-<span class="n">outliers_hot</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">hotellingsT2</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;PC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
-<span class="n">outliers_spe</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">spe_dmodx</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;PC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">n_std</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">outliers_hot</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">hotellingsT2</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">'PC'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">outliers_spe</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">spe_dmodx</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">'PC'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">n_std</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 <hr>

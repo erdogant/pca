@@ -84,13 +84,13 @@ Explained Variance
 
 Before jumping into the **explained variance**, we first need to understand what principal components are.
 
-**Principal components** are new (latent) **variables** that are constructed as **linear combinations** or **mixtures** of the initial variables. These combinations are in such a way that the new variables (i.e., principal components) are uncorrelated and most of the information within the initial variables is squeezed or compressed into the first components. 
-**Explained variance** refers to the variance explained by each of the principal components (eigenvectors). By organizing information Principal 
+**Principal components** are new (latent) **variables** that are constructed as **linear combinations** or **mixtures** of the initial variables. These combinations are in such a way that the new variables (i.e., principal components) are uncorrelated and most of the information within the initial variables is squeezed or compressed into the first components.
+**Explained variance** refers to the variance explained by each of the principal components (eigenvectors). By organizing information Principal
 
 Let's compute the explained variance for the wine dataset (this is a follow up from the previous standardization part).
 
 .. code:: python
-	
+
 	# Load library
 	from pca import pca
 
@@ -114,11 +114,98 @@ In this example we have 13 variables in the **wine** dataset, and thus 13 dimens
 
 There are as many principal components as there are variables in the data. The **explained variance plot** can therefore never have more then 13 PCs in this case. Principal components are constructed in such a manner that the first principal component accounts for the largest possible variance in the data set.
 
+
+Variance (PCA) versus deviance explained (Logistic PCA)
+########################################################
+
+For standard PCA, model quality is expressed in **explained variance**.
+Variance measures spread around the mean in continuous data (it is the average
+squared deviation from that mean).
+
+For Logistic PCA on binary/one-hot data, this quantity is not defined. Instead,
+``pca(method='logistic_pca')`` reports **deviance explained**.
+Deviance is a likelihood-based goodness-of-fit measure for binary outcomes, and
+**deviance explained** is the proportion of *null deviance* captured by the
+model.
+
+In practice, this means that ``n_components`` behaves as follows for
+``method='logistic_pca'``:
+
+* ``n_components`` as an integer (for example ``2``): fit exactly that many
+  components.
+* ``n_components`` as a float between ``0`` and ``1`` (for example ``0.95``):
+  select the **smallest** number of components whose deviance explained reaches
+  that threshold.
+
+Because Logistic PCA models are not nested, the threshold search fits
+``1, 2, 3, ...`` components until it reaches the target (or the maximum allowed
+components).
+
+
+How Logistic PCA works
+#######################################
+
+Standard PCA is built for continuous values (such as height, weight, or sensor
+readings). Logistic PCA is built for binary values (``0/1``), such as one-hot
+encoded categories or yes/no indicators.
+
+A simple way to think about Logistic PCA is:
+
+1. It looks for a small set of hidden patterns (components) in your binary
+   matrix.
+2. Those patterns are used to reconstruct probabilities for each cell.
+3. A probability close to ``1`` means "likely on" and close to ``0`` means
+   "likely off".
+4. Model quality is measured by how much better these reconstructed
+   probabilities are compared to a very simple baseline model (the null model).
+
+That improvement is summarized as **deviance explained**.
+
+* Null model: a baseline that ignores component structure.
+* Fitted model: uses the selected components.
+* Deviance explained: how much of the null-model error is removed by the fitted
+  model.
+
+So, if deviance explained is ``0.95``, the model removes about 95% of the error
+relative to the null model.
+
+Why this differs from explained variance
+******************************************
+
+* **Variance** is based on distances around a mean and is natural for
+  continuous Gaussian-like data.
+* **Deviance** is based on likelihood for binary outcomes and is natural for
+  Bernoulli/logistic modeling.
+
+So for Logistic PCA, deviance explained is the right metric, while explained
+variance is not defined.
+
+Practical behavior in this package
+************************************
+
+* The default ``n_components=0.95`` works for ``method='logistic_pca'`` and
+  means: "pick the smallest number of components that reaches 95% deviance
+  explained."
+* After fitting, ``model.n_components`` is the selected integer.
+* ``results['deviance_explained_path']`` stores the path used in the search, so
+  ``plot()`` can reuse it.
+* If the threshold is unreachable, the model uses the maximum allowed number of
+  components and logs a warning.
+* If the data has no variation (deviance explained undefined), the model falls
+  back to 1 component and logs a warning.
+
+Reference
+***********
+
+Landgraf, A. J., & Lee, Y. (2015). *Dimensionality Reduction for Binary Data
+through the Projection of Natural Parameters.*
+https://arxiv.org/abs/1510.06112
+
 Loadings
 #################
 
 It is important to realize that principal components are less interpretable and don’t have any real meaning since they are constructed as **linear combinations** of the initial variables. But we can analyze the **loadings** which describe the importance of the independent variables.
-The first principal component (Y1) is given by a linear combination of the variables X1, X2, ..., Xp, and is calculated such that it accounts for the greatest possible variance in the data. 
+The first principal component (Y1) is given by a linear combination of the variables X1, X2, ..., Xp, and is calculated such that it accounts for the greatest possible variance in the data.
 
 .. image:: ../figs/PCAequation1.png
    :width: 300
@@ -142,11 +229,11 @@ The second principal component is calculated in the same way, with the condition
    :width: 300
 
 
-This continues until a total of **p** principal components have been calculated, that is, the number of principal components is the same as the original number of variables. At this point, the total variance on all of the principal components will equal the total variance among all of the variables. In this way, all of the information contained in the original data is preserved; no information is lost: PCA is just a rotation of the data. 
+This continues until a total of **p** principal components have been calculated, that is, the number of principal components is the same as the original number of variables. At this point, the total variance on all of the principal components will equal the total variance among all of the variables. In this way, all of the information contained in the original data is preserved; no information is lost: PCA is just a rotation of the data.
 
-The elements of an eigenvector, that is, the values within a particular row of matrix, are the weights **aij**. These values are called the **loadings**, and they describe how much each variable contributes to a particular principal component. 
+The elements of an eigenvector, that is, the values within a particular row of matrix, are the weights **aij**. These values are called the **loadings**, and they describe how much each variable contributes to a particular principal component.
 
-	* Large loadings (+ or -) indicate that a particular variable has a strong relationship to a particular principal component. 
+	* Large loadings (+ or -) indicate that a particular variable has a strong relationship to a particular principal component.
 	* The sign of a loading indicates whether a variable and a principal component are positively or negatively correlated.
 
 
@@ -165,15 +252,15 @@ Let's go back to our **wine** example and plot the **loadings** of the PCs.
 
 	# Initialize pca with default parameters
 	model = pca(normalize=True)
-	
+
 	# Fit transform and include the column labels and row labels
 	results = model.fit_transform(X, col_labels=col_labels, row_labels=y)
-	
+
 	# Scatter plot with loadings
 	model.biplot()
 
 
-First of all, we see a nice seperation of the 3 wine classes (red, orange and gray samples). In the middle of the plot we see various arrows. Each of the arrows describes its story in the Principal Components. The angle of the arrow describes the contribution of the variable that is seen in the particular PC. The length describes the strength of the loading. 
+First of all, we see a nice seperation of the 3 wine classes (red, orange and gray samples). In the middle of the plot we see various arrows. Each of the arrows describes its story in the Principal Components. The angle of the arrow describes the contribution of the variable that is seen in the particular PC. The length describes the strength of the loading.
 
 .. image:: ../figs/wine_biplot.png
    :width: 600
@@ -183,10 +270,10 @@ First of all, we see a nice seperation of the 3 wine classes (red, orange and gr
 Examination of the loadings
 ##################################
 
-Let's examine the **loadings** (arrows) a bit more to understand what is going on in the distribution of the samples given the variables. The variable **flavanoids** has a positive loading and explaines mostly the variance in the first PC1 (it is almost a horizontal line). If we would color the samples in the scatter plot based on **flavanoids** values, we expect to see a distinction between samples that are respectively left and right side of the scatter plot. 
+Let's examine the **loadings** (arrows) a bit more to understand what is going on in the distribution of the samples given the variables. The variable **flavanoids** has a positive loading and explaines mostly the variance in the first PC1 (it is almost a horizontal line). If we would color the samples in the scatter plot based on **flavanoids** values, we expect to see a distinction between samples that are respectively left and right side of the scatter plot.
 
 .. code:: python
-	
+
 	# Grap the values for flavanoids
 	X_feat = X[:, np.array(col_labels)=='flavanoids']
 
@@ -243,7 +330,7 @@ Best Performing Features
 ##################################
 
 Extracting the best performing features is based on the loadings of the Principal Components, which are readily computed.
-The information is stored in the object itself. We can extract it as following: 
+The information is stored in the object itself. We can extract it as following:
 
 .. code:: python
 

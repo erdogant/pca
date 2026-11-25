@@ -192,8 +192,8 @@ Explained variance plot
 
 
 
-Biplot
-****************************
+Biplot for feature-importance example
+*************************************
 
 Make the biplot. It can be nicely seen that the first feature with most variance (f1), is almost horizontal in the plot, whereas the second most variance (f2) is almost vertical. This is expected because most of the variance is in f1, followed by f2 etc. Biplot in 3d. Here we see the nice addition of the expected f3 in the plot in the z-direction.
 

@@ -8,15 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>API References &mdash; pca pca documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e0179649" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5d2b88f6"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -57,6 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html">Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#standardization">Standardization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#explained-variance">Explained Variance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#variance-pca-versus-deviance-explained-logistic-pca">Variance (PCA) versus deviance explained (Logistic PCA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithm.html#how-logistic-pca-works">How Logistic PCA works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#loadings">Loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#examination-of-the-loadings">Examination of the loadings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Algorithm.html#best-performing-features">Best Performing Features</a></li>
@@ -72,10 +74,10 @@
 <p class="caption" role="heading"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html">Load dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot">Scatter plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot">Biplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#scatter-plot-visualization">Scatter plot visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-visualization">Biplot visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#biplot-only-arrows">Biplot (only arrows)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-plot">Explained variance plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html#explained-variance-visualization">Explained variance visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#alpha-transparency">Alpha Transparency</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#markers">Markers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plots.html#control-color-marker-size-per-sample">Control color/marker/size per sample</a></li>
@@ -88,6 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#demonstration-of-feature-importance">Demonstration of feature importance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#analyzing-discrete-datasets">Analyzing Discrete datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#logistic-pca-for-binary-one-hot-data">Logistic PCA for binary / one-hot data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#map-unseen-datapoints-into-fitted-space">Map unseen datapoints into fitted space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#normalizing-out-pcs">Normalizing out PCs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html#colors-in-plots">Colors in plots</a></li>
@@ -165,7 +168,7 @@
 <p>pca: A Python Package for Principal Component Analysis.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pca.pca.check_logger">
-<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">check_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;]</span> <span class="pre">=</span> <span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.check_logger" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">check_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">[&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.check_logger" title="Link to this definition"></a></dt>
 <dd><p>Check the logger.</p>
 </dd></dl>
 
@@ -243,12 +246,13 @@ across multiple dimensions will be more significant then others.</p>
 <dt class="sig sig-object py" id="pca.pca.import_example">
 <span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">import_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'iris'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.import_example" title="Link to this definition"></a></dt>
 <dd><p>Import example dataset from github source.</p>
-<p>Import one of the few datasets from github source or specify your own download url link.</p>
+<p>Import one of the few datasets from github source or specify your own
+download URL link.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>str</em>) – <dl class="simple">
-<dt>Name of datasets</dt><dd><ul>
+<li><p><strong>data</strong> (<em>str</em>) – <p>Name of dataset.</p>
+<ul>
 <li><p>’iris’</p></li>
 <li><p>’sprinkler’</p></li>
 <li><p>’titanic’</p></li>
@@ -258,15 +262,17 @@ across multiple dimensions will be more significant then others.</p>
 <li><p>’waterpump’</p></li>
 <li><p>’retail’</p></li>
 </ul>
-</dd>
-</dl>
 </p></li>
-<li><p><strong>url</strong> (<em>str</em>) – <p>url link to to dataset.
-verbose : int, (default: 20)</p>
-<blockquote>
-<div><p>Print progress to screen. The default is 3.
-60: None, 40: Error, 30: Warn, 20: Info, 10: Debug</p>
-</div></blockquote>
+<li><p><strong>url</strong> (<em>str</em><em>, </em><em>optional</em>) – URL link to dataset.</p></li>
+<li><p><strong>sep</strong> (<em>str</em><em>, </em><em>optional</em>) – Column separator used when reading the dataset (default is “,”).</p></li>
+<li><p><strong>verbose</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – <p>Print progress to screen.</p>
+<ul>
+<li><p>60: None</p></li>
+<li><p>40: Error</p></li>
+<li><p>30: Warn</p></li>
+<li><p>20: Info</p></li>
+<li><p>10: Debug</p></li>
+</ul>
 </p></li>
 </ul>
 </dd>
@@ -274,7 +280,7 @@ verbose : int, (default: 20)</p>
 <dd class="field-even"><p>Dataset containing mixed features.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pd.DataFrame()</p>
+<dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -346,45 +352,63 @@ verbose : int, (default: 20)</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pca.pca.pca">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">pca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pca'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multipletests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fdr_bh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onehot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['ht2',</span> <span class="pre">'spe']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">pca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pca'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multipletests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fdr_bh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onehot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['ht2',</span> <span class="pre">'spe']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.pca" title="Link to this definition"></a></dt>
 <dd><p>pca module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_components</strong> (<em>float</em><em> or </em><em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>default=0.95</em>) – Number of PCs to be returned.
-- If &gt;= 1, returns the specified number of PCs.
-- If between 0 and 1, returns the number of PCs that cover at least this percentage of variance.
-- None : returns all PCs.
-- 0.95 : return the number of PCs covering at least 95% variance.
-- 3 : return the top 3 PCs.</p></li>
+<li><p><strong>n_components</strong> (<em>float</em><em> or </em><em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>default=0.95</em>) – <p>Number of PCs to be returned.</p>
+<ul>
+<li><p>If &gt;= 1, returns the specified number of PCs.</p></li>
+<li><p>If between 0 and 1, returns the number of PCs that cover at least this percentage of variance.</p></li>
+<li><p>None : returns all PCs.</p></li>
+<li><p>0.95 : return the number of PCs covering at least 95% variance.</p></li>
+<li><p>3 : return the top 3 PCs.</p></li>
+</ul>
+</p></li>
 <li><p><strong>n_feat</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default=10</em>) – Number of features explaining the space most, derived from the loadings.
 Used for visualization purposes only.</p></li>
-<li><p><strong>method</strong> (<em>{'pca'</em><em>, </em><em>'sparse_pca'</em><em>, </em><em>'trunc_svd'}</em><em>, </em><em>optional</em><em>, </em><em>default='pca'</em>) – Method for dimensionality reduction.
-- ‘pca’ : Principal Component Analysis.
-- ‘sparse_pca’ : Sparse Principal Component Analysis.
-- ‘trunc_svd’ : Truncated Singular Value Decomposition (aka LSA).</p></li>
+<li><p><strong>method</strong> (<em>{'pca'</em><em>, </em><em>'sparse_pca'</em><em>, </em><em>'trunc_svd'</em><em>, </em><em>'logistic_pca'}</em><em>, </em><em>optional</em><em>, </em><em>default='pca'</em>) – <p>Method for dimensionality reduction.</p>
+<ul>
+<li><p>’pca’ : Principal Component Analysis.</p></li>
+<li><p>’sparse_pca’ : Sparse Principal Component Analysis.</p></li>
+<li><p>’trunc_svd’ : Truncated Singular Value Decomposition (aka LSA).</p></li>
+<li><p>’logistic_pca’ : Logistic PCA for binary data (Landgraf &amp; Lee, 2015). Missing values (nan/None) are supported
+natively without imputation. Instead of explained variance, the results contain ‘deviance_explained’ and the
+fitted probabilities ‘fitted’; ‘explained_var’ and ‘variance_ratio’ are None. If n_components is between 0 and 1,
+the smallest number of components is used whose deviance explained (proportion of the null deviance) is at least
+that value. Note that this requires fitting the model for 1, 2, … components until the threshold is reached.</p></li>
+</ul>
+</p></li>
 <li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em><em>, </em><em>default=0.05</em>) – Significance level to determine outliers based on Hotelling’s T2 test.</p></li>
-<li><p><strong>multipletests</strong> (<em>str</em><em> or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>default='fdr_bh'</em>) – Multiple testing correction method for Hotelling’s T2 test.
-Options include:
-- None : No multiple testing correction.
-- ‘bonferroni’ : One-step correction.
-- ‘sidak’ : One-step correction.
-- ‘holm-sidak’ : Step-down method using Sidak adjustments.
-- ‘holm’ : Step-down method using Bonferroni adjustments.
-- ‘simes-hochberg’ : Step-up method (independent).
-- ‘hommel’ : Closed method based on Simes tests (non-negative).
-- ‘fdr_bh’ : Benjamini/Hochberg (non-negative).
-- ‘fdr_by’ : Benjamini/Yekutieli (negative).
-- ‘fdr_tsbh’ : Two-stage FDR correction (non-negative).
-- ‘fdr_tsbky’ : Two-stage FDR correction (non-negative).</p></li>
+<li><p><strong>multipletests</strong> (<em>str</em><em> or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>default='fdr_bh'</em>) – <p>Multiple testing correction method for Hotelling’s T2 test.
+Options include:</p>
+<ul>
+<li><p>None : No multiple testing correction.</p></li>
+<li><p>’bonferroni’ : One-step correction.</p></li>
+<li><p>’sidak’ : One-step correction.</p></li>
+<li><p>’holm-sidak’ : Step-down method using Sidak adjustments.</p></li>
+<li><p>’holm’ : Step-down method using Bonferroni adjustments.</p></li>
+<li><p>’simes-hochberg’ : Step-up method (independent).</p></li>
+<li><p>’hommel’ : Closed method based on Simes tests (non-negative).</p></li>
+<li><p>’fdr_bh’ : Benjamini/Hochberg (non-negative).</p></li>
+<li><p>’fdr_by’ : Benjamini/Yekutieli (negative).</p></li>
+<li><p>’fdr_tsbh’ : Two-stage FDR correction (non-negative).</p></li>
+<li><p>’fdr_tsbky’ : Two-stage FDR correction (non-negative).</p></li>
+</ul>
+</p></li>
 <li><p><strong>n_std</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default=3</em>) – Number of standard deviations for outlier detection using SPE/DmodX method.</p></li>
+<li><p><strong>m</strong> (<em>float</em><em>, </em><em>optional</em><em>, </em><em>default=4</em>) – Only used for method=’logistic_pca’. Approximation of the saturated natural parameters (m * (2X - 1)).</p></li>
 <li><p><strong>onehot</strong> (<em>bool</em><em>, </em><em>optional</em><em>, </em><em>default=False</em>) – Set True if X is sparse data such as output from a TF-IDF model (many zeros, few numbers).
 Note: This differs from a sparse matrix. For sparse matrices, use method=’trunc_svd’.</p></li>
 <li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>optional</em><em>, </em><em>default=False</em>) – Whether to normalize data (Z-score).</p></li>
-<li><p><strong>detect_outliers</strong> (<em>list</em><em> or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>default=</em><em>[</em><em>'ht2'</em><em>, </em><em>'spe'</em><em>]</em>) – Outlier detection methods to apply:
-- None : Do not compute outliers.
-- ‘ht2’ : Compute outliers based on Hotelling’s T2.
-- ‘spe’ : Compute outliers based on SPE/DmodX method.</p></li>
+<li><p><strong>detect_outliers</strong> (<em>list</em><em> or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>default=</em><em>[</em><em>'ht2'</em><em>, </em><em>'spe'</em><em>]</em>) – <p>Outlier detection methods to apply:</p>
+<ul>
+<li><p>None : Do not compute outliers.</p></li>
+<li><p>’ht2’ : Compute outliers based on Hotelling’s T2.</p></li>
+<li><p>’spe’ : Compute outliers based on SPE/DmodX method.</p></li>
+</ul>
+</p></li>
 <li><p><strong>random_state</strong> (<em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Random seed for reproducibility.</p></li>
 <li><p><strong>verbose</strong> (<em>str</em><em> or </em><em>int</em><em>, </em><em>optional</em><em>, </em><em>default='info'</em><em> (</em><em>20</em><em>)</em>) – Logging verbosity level. Possible values:
 - 0, 60, None, ‘silent’, ‘off’, ‘no’ : no messages.
@@ -401,13 +425,18 @@ Note: This differs from a sparse matrix. For sparse matrices, use method=’trun
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">import_example</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;iris&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">import_example</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">'iris'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Fit transform</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># plot</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">'label'</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">'label'</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Logistic PCA on binary data with missing values</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'logistic_pca'</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_binary</span><span class="p">)</span>  <span class="c1"># X_binary contains 0, 1 and np.nan</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span><span class="p">[</span><span class="s1">'deviance_explained'</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">'fitted'</span><span class="p">]</span>
 </pre></div>
 </div>
 <p class="rubric">References</p>
@@ -415,6 +444,8 @@ Note: This differs from a sparse matrix. For sparse matrices, use method=’trun
 <li><p>Blog: erdogant.medium.com</p></li>
 <li><p>Github: <a class="reference external" href="https://github.com/erdogant/pca">https://github.com/erdogant/pca</a></p></li>
 <li><p>Documentation: <a class="reference external" href="https://erdogant.github.io/pca/">https://erdogant.github.io/pca/</a></p></li>
+<li><p>Landgraf, A. J., &amp; Lee, Y. (2015). <em>Dimensionality Reduction for Binary Data through the Projection of Natural Parameters.</em></p></li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/1510.06112">https://arxiv.org/abs/1510.06112</a></p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="pca.pca.pca.biplot">
@@ -501,19 +532,22 @@ False : The density is the lowest layer.</p></li>
 </dd>
 </dl>
 </p></li>
-<li><p><strong>arrowdict</strong> (<em>dict.</em>) – <p>Dictionary containing properties for the arrow font-text.
-{‘fontsize’: None, ‘color_text’: None, ‘weight’: None, ‘alpha’: None, ‘color_strong’: ‘#880808’, ‘color_weak’: ‘#002a77’, ‘ha’: ‘center’, ‘va’: ‘center’}</p>
-<blockquote>
-<div><ul>
-<li><p>fontsize: None automatically adjust based on the fontsize. Specify otherwise.</p></li>
-<li><p>’color_text’: None automatically adjust color based color_strong and color_weak. Specify hex color otherwise.</p></li>
-<li><p>’weight’: None automatically adjust based on fontweight. Specify otherwise: ‘normal’, ‘bold’</p></li>
-<li><p>’alpha’: None automatically adjust based on loading value.</p></li>
-<li><p>’color_strong’: Hex color for strong loadings (color_arrow needs to be set to None).</p></li>
-<li><p>’color_weak’: Hex color for weak loadings (color_arrow needs to be set to None).</p></li>
-<li><p>’scale_factor’: The scale factor for the arrow length. None automatically sets changes between 2d and 3d plots.</p></li>
+<li><p><strong>arrowdict</strong> (<em>dict</em>) – <p>Dictionary containing properties for the arrow text.
+Example keys: <code class="docutils literal notranslate"><span class="pre">fontsize</span></code>, <code class="docutils literal notranslate"><span class="pre">color_text</span></code>, <code class="docutils literal notranslate"><span class="pre">weight</span></code>, <code class="docutils literal notranslate"><span class="pre">alpha</span></code>,
+<code class="docutils literal notranslate"><span class="pre">color_strong</span></code>, <code class="docutils literal notranslate"><span class="pre">color_weak</span></code>, and <code class="docutils literal notranslate"><span class="pre">scale_factor</span></code>.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">fontsize</span></code>: None automatically adjusts based on <code class="docutils literal notranslate"><span class="pre">fontsize</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">color_text</span></code>: None automatically adjusts based on
+<code class="docutils literal notranslate"><span class="pre">color_strong</span></code> and <code class="docutils literal notranslate"><span class="pre">color_weak</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weight</span></code>: None automatically adjusts based on <code class="docutils literal notranslate"><span class="pre">fontweight</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alpha</span></code>: None automatically adjusts based on loading value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">color_strong</span></code>: Hex color for strong loadings (used when
+<code class="docutils literal notranslate"><span class="pre">color_arrow</span></code> is None).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">color_weak</span></code>: Hex color for weak loadings (used when
+<code class="docutils literal notranslate"><span class="pre">color_arrow</span></code> is None).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scale_factor</span></code>: Scale factor for arrow length. None
+automatically adjusts between 2D and 3D plots.</p></li>
 </ul>
-</div></blockquote>
 </p></li>
 <li><p><strong>cmap</strong> (<em>String</em><em>, </em><em>optional</em><em>, </em><em>default: 'Set1'</em>) – Colormap. If set to None, no points are shown.</p></li>
 <li><p><strong>title</strong> (<em>str</em><em>, </em><em>default: None</em>) – Title of the figure.
@@ -539,10 +573,6 @@ Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace</p><
 <dd class="field-even"><p>tuple containing (fig, ax)</p>
 </dd>
 </dl>
-<p class="rubric">References</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559">https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559</a></p></li>
-</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -885,14 +915,14 @@ False: Do not update outlier parameters and outliers that were initially detecte
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Fit transform</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Transform the &quot;unseen&quot; data with the fitted model. Note that these datapoints are not really unseen as they are readily fitted above.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Transform the "unseen" data with the fitted model. Note that these datapoints are not really unseen as they are readily fitted above.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># But for the sake of example, you can see that these samples will be transformed exactly on top of the orignial ones.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">PCnew</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_unseen</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Plot PC space</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">scatter</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Plot the new &quot;unseen&quot; samples on top of the existing space</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">PCnew</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">PCnew</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Plot the new "unseen" samples on top of the existing space</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">PCnew</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">PCnew</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">'x'</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -906,7 +936,7 @@ False: Do not update outlier parameters and outliers that were initially detecte
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pca.pca.set_logger">
-<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">set_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;]</span> <span class="pre">=</span> <span class="pre">'info'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_status:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.set_logger" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pca.pca.</span></span><span class="sig-name descname"><span class="pre">set_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">[&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pca.pca.set_logger" title="Link to this definition"></a></dt>
 <dd><p>Set the logger for verbosity messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

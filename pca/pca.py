@@ -32,6 +32,7 @@ class pca:
     ----------
     n_components : float or int or None, optional, default=0.95
         Number of PCs to be returned.
+
         - If >= 1, returns the specified number of PCs.
         - If between 0 and 1, returns the number of PCs that cover at least this percentage of variance.
         - None : returns all PCs.
@@ -44,6 +45,7 @@ class pca:
 
     method : {'pca', 'sparse_pca', 'trunc_svd', 'logistic_pca'}, optional, default='pca'
         Method for dimensionality reduction.
+
         - 'pca' : Principal Component Analysis.
         - 'sparse_pca' : Sparse Principal Component Analysis.
         - 'trunc_svd' : Truncated Singular Value Decomposition (aka LSA).
@@ -59,6 +61,7 @@ class pca:
     multipletests : str or None, optional, default='fdr_bh'
         Multiple testing correction method for Hotelling's T2 test.
         Options include:
+
         - None : No multiple testing correction.
         - 'bonferroni' : One-step correction.
         - 'sidak' : One-step correction.
@@ -85,10 +88,11 @@ class pca:
         Whether to normalize data (Z-score).
 
     detect_outliers : list or None, optional, default=['ht2', 'spe']
-            Outlier detection methods to apply:
-            - None : Do not compute outliers.
-            - 'ht2' : Compute outliers based on Hotelling's T2.
-            - 'spe' : Compute outliers based on SPE/DmodX method.
+        Outlier detection methods to apply:
+
+        - None : Do not compute outliers.
+        - 'ht2' : Compute outliers based on Hotelling's T2.
+        - 'spe' : Compute outliers based on SPE/DmodX method.
 
     random_state : int or None, optional
         Random seed for reproducibility.
@@ -1088,16 +1092,22 @@ class pca:
                 * None: Color arrows based on strength using 'color_strong' and 'color_weak'.
                 * '#000000'
                 * 'r'
-        arrowdict : dict.
-            Dictionary containing properties for the arrow font-text.
-            {'fontsize': None, 'color_text': None, 'weight': None, 'alpha': None, 'color_strong': '#880808', 'color_weak': '#002a77', 'ha': 'center', 'va': 'center'}
-                * fontsize: None automatically adjust based on the fontsize. Specify otherwise.
-                * 'color_text': None automatically adjust color based color_strong and color_weak. Specify hex color otherwise.
-                * 'weight': None automatically adjust based on fontweight. Specify otherwise: 'normal', 'bold'
-                * 'alpha': None automatically adjust based on loading value.
-                * 'color_strong': Hex color for strong loadings (color_arrow needs to be set to None).
-                * 'color_weak': Hex color for weak loadings (color_arrow needs to be set to None).
-                * 'scale_factor': The scale factor for the arrow length. None automatically sets changes between 2d and 3d plots.
+        arrowdict : dict
+            Dictionary containing properties for the arrow text.
+            Example keys: ``fontsize``, ``color_text``, ``weight``, ``alpha``,
+            ``color_strong``, ``color_weak``, and ``scale_factor``.
+
+            - ``fontsize``: None automatically adjusts based on ``fontsize``.
+            - ``color_text``: None automatically adjusts based on
+              ``color_strong`` and ``color_weak``.
+            - ``weight``: None automatically adjusts based on ``fontweight``.
+            - ``alpha``: None automatically adjusts based on loading value.
+            - ``color_strong``: Hex color for strong loadings (used when
+              ``color_arrow`` is None).
+            - ``color_weak``: Hex color for weak loadings (used when
+              ``color_arrow`` is None).
+            - ``scale_factor``: Scale factor for arrow length. None
+              automatically adjusts between 2D and 3D plots.
         cmap : String, optional, default: 'Set1'
             Colormap. If set to None, no points are shown.
         title : str, default: None
@@ -1844,29 +1854,38 @@ def _store(
 def import_example(data="iris", url=None, sep=",", verbose="info"):
     """Import example dataset from github source.
 
-    Import one of the few datasets from github source or specify your own download url link.
+    Import one of the few datasets from github source or specify your own
+    download URL link.
 
     Parameters
     ----------
     data : str
-        Name of datasets
-            * 'iris'
-            * 'sprinkler'
-            * 'titanic'
-            * 'student'
-            * 'fifa'
-            * 'cancer'
-            * 'waterpump'
-            * 'retail'
-    url : str
-        url link to to dataset.
-        verbose : int, (default: 20)
-                Print progress to screen. The default is 3.
-                60: None, 40: Error, 30: Warn, 20: Info, 10: Debug
+        Name of dataset.
+
+        - 'iris'
+        - 'sprinkler'
+        - 'titanic'
+        - 'student'
+        - 'fifa'
+        - 'cancer'
+        - 'waterpump'
+        - 'retail'
+    url : str, optional
+        URL link to dataset.
+    sep : str, optional
+        Column separator used when reading the dataset (default is ",").
+    verbose : int or str, optional
+        Print progress to screen.
+
+        - 60: None
+        - 40: Error
+        - 30: Warn
+        - 20: Info
+        - 10: Debug
 
     Returns
     -------
-    pd.DataFrame()
+    pd.DataFrame
         Dataset containing mixed features.
 
     """

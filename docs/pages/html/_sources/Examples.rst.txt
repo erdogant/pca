@@ -37,7 +37,7 @@ A quick example how perform feature reduction using ``pca``.
 	# 	 [5.4, 3.9, 1.7, 0.4],
 	# 	 [4.6, 3.4, 1.4, 0.3],
 	# 	 [5. , 3.4, 1.5, 0.2],
-	# 
+	#
 	# y = [0, 0, 0, 0,...,2, 2, 2, 2, 2]
 	# label = ['sepal length (cm)',
 	#	 'sepal width (cm)',
@@ -60,7 +60,7 @@ After the ``fit_transform``, the cumulative expained variance is stored together
 	# Explained variance per PC
 	print(model.results['variance_ratio'])
 	[0.92461872, 0.05306648, 0.01710261]
-	
+
 	# Make plot
 	fig, ax = model.plot()
 
@@ -111,7 +111,7 @@ Biplot
 ******************
 
 .. code:: python
-	
+
 	# 2D plot
 	fig, ax = model.biplot(n_feat=4, PC=[0,1])
 
@@ -142,7 +142,7 @@ We will create random variables with increasingly more variance. The first featu
 	import pandas as pd
 	from pca import pca
 
-	# Lets create a dataset with features that have decreasing variance. 
+	# Lets create a dataset with features that have decreasing variance.
 	# We want to extract feature f1 as most important, followed by f2 etc
 	f1=np.random.randint(0,100,250)
 	f2=np.random.randint(0,50,250)
@@ -192,8 +192,8 @@ Explained variance plot
 
 
 
-Biplot
-****************************
+Biplot for feature-importance example
+*************************************
 
 Make the biplot. It can be nicely seen that the first feature with most variance (f1), is almost horizontal in the plot, whereas the second most variance (f2) is almost vertical. This is expected because most of the variance is in f1, followed by f2 etc. Biplot in 3d. Here we see the nice addition of the expected f3 in the plot in the z-direction.
 
@@ -288,6 +288,132 @@ To demonstrate how to do this, I will use the Titanic dataset. We need to pip in
 	model3.biplot(n_feat=3)
 
 
+Logistic PCA for binary / one-hot data
+##############################################
+
+For binary or one-hot encoded datasets, use ``method='logistic_pca'``.
+In this method, model quality is measured with **deviance explained** (not
+explained variance).
+
+.. code:: python
+
+	import datazets as dz
+	from df2onehot import df2onehot
+	from pca import pca
+
+	df = dz.get(data='titanic')
+
+	# Create one-hot array
+	df_hot = df2onehot(df,
+				   remove_multicollinearity=True,
+				   remove_mutual_exclusive=True,
+				   excl_background=['PassengerId', 'None'],
+				   y_min=10,
+				   verbose='debug',
+				   )['onehot']
+
+	# Fit exactly 2 components
+	model_k2 = pca(normalize=False,
+			       detect_outliers=['HT2', 'SPE'],
+			       method='logistic_pca',
+			       n_components=2)
+	model_k2.fit_transform(df_hot)
+	model_k2.plot()
+
+	# Select the smallest k that reaches 95% deviance explained
+	model_auto = pca(normalize=False,
+			 detect_outliers=['HT2', 'SPE'],
+			 method='logistic_pca',
+			 n_components=0.95)
+	model_auto.fit_transform(df_hot)
+	model_auto.plot()
+
+	model_auto.biplot(SPE=True,
+              HT2=True,
+              marker=df['Survived'],
+              s=df['Age']*20,
+              n_feat=2,
+              labels=df['Embarked']=='S',
+              title='Biplot with with the pca library.',
+              color_arrow='k',
+              fontsize=28,
+              fontcolor=None,
+              arrowdict={'fontsize': 18},
+              cmap='bwr_r',
+              edgecolor='#FFFFFF',
+              gradient='#FFFFFF',
+              density=True,
+              density_on_top=False,
+              visible=True,
+              jitter=0.2,
+              )
+
+
+Why ``n_components=2`` can differ from ``n_components=0.95``
+**************************************************************
+
+These two runs optimize different goals:
+
+* ``n_components=2`` fixes model size to exactly 2 components.
+* ``n_components=0.95`` searches for the smallest number of components whose
+  **deviance explained** reaches 95%.
+
+So the selected model for ``0.95`` can be 1, 2, 3, ... components depending on
+your data. Since Logistic PCA models are not nested, each candidate number of
+components is fitted separately during the search.
+
+Additional Logistic PCA notes
+*****************************
+
+* ``model.n_components`` is overwritten with the selected integer after fitting.
+* The search path is stored in ``results['deviance_explained_path']`` and reused
+  by ``plot()`` (no refit needed for plotting).
+* ``n_components`` as a threshold can be slower on large data because it may fit
+  multiple models (``1, 2, 3, ...``) before stopping.
+* If the threshold is unreachable, the model uses the maximum allowed number of
+  components and logs a warning.
+* If deviance explained is undefined (for constant data), it falls back to
+  1 component and logs a warning.
+* Invalid values still raise ``ValueError`` (for example: ``None``, ``0``,
+  ``True``, floats ``>=1`` such as ``2.0``, or integers larger than the number
+  of features).
+
+
+Logistic PCA FAQ
+******************
+
+**Q1: When should I use ``n_components=2`` vs ``n_components=0.95``?**
+
+Use ``n_components=2`` when you want exactly two components (for example for a
+fixed 2D workflow or direct comparison across runs). Use ``n_components=0.95``
+when you want the model to choose the smallest number of components that reaches
+95% deviance explained.
+
+**Q2: Why do these two settings sometimes give different results?**
+
+Because they optimize different goals. ``2`` fixes the model size. ``0.95``
+uses a quality target and may select 1, 2, 3, ... components depending on the
+data.
+
+**Q3: Is ``n_components=0.95`` slower?**
+
+Often yes. Logistic PCA models are not nested, so the package may fit multiple
+models (1, 2, 3, ...) until the threshold is reached.
+
+**Q4: Which metric should I monitor for Logistic PCA?**
+
+Use ``results['deviance_explained']`` and the path in
+``results['deviance_explained_path']``. ``explained_var`` and
+``variance_ratio`` are for standard PCA and are not the right metrics for
+Logistic PCA.
+
+**Q5: What if my dataset is constant or the threshold cannot be reached?**
+
+If deviance explained is undefined (no variation), the model falls back to
+1 component and logs a warning. If the threshold is unreachable, the model uses
+the maximum allowed number of components and also logs a warning.
+
+
 Map unseen datapoints into fitted space
 ##############################################
 
@@ -378,7 +504,7 @@ First, we will load the data and import the libraries.
 
 	# Import pca
 	from pca import pca
-	
+
 	# Class labels
 	y = load_iris().target
 
@@ -446,7 +572,7 @@ input colors for each sample manually.
 The highlight the loadings, all scatterpoints can be removed by setting the cmap to None.
 
 .. code:: python
-	
+
 	# Remove scatterpoints by setting cmap=None
 	model.biplot(cmap=None)
 
@@ -469,7 +595,7 @@ It is also possible to input a fig as parameter to the plot.
 This will allow to make iterative changes.
 
 .. code:: python
-	
+
 	from sklearn.datasets import make_friedman1
 	X, _ = make_friedman1(n_samples=200, n_features=30, random_state=0)
 
