@@ -115,34 +115,7 @@ In this example we have 13 variables in the **wine** dataset, and thus 13 dimens
 There are as many principal components as there are variables in the data. The **explained variance plot** can therefore never have more then 13 PCs in this case. Principal components are constructed in such a manner that the first principal component accounts for the largest possible variance in the data set.
 
 
-Variance (PCA) versus deviance explained (Logistic PCA)
-########################################################
-
-For standard PCA, model quality is expressed in **explained variance**.
-Variance measures spread around the mean in continuous data (it is the average
-squared deviation from that mean).
-
-For Logistic PCA on binary/one-hot data, this quantity is not defined. Instead,
-``pca(method='logistic_pca')`` reports **deviance explained**.
-Deviance is a likelihood-based goodness-of-fit measure for binary outcomes, and
-**deviance explained** is the proportion of *null deviance* captured by the
-model.
-
-In practice, this means that ``n_components`` behaves as follows for
-``method='logistic_pca'``:
-
-* ``n_components`` as an integer (for example ``2``): fit exactly that many
-  components.
-* ``n_components`` as a float between ``0`` and ``1`` (for example ``0.95``):
-  select the **smallest** number of components whose deviance explained reaches
-  that threshold.
-
-Because Logistic PCA models are not nested, the threshold search fits
-``1, 2, 3, ...`` components until it reaches the target (or the maximum allowed
-components).
-
-
-How Logistic PCA works
+Logistic PCA
 #######################################
 
 Standard PCA is built for continuous values (such as height, weight, or sensor
@@ -169,6 +142,32 @@ That improvement is summarized as **deviance explained**.
 So, if deviance explained is ``0.95``, the model removes about 95% of the error
 relative to the null model.
 
+Logistic PCA (deviance) versus PCA (variance)
+***************************************************************
+
+For standard PCA, model quality is expressed in **explained variance**.
+Variance measures spread around the mean in continuous data (it is the average
+squared deviation from that mean).
+
+For Logistic PCA on binary/one-hot data, this quantity is not defined. Instead,
+``pca(method='logistic_pca')`` reports **deviance explained**.
+Deviance is a likelihood-based goodness-of-fit measure for binary outcomes, and
+**deviance explained** is the proportion of *null deviance* captured by the
+model.
+
+In practice, this means that ``n_components`` behaves as follows for
+``method='logistic_pca'``:
+
+* ``n_components`` as an integer (for example ``2``): fit exactly that many
+  components.
+* ``n_components`` as a float between ``0`` and ``1`` (for example ``0.95``):
+  select the **smallest** number of components whose deviance explained reaches
+  that threshold.
+
+Because Logistic PCA models are not nested, the threshold search fits
+``1, 2, 3, ...`` components until it reaches the target (or the maximum allowed
+components).
+
 Why this differs from explained variance
 ******************************************
 
@@ -180,7 +179,7 @@ Why this differs from explained variance
 So for Logistic PCA, deviance explained is the right metric, while explained
 variance is not defined.
 
-Practical behavior in this package
+Practical behavior
 ************************************
 
 * The default ``n_components=0.95`` works for ``method='logistic_pca'`` and
