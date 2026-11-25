@@ -42,7 +42,7 @@ class pca:
         Number of features explaining the space most, derived from the loadings.
         Used for visualization purposes only.
 
-    method : 'pca', 'sparse_pca', 'trunc_svd', 'logistic_pca', default='pca'
+    method : {'pca', 'sparse_pca', 'trunc_svd', 'logistic_pca'}, optional, default='pca'
         Method for dimensionality reduction.
         - 'pca' : Principal Component Analysis.
         - 'sparse_pca' : Sparse Principal Component Analysis.
@@ -74,6 +74,9 @@ class pca:
     n_std : int, optional, default=3
         Number of standard deviations for outlier detection using SPE/DmodX method.
 
+    m : float, optional, default=4
+        Only used for method='logistic_pca'. Approximation of the saturated natural parameters (m * (2X - 1)).
+
     onehot : bool, optional, default=False
         Set True if X is sparse data such as output from a TF-IDF model (many zeros, few numbers).
         Note: This differs from a sparse matrix. For sparse matrices, use method='trunc_svd'.
@@ -97,8 +100,6 @@ class pca:
         - 30, 'warning' : warning level and above.
         - 50, 'critical' : critical level and above.
 
-    m : float, optional, default=4
-        Only used for method='logistic_pca'. Approximation of the saturated natural parameters (m * (2X - 1)).
 
     Examples
     --------
@@ -261,14 +262,19 @@ class pca:
         # Add mapped PCs to dataframe
         if self.detect_outliers is not None:
             # By setting the outliers params to None, it will update the parameters on the new input data.
+            PCtot = pd.concat([self.results["PC"], PCs], axis=0)
             if update_outlier_params:
                 self.results["outliers_params"]["paramT2"] = None
                 self.results["outliers_params"]["paramSPE"] = None
-            PCtot = pd.concat([self.results["PC"], PCs], axis=0)
-            # Detection of outliers
-            self.results["outliers"], _ = self.compute_outliers(
-                PCtot, verbose=get_logger()
-            )
+                # Detection of outliers on all samples. The updated parameters are stored for later calls.
+                self.results["outliers"], self.results["outliers_params"] = self.compute_outliers(PCtot, verbose=get_logger())
+            else:
+                # Parameters are locked: the outliers of the previously seen samples must not change. The multiple
+                # testing correction depends on the number of samples tested, so only the new samples are tested.
+                outliers_new, _ = self.compute_outliers(PCs, verbose=get_logger())
+                if not outliers_new.empty:
+                    outliers_new.index = PCs.index
+                self.results["outliers"] = pd.concat([self.results["outliers"], outliers_new], axis=0)
             # Store
             self.results["PC"] = PCtot
 
@@ -352,10 +358,9 @@ class pca:
 
         # Clean readily fitted models to ensure correct results.
         self._clean()
+
         # Pre-processing
-        X, row_labels, col_labels, scaler = self._preprocessing(
-            X, row_labels, col_labels
-        )
+        X, row_labels, col_labels, scaler = self._preprocessing(X, row_labels, col_labels)
 
         if self.method == "logistic_pca":
             return self._fit_logistic(X, row_labels, col_labels)
@@ -366,45 +371,27 @@ class pca:
 
             pcp = self.n_components
             # Run with all components to get all PCs back. This is needed for the step after.
-            _, _, _, percentExplVar = _explainedvar(
-                X,
-                method=self.method,
-                n_components=None,
-                onehot=self.onehot,
-                random_state=self.random_state,
-            )
+            _, _, _, percentExplVar = _explainedvar(X, method=self.method, n_components=None, onehot=self.onehot, random_state=self.random_state)
             # Take number of components with minimal [n_components] explained variance
             if percentExplVar is None:
                 self.n_components = X.shape[1] - 1
                 logger.info(f"n_components is set to {self.n_components}")
             else:
-                self.n_components = (
-                    np.min(np.where(percentExplVar >= self.n_components)[0]) + 1
-                )
+                self.n_components = (np.min(np.where(percentExplVar >= self.n_components)[0]) + 1)
                 logger.info(f"The top {self.n_components} principal component(s) explains >= {pcp * 100:.2f}% of the explained variance.")
 
         logger.info(f"The PCA reduction is performed on {X.shape[1]} variables (columns) of the input dataframe.")
-        model_pca, PC, loadings, percentExplVar = _explainedvar(
-            X,
-            method=self.method,
-            n_components=self.n_components,
-            onehot=self.onehot,
-            random_state=self.random_state,
-            percentExplVar=percentExplVar,
-        )
+        model_pca, PC, loadings, percentExplVar = _explainedvar(X, method=self.method, n_components=self.n_components, onehot=self.onehot, random_state=self.random_state, percentExplVar=percentExplVar)
+
         # Take the explained variance for the nr of components
         pcp = (
             None
             if percentExplVar is None
-            else percentExplVar[
-                np.minimum(len(percentExplVar) - 1, self.n_components - 1)
-            ]
+            else percentExplVar[np.minimum(len(percentExplVar) - 1, self.n_components - 1)]
         )
 
         # Combine components relations with features
-        loadings = self._postprocessing(
-            model_pca, loadings, col_labels, self.n_components
-        )
+        loadings = self._postprocessing(model_pca, loadings, col_labels, self.n_components)
         # Top scoring n_components
         topfeat = self.compute_topfeat(loadings=loadings)
         # Detection of outliers
@@ -1142,9 +1129,6 @@ class pca:
         -------
         tuple containing (fig, ax)
 
-        References
-        ----------
-            * https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
 
         """
         # Set the logger
