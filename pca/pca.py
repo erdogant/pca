@@ -826,6 +826,7 @@ class pca:
         y=None,  # deprecated
         label=None,  # deprecated
         verbose="info",
+        scale=None,
     ):
         """Scatter 2d plot.
 
@@ -902,6 +903,10 @@ class pca:
             Visible status of the Figure. When False, figure is created on the background.
         Verbose : int (default : 3)
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+        scale : float between 0 and 1 or bool, default: None
+            True is the same as 1 and False is the same as None.
+            None : The scores are plotted as they are.
+            0..1 : Plot the scores divided by (sdev * sqrt(n_samples))^scale, as in R's biplot.prcomp (see biplot).
 
         Returns
         -------
@@ -936,7 +941,12 @@ class pca:
         if labels is None:
             labels, _, _ = self._fig_preprocessing(labels, None, d3)
         # Get coordinates
-        xs, ys, zs = _get_coordinates(self.results["PC"], PC)
+        PCs = self.results["PC"]
+        scale = _normalize_scale(scale)
+        if scale is not None:
+            PCs = PCs.copy()
+            PCs.iloc[:, PC] = PCs.iloc[:, PC].values / self._biplot_lam(PC, scale)
+        xs, ys, zs = _get_coordinates(PCs, PC)
         # Setup figure
         # fig, ax = _setup_figure(fig, ax, d3, visible, figsize, dpi)
 
@@ -1021,124 +1031,90 @@ class pca:
         y=None,  # deprecated
         label=None,  # deprecated
         verbose=None,
+        scale=None,
     ):
-        """Create Biplot.
+        """Create a biplot.
 
-        Plots the Principal components with the samples, and the best performing features.
-        Per PC, The feature with absolute highest loading is gathered. This can result into features that are seen over multiple PCs, and some features may never be detected.
-        For vizualization purposes we will keep only the unique feature-names and plot them with red arrows and green labels.
-        The feature-names that were never discovered (described as weak) are colored yellow.
+        Plot principal components together with samples and feature loadings.
 
         Parameters
         ----------
         labels : array-like, default: None
-            Label for each sample. The labeling is used for coloring the samples.
-        c: list/array of RGB colors for each sample.
-            The marker colors. Possible values:
-                * A scalar or sequence of n numbers to be mapped to colors using cmap and norm.
-                * A 2D array in which the rows are RGB or RGBA.
-                * A sequence of colors of length n.
-                * A single color format string.
-        s : Int or list/array (default: 50)
-            Size(s) of the scatter-points.
-            [20, 10, 50, ...]: In case of list: should be same size as the number of PCs -> .results['PC']
-            50: all points get this size.
-        marker: list/array of strings (default: 'o').
-            Marker for the samples.
-                * 'x' : All data points get this marker
-                * ('.', 'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X') : Specify per sample the marker type.
-        n_feat : int, default: 10
-            Number of features that explain the space the most, dervied from the loadings. This parameter is used for vizualization purposes only.
+            Label for each sample. Used for sample coloring.
+        c : color or array-like, default: [0, 0.1, 0.4]
+            Marker colors. Can be a single color, numeric sequence, or RGB(A)
+            array.
+        s : int or array-like, default: 150
+            Scatter marker size(s).
+        marker : str or array-like, default: 'o'
+            Marker style(s) for samples.
+        edgecolor : str, default: '#000000'
+            Edge color for scatter markers.
         jitter : float, default: None
-            Add jitter to data points as random normal data. Values of 0.01 is usually good for one-hot data seperation.
-        PC : tupel, default: None
-            Plot the selected Principal Components. Note that counting starts from 0. PC1=0, PC2=1, PC3=2, etc.
-            None : Take automatically the first 2 components and 3 in case d3=True.
-            [0, 1] : Define the PC for 2D.
-            [0, 1, 2] : Define the PCs for 3D
-        SPE : Bool, default: False
-            Show the outliers based on SPE/DmodX method.
-                * None : Auto detect. If outliers are detected. it is set to True.
-                * True : Show outliers
-                * False : Do not show outliers
-        HT2 : Bool, default: False
-            Show the outliers based on the hotelling T2 test.
-                * None : Auto detect. If outliers are detected. it is set to True.
-                * True : Show outliers
-                * False : Do not show outliers
-        alpha: float or array-like of floats (default: 1).
-            The alpha blending value ranges between 0 (transparent) and 1 (opaque).
-            1: All data points get this alpha
-            [1, 0.8, 0.2, ...]: Specify per sample the alpha
-        gradient : String, (default: None)
-            Hex (ending) color for the gradient of the scatterplot colors.
-            '#FFFFFF'
-        density : Bool (default: False)
-            Include the kernel density in the scatter plot.
-        density_on_top : bool, (default: False)
-            True : The density is the highest layer.
-            False : The density is the lowest layer.
-        fontsize : String (default: 16)
-            The fontsize of the labels.
-        fontcolor: list/array of RGB colors with same size as X (default : None)
-            None : Use same colorscheme as for c
-            '#000000' : If the input is a single color, all fonts will get this color.
-        fontweight : String, (default: 'normal')
-            The fontweight of the labels.
-                * 'normal'
-                * 'bold'
-        color_arrow : String, (default: None)
-            color for the arrow.
-                * None: Color arrows based on strength using 'color_strong' and 'color_weak'.
-                * '#000000'
-                * 'r'
-        arrowdict : dict
-            Dictionary containing properties for the arrow text.
-            Example keys: ``fontsize``, ``color_text``, ``weight``, ``alpha``,
-            ``color_strong``, ``color_weak``, and ``scale_factor``.
-
-            - ``fontsize``: None automatically adjusts based on ``fontsize``.
-            - ``color_text``: None automatically adjusts based on
-              ``color_strong`` and ``color_weak``.
-            - ``weight``: None automatically adjusts based on ``fontweight``.
-            - ``alpha``: None automatically adjusts based on loading value.
-            - ``color_strong``: Hex color for strong loadings (used when
-              ``color_arrow`` is None).
-            - ``color_weak``: Hex color for weak loadings (used when
-              ``color_arrow`` is None).
-            - ``scale_factor``: Scale factor for arrow length. None
-              automatically adjusts between 2D and 3D plots.
-        cmap : String, optional, default: 'Set1'
-            Colormap. If set to None, no points are shown.
+            Add Gaussian jitter to sample points.
+        n_feat : int, default: None
+            Number of top loading features to draw.
+        PC : tuple/list, default: None
+            Principal components to plot. ``None`` selects defaults.
+        SPE : bool, default: None
+            Show outliers based on SPE/DmodX. ``None`` auto-detects.
+        HT2 : bool, default: None
+            Show outliers based on Hotelling T2. ``None`` auto-detects.
+        alpha : float or array-like, default: 0.8
+            Marker alpha/transparency value(s).
+        gradient : str, default: None
+            Optional end color (hex) for gradient coloring.
+        density : bool, default: False
+            Show kernel density layer.
+        density_on_top : bool, default: False
+            Draw density above scatter points when True.
+        fontcolor : color or array-like, default: [0, 0, 0]
+            Label text color(s).
+        fontsize : int, default: 18
+            Label font size.
+        fontweight : str, default: 'normal'
+            Label font weight.
+        color_arrow : str, default: None
+            Arrow color. If ``None``, colors are derived from loading strength.
+        arrowdict : dict, default: {...}
+            Arrow/text styling dictionary. Common keys include ``fontsize``,
+            ``color_text``, ``weight``, ``alpha``, ``color_strong``,
+            ``color_weak``, and ``scale_factor``.
+        cmap : str, default: 'tab20c'
+            Colormap for samples.
         title : str, default: None
-            Title of the figure.
-            None: Automatically create title text based on results.
-            '' : Remove all title text.
-            'title text' : Add custom title text.
-        legend : int, default: None
-            None: Set automatically based on number of labels.
-            False : No legend.
-            True : Best position.
-            1 : 'upper right'
-            2 : 'upper left'
-            3 : 'lower left'
-            4 : 'lower right'
-        figsize : (int, int), optional, default: (25, 15)
-            (width, height) in inches.
-        visible : Bool, default: True
-            Visible status of the Figure. When False, figure is created on the background.
-        fig : Figure, optional (default: None)
-            Matplotlib figure.
-        ax : Axes, optional (default: None)
-            Matplotlib Axes object
-        Verbose : int (default : 3)
-            The higher the number, the more information is printed.
-            Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
+            Figure title.
+        legend : int or bool, default: None
+            Legend placement. ``None`` auto-selects position.
+        figsize : tuple, default: (25, 15)
+            Figure size in inches as ``(width, height)``.
+        visible : bool, default: True
+            Figure visibility.
+        fig : matplotlib.figure.Figure, default: None
+            Existing figure object.
+        ax : matplotlib.axes.Axes, default: None
+            Existing axes object.
+        dpi : int, default: 100
+            Figure resolution.
+        grid : bool, default: True
+            Show grid.
+        verbose : int or str, default: None
+            Override logger verbosity.
+        scale : float between 0 and 1 or bool, default: None
+            True is the same as 1 and False is the same as None.
+            Variance scaling as in R ``biplot.prcomp``. When set, samples are
+            drawn as ``scores / lam**scale`` and loadings as
+            ``loadings * lam**scale`` with ``lam = sdev * sqrt(n_samples)``.
 
         Returns
         -------
-        tuple containing (fig, ax)
+        tuple
+            Tuple containing ``(fig, ax)``.
 
+        References
+        ----------
+            - https://towardsdatascience.com/what-are-pca-loadings-and-biplots-9a7897f2e559
+            - https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/biplot.princomp
 
         """
         # Set the logger
@@ -1162,6 +1138,9 @@ class pca:
             s,
             get_logger(),
         )
+        # Variance scaling as in R's biplot.prcomp
+        scale = _normalize_scale(scale)
+        lam = None if scale is None else self._biplot_lam(PC, scale)
         # Pre-processing
         labels, topfeat, n_feat = self._fig_preprocessing(labels, n_feat, d3)
         # Scatterplot
@@ -1192,15 +1171,35 @@ class pca:
             dpi=dpi,
             grid=grid,
             verbose=get_logger(),
+            scale=scale,
         )
         # Add the loadings with arrow to the plot
         fig, ax = _plot_loadings(
-            self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, get_logger()
+            self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, get_logger(), lam
         )
         # Plot
         # if visible: plt.show()
         # Return
         return fig, ax
+
+    def _biplot_lam(self, PC, scale):
+        """Scaling factors lam^scale of the selected PCs as in R's biplot.prcomp.
+
+        lam = sdev * sqrt(n_samples). The sdev of the PCs is taken from the fitted model when available
+        (explained variance), and otherwise computed from the scores (e.g., Logistic PCA).
+        """
+        if isinstance(scale, bool) or not isinstance(scale, (int, float, np.integer, np.floating)) or not 0 <= scale <= 1:
+            raise ValueError(f"[pca] >Error: scale should be a number between 0 and 1 (or None), got {scale!r}.")
+        PC = list(PC)
+        scores = self.results["PC"]
+        ev = getattr(self.results["model"], "explained_variance_", None)
+        if ev is not None and len(ev) > max(PC) and np.all(np.isfinite(np.asarray(ev, dtype=float)[PC])):
+            sdev = np.sqrt(np.asarray(ev, dtype=float)[PC])
+        else:
+            sdev = scores.iloc[:, PC].std(axis=0, ddof=1).values
+        lam = sdev * np.sqrt(scores.shape[0])
+        lam[lam == 0] = 1.0
+        return lam**scale
 
     def scatter3d(self, PC=[0, 1, 2], **args):
         """Scatter 3d plot.
@@ -2004,27 +2003,67 @@ def _set_arrowdict(arrowdict, color_arrow=None, fontsize=18, fontweight="normal"
     return arrowdict
 
 
-def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
+def _normalize_scale(scale):
+    """Convert booleans for the scale parameter: True is full variance scaling (1) and False is no scaling (None)."""
+    if scale is True:
+        return 1
+    if scale is False:
+        return None
+    return scale
+
+
+def _biplot_arrow_scale(scores, arrows):
+    """Common factor that fits the arrows into the range of the scores (R's biplot.default with expand=1).
+
+    The same factor is used for all dimensions, so the relative lengths and the angles of the arrows are kept.
+    """
+    ratios = []
+    for j in range(scores.shape[1]):
+        for sc, ar in (
+            (abs(scores[:, j].min()), abs(arrows[j].min())),
+            (abs(scores[:, j].max()), abs(arrows[j].max())),
+        ):
+            if sc > 0 and ar > 0:
+                ratios.append(ar / sc)
+    return 1.0 / max(ratios) if ratios else 1.0
+
+
+def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose, lam=None):
     topfeat = pd.concat([topfeat.iloc[PC, :], topfeat.loc[~topfeat.index.isin(PC), :]])
     topfeat.reset_index(inplace=True)
     # Collect coefficients
     coeff = self.results["loadings"].iloc[PC, :]
 
     # Use the PCs only for scaling purposes
-    mean_x = np.mean(self.results["PC"].iloc[:, PC[0]].values)
-    mean_y = np.mean(self.results["PC"].iloc[:, PC[1]].values)
+    pcs = self.results["PC"].iloc[:, PC]
+    if lam is not None:
+        # Variance scaling as in R's biplot.prcomp: scores / lam^scale and loadings * lam^scale.
+        pcs = pcs / lam
+        coeff = coeff.mul(lam, axis=0)
+    mean_x = np.mean(pcs.iloc[:, 0].values)
+    mean_y = np.mean(pcs.iloc[:, 1].values)
     if d3:
-        mean_z = np.mean(self.results["PC"].iloc[:, PC[2]].values)
+        mean_z = np.mean(pcs.iloc[:, 2].values)
 
-    # Plot and scale values for arrows and text by taking the absolute minimum range of the x-axis and y-axis.
-    max_axis = np.max(np.abs(self.results["PC"].iloc[:, PC]).min(axis=1))
-    max_arrow = np.abs(coeff).max().max()
-    if arrowdict["scale_factor"] is None:
-        scale_factor = 1.8 if d3 else 1.1
+    if lam is not None:
+        # One common factor fits the arrows into the range of the scaled scores.
+        scale_factor = 1.0 if arrowdict["scale_factor"] is None else arrowdict["scale_factor"]
+        scale = _biplot_arrow_scale(pcs.values, coeff.values) * scale_factor
+        # Arrow dimensions are in data units and follow the extent of the scaled scores.
+        arrow_width = 0.0006 * np.abs(pcs.values).max()
+        head_width = 0.03 * np.abs(pcs.values).max()
     else:
-        scale_factor = arrowdict["scale_factor"]
-    # Scale the arrows using the scale factor
-    scale = (np.max([1, np.round(max_axis / max_arrow, 2)])) * scale_factor
+        # Plot and scale values for arrows and text by taking the absolute minimum range of the x-axis and y-axis.
+        max_axis = np.max(np.abs(pcs).min(axis=1))
+        max_arrow = np.abs(coeff).max().max()
+        if arrowdict["scale_factor"] is None:
+            scale_factor = 1.8 if d3 else 1.1
+        else:
+            scale_factor = arrowdict["scale_factor"]
+        # Scale the arrows using the scale factor
+        scale = (np.max([1, np.round(max_axis / max_arrow, 2)])) * scale_factor
+        arrow_width = 0.002
+        head_width = 0.1
 
     # For vizualization purposes we will keep only the unique feature-names
     topfeat = topfeat.drop_duplicates(subset=["feature"])
@@ -2097,7 +2136,6 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
                 )
             )
         else:
-            head_width = 0.1
             ax.arrow(
                 mean_x,
                 mean_y,
@@ -2105,7 +2143,7 @@ def _plot_loadings(self, topfeat, n_feat, PC, d3, arrowdict, fig, ax, verbose):
                 yarrow - mean_y,
                 color=arrow_line_color,
                 alpha=arrow_alpha,
-                width=0.002,
+                width=arrow_width,
                 head_width=head_width,
                 head_length=head_width * 1.1,
                 length_includes_head=True,

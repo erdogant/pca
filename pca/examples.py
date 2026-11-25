@@ -65,14 +65,11 @@ model = pca(n_components=2, verbose='info', n_std=2)
 # Load example data set
 df = model.import_example(data='iris')
 
-import colourmap as cm
-colours = cm.fromlist(df['label'].values, cmap='Set1', scheme='rgb')[0]
-            
 # Fit transform
 out = model.fit_transform(df)
 
-ax = model.biplot(s=200, SPE=True, HT2=True, c=colours)
-ax = model.scatter(s=200, SPE=True, HT2=True, labels=df['label'], c=colours)
+ax = model.biplot(s=200, SPE=True, HT2=True, c=df['label'], scale=True)
+ax = model.scatter(s=200, SPE=True, HT2=True, labels=df['label'], c=df['label'])
 
 
 # %% issue 54
