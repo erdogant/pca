@@ -157,6 +157,9 @@ Explained variance plot
    :width: 600
    :align: center
 
+For ``method='logistic_pca'``, ``plot()`` shows **deviance explained** versus
+the number of components (not explained variance), and uses
+``results['deviance_explained_path']`` when available.
 
 
 Alpha Transparency

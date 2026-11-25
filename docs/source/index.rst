@@ -23,7 +23,7 @@ But this pca package can do a lot more. Besides the regular **Principal Componen
 
 Summary of Functionalities:
   * Biplot to plot the loadings.
-  * Determine the explained variance.
+  * Determine explained variance (PCA) or deviance explained (Logistic PCA).
   * Extract the best performing features.
   * Scatter plot with the loadings.
   * Outlier detection using Hotelling T2 and/or SPE/Dmodx.

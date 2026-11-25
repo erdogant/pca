@@ -1,12 +1,12 @@
 Background
 ###########
 
-``pca`` is a python package to perform *Principal Component Analysis* and to examine the variance in-depth. The core of PCA is build on **sklearn** to find maximum compatibility when combining with other packages. But this package can do a lot more. Besides the regular **Principal Components**, it also integrates **SparsePCA**, **TruncatedSVD**, and provides the information that can be extracted from the components. 
+``pca`` is a python package to perform *Principal Component Analysis* and to examine the variance in-depth. The core of PCA is build on **sklearn** to find maximum compatibility when combining with other packages. But this package can do a lot more. Besides the regular **Principal Components**, it also integrates **SparsePCA**, **TruncatedSVD**, and **Logistic PCA** for binary data, and provides the information that can be extracted from the components.
 
 Functionalities of PCA are:
 
 	* Biplot to plot the loadings
-	* Determine the explained variance
+	* Determine explained variance (PCA) or deviance explained (Logistic PCA)
 	* Extract the best performing features
 	* Scatter plot with the loadings
 	* Outlier detection using Hotelling T2 and/or SPE/Dmodx
