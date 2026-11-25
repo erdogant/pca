@@ -42,7 +42,7 @@ class pca:
         Number of features explaining the space most, derived from the loadings.
         Used for visualization purposes only.
 
-    method : {'pca', 'sparse_pca', 'trunc_svd', 'logistic_pca'}, optional, default='pca'
+    method : 'pca', 'sparse_pca', 'trunc_svd', 'logistic_pca', default='pca'
         Method for dimensionality reduction.
         - 'pca' : Principal Component Analysis.
         - 'sparse_pca' : Sparse Principal Component Analysis.
@@ -125,6 +125,8 @@ class pca:
     - Blog: erdogant.medium.com
     - Github: https://github.com/erdogant/pca
     - Documentation: https://erdogant.github.io/pca/
+    - Landgraf, A. J., & Lee, Y. (2015). *Dimensionality Reduction for Binary Data through the Projection of Natural Parameters.*
+    - https://arxiv.org/abs/1510.06112
 
     """
 
