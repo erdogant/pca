@@ -5,7 +5,9 @@
 $patterns = @(
 "*.egg-info",
 "dist",
-"build"
+"build",
+".pytest_cache",
+"__pycache__"
 )
 
 # Find the root of the current Git repository
