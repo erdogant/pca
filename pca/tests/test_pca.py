@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import unittest
 from sklearn.datasets import make_friedman1
+from scipy.linalg import hadamard
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend for tests
 
@@ -175,16 +176,7 @@ class TestPCA(unittest.TestCase):
 
     def test_correct_ordering_features_in_biplot(self):
 
-        f1=np.random.randint(0,100,250)
-        f2=np.random.randint(0,50,250)
-        f3=np.random.randint(0,25,250)
-        f4=np.random.randint(0,10,250)
-        f5=np.random.randint(0,5,250)
-        f6=np.random.randint(0,4,250)
-        f7=np.random.randint(0,3,250)
-        f8=np.random.randint(0,2,250)
-        f9=np.random.randint(0,1,250)
-        X = np.c_[f1,f2,f3,f4,f5,f6,f7,f8,f9]
+        X = hadamard(16)[:, 1:10] * [100, 50, 25, 10, 5, 4, 3, 2, 1]
         X = pd.DataFrame(data=X, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
         
         model = pca(n_components=9, normalize=False)
@@ -197,21 +189,35 @@ class TestPCA(unittest.TestCase):
         X_norm = model.norm(X, pcexclude=[1])
         X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
         out = model.fit_transform(X_norm)
-        assert (out['topfeat'].feature.values[-1]=='f1') | (out['topfeat'].feature.values[-2]=='f1')
         assert out['topfeat'].feature.values[0]=='f2'
+        assert set(out['topfeat'].feature) == set(X.columns)
         
         ##### NORMALIZE OUT PC1 AND PC2
         X_norm = model.norm(X, pcexclude=[1,2])
         X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
         out = model.fit_transform(X_norm)
-        assert (out['topfeat'].feature.values[-1]=='f2') | (out['topfeat'].feature.values[-1]=='f9') | (out['topfeat'].feature.values[-1]=='f1')
+        assert out['topfeat'].feature.values[0]=='f3'
+        assert set(out['topfeat'].feature) == set(X.columns)
         
-        ##### NORMALIZE OUT PC2 AND PC4
+        ##### NORMALIZE OUT PC2
         X_norm = model.norm(X, pcexclude=[2])
         X_norm = pd.DataFrame(data=X_norm, columns=['f1','f2','f3','f4','f5','f6','f7','f8','f9'])
         out = model.fit_transform(X_norm)
+        assert out['topfeat'].feature.values[0]=='f1'
         assert out['topfeat'].feature.values[1]=='f3'
-        assert (out['topfeat'].feature.values[-1]=='f2') | (out['topfeat'].feature.values[-1]=='f9')
+        assert set(out['topfeat'].feature) == set(X.columns)
+
+    def test_topfeat_orders_best_then_weak_features(self):
+        loadings = pd.DataFrame(
+            [[0.1, -0.8, 0.3, 0.2], [0.2, 0.9, -0.4, 0.1]],
+            columns=['f1', 'f2', 'f3', 'f4'],
+            index=['PC1', 'PC2'],
+        )
+        topfeat = pca().compute_topfeat(loadings)
+        assert topfeat['feature'].tolist() == ['f2', 'f2', 'f1', 'f3', 'f4']
+        assert topfeat['PC'].tolist() == ['PC1', 'PC2', 'PC2', 'PC2', 'PC1']
+        assert topfeat['type'].tolist() == ['best', 'best', 'weak', 'weak', 'weak']
+        np.testing.assert_allclose(topfeat['loading'], [-0.8, 0.9, 0.2, -0.4, 0.2])
 
 
     def test_for_new_outliers_after_transformation(self):
