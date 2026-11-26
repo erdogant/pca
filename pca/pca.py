@@ -823,15 +823,18 @@ class pca:
         fig=None,
         ax=None,
         grid=True,
+        scale=None,
         y=None,  # deprecated
         label=None,  # deprecated
         verbose="info",
-        scale=None,
     ):
         """Scatter 2d plot.
 
         Parameters
         ----------
+        scale : float between 0 and 1 or bool, default: None
+            True: Variance scaling. When set, samples are drawn as ``scores / lam**scale`` and loadings as ``loadings * lam**scale`` with ``lam = sdev * sqrt(n_samples)``.
+            False: No scaling
         labels : array-like, default: None
             Label for each sample. The labeling is used for coloring the samples.
         c: list/array of RGB colors for each sample.
@@ -903,10 +906,6 @@ class pca:
             Visible status of the Figure. When False, figure is created on the background.
         Verbose : int (default : 3)
             Print to screen. 0: None, 1: Error, 2: Warning, 3: Info, 4: Debug, 5: Trace
-        scale : float between 0 and 1 or bool, default: None
-            True is the same as 1 and False is the same as None.
-            None : The scores are plotted as they are.
-            0..1 : Plot the scores divided by (sdev * sqrt(n_samples))^scale, as in R's biplot.prcomp (see biplot).
 
         Returns
         -------
@@ -1028,10 +1027,10 @@ class pca:
         ax=None,
         dpi=100,
         grid=True,
+        scale=None,
         y=None,  # deprecated
         label=None,  # deprecated
         verbose=None,
-        scale=None,
     ):
         """Create a biplot.
 
@@ -1039,6 +1038,9 @@ class pca:
 
         Parameters
         ----------
+        scale : float between 0 and 1 or bool, default: None
+            True: Variance scaling. When set, samples are drawn as ``scores / lam**scale`` and loadings as ``loadings * lam**scale`` with ``lam = sdev * sqrt(n_samples)``.
+            False: No scaling
         labels : array-like, default: None
             Label for each sample. Used for sample coloring.
         c : color or array-like, default: [0, 0.1, 0.4]
@@ -1100,11 +1102,6 @@ class pca:
             Show grid.
         verbose : int or str, default: None
             Override logger verbosity.
-        scale : float between 0 and 1 or bool, default: None
-            True is the same as 1 and False is the same as None.
-            Variance scaling as in R ``biplot.prcomp``. When set, samples are
-            drawn as ``scores / lam**scale`` and loadings as
-            ``loadings * lam**scale`` with ``lam = sdev * sqrt(n_samples)``.
 
         Returns
         -------
