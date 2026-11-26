@@ -348,6 +348,60 @@ Practical behavior
 * If the data has no variation (deviance explained undefined), the model falls
   back to 1 component and logs a warning.
 
+
+.. code:: python
+    
+    import datazets as dz
+    from df2onehot import df2onehot
+    from pca import pca
+    
+    df = dz.get(data='titanic')
+    
+    # Create one-hot array
+    df_hot = df2onehot(df,
+                       remove_multicollinearity=True,
+                       remove_mutual_exclusive=True,
+                       excl_background=['PassengerId', 'None'],
+                       y_min=10,
+                       verbose='debug',
+                       )['onehot']
+    
+    model = pca(normalize=False,
+                detect_outliers=['HT2', 'SPE'],
+                method='logistic_pca',
+                n_components=2,
+                )
+    
+    # Fit
+    model.fit_transform(df_hot)
+    
+    model.plot()
+    
+    # model.scatter(legend=False, jitter=0.1)
+    # model.biplot(legend=False)
+    
+    model.biplot(SPE=True,
+                  HT2=True,
+                  marker=df['Survived'],
+                  s=df['Age']*20,
+                  n_feat=2,
+                  labels=df['Embarked']=='S',
+                  title='Biplot with with the logistic PCA.',
+                  color_arrow='k',
+                  fontsize=28,
+                  fontcolor=None,
+                  arrowdict={'fontsize': 18},
+                  cmap='bwr_r',
+                  edgecolor='#FFFFFF',
+                  gradient='#FFFFFF',
+                  density=True,
+                  density_on_top=False,
+                  visible=True,
+                  jitter=0.2,
+                  )
+
+
+
 Sparse PCA
 #######################################
 

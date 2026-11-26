@@ -70,9 +70,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#sparse-pca">Sparse PCA</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#why">Why:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why">Why</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#most-suitable-data">Most suitable data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#how-it-works">How it works:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-it-works">How it works</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#trade-offs">Trade-offs:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#typical-applications">Typical applications</a></li>
 </ul>
@@ -427,13 +427,63 @@ components and logs a warning.</p></li>
 <li><p>If the data has no variation (deviance explained undefined), the model falls
 back to 1 component and logs a warning.</p></li>
 </ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datazets</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">df2onehot</span><span class="w"> </span><span class="kn">import</span> <span class="n">df2onehot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pca</span><span class="w"> </span><span class="kn">import</span> <span class="n">pca</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">dz</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">'titanic'</span><span class="p">)</span>
+
+<span class="c1"># Create one-hot array</span>
+<span class="n">df_hot</span> <span class="o">=</span> <span class="n">df2onehot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
+                   <span class="n">remove_multicollinearity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="n">remove_mutual_exclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="n">excl_background</span><span class="o">=</span><span class="p">[</span><span class="s1">'PassengerId'</span><span class="p">,</span> <span class="s1">'None'</span><span class="p">],</span>
+                   <span class="n">y_min</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                   <span class="n">verbose</span><span class="o">=</span><span class="s1">'debug'</span><span class="p">,</span>
+                   <span class="p">)[</span><span class="s1">'onehot'</span><span class="p">]</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">pca</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">detect_outliers</span><span class="o">=</span><span class="p">[</span><span class="s1">'HT2'</span><span class="p">,</span> <span class="s1">'SPE'</span><span class="p">],</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">'logistic_pca'</span><span class="p">,</span>
+            <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+
+<span class="c1"># Fit</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df_hot</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+<span class="c1"># model.scatter(legend=False, jitter=0.1)</span>
+<span class="c1"># model.biplot(legend=False)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">biplot</span><span class="p">(</span><span class="n">SPE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">HT2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">marker</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">'Survived'</span><span class="p">],</span>
+              <span class="n">s</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">*</span><span class="mi">20</span><span class="p">,</span>
+              <span class="n">n_feat</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+              <span class="n">labels</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">'Embarked'</span><span class="p">]</span><span class="o">==</span><span class="s1">'S'</span><span class="p">,</span>
+              <span class="n">title</span><span class="o">=</span><span class="s1">'Biplot with with the logistic PCA.'</span><span class="p">,</span>
+              <span class="n">color_arrow</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span>
+              <span class="n">fontsize</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span>
+              <span class="n">fontcolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">arrowdict</span><span class="o">=</span><span class="p">{</span><span class="s1">'fontsize'</span><span class="p">:</span> <span class="mi">18</span><span class="p">},</span>
+              <span class="n">cmap</span><span class="o">=</span><span class="s1">'bwr_r'</span><span class="p">,</span>
+              <span class="n">edgecolor</span><span class="o">=</span><span class="s1">'#FFFFFF'</span><span class="p">,</span>
+              <span class="n">gradient</span><span class="o">=</span><span class="s1">'#FFFFFF'</span><span class="p">,</span>
+              <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">density_on_top</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">jitter</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+              <span class="p">)</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="sparse-pca">
 <h1>Sparse PCA<a class="headerlink" href="#sparse-pca" title="Link to this heading"></a></h1>
 <p>Use method=’sparse_pca’ when your main goal is interpretable dimensionality reduction through feature selection within components.</p>
 <section id="why">
-<h2>Why:<a class="headerlink" href="#why" title="Link to this heading"></a></h2>
+<h2>Why<a class="headerlink" href="#why" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Sparse PCA introduces a sparsity constraint on the component loadings.</p></li>
 <li><p>Many loadings are exactly zero, meaning that each component is associated with a smaller subset of the original features.</p></li>
@@ -451,7 +501,7 @@ back to 1 component and logs a warning.</p></li>
 </ul>
 </section>
 <section id="how-it-works">
-<h2>How it works:<a class="headerlink" href="#how-it-works" title="Link to this heading"></a></h2>
+<h2>How it works<a class="headerlink" href="#how-it-works" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>The input data is centered.</p></li>
 <li><p>A sparse component representation is learned by optimizing a reconstruction objective with a sparsity penalty.</p></li>

@@ -68,8 +68,9 @@ df = model.import_example(data='iris')
 # Fit transform
 out = model.fit_transform(df)
 
+ax = model.biplot(s=200, SPE=True, HT2=True, c=df['label'])
 ax = model.biplot(s=200, SPE=True, HT2=True, c=df['label'], scale=True)
-ax = model.scatter(s=200, SPE=True, HT2=True, labels=df['label'], c=df['label'])
+# ax = model.scatter(s=200, SPE=True, HT2=True, labels=df['label'], c=df['label'])
 
 
 # %% issue 54
